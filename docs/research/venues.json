@@ -1,0 +1,267 @@
+{
+  "verifiedAt": "2026-10-24",
+  "directorySource": "https://koszyki.com/uslugi/restauracje/",
+  "menuPolicy": "Venue identity, cuisine and unit numbers are sourced; menu prices, available items and ETAs in demo must be labelled illustrative. No affiliation implied.",
+  "venues": [
+    {
+      "id": "about-matcha",
+      "name": "About Matcha",
+      "unit": 6,
+      "floor": 0,
+      "sourceUrl": "https://koszyki.com/services/about-matcha/",
+      "logoUrl": "https://koszyki.com/wp-content/uploads/2026/07/485128847_122110112336800930_543192255681573316_n.jpg",
+      "cuisine": null,
+      "priority": false
+    },
+    {
+      "id": "na-koncu-teczy",
+      "name": "Na końcu tęczy",
+      "unit": 20,
+      "floor": 0,
+      "sourceUrl": "https://koszyki.com/services/na-koncu-teczy/",
+      "logoUrl": "https://koszyki.com/wp-content/uploads/2026/04/koszyki_na_końcu_tęczy_logo.png",
+      "cuisine": null,
+      "priority": false
+    },
+    {
+      "id": "bibimbar",
+      "name": "Bibimbar",
+      "unit": 15,
+      "floor": 0,
+      "sourceUrl": "https://koszyki.com/services/bibimbar/",
+      "logoUrl": "https://koszyki.com/wp-content/uploads/2026/03/bibimbar-logo-01-1.svg",
+      "cuisine": "Korean street food",
+      "priority": true
+    },
+    {
+      "id": "new-greek-mediterranean-kitchen",
+      "name": "OMONIA",
+      "unit": 23,
+      "floor": 0,
+      "sourceUrl": "https://koszyki.com/services/new-greek-mediterranean-kitchen/",
+      "logoUrl": "https://koszyki.com/wp-content/uploads/2026/03/Zrzut-ekranu-2026-03-24-o-12.07.21.png",
+      "cuisine": null,
+      "priority": false
+    },
+    {
+      "id": "bajs",
+      "name": "BAJS",
+      "unit": 27,
+      "floor": 0,
+      "sourceUrl": "https://koszyki.com/services/bajs/",
+      "logoUrl": "https://koszyki.com/wp-content/uploads/2025/10/BAJS_Logo_Wersja_Podstawowa_RGB-01-kopia.png",
+      "cuisine": null,
+      "priority": false
+    },
+    {
+      "id": "brut",
+      "name": "BRUT",
+      "unit": 5,
+      "floor": 0,
+      "sourceUrl": "https://koszyki.com/services/brut/",
+      "logoUrl": "https://koszyki.com/wp-content/uploads/2025/07/brut_brązowy.png",
+      "cuisine": null,
+      "priority": false
+    },
+    {
+      "id": "bar-ragazzi",
+      "name": "Bar Ragazzi",
+      "unit": 22,
+      "floor": 0,
+      "sourceUrl": "https://koszyki.com/services/bar-ragazzi/",
+      "logoUrl": "https://koszyki.com/wp-content/uploads/2025/05/Logo-ragazzi-krzywe-120cm.svg",
+      "cuisine": null,
+      "priority": false
+    },
+    {
+      "id": "upper-deck-wine-cocktail-bar",
+      "name": "Upper Deck Wine & Cocktail Bar",
+      "unit": 3,
+      "floor": 1,
+      "sourceUrl": "https://koszyki.com/services/upper-deck-wine-cocktail-bar/",
+      "logoUrl": "https://koszyki.com/wp-content/uploads/2022/06/upper-deck-logo.jpg",
+      "cuisine": null,
+      "priority": false
+    },
+    {
+      "id": "portugalia-gourmet",
+      "name": "Portugalia Gourmet",
+      "unit": 19,
+      "floor": 0,
+      "sourceUrl": "https://koszyki.com/services/portugalia-gourmet/",
+      "logoUrl": "https://koszyki.com/wp-content/uploads/2022/05/portugalia-gourmet-logo.png",
+      "cuisine": null,
+      "priority": false
+    },
+    {
+      "id": "vincent-boulangerie-patisserie",
+      "name": "Vincent Boulangerie Patisserie",
+      "unit": 4,
+      "floor": 0,
+      "sourceUrl": "https://koszyki.com/services/vincent-boulangerie-patisserie/",
+      "logoUrl": "https://koszyki.com/wp-content/uploads/2022/05/vincent-logo.jpg",
+      "cuisine": null,
+      "priority": false
+    },
+    {
+      "id": "the-fry",
+      "name": "The Fry",
+      "unit": 7,
+      "floor": 0,
+      "sourceUrl": "https://koszyki.com/services/the-fry/",
+      "logoUrl": "https://koszyki.com/wp-content/uploads/2021/05/Koszyki-Tenants-Logos-the-fry-01.svg",
+      "cuisine": "Belgian fries and churros",
+      "priority": true
+    },
+    {
+      "id": "magia-ditalia-gelati-cafe",
+      "name": "Magia d’Italia gelati cafe",
+      "unit": 24,
+      "floor": 0,
+      "sourceUrl": "https://koszyki.com/services/magia-ditalia-gelati-cafe/",
+      "logoUrl": "https://koszyki.com/wp-content/uploads/2021/04/Koszyki-Tenants-Logos-42.png",
+      "cuisine": null,
+      "priority": false
+    },
+    {
+      "id": "warszawski-sen-by-mateusz-gessler",
+      "name": "Warszawski Sen by Mateusz Gessler",
+      "unit": 2,
+      "floor": 0,
+      "sourceUrl": "https://koszyki.com/services/warszawski-sen-by-mateusz-gessler/",
+      "logoUrl": "https://koszyki.com/wp-content/uploads/2021/02/Koszyki-Tenants-Logos-39.svg",
+      "cuisine": null,
+      "priority": false
+    },
+    {
+      "id": "soul-food",
+      "name": "ATOM BURGERS AND DELI",
+      "unit": 8,
+      "floor": 0,
+      "sourceUrl": "https://koszyki.com/services/soul-food/",
+      "logoUrl": "https://koszyki.com/wp-content/uploads/2021/02/ATOM-black-RGB-cienkie.png",
+      "cuisine": "Burgers and pastrami",
+      "priority": true
+    },
+    {
+      "id": "semolino-ristorante",
+      "name": "Semolino Ristorante",
+      "unit": 11,
+      "floor": 0,
+      "sourceUrl": "https://koszyki.com/services/semolino-ristorante/",
+      "logoUrl": "https://koszyki.com/wp-content/uploads/2021/02/Koszyki-Tenants-Logos-33.svg",
+      "cuisine": "Italian pasta and pizza",
+      "priority": true
+    },
+    {
+      "id": "port-royal-fishoyster-bar",
+      "name": "Port Royal",
+      "unit": 29,
+      "floor": 0,
+      "sourceUrl": "https://koszyki.com/services/port-royal-fishoyster-bar/",
+      "logoUrl": "https://koszyki.com/wp-content/uploads/2021/02/Koszyki-Tenants-Logos-29.svg",
+      "cuisine": null,
+      "priority": false
+    },
+    {
+      "id": "kielba-w-gebie-keto-city",
+      "name": "Kiełba w Gębie / Keto City",
+      "unit": 25,
+      "floor": 0,
+      "sourceUrl": "https://koszyki.com/services/kielba-w-gebie-keto-city/",
+      "logoUrl": "https://koszyki.com/wp-content/uploads/2021/02/Bez-nazwy-1.png",
+      "cuisine": null,
+      "priority": false
+    },
+    {
+      "id": "gringo-bar-salsownia",
+      "name": "Gringo bar/Salsownia",
+      "unit": 30,
+      "floor": 0,
+      "sourceUrl": "https://koszyki.com/services/gringo-bar-salsownia/",
+      "logoUrl": "https://koszyki.com/wp-content/uploads/2021/02/koszyki_logo_najemców_gringo.png",
+      "cuisine": "Tex-Mex",
+      "priority": true
+    },
+    {
+      "id": "kago-sushi",
+      "name": "Kago sushi & ramen",
+      "unit": 16,
+      "floor": 0,
+      "sourceUrl": "https://koszyki.com/services/kago-sushi/",
+      "logoUrl": "https://koszyki.com/wp-content/uploads/2021/02/Koszyki-Tenants-Logos-21.svg",
+      "cuisine": "Japanese sushi and ramen",
+      "priority": true
+    },
+    {
+      "id": "cma-by-mateusz-gessler",
+      "name": "Ćma by Mateusz Gessler",
+      "unit": 32,
+      "floor": 0,
+      "sourceUrl": "https://koszyki.com/services/cma-by-mateusz-gessler/",
+      "logoUrl": "https://koszyki.com/wp-content/uploads/2021/02/Koszyki-Tenants-Logos-08.svg",
+      "cuisine": null,
+      "priority": false
+    },
+    {
+      "id": "curry-leaves",
+      "name": "Curry Leaves",
+      "unit": 33,
+      "floor": 0,
+      "sourceUrl": "https://koszyki.com/services/curry-leaves/",
+      "logoUrl": "https://koszyki.com/wp-content/uploads/2021/02/Koszyki-Tenants-Logos-12.svg",
+      "cuisine": "Indian",
+      "priority": true
+    },
+    {
+      "id": "jeffs",
+      "name": "Jeff’s",
+      "unit": 17,
+      "floor": 0,
+      "sourceUrl": "https://koszyki.com/services/jeffs/",
+      "logoUrl": "https://koszyki.com/wp-content/uploads/2021/02/Koszyki-Tenants-Logos-20.svg",
+      "cuisine": null,
+      "priority": false
+    },
+    {
+      "id": "bar-centralny-koszyki",
+      "name": "Bar Koszyki",
+      "unit": 28,
+      "floor": 0,
+      "sourceUrl": "https://koszyki.com/services/bar-centralny-koszyki/",
+      "logoUrl": "https://koszyki.com/wp-content/uploads/2021/02/Koszyki-Tenants-Logos-04-1.svg",
+      "cuisine": "Cocktails and seasonal drinks",
+      "priority": true
+    },
+    {
+      "id": "sobremesa-tapas-bar",
+      "name": "Sobremesa Tapas Bar",
+      "unit": 26,
+      "floor": 0,
+      "sourceUrl": "https://koszyki.com/services/sobremesa-tapas-bar/",
+      "logoUrl": "https://koszyki.com/wp-content/uploads/2021/02/Koszyki-Tenants-Logos-35.svg",
+      "cuisine": null,
+      "priority": false
+    },
+    {
+      "id": "tuk-tuk",
+      "name": "TUK TUK",
+      "unit": 9,
+      "floor": 0,
+      "sourceUrl": "https://koszyki.com/services/tuk-tuk/",
+      "logoUrl": "https://koszyki.com/wp-content/uploads/2021/02/Logo-Tuk-Tuk.png",
+      "cuisine": "Thai",
+      "priority": true
+    },
+    {
+      "id": "buena-vista",
+      "name": "Buena Vista Social Food",
+      "unit": 10,
+      "floor": 0,
+      "sourceUrl": "https://koszyki.com/services/buena-vista/",
+      "logoUrl": "https://koszyki.com/wp-content/uploads/2021/04/Koszyki-Tenants-Logos-43.png",
+      "cuisine": null,
+      "priority": false
+    }
+  ]
+}

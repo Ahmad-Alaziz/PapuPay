@@ -1,0 +1,942 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0B7CCF2CB3B4F7E6C8EB0056 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 33D5AA59F0E7D328E0B24CB1 /* Assets.xcassets */; };
+		0C179ED28FBE2F9B176B642E /* catalog.json in Resources */ = {isa = PBXBuildFile; fileRef = DA98CBEE816F92D149193630 /* catalog.json */; };
+		0DA5F0D8F3062B5216E6FB0F /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0A3674E023AC919CC79A13 /* RootView.swift */; };
+		1448430F5FCAB8C7DD32D7F3 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FDF18D8A4DB89B5573B18370 /* Foundation.framework */; };
+		17F5229A37958D0A6D745F39 /* papu.riv in Resources */ = {isa = PBXBuildFile; fileRef = 46177319ACB0DE734847656B /* papu.riv */; };
+		1B52AC8F463F6C67DBDB9007 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC16EA73F97548DC535D903F /* Models.swift */; };
+		1F9BBBC7004380F2F28D112C /* catalog.json in Resources */ = {isa = PBXBuildFile; fileRef = DA98CBEE816F92D149193630 /* catalog.json */; };
+		234BB9C0EA549D2CEC32DBE0 /* PapuPayApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47FC342D6FB5B867D1F310AA /* PapuPayApp.swift */; };
+		27700DBB0631FBF11D1208AC /* PapuDisplay-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 95CA44D1EC6FC51DE8E4440C /* PapuDisplay-Bold.ttf */; };
+		39B6718AECA26235F88FB9D8 /* HallMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F276840C6BFA800F70FDF9B8 /* HallMapView.swift */; };
+		59EB8457BD373A9C9095B2AB /* PapuPayClipLiveActivity.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = C44CE88B7632CDB567C1F272 /* PapuPayClipLiveActivity.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		5D3E0D12B2DB22CA8346BD93 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FDF18D8A4DB89B5573B18370 /* Foundation.framework */; };
+		674E6AE1EF469CDAAF83069A /* SVGShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C3BE65B13F47EFF59E66A51 /* SVGShape.swift */; };
+		6A54F77BED45B7F1EDEE6FE0 /* PapuPayClip.app in Embed App Clips */ = {isa = PBXBuildFile; fileRef = 93808F68CB432087ED8F8D5F /* PapuPayClip.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		722812C9F21B069A57586EAE /* RiveRuntime in Frameworks */ = {isa = PBXBuildFile; productRef = 9D44CCC38031E4AB0E1216A9 /* RiveRuntime */; };
+		79EA484B26E6B6A205AE53CE /* map.json in Resources */ = {isa = PBXBuildFile; fileRef = B728632C20FC373B68A89D02 /* map.json */; };
+		7C047961382F121DD845A6DD /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FDF18D8A4DB89B5573B18370 /* Foundation.framework */; };
+		847374F2E0C7A157698725AB /* DesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F55D947571BE179722984A /* DesignSystem.swift */; };
+		84814B3884A233CA19BE8C47 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0A3674E023AC919CC79A13 /* RootView.swift */; };
+		89905EF8F526F6312498F11A /* PapuPayApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47FC342D6FB5B867D1F310AA /* PapuPayApp.swift */; };
+		8AD005752B7AA2DC82BF2BEB /* PapuDisplay-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 95CA44D1EC6FC51DE8E4440C /* PapuDisplay-Bold.ttf */; };
+		91838EEF2626A432C92BA2C9 /* papu.riv in Resources */ = {isa = PBXBuildFile; fileRef = 46177319ACB0DE734847656B /* papu.riv */; };
+		9834A5D2DEBB02A57C77A0EF /* MenuViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD402D249B4EC08D71B3497 /* MenuViews.swift */; };
+		AA75239026ABE4E10CCB96C5 /* PapuPayLiveActivity.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 03FCD8667DA8221F50F23888 /* PapuPayLiveActivity.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		BA1B0DE34F3E36F0354A1C33 /* SVGShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C3BE65B13F47EFF59E66A51 /* SVGShape.swift */; };
+		BCD42D72176F00A7CDDAF865 /* PapuDisplay-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CA8E989768EAF41BE1FB2012 /* PapuDisplay-ExtraBold.ttf */; };
+		C48B8E713A5309F5A10D19C4 /* DemoViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD1BF23C854B5F4197C2E55D /* DemoViews.swift */; };
+		C50B050258E515CE9526E026 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC16EA73F97548DC535D903F /* Models.swift */; };
+		C684E5520BC668CC81B49E85 /* PapuOrderAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33C2043A1E5388036852F638 /* PapuOrderAttributes.swift */; };
+		C7B4E8E3759E6AF26BBAE776 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 33D5AA59F0E7D328E0B24CB1 /* Assets.xcassets */; };
+		C98AF9BAD4C83CE697BFE1C0 /* DemoViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD1BF23C854B5F4197C2E55D /* DemoViews.swift */; };
+		D92E2A2017C36CDDFF41E30A /* RiveRuntime in Frameworks */ = {isa = PBXBuildFile; productRef = 7E7E96EC78CB2158022F561B /* RiveRuntime */; };
+		DD8636423872D01C419EE051 /* HallMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F276840C6BFA800F70FDF9B8 /* HallMapView.swift */; };
+		DE8F95CEBA19FF2E9DB2C7E9 /* PapuLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C4466E86FE2CF5B8C1C59F8 /* PapuLiveActivity.swift */; };
+		DF02E4F247A604EED0FC636D /* PapuLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C4466E86FE2CF5B8C1C59F8 /* PapuLiveActivity.swift */; };
+		E14E5DAE8529E246F4E21B69 /* OrdersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DF4BEE9BC0299DE9BA77CFD /* OrdersView.swift */; };
+		E1633CEFF7E840D595B6B073 /* MenuViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD402D249B4EC08D71B3497 /* MenuViews.swift */; };
+		E36D5B0C7433444C5DC6D92D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FDF18D8A4DB89B5573B18370 /* Foundation.framework */; };
+		E48543B6DBB3E915E876BB17 /* PapuOrderAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33C2043A1E5388036852F638 /* PapuOrderAttributes.swift */; };
+		EBF2C3E441E7FDC529C85804 /* map.json in Resources */ = {isa = PBXBuildFile; fileRef = B728632C20FC373B68A89D02 /* map.json */; };
+		EFBC998BDA090FD467AD0F4B /* DesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F55D947571BE179722984A /* DesignSystem.swift */; };
+		F44B612358E6651CBDE1FDFE /* PapuOrderAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33C2043A1E5388036852F638 /* PapuOrderAttributes.swift */; };
+		F48806D16025E2AFEF571642 /* OrdersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DF4BEE9BC0299DE9BA77CFD /* OrdersView.swift */; };
+		F9BC9A5BC6123EC840D4C744 /* PapuDisplay-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CA8E989768EAF41BE1FB2012 /* PapuDisplay-ExtraBold.ttf */; };
+		FCB22FD3A02EEA9643DA0E8C /* PapuOrderAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33C2043A1E5388036852F638 /* PapuOrderAttributes.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		77F128BD0D1AC2C8EF47356F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7FA925E37684E0D35596E143 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D449EDAC922CC654A8A07242;
+			remoteInfo = PapuPayClip;
+		};
+		C6028AF82BEBC0E9989A7733 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7FA925E37684E0D35596E143 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F8C1E6BF16F95E54222543CF;
+			remoteInfo = PapuPayLiveActivity;
+		};
+		C76C0F8F4282BE339354FC24 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7FA925E37684E0D35596E143 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 09CFBC8455486E287A86D96D;
+			remoteInfo = PapuPayClipLiveActivity;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		02F7954B2689F90EC0DA1FB0 /* Embed App Clips */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/AppClips";
+			dstSubfolderSpec = 16;
+			files = (
+				6A54F77BED45B7F1EDEE6FE0 /* PapuPayClip.app in Embed App Clips */,
+			);
+			name = "Embed App Clips";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		626DA3692AF6337D018A61BC /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				59EB8457BD373A9C9095B2AB /* PapuPayClipLiveActivity.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CCBA65E4370BB47837982757 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				AA75239026ABE4E10CCB96C5 /* PapuPayLiveActivity.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		03FCD8667DA8221F50F23888 /* PapuPayLiveActivity.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = PapuPayLiveActivity.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		33C2043A1E5388036852F638 /* PapuOrderAttributes.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PapuOrderAttributes.swift; sourceTree = "<group>"; };
+		33D5AA59F0E7D328E0B24CB1 /* Assets.xcassets */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		3DF4BEE9BC0299DE9BA77CFD /* OrdersView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = OrdersView.swift; sourceTree = "<group>"; };
+		44C1AB173F9AB30B792D1045 /* PapuPay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PapuPay.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		46177319ACB0DE734847656B /* papu.riv */ = {isa = PBXFileReference; includeInIndex = 1; path = papu.riv; sourceTree = "<group>"; };
+		47FC342D6FB5B867D1F310AA /* PapuPayApp.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PapuPayApp.swift; sourceTree = "<group>"; };
+		6C3BE65B13F47EFF59E66A51 /* SVGShape.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SVGShape.swift; sourceTree = "<group>"; };
+		7C4466E86FE2CF5B8C1C59F8 /* PapuLiveActivity.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PapuLiveActivity.swift; sourceTree = "<group>"; };
+		84F55D947571BE179722984A /* DesignSystem.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DesignSystem.swift; sourceTree = "<group>"; };
+		93808F68CB432087ED8F8D5F /* PapuPayClip.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PapuPayClip.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		95CA44D1EC6FC51DE8E4440C /* PapuDisplay-Bold.ttf */ = {isa = PBXFileReference; includeInIndex = 1; path = "PapuDisplay-Bold.ttf"; sourceTree = "<group>"; };
+		AC16EA73F97548DC535D903F /* Models.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		B728632C20FC373B68A89D02 /* map.json */ = {isa = PBXFileReference; includeInIndex = 1; path = map.json; sourceTree = "<group>"; };
+		BD1BF23C854B5F4197C2E55D /* DemoViews.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DemoViews.swift; sourceTree = "<group>"; };
+		C44CE88B7632CDB567C1F272 /* PapuPayClipLiveActivity.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = PapuPayClipLiveActivity.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		CA8E989768EAF41BE1FB2012 /* PapuDisplay-ExtraBold.ttf */ = {isa = PBXFileReference; includeInIndex = 1; path = "PapuDisplay-ExtraBold.ttf"; sourceTree = "<group>"; };
+		DA98CBEE816F92D149193630 /* catalog.json */ = {isa = PBXFileReference; includeInIndex = 1; path = catalog.json; sourceTree = "<group>"; };
+		EE0A3674E023AC919CC79A13 /* RootView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		EFD402D249B4EC08D71B3497 /* MenuViews.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MenuViews.swift; sourceTree = "<group>"; };
+		F276840C6BFA800F70FDF9B8 /* HallMapView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HallMapView.swift; sourceTree = "<group>"; };
+		FDF18D8A4DB89B5573B18370 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		1A3A5146EDC15E8D261676ED /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1448430F5FCAB8C7DD32D7F3 /* Foundation.framework in Frameworks */,
+				D92E2A2017C36CDDFF41E30A /* RiveRuntime in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		217E1A137662C621F1875B92 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E36D5B0C7433444C5DC6D92D /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		83EC5975F31E88C1DBCE54D2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7C047961382F121DD845A6DD /* Foundation.framework in Frameworks */,
+				722812C9F21B069A57586EAE /* RiveRuntime in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DCFBF2F177607D12CF3C44E1 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5D3E0D12B2DB22CA8346BD93 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		1780A45A839C1E977BE3D9ED /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				F53C488344E2219BF4BF0218 /* iOS */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		187990E76AE60140F5C3B3F9 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				BD1BF23C854B5F4197C2E55D /* DemoViews.swift */,
+				84F55D947571BE179722984A /* DesignSystem.swift */,
+				F276840C6BFA800F70FDF9B8 /* HallMapView.swift */,
+				EFD402D249B4EC08D71B3497 /* MenuViews.swift */,
+				AC16EA73F97548DC535D903F /* Models.swift */,
+				3DF4BEE9BC0299DE9BA77CFD /* OrdersView.swift */,
+				33C2043A1E5388036852F638 /* PapuOrderAttributes.swift */,
+				EE0A3674E023AC919CC79A13 /* RootView.swift */,
+				6C3BE65B13F47EFF59E66A51 /* SVGShape.swift */,
+			);
+			name = Shared;
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		8FD701512F6646E7EDA2B2F1 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				44C1AB173F9AB30B792D1045 /* PapuPay.app */,
+				93808F68CB432087ED8F8D5F /* PapuPayClip.app */,
+				03FCD8667DA8221F50F23888 /* PapuPayLiveActivity.appex */,
+				C44CE88B7632CDB567C1F272 /* PapuPayClipLiveActivity.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		AAEA8645E384F9491F7B7F31 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				33D5AA59F0E7D328E0B24CB1 /* Assets.xcassets */,
+				95CA44D1EC6FC51DE8E4440C /* PapuDisplay-Bold.ttf */,
+				CA8E989768EAF41BE1FB2012 /* PapuDisplay-ExtraBold.ttf */,
+				DA98CBEE816F92D149193630 /* catalog.json */,
+				B728632C20FC373B68A89D02 /* map.json */,
+				46177319ACB0DE734847656B /* papu.riv */,
+			);
+			name = Resources;
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		C62EBB1B0C96B8A32793C923 = {
+			isa = PBXGroup;
+			children = (
+				8FD701512F6646E7EDA2B2F1 /* Products */,
+				1780A45A839C1E977BE3D9ED /* Frameworks */,
+				187990E76AE60140F5C3B3F9 /* Shared */,
+				F3CA84999291B71969ABC01D /* PapuPay */,
+				DD62462273C62FCB9E060DEE /* LiveActivity */,
+				AAEA8645E384F9491F7B7F31 /* Resources */,
+			);
+			sourceTree = "<group>";
+		};
+		DD62462273C62FCB9E060DEE /* LiveActivity */ = {
+			isa = PBXGroup;
+			children = (
+				7C4466E86FE2CF5B8C1C59F8 /* PapuLiveActivity.swift */,
+			);
+			name = LiveActivity;
+			path = LiveActivity;
+			sourceTree = "<group>";
+		};
+		F3CA84999291B71969ABC01D /* PapuPay */ = {
+			isa = PBXGroup;
+			children = (
+				47FC342D6FB5B867D1F310AA /* PapuPayApp.swift */,
+			);
+			name = PapuPay;
+			path = PapuPay;
+			sourceTree = "<group>";
+		};
+		F53C488344E2219BF4BF0218 /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				FDF18D8A4DB89B5573B18370 /* Foundation.framework */,
+			);
+			name = iOS;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		09CFBC8455486E287A86D96D /* PapuPayClipLiveActivity */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 909AC24EF0B68EA3A7B3A9A5 /* Build configuration list for PBXNativeTarget "PapuPayClipLiveActivity" */;
+			buildPhases = (
+				437AE56176C4334840C043CA /* Sources */,
+				217E1A137662C621F1875B92 /* Frameworks */,
+				C29D88BEECD54ACB0CA8B81C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PapuPayClipLiveActivity;
+			productName = PapuPayClipLiveActivity;
+			productReference = C44CE88B7632CDB567C1F272 /* PapuPayClipLiveActivity.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		999FEC87E213CBAE8001FB31 /* PapuPay */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9F06F2C5AE0FD140B696C34E /* Build configuration list for PBXNativeTarget "PapuPay" */;
+			buildPhases = (
+				37445EEE53D243DE198FAEBE /* Sources */,
+				1A3A5146EDC15E8D261676ED /* Frameworks */,
+				AE8E52567FDE26FB6E7AA6EF /* Resources */,
+				CCBA65E4370BB47837982757 /* Embed App Extensions */,
+				02F7954B2689F90EC0DA1FB0 /* Embed App Clips */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				5DCA0FD64B42C105CBDD95EE /* PBXTargetDependency */,
+				F0CA8322F081B7D2C4F42D06 /* PBXTargetDependency */,
+			);
+			name = PapuPay;
+			packageProductDependencies = (
+				7E7E96EC78CB2158022F561B /* RiveRuntime */,
+			);
+			productName = PapuPay;
+			productReference = 44C1AB173F9AB30B792D1045 /* PapuPay.app */;
+			productType = "com.apple.product-type.application";
+		};
+		D449EDAC922CC654A8A07242 /* PapuPayClip */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A44889F28B40570DC475AFDD /* Build configuration list for PBXNativeTarget "PapuPayClip" */;
+			buildPhases = (
+				3C12F8D3C1CAD57E06366BCD /* Sources */,
+				83EC5975F31E88C1DBCE54D2 /* Frameworks */,
+				9FF403AE14BB5ACC8CE5B487 /* Resources */,
+				626DA3692AF6337D018A61BC /* Embed App Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				AC57C09F688E04DE5470BCD2 /* PBXTargetDependency */,
+			);
+			name = PapuPayClip;
+			packageProductDependencies = (
+				9D44CCC38031E4AB0E1216A9 /* RiveRuntime */,
+			);
+			productName = PapuPayClip;
+			productReference = 93808F68CB432087ED8F8D5F /* PapuPayClip.app */;
+			productType = "com.apple.product-type.application.on-demand-install-capable";
+		};
+		F8C1E6BF16F95E54222543CF /* PapuPayLiveActivity */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BEEB455BBD42FB61C511794D /* Build configuration list for PBXNativeTarget "PapuPayLiveActivity" */;
+			buildPhases = (
+				4954744FA87B054938CDD585 /* Sources */,
+				DCFBF2F177607D12CF3C44E1 /* Frameworks */,
+				3AF73AD86A8E2D4D8FB1D52F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PapuPayLiveActivity;
+			productName = PapuPayLiveActivity;
+			productReference = 03FCD8667DA8221F50F23888 /* PapuPayLiveActivity.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		7FA925E37684E0D35596E143 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1600;
+				LastUpgradeCheck = 2600;
+			};
+			buildConfigurationList = 9D24336E47E92B37264C5938 /* Build configuration list for PBXProject "PapuPay" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = C62EBB1B0C96B8A32793C923;
+			minimizedProjectReferenceProxies = 0;
+			packageReferences = (
+				B39A83543AF98758B79D3E28 /* XCRemoteSwiftPackageReference "rive-ios" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 8FD701512F6646E7EDA2B2F1 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				999FEC87E213CBAE8001FB31 /* PapuPay */,
+				D449EDAC922CC654A8A07242 /* PapuPayClip */,
+				F8C1E6BF16F95E54222543CF /* PapuPayLiveActivity */,
+				09CFBC8455486E287A86D96D /* PapuPayClipLiveActivity */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		3AF73AD86A8E2D4D8FB1D52F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9FF403AE14BB5ACC8CE5B487 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0B7CCF2CB3B4F7E6C8EB0056 /* Assets.xcassets in Resources */,
+				8AD005752B7AA2DC82BF2BEB /* PapuDisplay-Bold.ttf in Resources */,
+				F9BC9A5BC6123EC840D4C744 /* PapuDisplay-ExtraBold.ttf in Resources */,
+				0C179ED28FBE2F9B176B642E /* catalog.json in Resources */,
+				EBF2C3E441E7FDC529C85804 /* map.json in Resources */,
+				17F5229A37958D0A6D745F39 /* papu.riv in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AE8E52567FDE26FB6E7AA6EF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C7B4E8E3759E6AF26BBAE776 /* Assets.xcassets in Resources */,
+				27700DBB0631FBF11D1208AC /* PapuDisplay-Bold.ttf in Resources */,
+				BCD42D72176F00A7CDDAF865 /* PapuDisplay-ExtraBold.ttf in Resources */,
+				1F9BBBC7004380F2F28D112C /* catalog.json in Resources */,
+				79EA484B26E6B6A205AE53CE /* map.json in Resources */,
+				91838EEF2626A432C92BA2C9 /* papu.riv in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C29D88BEECD54ACB0CA8B81C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		37445EEE53D243DE198FAEBE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C48B8E713A5309F5A10D19C4 /* DemoViews.swift in Sources */,
+				EFBC998BDA090FD467AD0F4B /* DesignSystem.swift in Sources */,
+				DD8636423872D01C419EE051 /* HallMapView.swift in Sources */,
+				9834A5D2DEBB02A57C77A0EF /* MenuViews.swift in Sources */,
+				C50B050258E515CE9526E026 /* Models.swift in Sources */,
+				E14E5DAE8529E246F4E21B69 /* OrdersView.swift in Sources */,
+				F44B612358E6651CBDE1FDFE /* PapuOrderAttributes.swift in Sources */,
+				0DA5F0D8F3062B5216E6FB0F /* RootView.swift in Sources */,
+				BA1B0DE34F3E36F0354A1C33 /* SVGShape.swift in Sources */,
+				89905EF8F526F6312498F11A /* PapuPayApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3C12F8D3C1CAD57E06366BCD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C98AF9BAD4C83CE697BFE1C0 /* DemoViews.swift in Sources */,
+				847374F2E0C7A157698725AB /* DesignSystem.swift in Sources */,
+				39B6718AECA26235F88FB9D8 /* HallMapView.swift in Sources */,
+				E1633CEFF7E840D595B6B073 /* MenuViews.swift in Sources */,
+				1B52AC8F463F6C67DBDB9007 /* Models.swift in Sources */,
+				F48806D16025E2AFEF571642 /* OrdersView.swift in Sources */,
+				E48543B6DBB3E915E876BB17 /* PapuOrderAttributes.swift in Sources */,
+				84814B3884A233CA19BE8C47 /* RootView.swift in Sources */,
+				674E6AE1EF469CDAAF83069A /* SVGShape.swift in Sources */,
+				234BB9C0EA549D2CEC32DBE0 /* PapuPayApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		437AE56176C4334840C043CA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DE8F95CEBA19FF2E9DB2C7E9 /* PapuLiveActivity.swift in Sources */,
+				C684E5520BC668CC81B49E85 /* PapuOrderAttributes.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4954744FA87B054938CDD585 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DF02E4F247A604EED0FC636D /* PapuLiveActivity.swift in Sources */,
+				FCB22FD3A02EEA9643DA0E8C /* PapuOrderAttributes.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		5DCA0FD64B42C105CBDD95EE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = PapuPayLiveActivity;
+			target = F8C1E6BF16F95E54222543CF /* PapuPayLiveActivity */;
+			targetProxy = C6028AF82BEBC0E9989A7733 /* PBXContainerItemProxy */;
+		};
+		AC57C09F688E04DE5470BCD2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = PapuPayClipLiveActivity;
+			target = 09CFBC8455486E287A86D96D /* PapuPayClipLiveActivity */;
+			targetProxy = C76C0F8F4282BE339354FC24 /* PBXContainerItemProxy */;
+		};
+		F0CA8322F081B7D2C4F42D06 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = PapuPayClip;
+			target = D449EDAC922CC654A8A07242 /* PapuPayClip */;
+			targetProxy = 77F128BD0D1AC2C8EF47356F /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		0101ED1D5FDAACBA796521FC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "";
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_ENTITLEMENTS = PapuPayClipLiveActivity.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_BITCODE = NO;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "PapuPayClipLiveActivity-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.papupay.demo.Clip.LiveActivity;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				STRIP_INSTALLED_PRODUCT = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		29CE5816AA923659320BB840 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_ENTITLEMENTS = PapuPay.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_BITCODE = NO;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "PapuPay-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.papupay.demo;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = NO;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		7C52F4BCFED821948AFB48A0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_ENTITLEMENTS = PapuPayClip.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_BITCODE = NO;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "PapuPayClip-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.papupay.demo.Clip;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		92A5FBDBAAA7C1A94CDE86DE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "";
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_ENTITLEMENTS = PapuPayLiveActivity.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_BITCODE = NO;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "PapuPayLiveActivity-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.papupay.demo.LiveActivity;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		9F4F86627A022C8FCE656B52 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "";
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_ENTITLEMENTS = PapuPayClipLiveActivity.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_BITCODE = NO;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "PapuPayClipLiveActivity-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.papupay.demo.Clip.LiveActivity;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		CD2E3143553365DEBDEAECB4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		E502D0A9D0967C72CA90DD05 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		E5647BBD558D1817FE946C73 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "";
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_ENTITLEMENTS = PapuPayLiveActivity.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_BITCODE = NO;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "PapuPayLiveActivity-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.papupay.demo.LiveActivity;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				STRIP_INSTALLED_PRODUCT = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		E75062CD41C6229E901950AC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_ENTITLEMENTS = PapuPayClip.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_BITCODE = NO;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "PapuPayClip-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.papupay.demo.Clip;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				STRIP_INSTALLED_PRODUCT = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		EFD920F0BD0AEFE46084D357 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_ENTITLEMENTS = PapuPay.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_BITCODE = NO;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "PapuPay-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.papupay.demo;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = NO;
+				STRIP_INSTALLED_PRODUCT = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		909AC24EF0B68EA3A7B3A9A5 /* Build configuration list for PBXNativeTarget "PapuPayClipLiveActivity" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0101ED1D5FDAACBA796521FC /* Release */,
+				9F4F86627A022C8FCE656B52 /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9D24336E47E92B37264C5938 /* Build configuration list for PBXProject "PapuPay" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CD2E3143553365DEBDEAECB4 /* Debug */,
+				E502D0A9D0967C72CA90DD05 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9F06F2C5AE0FD140B696C34E /* Build configuration list for PBXNativeTarget "PapuPay" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EFD920F0BD0AEFE46084D357 /* Release */,
+				29CE5816AA923659320BB840 /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A44889F28B40570DC475AFDD /* Build configuration list for PBXNativeTarget "PapuPayClip" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E75062CD41C6229E901950AC /* Release */,
+				7C52F4BCFED821948AFB48A0 /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BEEB455BBD42FB61C511794D /* Build configuration list for PBXNativeTarget "PapuPayLiveActivity" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E5647BBD558D1817FE946C73 /* Release */,
+				92A5FBDBAAA7C1A94CDE86DE /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		B39A83543AF98758B79D3E28 /* XCRemoteSwiftPackageReference "rive-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/rive-app/rive-ios";
+			requirement = {
+				kind = exactVersion;
+				version = 6.27.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		7E7E96EC78CB2158022F561B /* RiveRuntime */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B39A83543AF98758B79D3E28 /* XCRemoteSwiftPackageReference "rive-ios" */;
+			productName = RiveRuntime;
+		};
+		9D44CCC38031E4AB0E1216A9 /* RiveRuntime */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B39A83543AF98758B79D3E28 /* XCRemoteSwiftPackageReference "rive-ios" */;
+			productName = RiveRuntime;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 7FA925E37684E0D35596E143 /* Project object */;
+}

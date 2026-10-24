@@ -1,0 +1,66 @@
+{
+  "verifiedAt": "2026-10-24",
+  "note": "Downloaded from official Hala Koszyki pages for user-requested local MVP. Images are historical marketing photography, not verification of current menu availability; no reuse licence is asserted.",
+  "assets": [
+    {
+      "file": "assets/semolino-pasta.jpg",
+      "url": "https://koszyki.com/wp-content/uploads/2021/02/SEMOLINO_DISHES-1_foto-3-scaled.jpg",
+      "description": "Overhead pizza with rocket, tomatoes and cured ham; filename is misleading; use as pizza."
+    },
+    {
+      "file": "assets/semolino-food.jpg",
+      "url": "https://koszyki.com/wp-content/uploads/2021/02/SEMOLINO_DISHES-3_foto-4-scaled.jpg",
+      "description": "Close-up prawn pasta in a dark bowl."
+    },
+    {
+      "file": "assets/kago-food.png",
+      "url": "https://koszyki.com/wp-content/uploads/2021/02/Obszar-kompozycji-1-3.png",
+      "description": "Kago dining room with wooden chairs and blossom tree; not food."
+    },
+    {
+      "file": "assets/kago-food-2.png",
+      "url": "https://koszyki.com/wp-content/uploads/2021/02/Obszar-kompozycji-1-1.png",
+      "description": "Kago chefs behind open sushi counter; not plated food."
+    },
+    {
+      "file": "assets/curry-leaves.jpg",
+      "url": "https://koszyki.com/wp-content/uploads/2021/02/CURRY-LEAVES_foto-5-scaled.jpg",
+      "description": "Person holding vivid orange Indian curry bowl."
+    },
+    {
+      "file": "assets/gringo.jpg",
+      "url": "https://koszyki.com/wp-content/uploads/2021/02/GRINGO_foto-2-scaled.jpg",
+      "description": "Gringo storefront inside Hala."
+    },
+    {
+      "file": "assets/bar-koszyki.jpg",
+      "url": "https://koszyki.com/wp-content/uploads/2021/02/BAR-KOSZYKI_foto-1-scaled.jpg",
+      "description": "Red cocktail, citrus, soft golden bar lights."
+    },
+    {
+      "file": "assets/the-fry.jpg",
+      "url": "https://koszyki.com/wp-content/uploads/2021/05/TheFry_FotoASTASHOWstudio_.jpg",
+      "description": "The Fry storefront and striking green hall roof."
+    },
+    {
+      "file": "assets/tuk-tuk.jpg",
+      "url": "https://koszyki.com/wp-content/uploads/2020/12/DSC02554-scaled.jpg",
+      "description": "Thai chef preparing food under neon lights; portrait."
+    },
+    {
+      "file": "assets/hala-koszyki.jpg",
+      "url": "https://koszyki.com/wp-content/uploads/2021/04/galeria-2-scaled.jpg",
+      "description": "Landscape hall entrance looking toward central bar."
+    },
+    {
+      "file": "assets/kago-sushi.png",
+      "url": "https://koszyki.com/wp-content/uploads/2021/02/Obszar-kompozycji-1.png",
+      "description": "Pink artificial blossom tree detail; not sushi."
+    },
+    {
+      "file": "assets/hala-wide.jpg",
+      "url": "https://koszyki.com/wp-content/uploads/2021/04/galeria-4.jpg",
+      "description": "Portrait hall rafters with green ironwork and hanging lights; filename is misleading, beautiful hero texture."
+    }
+  ]
+}

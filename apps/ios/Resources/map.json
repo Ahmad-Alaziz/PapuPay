@@ -1,0 +1,236 @@
+{
+  "sourceUrl": "https://koszyki.com/uslugi/restauracje/",
+  "viewBox": "0 0 609 853",
+  "floor": 0,
+  "units": [
+    {
+      "data-id": "26",
+      "id": "local-26",
+      "x": "379.73",
+      "y": "407.64",
+      "width": "25.16",
+      "height": "24.05",
+      "tag": "rect"
+    },
+    {
+      "data-id": "27",
+      "id": "local-27",
+      "points": "378.22 433.23 378.22 407.64 338.95 407.64 338.95 433.23 338.95 433.31 338.95 458.91 404.51 458.91 404.51 433.23 378.22 433.23",
+      "tag": "polygon"
+    },
+    {
+      "data-id": "33",
+      "id": "local-33",
+      "fill-rule": "evenodd",
+      "d": "m406.3 350.5h19v33.1h-19z",
+      "tag": "path"
+    },
+    {
+      "data-id": "16",
+      "id": "local-16",
+      "fill-rule": "evenodd",
+      "d": "m406.3 292.4h86.2v34.7h-86.2z",
+      "tag": "path"
+    },
+    {
+      "data-id": "15",
+      "id": "local-15",
+      "fill-rule": "evenodd",
+      "d": "m374 309.9h30.5v17.3h-30.5z",
+      "tag": "path"
+    },
+    {
+      "data-id": "24",
+      "id": "local-24",
+      "fill-rule": "evenodd",
+      "d": "m436.8 407.6h28.8v36.1h-28.8z",
+      "tag": "path"
+    },
+    {
+      "data-id": "14",
+      "id": "local-14",
+      "fill-rule": "evenodd",
+      "d": "m434.6 290.7v-64.5l-60.6-24.3v71.3h32.3v17.5h28.3z",
+      "tag": "path"
+    },
+    {
+      "data-id": "17",
+      "id": "local-17",
+      "fill-rule": "evenodd",
+      "d": "m588.3 288.9l-57.5-22.8v26.3h-36.6v113.5h29.1v-39.7h64.6l0.4-77.3z",
+      "tag": "path"
+    },
+    {
+      "data-id": "7",
+      "id": "local-07",
+      "x": "195.48",
+      "y": "350.53",
+      "width": "18.98",
+      "height": "15.66",
+      "tag": "rect"
+    },
+    {
+      "data-id": "8",
+      "id": "local-08",
+      "x": "195.48",
+      "y": "367.69",
+      "width": "18.98",
+      "height": "15.66",
+      "tag": "rect"
+    },
+    {
+      "data-id": "9",
+      "id": "local-09",
+      "fill-rule": "evenodd",
+      "d": "m204.2 293.8h23.1v33.3h-23.1z",
+      "tag": "path"
+    },
+    {
+      "data-id": "10",
+      "id": "local-10",
+      "fill-rule": "evenodd",
+      "d": "m229.1 293.8h33.3v33.3h-33.3z",
+      "tag": "path"
+    },
+    {
+      "data-id": "13",
+      "id": "local-13",
+      "fill-rule": "evenodd",
+      "d": "m321.4 122.9v134.4h50.8v-56.1l-14.3-6.1 0.2-0.1 86-86.2-54.7-53.9-68 68z",
+      "tag": "path"
+    },
+    {
+      "data-id": "11",
+      "id": "local-11-12",
+      "fill-rule": "evenodd",
+      "d": "m319.6 124.7l-52.6 52.5v41.6h-1.7v-41.6l-12.2-12.1-48.9 48.8v78.2h58.2v-34.8h57.2v-132.6z",
+      "tag": "path"
+    },
+    {
+      "data-id": "6",
+      "id": "local-06",
+      "fill-rule": "evenodd",
+      "d": "m145 293.8h23.1v33.3h-23.1z",
+      "tag": "path"
+    },
+    {
+      "data-id": "1",
+      "id": "local-01",
+      "fill-rule": "evenodd",
+      "d": "m111.4 522.6h31.7v50h-31.7z",
+      "tag": "path"
+    },
+    {
+      "data-id": "3",
+      "id": "local-03",
+      "fill-rule": "evenodd",
+      "d": "m27.5 407.6h115.6v36.1h-115.6z",
+      "tag": "path"
+    },
+    {
+      "data-id": "4",
+      "id": "local-04",
+      "fill-rule": "evenodd",
+      "d": "m26.5 369h115.6v36.8h-115.6z",
+      "tag": "path"
+    },
+    {
+      "data-id": "5",
+      "id": "local-05",
+      "fill-rule": "evenodd",
+      "d": "m27.5 313.3v54h115.6v-38.4h-35v-15.6h-80.6z",
+      "tag": "path"
+    },
+    {
+      "data-id": "31",
+      "id": "local-31",
+      "fill-rule": "evenodd",
+      "d": "m173.6 407.6h28.8v36.1h-28.8z",
+      "tag": "path"
+    },
+    {
+      "data-id": "32",
+      "id": "local-32",
+      "fill-rule": "evenodd",
+      "d": "m233.1 445.5h-59.5v127.2h40.9v-113.8h18.6v-13.4z",
+      "tag": "path"
+    },
+    {
+      "data-id": "30",
+      "id": "local-30",
+      "fill-rule": "evenodd",
+      "d": "m204.2 407.6h28.8v36.1h-28.8z",
+      "tag": "path"
+    },
+    {
+      "data-id": "29",
+      "id": "local-29",
+      "fill-rule": "evenodd",
+      "d": "m234.8 407.6h65.6v51.3h-65.6z",
+      "tag": "path"
+    },
+    {
+      "data-id": "23",
+      "id": "local-23",
+      "fill-rule": "evenodd",
+      "d": "m465.7 522.3v-76.8h-59.4v13.4h18.6v63.4h40.8z",
+      "tag": "path"
+    },
+    {
+      "data-id": "25",
+      "id": "local-25",
+      "fill-rule": "evenodd",
+      "d": "m406.3 407.6h28.8v36.1h-28.8z",
+      "tag": "path"
+    },
+    {
+      "data-id": "18",
+      "id": "local-18",
+      "fill-rule": "evenodd",
+      "d": "m494.2 429h30v30h-30z",
+      "tag": "path"
+    },
+    {
+      "data-id": "19",
+      "id": "local-19",
+      "fill-rule": "evenodd",
+      "d": "m494.2 460.8h61.6v34.7h-61.6z",
+      "tag": "path"
+    },
+    {
+      "data-id": "20",
+      "id": "local-20",
+      "fill-rule": "evenodd",
+      "d": "m555.8 572.7v-75.5h-61.6v25.1h34.9v50.4h26.7z",
+      "tag": "path"
+    },
+    {
+      "data-id": "21",
+      "id": "local-21",
+      "fill-rule": "evenodd",
+      "d": "m494.2 524.1h33.2v48.5h-33.2z",
+      "tag": "path"
+    },
+    {
+      "data-id": "22",
+      "id": "local-22",
+      "fill-rule": "evenodd",
+      "d": "m424.7 524.1h40.9v48.5h-40.9z",
+      "tag": "path"
+    },
+    {
+      "data-id": "2",
+      "id": "local-02",
+      "fill-rule": "evenodd",
+      "d": "m143.1 445.5h-115.6v127.2h82.1v-51.8h33.5v-75.4z",
+      "tag": "path"
+    },
+    {
+      "data-id": "28",
+      "id": "local-28",
+      "fill-rule": "evenodd",
+      "d": "m267.4 350.5h101.6v33.1h-101.6z",
+      "tag": "path"
+    }
+  ]
+}

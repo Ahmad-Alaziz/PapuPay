@@ -1,0 +1,13 @@
+{
+  "appclips": {
+    "apps": ["YOUR_TEAM_ID.com.papupay.demo.Clip"]
+  },
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["YOUR_TEAM_ID.com.papupay.demo"],
+        "components": [{ "/": "/clip*" }]
+      }
+    ]
+  }
+}

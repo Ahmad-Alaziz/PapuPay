@@ -1,0 +1,28 @@
+PapuPay official-source research, verified 2026-10-24
+
+RESTAURANTS AND MAP
+https://koszyki.com/uslugi/restauracje/
+venues.json contains the exact current directory labels, unit/floor numbers, official detail-page links and official logo URLs. Priority venues additionally have concise cuisine facts from their official individual pages. Other cuisine values are intentionally null. The directory contains 26 restaurant entries including bars and coffee concepts, so avoid claiming the nine demo partners are the whole hall.
+
+Priority units, all ground floor: ATOM BURGERS AND DELI 8; Semolino Ristorante 11; Kago sushi & ramen 16; Curry Leaves 33; Gringo bar/Salsownia 30; TUK TUK 9; Bibimbar 15; The Fry 7; Bar Koszyki 28.
+
+official-floor-zero.svg is the current inline ground-floor map extracted from official directory HTML. map-geometry.json contains only official unit geometries, viewBox 0 0 609 853. Unit 11 uses one combined 11–12 polygon. Coordinates can be reused for a stylized interactive map; table location and walking routes remain demo assumptions. The screenshot in the user brief agrees with this plan.
+
+PHOTO PROVENANCE
+assets.json records every downloaded photo URL and visual description. Hala gallery images originate from https://koszyki.com/o-hali-koszyki/ . All others originate from the corresponding restaurant detail pages in venues.json. Photos are marketing images on official pages; they do not establish current menu availability or prices. Kago's current gallery has interiors and blossoms, no verified dish photograph. ATOM and Bibimbar pages currently expose logos rather than food photos.
+
+APPLE APP CLIP SIZE
+https://developer.apple.com/help/app-store-connect/reference/app-uploads/maximum-build-file-sizes/
+As currently documented: physical App Clip Code / QR / NFC invocation must fit 15 MB for iOS 16+; before iOS 16 the cap is 10 MB. The current 100 MB allowance requires iOS 17+, digital-only invocation and reliable-network usage. Measure the uncompressed variant after app thinning, not the compressed download or simulator build. Keep a physical restaurant QR clip below 15 MB, preferably with margin. Remote dish photos and system fonts reduce bundle weight.
+
+APPLE LIVE ACTIVITIES
+https://developer.apple.com/documentation/appclip/offering-live-activities-with-your-app-clip
+App Clips may embed a dedicated widget extension that contains Live Activities only. Set extension bundle ID with Clip bundle ID prefix and add App Clip Extension capability (com.apple.developer.on-demand-install-capable). A full-app widget extension cannot be reused as the same embedded extension in the Clip; use separate extension targets sharing source. ActivityKit supports Live Activity creation/updates; a timer-driven foreground demo is adequate for local presentation, but background progress in production needs push updates. App Clips cannot rely on ordinary background execution.
+https://developer.apple.com/documentation/appclip/choosing-the-right-functionality-for-your-app-clip
+
+IPHONE TESTING
+https://developer.apple.com/documentation/appclip/testing-the-launch-experience-of-your-app-clip
+Build/run the App Clip scheme on the physical signed iPhone to cache it. Xcode scheme Run arguments can supply _XCAppClipURL for invocation-context debugging. To test the full QR card: iPhone Settings > Developer > Local Experiences > Register Local Experience; enter invocation URL, Clip bundle ID, title/subtitle/action and image, then scan a QR containing that URL. Local QR/NFC experiences do not require a deployed associated domain. TestFlight does require associated-domain setup; upload the containing full app and configure the Clip experience. App Clips do not get a normal Home Screen icon.
+
+DEMO CONTENT
+Keep sample dishes, prices, prep ETAs, table 24, checkout/payment and order status separate from these sourced venue facts. Never imply live venue integration or a real paid order in this MVP.
