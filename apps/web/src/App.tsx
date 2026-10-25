@@ -48,7 +48,21 @@ import OrderTicket from "./OrderTicket";
 import { qrPath, type OrderContext } from "./routing";
 import Modal from "./Modal";
 import CravingHero from "./CravingHero";
-const PapuMotion = lazy(() => import("./PapuMotion"));
+const PapuMotion = lazy(() =>
+  import("./PapuMotion").catch(() => ({
+    default: function MotionFallback(_props: {
+      celebrate?: boolean;
+      scan?: boolean;
+      scene?: number;
+    }) {
+      return (
+        <div className="papu-motion" aria-hidden="true">
+          <img src="/assets/papaya-3d.webp" alt="" />
+        </div>
+      );
+    },
+  })),
+);
 type Tab = "discover" | "map" | "orders";
 const validTab = (): Tab =>
   ["map", "orders"].includes(location.hash.slice(1))
