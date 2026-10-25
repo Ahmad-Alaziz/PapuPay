@@ -446,17 +446,31 @@ struct BasketView: View {
       if !paying { SheetClose() }
     }.interactiveDismissDisabled(paying)
   }
+  private var confirmationReady: Bool {
+    guard let latest = store.orders.first?.createdAt else { return false }
+    return store.orders.filter { $0.createdAt == latest }.allSatisfy {
+      $0.stage(at: store.now) >= 2
+    }
+  }
   private var successView: some View {
     ScrollView {
       VStack(spacing: 20) {
-        PapuAnimation(scene: 3).frame(height: 220)
+        PapuAnimation(scene: confirmationReady ? 4 : 3).frame(height: 220)
         Eyebrow(text: store.text("TERAZ CHWILA DLA CIEBIE.", "NOW TAKE A MOMENT."))
-        Text(store.text("Już się robi.", "On its way.")).font(Papu.display(42))
+        Text(
+          confirmationReady
+            ? store.text("Pora na papu!", "Your papu is ready!")
+            : store.text("Już się robi.", "On its way.")
+        ).font(Papu.display(42))
           .multilineTextAlignment(.center)
         Text(
-          store.text(
-            "Rozgość się przy stoliku. Twoje smaki są już w dobrych rękach.",
-            "Settle in at your table. Your cravings are in good hands.")
+          confirmationReady
+            ? store.text(
+              "Twoje smaki czekają. Zobacz numery odbioru i drogę do kuchni.",
+              "Your food is waiting. See your pickup numbers and the way to each kitchen.")
+            : store.text(
+              "Rozgość się przy stoliku. Twoje smaki są już w dobrych rękach.",
+              "Settle in at your table. Your cravings are in good hands.")
         ).font(Papu.body(16)).foregroundStyle(Papu.muted).multilineTextAlignment(.center)
           .lineSpacing(
             3)
@@ -470,8 +484,11 @@ struct BasketView: View {
         if let message = store.notificationMessage {
           Label(message, systemImage: "bell").font(Papu.body(13)).foregroundStyle(Papu.muted)
         }
-        PrimaryButton(title: store.text("Śledź moje papu", "Track my food"), symbol: "arrow.right")
-        {
+        PrimaryButton(
+          title: confirmationReady
+            ? store.text("Zobacz odbiór", "See pickup")
+            : store.text("Śledź moje papu", "Track my food"), symbol: "arrow.right"
+        ) {
           dismiss()
         }
         Text(
@@ -479,7 +496,7 @@ struct BasketView: View {
             "Zamówienie demo — bez płatności i wysyłki do restauracji.",
             "Demo order — no payment or submission to restaurants.")
         ).font(Papu.body(12)).foregroundStyle(Papu.muted).multilineTextAlignment(.center)
-      }.padding(24).padding(.top, 24)
-    }
+      }.padding(24).padding(.top, 24).id(confirmationReady).transition(.opacity)
+    }.animation(reduceMotion ? nil : .easeOut(duration: 0.2), value: confirmationReady)
   }
 }

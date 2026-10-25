@@ -300,6 +300,11 @@ export default function App({ context }: { context: OrderContext }) {
         .toLowerCase()
         .includes(search.toLowerCase()),
   );
+  const confirmationReady =
+    orders.length > 0 &&
+    orders
+      .filter((order) => order.createdAt === orders[0].createdAt)
+      .every((order) => order.readyAt <= now);
   const pay = () => {
     if (payingRef.current || !cart.length) return;
     payingRef.current = true;
@@ -1536,52 +1541,72 @@ export default function App({ context }: { context: OrderContext }) {
             label={t("Zamówienie przyjęte", "Order received")}
             onClose={() => setSuccess(false)}
           >
-            <div className="success-content">
-              <div className="success-motion">
-                <Suspense fallback={<Papaya />}>
-                  <PapuMotion scene={3} />
-                </Suspense>
-                <div className="confetti">
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                </div>
-              </div>
-              <p className="eyebrow">
-                {t(
-                  "I JUŻ. TERAZ CHWILA DLA CIEBIE.",
-                  "THAT’S IT. NOW TAKE A MOMENT.",
-                )}
-              </p>
-              <h2>{t("Już się robi.", "On its way.")}</h2>
-              <p>
-                {t(
-                  "Rozgość się przy stoliku. Twoje smaki są już w dobrych rękach.",
-                  "Settle in at your table. Your cravings are in good hands.",
-                )}
-              </p>
-              <div className="success-table">
-                <MapPin size={19} />
-                {t("Stolik", "Table")} {table}
-                <span>Hala Koszyki</span>
-              </div>
-              <button
-                className="primary full-width"
-                onClick={() => setSuccess(false)}
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.div
+                key={String(confirmationReady)}
+                className="success-content"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.18 }}
               >
-                {t("Śledź moje papu", "Track my food")}
-                <ArrowRight size={18} />
-              </button>
-              <p className="fine-print">
-                {t(
-                  "Zamówienie demo — bez płatności i wysyłki do restauracji.",
-                  "Demo order — no payment or submission to restaurants.",
-                )}
-              </p>
-            </div>
+                <div className="success-motion">
+                  <Suspense fallback={<Papaya />}>
+                    <PapuMotion scene={confirmationReady ? 4 : 3} />
+                  </Suspense>
+                  <div className="confetti">
+                    <span />
+                    <span />
+                    <span />
+                    <span />
+                    <span />
+                    <span />
+                  </div>
+                </div>
+                <p className="eyebrow">
+                  {t(
+                    "I JUŻ. TERAZ CHWILA DLA CIEBIE.",
+                    "THAT’S IT. NOW TAKE A MOMENT.",
+                  )}
+                </p>
+                <h2>
+                  {confirmationReady
+                    ? t("Pora na papu!", "Your papu is ready!")
+                    : t("Już się robi.", "On its way.")}
+                </h2>
+                <p>
+                  {confirmationReady
+                    ? t(
+                        "Twoje smaki czekają. Zobacz numery odbioru i drogę do kuchni.",
+                        "Your food is waiting. See your pickup numbers and the way to each kitchen.",
+                      )
+                    : t(
+                        "Rozgość się przy stoliku. Twoje smaki są już w dobrych rękach.",
+                        "Settle in at your table. Your cravings are in good hands.",
+                      )}
+                </p>
+                <div className="success-table">
+                  <MapPin size={19} />
+                  {t("Stolik", "Table")} {table}
+                  <span>Hala Koszyki</span>
+                </div>
+                <button
+                  className="primary full-width"
+                  onClick={() => setSuccess(false)}
+                >
+                  {confirmationReady
+                    ? t("Zobacz odbiór", "See pickup")
+                    : t("Śledź moje papu", "Track my food")}
+                  <ArrowRight size={18} />
+                </button>
+                <p className="fine-print">
+                  {t(
+                    "Zamówienie demo — bez płatności i wysyłki do restauracji.",
+                    "Demo order — no payment or submission to restaurants.",
+                  )}
+                </p>
+              </motion.div>
+            </AnimatePresence>
           </Modal>
         )}
         {tour !== null && (
