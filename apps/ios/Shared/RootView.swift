@@ -383,10 +383,11 @@ struct SmallDishCard: View {
 }
 
 
-/// A shared-table introduction leads to the single cuisine selector in the catalog.
+/// The real venue introduces the kitchens; the catalog owns all cuisine choices.
 private struct CravingSpotlight: View {
   @EnvironmentObject var store: PapuStore
   @Environment(\.dynamicTypeSize) private var typeSize
+  @ScaledMetric(relativeTo: .body) private var introFontSize: CGFloat = 14
   @Binding var showTour: Bool
   var browse: () -> Void
   var body: some View {
@@ -398,22 +399,22 @@ private struct CravingSpotlight: View {
           .font(Papu.body(12).weight(.semibold)).foregroundStyle(Papu.green)
       }
       VStack(alignment: .leading, spacing: 8) {
-        Text(store.text("RÓŻNE SMAKI\nJEDEN STOLIK", "MANY CRAVINGS\nONE TABLE"))
-          .font(Papu.poster(typeSize.isAccessibilitySize ? 38 : 40)).lineSpacing(-1)
+        VStack(alignment: .leading, spacing: 0) {
+          Text(store.text("CAŁA HALA", "ONE FOOD HALL"))
+          Text(store.text("JEDEN KOSZYK", "ONE BASKET")).foregroundStyle(Papu.accentText)
+        }.font(Papu.poster(store.english ? 36 : 40))
+          .lineLimit(typeSize.isAccessibilitySize ? nil : 1).minimumScaleFactor(0.75)
           .fixedSize(horizontal: false, vertical: true)
         Text(store.text(
-          "Łącz kuchnie w jednym koszyku. Odbierz przy lokalach.",
-          "Mix kitchens in one checkout. Collect at the counters."))
-          .font(Papu.body(13)).foregroundStyle(Papu.muted).fixedSize(horizontal: false, vertical: true)
+          "Wybieraj z kuchni Hali Koszyki. Płać raz. Odbierz, gdy gotowe.",
+          "Mix your favourites from Hala Koszyki. Pay once. Pick up when ready."))
+          .font(.system(size: introFontSize)).foregroundStyle(Papu.muted).fixedSize(horizontal: false, vertical: true)
       }
-      PapuTableScene()
-        .aspectRatio(800.0 / 620.0, contentMode: .fit)
-        .background(Color(hex: "F9E4CC"), in: RoundedRectangle(cornerRadius: 25))
-        .clipShape(RoundedRectangle(cornerRadius: 25))
+      VenueIntroductionPhoto()
       HStack(spacing: 10) {
         Button(action: browse) {
           HStack(spacing: 7) {
-            Text(store.text("Wszystkie kuchnie", "All kitchens"))
+            Text(store.text("Poznaj kuchnie", "Explore kitchens"))
             Image(systemName: "arrow.down")
           }.font(Papu.body(14).weight(.semibold)).lineLimit(1).minimumScaleFactor(0.85)
             .frame(maxWidth: .infinity, minHeight: 50)
@@ -427,5 +428,30 @@ private struct CravingSpotlight: View {
         }.buttonStyle(PressStyle())
       }
     }.padding(.horizontal, 20).padding(.top, 16).padding(.bottom, 8)
+  }
+}
+
+/// One short reveal brings the venue into view without running animation while browsing.
+private struct VenueIntroductionPhoto: View {
+  @Environment(\.accessibilityReduceMotion) private var reduceMotion
+  @State private var entered = false
+  var body: some View {
+    GeometryReader { geometry in
+      ZStack(alignment: .bottomLeading) {
+        Image(decorative: "hall-detail").resizable().scaledToFill()
+          .frame(width: geometry.size.width, height: geometry.size.height)
+          .scaleEffect(reduceMotion || entered ? 1 : 1.02)
+          .opacity(reduceMotion || entered ? 1 : 0.65)
+        LinearGradient(colors: [.clear, .clear, .black.opacity(0.6)], startPoint: .top, endPoint: .bottom)
+        Text("Koszykowa 63, Warszawa")
+          .font(Papu.body(13).weight(.semibold)).foregroundStyle(Papu.cream)
+          .padding(16)
+      }.clipped()
+    }.frame(height: 214).clipShape(RoundedRectangle(cornerRadius: 22))
+      .onAppear {
+        guard !entered else { return }
+        if reduceMotion { entered = true }
+        else { withAnimation(.easeOut(duration: 0.5)) { entered = true } }
+      }
   }
 }

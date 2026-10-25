@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { motion } from "motion/react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Check, Clock, Navigation, RotateCcw, Zap } from "lucide-react";
 import { dishFor, linePrice, price, restaurantFor, statusFor } from "./domain";
 import type { Order, Locale } from "./domain";
@@ -39,6 +39,7 @@ export default function OrderTicket({
   onReorder: () => void;
 }) {
   const t = (a: string, b: string) => (locale === "pl" ? a : b);
+  const reducedMotion = useReducedMotion();
   const r = restaurantFor(order.restaurantId),
     status = statusFor(order, now),
     ready = status === "ready";
@@ -48,7 +49,7 @@ export default function OrderTicket({
     <motion.article
       className={`pickup-ticket ${ready ? "is-ready" : ""}`}
       initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
+      animate={{ opacity: 1, y: 0, borderColor: ready ? "#95b393" : "#dfe6d2" }}
       transition={{ duration: 0.25 }}
     >
       <header className="ticket-header">
@@ -63,48 +64,79 @@ export default function OrderTicket({
       </header>
       <div className="ticket-perforation" />
       <div className="ticket-body">
-        <div className="ticket-state">
-          <div>
-            <h2>
-              {
-                [
-                  t("Przyjęte", "All yours"),
-                  t("Już się robi", "Cooking up"),
-                  t("Pora na papu!", "Come and get it!"),
-                  t("Smacznego!", "Enjoy every bite!"),
-                ][stage]
-              }
-            </h2>
-            {stage < 2 ? (
-              <p>
-                <Clock size={14} />
-                <Countdown until={order.readyAt} />{" "}
-                {t("do odbioru · demo", "until pickup · demo")}
-              </p>
-            ) : (
-              <p>
-                {ready
-                  ? t(
-                      "Pokaż ten numer przy odbiorze.",
-                      "Show this number at the counter.",
-                    )
-                  : t(
-                      "Dzięki za wspólny stół.",
-                      "Thanks for sharing the table.",
-                    )}
-              </p>
-            )}
-          </div>
-          {ready && (
-            <motion.span
-              className="ticket-ready"
-              initial={{ scale: 0.6 }}
-              animate={{ scale: 1 }}
-              transition={{ type: "spring", stiffness: 300, damping: 18 }}
+        <div className="ticket-state-slot">
+          <AnimatePresence mode="popLayout" initial={false}>
+            <motion.div
+              className="ticket-state"
+              key={stage}
+              initial={{ opacity: 0, y: 7 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -5 }}
+              transition={{ duration: 0.2 }}
             >
-              <Check size={28} />
-            </motion.span>
-          )}
+              <div>
+                <h2 aria-live="polite" aria-atomic="true">
+                  {
+                    [
+                      t("Przyjęte", "All yours"),
+                      t("Już się robi", "Cooking up"),
+                      t("Pora na papu!", "Come and get it!"),
+                      t("Smacznego!", "Enjoy every bite!"),
+                    ][stage]
+                  }
+                </h2>
+                {stage < 2 ? (
+                  <p>
+                    <Clock size={14} />
+                    <Countdown until={order.readyAt} />{" "}
+                    {t("do odbioru · demo", "until pickup · demo")}
+                  </p>
+                ) : (
+                  <p>
+                    {ready
+                      ? t(
+                          "Pokaż ten numer przy odbiorze.",
+                          "Show this number at the counter.",
+                        )
+                      : t(
+                          "Dzięki za wspólny stół.",
+                          "Thanks for sharing the table.",
+                        )}
+                  </p>
+                )}
+              </div>
+              {ready && (
+                <motion.span
+                  className="ticket-ready"
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ duration: 0.24, ease: [0.2, 0.8, 0.2, 1] }}
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    width="28"
+                    height="28"
+                    fill="none"
+                    aria-hidden="true"
+                  >
+                    <motion.path
+                      d="m6 12 4 4 8-8"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      initial={{ pathLength: reducedMotion ? 1 : 0 }}
+                      animate={{ pathLength: 1 }}
+                      transition={{
+                        duration: reducedMotion ? 0 : 0.28,
+                        delay: reducedMotion ? 0 : 0.08,
+                      }}
+                    />
+                  </svg>
+                </motion.span>
+              )}
+            </motion.div>
+          </AnimatePresence>
         </div>
         <div
           className="ticket-progress"
@@ -118,7 +150,14 @@ export default function OrderTicket({
           }
         >
           {[0, 1, 2].map((i) => (
-            <span key={i} className={i <= stage ? "done" : ""} />
+            <span key={i} className="ticket-progress-track" aria-hidden="true">
+              <motion.i
+                className="ticket-progress-fill"
+                initial={false}
+                animate={{ scaleX: i <= stage ? 1 : 0 }}
+                transition={{ duration: 0.28 }}
+              />
+            </span>
           ))}
         </div>
         <div className="ticket-number">

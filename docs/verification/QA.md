@@ -129,3 +129,18 @@ This section supersedes the earlier typography/motion/timing details above.
 - Rive scene verifies with zero errors/warnings, uses three original alpha food cutouts, six one-shot timelines and no perpetual loops. The application keeps the shared-table pose at zero with pointer input disabled. Both wrappers pause after two seconds and use a static reduced-motion/error fallback. A resize-after-pause canvas crop was caught and fixed; actual 320-to-1280 resize rendered correctly afterward.
 - Web: 30 tests passed during this pass, final TypeScript/Vite build passed after simplification. Native: all four final targets compiled, App Clip table 37 rendered the new opening, and All kitchens visibly scrolled to the search and sole cuisine-filter row. Physical-iPhone frame profiling and device installation of 6.1 remain unobserved.
 - Final screenshots: `docs/screenshots/v5-shared-table-web.png`, `v5-shared-table-native.png`. The custom scene source and maintenance notes are in `packages/motion/table`.
+
+
+## Simple venue opening and aligned Live Activity — 25 October 2026
+
+Final direction: authentic Hala Koszyki photography, CAŁA HALA / JEDEN KOSZYK (EN ONE FOOD HALL / ONE BASKET), text-orange #B7471B on the second line in both apps. A single 500–650 ms entrance settles into a still photo. No large hero Rive asset, banner selectors or animation controls ship. Existing guided Rive scenes remain.
+
+- Final web TypeScript/Vite production build passed. The existing 30 ordering/routing checks passed during this pass; no ordering-domain logic changed afterward.
+- Actual local production browser checked at 320, 390 and 1280 px; PL and EN checked; no narrow horizontal overflow. The primary browse action reached the real catalog.
+- Dish customization → add → in-dialog item/count/total confirmation → persistent basket action → checkout → clearly labeled demo order → ready status → collection verified. The 48 px food flight was visibly captured in the active menu dialog; actual order/collection state remained correct.
+- Native all-four-target simulator build passed (`/tmp/papu-venue-final-build.log`). Final App Clip table37 PL/EN layouts visually inspected; orange line, photo crop, margins and Explore kitchens destination verified.
+- New Lock Screen ready activity inspected with ATOM + Bar Koszyki, table24, 2/2 kitchens and pickup units8/28. The evidence includes an unrelated older table37 demo activity above it; the new card is the lower card. Consistent text direction, locale, content grid and centered counter verified in the new card.
+- Dynamic Island compact/minimal/expanded source was audited and compiled with bounded content and PL/EN locale; separate runtime screenshots of those presentations were not obtained.
+- Physical iPhone performance and installation of the new build are not inferred from simulator checks.
+
+Evidence: `docs/screenshots/v6-venue-web-mobile.png`, `v6-venue-web-desktop.png`, `v6-venue-native.png`, `v6-live-activity-ready.png`. Release/signing outcomes are recorded after the actual upload and Apple processing.

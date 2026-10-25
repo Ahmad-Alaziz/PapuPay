@@ -2038,3 +2038,51 @@ h3 {
     gap: 12px;
   }
 }
+
+/* Brief purchase feedback: the visible count and message remain authoritative. */
+.add-glyph {
+  display: inline-grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+}
+.add-glyph > span {
+  display: grid;
+  place-items: center;
+  grid-area: 1 / 1;
+}
+.basket-flight {
+  position: fixed;
+  z-index: 200;
+  width: 48px;
+  height: 48px;
+  max-width: none;
+  object-fit: cover;
+  border: 3px solid var(--butter);
+  border-radius: 14px;
+  box-shadow: 0 8px 20px #123c2d30;
+  pointer-events: none;
+  will-change: transform;
+}
+.ticket-state-slot {
+  position: relative;
+  min-height: 86px;
+}
+.ticket-state-slot .ticket-state {
+  width: 100%;
+}
+.ticket-progress-track {
+  overflow: hidden;
+}
+.ticket-progress-fill {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-origin: left center;
+  background: var(--green);
+}
+@media (prefers-reduced-motion: reduce) {
+  .basket-flight {
+    display: none;
+  }
+}

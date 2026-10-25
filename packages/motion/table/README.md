@@ -1,3 +1,5 @@
+> Archived design exploration. The shipping opening now uses real Hala Koszyki photography. The editable source and original food cutouts remain here for provenance; its runtime assets are no longer bundled.
+
 # PapuPay shared table
 
 The hero explains PapuPay's core idea through one composition: dishes from ATOM,

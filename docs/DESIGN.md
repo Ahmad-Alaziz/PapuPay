@@ -73,12 +73,10 @@ Cart success must remain understandable when all animation is disabled: item nam
 Map labels belong to actual unit shapes and the destination card. Large floating labels were removed from the map so the drawn route remains visible end to end. An unobtrusive endpoint marks the entrance; the origin table is identified outside the route.
 
 
-## The shared table — banner redesign
+## Current opening — real venue, simple benefit
 
-The opening explains PapuPay's distinctive benefit: different kitchens, one basket, a meal together. A stable two-line poster headline carries the proposition, while a dimensional orange table brings three separate photographic dishes together. A short custom Rive entrance introduces the scene, then settles. The banner's primary Explore kitchens action scrolls to the restaurant section, where the existing cuisine controls remain the sole place to filter food. How it works opens the guided explanation. There are no kitchen selectors, plate labels, menu shortcuts or ordering controls in the banner. Copy explicitly describes collection at the counters.
+The opening establishes the actual place after a table scan, explains one basket across kitchens and makes browsing immediate. The authentic Hala Koszyki photograph carries the composition. The stable CAŁA HALA / JEDEN KOSZYK headline uses #123C2D then #B7471B on both platforms. A single small photo entrance settles into a still image. There are no banner selectors, hero canvas controls or recurring decorative motion.
 
-The source artwork was generated for this demo and is stored in `packages/brand/table-*-master.png`. It is illustrative food photography, not a photograph of the venue's exact dishes. Optimized alpha cutouts serve both native fallback artwork and the new Rive scene. The custom scene, source, generator, runtime contract, research references and verification commands are documented in `packages/motion/table/README.md`.
+The body explains one payment and counter pickup. Explore kitchens scrolls directly to the catalog; How it works opens the existing guide. Photo, copy and controls follow 20 px mobile gutters. Existing type, colors and ordering flows remain recognizable.
 
-Both wrappers pause the renderer after two seconds and when inactive/offscreen. The scene is decorative and has no pointer or accessibility interaction; real actions remain semantic native/HTML buttons. Reduced Motion and failed runtime loads preserve a complete static table. Resizing the web scene explicitly redraws the paused canvas.
-
-The layout keeps 20 px mobile gutters, emphatic Anton display type, readable supporting copy and the unboxed PapuPay brand. Food stays large enough to carry the composition. The native implementation uses the same 800:620 artboard ratio rather than compressing the artwork into a short banner.
+Other changes are restrained: immediate plus-to-check feedback, a brief web photo-to-basket movement and coherent order-ready feedback. Live Activities share a PL/EN locale, left-to-right grid, aligned timer and bounded compact/minimal variants. Research, choreography and lifecycle details are recorded in [MOTION.md](MOTION.md).

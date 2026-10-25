@@ -9,45 +9,49 @@ private let paper = Color(red: 0.98, green: 0.965, blue: 0.925)
 struct PapuLiveActivity: Widget {
   var body: some WidgetConfiguration {
     ActivityConfiguration(for: PapuOrderAttributes.self) { context in
-      PickupActivityCard(context: context).environment(\.layoutDirection, .leftToRight)
+      PickupActivityCard(context: context).modifier(ActivityLanguage(english: context.attributes.english))
         .activityBackgroundTint(paper).activitySystemActionForegroundColor(forest)
         .widgetURL(link(context))
     } dynamicIsland: { context in
       DynamicIsland {
         DynamicIslandExpandedRegion(.leading) {
-          Label("PapuPay", systemImage: icon(context)).font(.system(size: 14, weight: .heavy))
-            .foregroundStyle(papaya)
+          HStack(spacing: 6) {
+            Image(systemName: activityIcon(context)).font(.system(size: 14, weight: .semibold))
+            Text("PapuPay").font(.system(size: 14, weight: .heavy, design: .rounded))
+          }.foregroundStyle(papaya).frame(maxWidth: .infinity, alignment: .leading)
+            .modifier(ActivityLanguage(english: context.attributes.english))
         }
         DynamicIslandExpandedRegion(.trailing) {
           Text((context.attributes.english ? "Table " : "Stolik ") + context.attributes.table)
             .font(.system(size: 13, weight: .semibold)).foregroundStyle(paper)
+            .frame(maxWidth: .infinity, alignment: .trailing)
+            .modifier(ActivityLanguage(english: context.attributes.english))
         }
         DynamicIslandExpandedRegion(.bottom) {
-          HStack(alignment: .center, spacing: 16) {
-            VStack(alignment: .leading, spacing: 6) {
-              Text(activityTitle(context)).font(.system(size: 22, weight: .heavy)).foregroundStyle(
-                paper)
-              Text(context.attributes.restaurants).font(.system(size: 12)).foregroundStyle(
-                .white.opacity(0.65)
-              ).lineLimit(1)
-            }.frame(maxWidth: .infinity, alignment: .leading)
-            ActivityCounter(context: context).foregroundStyle(papaya)
-          }.padding(.top, 12).padding(.bottom, 8)
+          VStack(alignment: .leading, spacing: 9) {
+            HStack(alignment: .top, spacing: 12) {
+              ActivityDescription(context: context, dark: true)
+              ActivityCounter(context: context).frame(width: 64, height: 58)
+                .foregroundStyle(papaya)
+            }
+            Text(activityFooter(context)).font(.system(size: 12, weight: .medium))
+              .foregroundStyle(paper.opacity(0.78)).lineLimit(1)
+              .frame(maxWidth: .infinity, alignment: .leading)
+            ActivityProgress(stage: context.state.stage, color: papaya)
+          }.padding(.top, 8).padding(.bottom, 3)
+            .modifier(ActivityLanguage(english: context.attributes.english))
         }
       } compactLeading: {
-        Image(systemName: icon(context)).foregroundStyle(papaya)
+        ActivityGlyph(context: context).frame(width: 28, height: 28)
+          .modifier(ActivityLanguage(english: context.attributes.english))
       } compactTrailing: {
-        if context.state.stage < 2 && context.state.readyAt > .now {
-          Text(timerInterval: Date.now...context.state.readyAt, countsDown: true)
-            .monospacedDigit().font(.system(size: 12, weight: .bold)).foregroundStyle(paper).frame(
-              width: 40)
-        } else {
-          Text("\(context.state.readyCount)/\(context.state.totalKitchens)").font(
-            .system(size: 12, weight: .bold)
-          ).foregroundStyle(papaya)
-        }
+        ViewThatFits(in: .horizontal) {
+          CompactActivityValue(context: context).frame(width: 38, height: 28)
+          ActivityGlyph(context: context).frame(width: 24, height: 24)
+        }.modifier(ActivityLanguage(english: context.attributes.english))
       } minimal: {
-        Image(systemName: icon(context)).foregroundStyle(papaya)
+        ActivityGlyph(context: context).frame(width: 28, height: 28)
+          .modifier(ActivityLanguage(english: context.attributes.english))
       }.widgetURL(link(context)).keylineTint(papaya)
     }
   }
@@ -56,8 +60,16 @@ struct PapuLiveActivity: Widget {
   }
 }
 
-private func icon(_ context: ActivityViewContext<PapuOrderAttributes>) -> String {
-  context.state.stage >= 2 ? "checkmark.circle.fill" : "takeoutbag.and.cup.and.straw.fill"
+/// Apply the app's chosen language to every presentation, including Dynamic Island.
+private struct ActivityLanguage: ViewModifier {
+  let english: Bool
+  func body(content: Content) -> some View {
+    content.environment(\.locale, Locale(identifier: english ? "en_GB" : "pl_PL"))
+      .environment(\.layoutDirection, .leftToRight)
+  }
+}
+private func activityIcon(_ context: ActivityViewContext<PapuOrderAttributes>) -> String {
+  context.state.stage >= 2 ? "checkmark" : "takeoutbag.and.cup.and.straw.fill"
 }
 private func activityTitle(_ context: ActivityViewContext<PapuOrderAttributes>) -> String {
   if context.state.stage >= 2 {
@@ -66,60 +78,110 @@ private func activityTitle(_ context: ActivityViewContext<PapuOrderAttributes>) 
   if context.isStale { return context.attributes.english ? "Check your pickup" : "Sprawdź odbiór" }
   return context.attributes.english ? "Good things cooking" : "Już się robi"
 }
+private func activityFooter(_ context: ActivityViewContext<PapuOrderAttributes>) -> String {
+  if context.state.stage >= 2 {
+    return context.attributes.pickupSummary
+      ?? (context.attributes.english ? "Open PapuPay for pickup" : "Otwórz PapuPay, by odebrać")
+  }
+  return context.attributes.english ? "Demo order · collect at the counters" : "Zamówienie demo · odbiór przy lokalach"
+}
+
+private struct ActivityDescription: View {
+  let context: ActivityViewContext<PapuOrderAttributes>
+  var dark = false
+  var body: some View {
+    VStack(alignment: .leading, spacing: 5) {
+      Text(activityTitle(context)).font(.system(size: 22, weight: .heavy))
+        .lineLimit(1).minimumScaleFactor(0.8).contentTransition(.opacity)
+      Text(context.attributes.restaurants).font(.system(size: 12, weight: .medium))
+        .foregroundStyle(dark ? paper.opacity(0.7) : forest.opacity(0.72))
+        .lineLimit(1).minimumScaleFactor(0.9)
+    }.foregroundStyle(dark ? paper : forest)
+      .frame(maxWidth: .infinity, minHeight: 58, alignment: .topLeading)
+  }
+}
+
 private struct ActivityCounter: View {
   let context: ActivityViewContext<PapuOrderAttributes>
   var body: some View {
     VStack(spacing: 4) {
       if context.state.stage < 2 && context.state.readyAt > Date.now {
         Text(timerInterval: Date.now...context.state.readyAt, countsDown: true)
-          .monospacedDigit().font(.system(size: 27, weight: .bold, design: .rounded)).frame(
-            width: 78)
-        Text(context.attributes.english ? "DEMO" : "DEMO").font(.system(size: 9, weight: .bold))
-          .tracking(1)
+          .monospacedDigit().font(.system(size: 24, weight: .bold, design: .rounded))
+          .multilineTextAlignment(.center).frame(maxWidth: .infinity, alignment: .center)
+        Text("DEMO").font(.system(size: 9, weight: .bold)).tracking(1)
       } else {
-        Image(systemName: context.state.stage >= 2 ? "checkmark" : "arrow.up.right").font(
-          .system(size: 28, weight: .bold))
-        Text("\(context.state.readyCount)/\(context.state.totalKitchens)").font(
-          .system(size: 11, weight: .bold))
+        Image(systemName: context.state.stage >= 2 ? "checkmark" : "arrow.up.right")
+          .font(.system(size: 25, weight: .bold)).contentTransition(.symbolEffect(.replace))
+        Text("\(context.state.readyCount)/\(context.state.totalKitchens)")
+          .font(.system(size: 11, weight: .semibold)).monospacedDigit().contentTransition(.numericText())
+      }
+    }.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+  }
+}
+
+private struct ActivityGlyph: View {
+  let context: ActivityViewContext<PapuOrderAttributes>
+  var body: some View {
+    ZStack {
+      Circle().stroke(papaya.opacity(0.35), lineWidth: 1.5)
+      Image(systemName: activityIcon(context))
+        .font(.system(size: context.state.stage >= 2 ? 13 : 11, weight: .bold))
+        .contentTransition(.symbolEffect(.replace))
+    }.foregroundStyle(papaya).padding(2)
+  }
+}
+
+private struct CompactActivityValue: View {
+  let context: ActivityViewContext<PapuOrderAttributes>
+  var body: some View {
+    Group {
+      if context.state.stage < 2 && context.state.readyAt > .now {
+        Text(timerInterval: Date.now...context.state.readyAt, countsDown: true)
+          .foregroundStyle(paper)
+      } else {
+        Text("\(context.state.readyCount)/\(context.state.totalKitchens)").foregroundStyle(papaya)
+          .contentTransition(.numericText())
+      }
+    }.monospacedDigit().font(.system(size: 12, weight: .semibold))
+      .multilineTextAlignment(.center).frame(maxWidth: .infinity, alignment: .center)
+  }
+}
+
+private struct ActivityProgress: View {
+  let stage: Int
+  let color: Color
+  var body: some View {
+    HStack(spacing: 4) {
+      ForEach(0..<3, id: \.self) { index in
+        Capsule().fill(stage >= index ? color : color.opacity(0.12)).frame(height: 3)
       }
     }
   }
 }
+
 private struct PickupActivityCard: View {
   let context: ActivityViewContext<PapuOrderAttributes>
   var body: some View {
-    VStack(alignment: .leading, spacing: 14) {
-      HStack(spacing: 6) {
-        Image(systemName: "takeoutbag.and.cup.and.straw.fill").foregroundStyle(forest)
+    VStack(alignment: .leading, spacing: 10) {
+      HStack(alignment: .firstTextBaseline, spacing: 6) {
         Text("PapuPay").font(.system(size: 13, weight: .heavy, design: .rounded))
-        Spacer()
+        Spacer(minLength: 8)
         Text((context.attributes.english ? "TABLE " : "STOLIK ") + context.attributes.table)
           .font(.system(size: 11, weight: .bold)).tracking(0.7)
       }
-      HStack(spacing: 16) {
-        VStack(alignment: .leading, spacing: 6) {
-          Text(activityTitle(context)).font(.system(size: 23, weight: .heavy)).lineLimit(2)
-            .minimumScaleFactor(0.85)
-          Text(context.attributes.restaurants).font(.system(size: 12, weight: .medium))
-            .foregroundStyle(forest.opacity(0.7)).lineLimit(1)
-          if let pickup = context.attributes.pickupSummary, context.state.stage >= 2 {
-            Text(pickup).font(.system(size: 12, weight: .bold)).lineLimit(1)
-          }
-        }.frame(maxWidth: .infinity, alignment: .leading)
-        ActivityCounter(context: context).frame(width: 82, height: 74)
-          .background(
-            context.state.stage >= 2 ? forest : papaya, in: RoundedRectangle(cornerRadius: 20)
-          )
+      HStack(alignment: .top, spacing: 12) {
+        ActivityDescription(context: context)
+        ActivityCounter(context: context).frame(width: 64, height: 58)
+          .background(context.state.stage >= 2 ? forest : papaya,
+            in: RoundedRectangle(cornerRadius: 17))
           .foregroundStyle(context.state.stage >= 2 ? paper : forest)
       }
-      HStack(spacing: 4) {
-        ForEach(0..<3, id: \.self) { index in
-          Capsule().fill(context.state.stage >= index ? forest : forest.opacity(0.12)).frame(
-            height: 3)
-        }
-      }
-    }.padding(16).foregroundStyle(forest)
-      .environment(\.locale, Locale(identifier: context.attributes.english ? "en_GB" : "pl_PL"))
+      Text(activityFooter(context)).font(.system(size: 12, weight: .medium))
+        .foregroundStyle(forest.opacity(0.76)).lineLimit(1)
+        .frame(maxWidth: .infinity, alignment: .leading)
+      ActivityProgress(stage: context.state.stage, color: forest)
+    }.padding(14).foregroundStyle(forest)
   }
 }
 

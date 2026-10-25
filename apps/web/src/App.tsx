@@ -47,6 +47,8 @@ import HallMap from "./HallMap";
 import OrderTicket from "./OrderTicket";
 import { qrPath, type OrderContext } from "./routing";
 import Modal from "./Modal";
+import AddGlyph from "./AddGlyph";
+import useBasketFlight from "./useBasketFlight";
 import CravingHero from "./CravingHero";
 const PapuMotion = lazy(() =>
   import("./PapuMotion").catch(() => ({
@@ -115,6 +117,7 @@ export default function App({ context }: { context: OrderContext }) {
   const { cart, orders, locale } = store,
     pl = locale === "pl";
   const t = (a: string, b: string) => (pl ? a : b);
+  const { launch: flyToBasket, overlay: basketFlight } = useBasketFlight();
   const [tab, setTab] = useState<Tab>(validTab),
     [table, setTable] = useState(context.table);
   const [category, setCategory] = useState("all"),
@@ -288,7 +291,13 @@ export default function App({ context }: { context: OrderContext }) {
     location.hash = destination;
     window.scrollTo({ top: 0, behavior: "instant" });
   };
-  const add = (item: Dish, qty = 1, withExtra = false, message = "") => {
+  const add = (
+    item: Dish,
+    qty = 1,
+    withExtra = false,
+    message = "",
+    source?: HTMLElement,
+  ) => {
     const existing = cart.find(
       (line) =>
         line.itemId === item.id &&
@@ -309,6 +318,7 @@ export default function App({ context }: { context: OrderContext }) {
     });
     if (addedTimer.current) clearTimeout(addedTimer.current);
     addedTimer.current = setTimeout(() => setLastAdded(null), 7000);
+    if (addedQuantity > 0) flyToBasket(source, foodImage(item.image));
     if (navigator.vibrate) navigator.vibrate(12);
   };
   const chooseDish = (item: Dish) => {
@@ -395,6 +405,7 @@ export default function App({ context }: { context: OrderContext }) {
     lastAdded && (
       <motion.div
         className={`basket-feedback ${inBasket ? "in-basket" : ""}`}
+        data-basket-target={inBasket ? "feedback" : undefined}
         key={lastAdded.id}
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
@@ -423,7 +434,7 @@ export default function App({ context }: { context: OrderContext }) {
           </small>
         </div>
         {!inBasket && (
-          <button onClick={openBasket}>
+          <button onClick={openBasket} data-basket-target="menu">
             {t("Zobacz koszyk", "View basket")}
             <ArrowRight size={16} />
           </button>
@@ -504,6 +515,7 @@ export default function App({ context }: { context: OrderContext }) {
                 animate={{ scale: count ? [1, 1.1, 1] : 1 }}
                 key={count}
                 className="header-cart"
+                data-basket-target="header"
                 aria-label={t(
                   `Koszyk, liczba produktów: ${count}`,
                   `Basket, ${count} items`,
@@ -789,17 +801,18 @@ export default function App({ context }: { context: OrderContext }) {
                           </button>
                           <div>
                             <strong>{price(item.price, locale)}</strong>
-                            <button
+                            <motion.button
                               className={`add-button ${lastAdded?.item.id === item.id ? "just-added" : ""}`}
-                              onClick={() => add(item)}
+                              onClick={(event) =>
+                                add(item, 1, false, "", event.currentTarget)
+                              }
+                              whileTap={{ scale: 0.88 }}
                               aria-label={`${t("Dodaj", "Add")} ${item.name}`}
                             >
-                              {lastAdded?.item.id === item.id ? (
-                                <Check size={19} />
-                              ) : (
-                                <Plus size={19} />
-                              )}
-                            </button>
+                              <AddGlyph
+                                added={lastAdded?.item.id === item.id}
+                              />
+                            </motion.button>
                           </div>
                         </article>
                       ))}
@@ -1016,6 +1029,7 @@ export default function App({ context }: { context: OrderContext }) {
           {count > 0 && !cartOpen && !dish && (
             <motion.button
               className="floating-cart"
+              data-basket-target="floating"
               initial={{ scale: 0.97, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.97, opacity: 0 }}
@@ -1025,7 +1039,15 @@ export default function App({ context }: { context: OrderContext }) {
                 setCartOpen(true);
               }}
             >
-              <span className="cart-count">{count}</span>
+              <motion.span
+                className="cart-count"
+                key={count}
+                initial={{ scale: 0.9 }}
+                animate={{ scale: [1, 1.16, 1] }}
+                transition={{ duration: 0.24 }}
+              >
+                {count}
+              </motion.span>
               <span>
                 {t("Zobacz koszyk", "View basket")}
                 <small>
@@ -1287,8 +1309,8 @@ export default function App({ context }: { context: OrderContext }) {
                 </div>
                 <button
                   className="primary"
-                  onClick={() => {
-                    add(dish, quantity, extra, note);
+                  onClick={(event) => {
+                    add(dish, quantity, extra, note, event.currentTarget);
                     setDish(null);
                   }}
                 >
@@ -1431,8 +1453,14 @@ export default function App({ context }: { context: OrderContext }) {
                       !cart.some((x) => x.itemId === "bar-lemonade") && (
                         <button
                           className="upsell"
-                          onClick={() =>
-                            add(menu.find((x) => x.id === "bar-lemonade")!)
+                          onClick={(event) =>
+                            add(
+                              menu.find((x) => x.id === "bar-lemonade")!,
+                              1,
+                              false,
+                              "",
+                              event.currentTarget,
+                            )
                           }
                         >
                           <FoodImage src="lemonade.jpg" alt="" />
@@ -1942,6 +1970,7 @@ export default function App({ context }: { context: OrderContext }) {
             </div>
           </Modal>
         )}
+        {basketFlight}
       </div>
     </MotionConfig>
   );
