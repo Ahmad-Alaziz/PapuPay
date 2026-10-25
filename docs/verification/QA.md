@@ -31,7 +31,7 @@ Checked on 25 October 2026 using the local production web build and Xcode 27.1 /
 
 ## Boundaries
 
-No physical iPhone installation was completed: the Mac has no valid signing identity. No real payment or POS order was sent. This is a local-data MVP, with foreground-driven Live Activity updates. The diagrammatic table location is illustrative. Full VoiceOver, all Dynamic Type settings, physical-device performance, dark appearance, and signed thinned archive checks remain release qualification work.
+At the original local verification, no physical iPhone installation was completed because this Mac had no signing identity. The later cloud/TestFlight delivery below removes that installation blocker; App Store Connect reports an internal tester installation. Physical-device interaction/performance testing has not been observed by the agent. No real payment or POS order was sent. This is a local-data MVP, with foreground-driven Live Activity updates. The diagrammatic table location is illustrative. Full VoiceOver, all Dynamic Type settings, physical-device performance, dark appearance, and signed thinned archive checks remain release qualification work.
 
 Screenshots are in `docs/screenshots`. Verified hosting deployment details follow.
 
@@ -56,7 +56,7 @@ The previously reserved Sites project has no deployment and is not the selected 
 - 19 compiled Swift invocation checks pass, including host validation and the same hall/table failure cases.
 - Updated native host, Clip and widgets build in the simulator; unsigned device Release Clip passes the size gate at 11.632 MB.
 - Namecheap A/CNAME records point to Vercel; public apex HTTPS responds successfully. Email settings preserved.
-- Apple app record 6826778125 and four bundle identifiers registered under the personal team. Native signing/upload blocked by this Mac's managed Apple Account restriction. App Clip experience metadata requires an uploaded build; public invocation remains pending Apple release.
+- Apple app record 6826778125 and four bundle identifiers registered under the personal team. Local Xcode signing is blocked by this Mac's managed Apple Account restriction; later cloud signing and TestFlight delivery succeeded as recorded below. Public invocation remains pending Apple release.
 
 Final public-domain checks:
 
@@ -67,4 +67,16 @@ Final public-domain checks:
 - `www.papupay.com/go/koszyki/37?test=1` returns HTTP 308 to the identical apex path and query.
 - The AASA endpoint returns HTTP 200 with `application/json`, the registered personal team IDs, and no redirect.
 - The QR HTML contains the real Smart App Banner metadata; the marketing HTML does not.
-- Live homepage screenshot captured after deployment. Physical-device signing and public App Clip activation remain pending as described above.
+- Live homepage screenshot captured after deployment. Cloud signing subsequently succeeded as recorded below. Public App Clip activation remains pending Apple release.
+
+
+## Cloud signing and TestFlight — 25 October 2026
+
+- [Signed workflow run 40178646114](https://github.com/Ahmad-Alaziz/PapuPay/actions/runs/40178646114) passed on GitHub-hosted macOS 26 / Xcode 26.6, commit `e0937d7`. Version **1.0 (2.1)** exported and uploaded successfully; Apple completed processing.
+- 20 compiled Swift invocation checks passed. All four signed bundles passed archive validation, including the host, Clip and both Live Activity extensions.
+- Signed raw App Clip: **8,989,622 bytes / 8.99 MB**, including Rive, the embedded widget and signing material. Remaining raw 15 MB budget: **6,010,378 bytes**. Preserved reports: `cloud-archive-summary.json`, `cloud-clip-size.json`. Apple’s thinned measurement remains authoritative.
+- The unsigned [archive workflow 40178582897](https://github.com/Ahmad-Alaziz/PapuPay/actions/runs/40178582897) also passed.
+- Dedicated API and distribution keys are in encrypted `apple-signing` environment secrets, restricted to `main`; temporary cloud keychain/profile material is removed on exit. No local Xcode account or signing identity was installed.
+- **PapuPay Demo** has one internal tester and build **1.0 (2.1)**, with verified **Testing** status. App Store Connect reports the tester installed the build; this does not substitute for observed physical-device UX testing.
+- Saved App Clip invocations: **Koszyki · 24** (`https://papupay.com/go/koszyki/24`) and **Koszyki · 37** (`https://papupay.com/go/koszyki/37`). Polish test instructions identify simulated payments/orders and foreground-driven Live Activities.
+- No external beta review or public App Store release was submitted. Public QR links continue to serve the web fallback until the App Clip experience is released.

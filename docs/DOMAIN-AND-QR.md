@@ -36,7 +36,7 @@ The website cannot silently install an App Clip. Apple's native invocation and t
 - The AASA file identifies the real Clip and containing app. Only `/go/*` and the legacy `/clip` route are universal links; the marketing homepage stays a website.
 - The QR HTML has Apple's Smart App Banner metadata with the real app ID. The homepage and `/app` chooser omit it. It becomes effective only after Apple's remaining publishing requirements are met.
 
-All four bundle identifiers are registered. The current managed Mac blocks personal Apple Account sign-in in Xcode, so signing and upload must happen on a personal Mac or an approved build environment. No signed build has been uploaded from this machine.
+All four bundle identifiers are registered. Version **1.0 (2.1)** was signed and uploaded successfully on GitHub-hosted macOS on 25 October 2026. The local managed Mac stays signed out. TestFlight App Clip invocations use the table-24 and table-37 URLs above; public Camera QR invocation remains a separate release step. See [cloud signing](CLOUD-BUILDS.md).
 
 After uploading a build containing the Clip, configure the required default App Clip experience. Then create an **advanced experience for `https://papupay.com/go/koszyki/`**. Apple uses the most specific URL prefix, so one hall experience covers every table. Use a Koszyki-specific header and subtitle; the exact table comes from the full invocation URL, not the static App Clip card. Do not register each table as a separate experience.
 

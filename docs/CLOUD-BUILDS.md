@@ -2,6 +2,12 @@
 
 PapuPay can be built, signed and uploaded entirely on GitHub-hosted macOS runners. Local Xcode stays signed out. No signing certificate is installed on the managed development Mac.
 
+## Verified delivery — 25 October 2026
+
+Version **1.0 (2.1)** was signed, exported and uploaded successfully by [GitHub Actions run 40178646114](https://github.com/Ahmad-Alaziz/PapuPay/actions/runs/40178646114), from commit `e0937d7`. Apple finished processing the build. All four embedded bundle identifiers and versions passed packaging checks; 20 compiled invocation checks passed. The signed raw App Clip is **8,989,622 bytes (8.99 MB)** against the 15 MB gate, including Rive and its Live Activity extension. Reports are preserved in `docs/verification/cloud-archive-summary.json` and `cloud-clip-size.json`. Apple's thinned size report remains the final distribution measurement.
+
+The dedicated App Manager team API key and distribution key are stored in the four environment secrets below. The `apple-signing` environment allows deployments from `main` only. The certificate and four profiles were created successfully and reused by the next run. Local Xcode remains signed out.
+
 ## Workflows
 
 - **iOS archive checks** runs on native changes to `main`, pull requests, or manual dispatch. It compiles the invocation checks, archives all four targets without signing, checks bundle IDs/build numbers/embedded products/privacy manifests, and applies the 15 MB raw App Clip size gate.
@@ -22,14 +28,25 @@ Build numbers are `<workflow run number>.<attempt>`. Both the app and all embedd
 | `APP_STORE_CONNECT_PRIVATE_KEY` | Contents of the downloaded `.p8` key |
 | `CERTIFICATE_PRIVATE_KEY` | A dedicated 2048-bit RSA PEM private key, reused across builds |
 
-4. Restrict the environment to the `main` branch. Store private keys in the owner's secure credential storage as well; Apple permits only one `.p8` download. Never paste keys in chat or commit them.
+4. Restrict the environment to the `main` branch. The approved key destination is GitHub encrypted environment secrets; no extra local backup copies are created. Apple permits only one `.p8` download. Never paste keys in chat or commit them.
 5. Run **Upload PapuPay to TestFlight**. The open-source Codemagic CLI runs on GitHub's runner and communicates with Apple; no Codemagic account/service is used. The first run creates a distribution certificate and four profiles if necessary. It never revokes existing certificates. If Apple's certificate quota is full, stop and review the team's existing certificates instead of revoking them automatically.
 
 GitHub encrypts secrets at rest. The signing job creates a temporary keychain, then removes its keychain and temporary signing files on exit. The runner is disposable. Only the signing step receives the Apple secrets; PR checks have no signing environment.
 
 ## Test on an iPhone
 
-After Apple finishes processing, open [PapuPay TestFlight](https://appstoreconnect.apple.com/apps/6826778125/testflight/ios). Add the account holder as an internal tester. On the build, add App Clip invocations for `https://papupay.com/go/koszyki/24` and `https://papupay.com/go/koszyki/37`. Install TestFlight on the iPhone, then choose the app or the Clip. App Clip launch inside TestFlight differs from a public Camera QR launch; public domain invocation still needs Apple's released experience.
+The **PapuPay Demo** internal group contains the account holder and build **1.0 (2.1)**. Its verified status is **Testing**; App Store Connect also reports that the tester installed the build. Automatic group distribution is off, so future builds require explicit assignment. No external beta group or public invitation link is enabled.
+
+The build has saved Polish test instructions and two App Clip invocations:
+
+| Title | Invocation URL |
+| --- | --- |
+| Koszyki · 24 | https://papupay.com/go/koszyki/24 |
+| Koszyki · 37 | https://papupay.com/go/koszyki/37 |
+
+Open [PapuPay TestFlight](https://appstoreconnect.apple.com/apps/6826778125/testflight/ios) to manage the build. On the iPhone, install TestFlight and accept the invitation to the personal App Store Connect account. Choose the full app or the Clip, then select a table invocation. Apple permits one of the full app and Clip on a device at a time. See [iPhone testing](IPHONE-TESTING.md) for the demo checklist.
+
+App Clip launch inside TestFlight differs from a public Camera QR launch; public domain invocation still needs Apple's released experience. Physical-device visual/performance verification is separate from Apple reporting an installation.
 
 ## References
 

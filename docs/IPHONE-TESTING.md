@@ -17,7 +17,15 @@ Android and other browsers use the same hosted responsive web app. Deployment de
 
 ## Cloud signing without local Xcode sign-in
 
-The GitHub Actions workflows can archive and upload all four targets on a hosted Mac. See [Cloud builds and TestFlight](CLOUD-BUILDS.md) for the one-time Apple API and encrypted secret setup. Once the uploaded build is available in TestFlight, install it directly on the iPhone.
+Version **1.0 (2.1)** was successfully signed and uploaded from GitHub Actions on 25 October 2026. Local Xcode sign-in is not required. See [Cloud builds and TestFlight](CLOUD-BUILDS.md) for the verified workflow and encrypted secret configuration.
+
+1. Install Apple’s **TestFlight** app on your iPhone.
+2. Open the TestFlight invitation sent to the personal Apple account used for App Store Connect, and accept it.
+3. Open **PapuPay** in TestFlight. Install the full app, or select the App Clip experience. Only one of the full app and its Clip can be installed at a time; TestFlight lets you switch.
+4. For the Clip, launch **Koszyki · 24** or **Koszyki · 37** and confirm the corresponding table before ordering.
+5. Place a demo order, allow Live Activities if asked, and inspect the Lock Screen / Dynamic Island.
+
+This is an internal beta; no public TestFlight invitation link is enabled. TestFlight installs do not require pairing your iPhone with this Mac or signing into Xcode.
 
 ## Native app and App Clip from Xcode
 
@@ -29,7 +37,7 @@ The GitHub Actions workflows can archive and upload all four targets on a hosted
 6. Change the scheme environment URL’s final path segment to 37 and run again to confirm invocation context. The simulator verification used the actual Clip bundle and table 37.
 7. Place a demo order, allow Live Activities if iOS asks, then lock the phone. Inspect the activity; on supported phones also inspect Dynamic Island. Return to PapuPay or use the demo-ready button to advance status.
 
-**Current signing limitation:** this Mac reported zero valid code-signing identities during verification. Simulator and unsigned device builds succeed, but a signed physical iPhone installation was not performed. The project now selects the existing personal team `5W4JVD497D`. This managed Mac rejects personal Apple Account sign-in in Xcode. Use a personal Mac or an approved build environment to sign and upload; do not bypass the device policy. Browser sign-in alone does not provide signing credentials.
+**Local Xcode limitation:** this managed Mac rejects personal Apple Account sign-in. The project uses personal team `5W4JVD497D`, and cloud signing/upload now succeeds without installing signing credentials on this Mac. Use TestFlight above; do not bypass the managed-device policy. App Store Connect reports an internal tester installation of 1.0 (2.1); hands-on visual, interaction and performance testing on the phone still belongs to the tester.
 
 ## Test the actual scan-to-App-Clip card
 
@@ -39,7 +47,7 @@ For local development, install/run the signed Clip once, then use iPhone **Setti
 
 `docs/testing/koszyki-table-24.png` contains `https://papupay.com/go/koszyki/24`. Register that exact URL as the local experience. Older `clip-table-24` artifacts use the original `.example` placeholder and are retained only as historical development assets.
 
-The real `papupay.com` domain, associated-domain entitlements and AASA file now use the registered team and production bundle IDs. App Store Connect record `6826778125` exists. Archive/upload the containing PapuPay app, configure its default and advanced App Clip experiences, then use TestFlight for pre-release testing. Public activation requires Apple review and release; DNS alone does not activate the Clip. See `DOMAIN-AND-QR.md`.
+The real `papupay.com` domain, associated-domain entitlements and AASA file now use the registered team and production bundle IDs. App Store Connect record `6826778125` exists. The containing app and Clip are uploaded, with pre-release invocation testing configured in TestFlight. Configure the default and advanced App Clip experiences for the separate public release. Public activation requires Apple review and release; DNS alone does not activate the Clip. See `DOMAIN-AND-QR.md`.
 
 ## Size budget
 
@@ -55,7 +63,7 @@ python3 scripts/check-clip-size.py \
   /tmp/papupay-release/Build/Products/Release-iphoneos/PapuPayClip.app --json
 ```
 
-See `docs/verification/clip-size.json` for the measured build. Keep enough margin for signing and future content. The final signed Xcode archive / App Store thinned size report remains authoritative. Optimize imagery and fonts first; avoid bundling a full video or a large 3D engine. The custom `.riv` is about 348 KB.
+The successful cloud-signed archive measures **8.99 MB** including Rive, its Live Activity extension and signing material (`docs/verification/cloud-clip-size.json`). The earlier local unsigned device build is retained in `clip-size.json` as historical evidence. Keep margin for future content. Apple’s thinned size report remains the authoritative distribution measurement. Optimize imagery and fonts first; avoid bundling a full video or a large 3D engine. The custom `.riv` is about 348 KB.
 
 ## Live Activity boundaries
 
