@@ -1,0 +1,26 @@
+{
+  "archive": "PapuPay.xcarchive",
+  "bundles": [
+    {
+      "bundle": "com.papupay.app",
+      "version": "1.0",
+      "build": "4.1"
+    },
+    {
+      "bundle": "com.papupay.app.Clip",
+      "version": "1.0",
+      "build": "4.1"
+    },
+    {
+      "bundle": "com.papupay.app.LiveActivity",
+      "version": "1.0",
+      "build": "4.1"
+    },
+    {
+      "bundle": "com.papupay.app.Clip.LiveActivity",
+      "version": "1.0",
+      "build": "4.1"
+    }
+  ],
+  "passed": true
+}

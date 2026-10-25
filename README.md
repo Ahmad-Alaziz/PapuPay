@@ -26,7 +26,7 @@ The React app works on Android, iPhone, and desktop browsers. It has no login an
 
 Open `apps/ios/PapuPay.xcodeproj` in Xcode. Select **PapuPay** for the full app or **PapuPayClip** for the App Clip. The project contains separate Live Activity extensions for both. iOS 17+ is supported; native Liquid Glass appears on iOS 26+.
 
-Build **1.0 (2.1)** is uploaded to TestFlight through GitHub Actions, with cloud signing and no local Xcode sign-in. See [cloud builds](docs/CLOUD-BUILDS.md). Simulator builds need no development team. Physical iPhone builds outside TestFlight need Apple signing. The Clip scheme already supplies `_XCAppClipURL=https://papupay.com/go/koszyki/24` for Xcode testing. Read [the complete iPhone and QR testing guide](docs/IPHONE-TESTING.md).
+Build **1.0 (4.1)** is available in the PapuPay Demo internal group and uploaded to TestFlight through GitHub Actions, with cloud signing and no local Xcode sign-in. See [cloud builds](docs/CLOUD-BUILDS.md). Simulator builds need no development team. Physical iPhone builds outside TestFlight need Apple signing. The Clip scheme already supplies `_XCAppClipURL=https://papupay.com/go/koszyki/24` for Xcode testing. Read [the complete iPhone and QR testing guide](docs/IPHONE-TESTING.md).
 
 ## Try the complete journey
 

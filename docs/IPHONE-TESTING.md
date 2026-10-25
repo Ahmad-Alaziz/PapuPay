@@ -17,7 +17,7 @@ Android and other browsers use the same hosted responsive web app. Deployment de
 
 ## Cloud signing without local Xcode sign-in
 
-Version **1.0 (2.1)** was successfully signed and uploaded from GitHub Actions on 25 October 2026. Local Xcode sign-in is not required. See [Cloud builds and TestFlight](CLOUD-BUILDS.md) for the verified workflow and encrypted secret configuration.
+Version **1.0 (4.1)** was successfully signed and uploaded from GitHub Actions on 25 October 2026. Local Xcode sign-in is not required. See [Cloud builds and TestFlight](CLOUD-BUILDS.md) for the verified workflow and encrypted secret configuration.
 
 1. Install Apple’s **TestFlight** app on your iPhone.
 2. Open the TestFlight invitation sent to the personal Apple account used for App Store Connect, and accept it.

@@ -94,3 +94,14 @@ This section supersedes the earlier typography/motion/timing details above.
 - Native home, pickup tickets, map and Rive onboarding were visually inspected. The map now exposes one coherent accessibility description instead of repeating it for every shape. Native horizontal dish cards reserve two title lines for consistent alignment.
 - Custom Rive scenes validated with zero warnings/errors and rendered in both runtimes. Runtime inputs now use data binding. Whole-scene transitions replace title-only swaps. Global one-second UI invalidations were removed; countdowns update locally and Rive pauses when hidden.
 - Native notification permission and finite background execution remain OS-controlled. Long-running server push, real payments/POS, closed-tab web push and physical-device frame profiling remain outside this local-data MVP.
+
+
+## Final refinement delivery — build 1.0 (4.1)
+
+- Final application commit: `e3b08e48f97b82be3f4ef90eb2166958db736b4c`. [Signed workflow 40186489169](https://github.com/Ahmad-Alaziz/PapuPay/actions/runs/40186489169) passed and uploaded with no errors. All four signed bundles passed packaging checks.
+- Signed raw App Clip: **9,042,651 bytes / 9.043 MB**; **5,957,349 bytes** remain under the 15 MB gate. See `refinement-signed-clip-size.json`. Apple's thinned measurement remains authoritative.
+- Apple processed **1.0 (4.1)** and the existing **PapuPay Demo** internal group reports **Testing**. Polish release instructions and App Clip table-24/table-37 invocations are saved. No external review or public release was submitted.
+- Vercel reports the final application commit deployed successfully: [deployment FCNKCeDyBWMFS3f8zL4EeYp4u3G9](https://vercel.com/ahmadalazizs-projects/papupay/FCNKCeDyBWMFS3f8zL4EeYp4u3G9). The core redesigned production journey, typography and Rive scenes were checked on the first refinement deployment. The final count-copy and confirmation-ready changes passed local web and native checks. A subsequent production browser refresh was blocked after redirecting to a Cloudflare block origin; no bypass was attempted.
+- The confirmation stays open and automatically transitions from cooking to the ready receipt, new title, pickup instructions and action. Verified in both the browser and final native simulator build. Polish single-item and single-kitchen labels were corrected.
+- Final native screenshot: `docs/screenshots/v3-native-ready.png`. The earlier home, map and order screenshots show the same visual system.
+- Physical-iPhone frame profiling is still unobserved. This release uses real native local notifications and finite background demo ActivityKit updates; reliable production push and closed-tab browser notifications still require a backend.
