@@ -63,7 +63,7 @@ python3 scripts/check-clip-size.py \
   /tmp/papupay-release/Build/Products/Release-iphoneos/PapuPayClip.app --json
 ```
 
-The successful cloud-signed archive measures **9.13 MB** including Rive, its Live Activity extension and signing material (`docs/verification/v6-signed-clip-size.json`). The earlier local unsigned device build is retained in `clip-size.json` as historical evidence. Keep margin for future content. Apple’s thinned size report remains the authoritative distribution measurement. Optimize imagery and fonts first; avoid bundling a full video or a large 3D engine. The order-journey `.riv` is about 352 KB. The new combo hero adds a 909 KB Rive scene, three optimized cutouts and matching still poses. The final signed size is checked again on every cloud upload.
+The successful cloud-signed archive measures **11.04 MB** including Rive, its Live Activity extension and signing material (`docs/verification/v7-signed-clip-size.json`). The earlier local unsigned device build is retained in `clip-size.json` as historical evidence. Keep margin for future content. Apple’s thinned size report remains the authoritative distribution measurement. Optimize imagery and fonts first; avoid bundling a full video or a large 3D engine. The order-journey `.riv` is about 352 KB. The new combo hero adds a 909 KB Rive scene, three optimized cutouts and matching still poses. The final signed size is checked again on every cloud upload.
 
 ## Live Activity boundaries
 
