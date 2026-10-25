@@ -33,8 +33,18 @@ Checked on 25 October 2026 using the local production web build and Xcode 27.1 /
 
 No physical iPhone installation was completed: the Mac has no valid signing identity. No real payment or POS order was sent. This is a local-data MVP, with foreground-driven Live Activity updates. The diagrammatic table location is illustrative. Full VoiceOver, all Dynamic Type settings, physical-device performance, dark appearance, and signed thinned archive checks remain release qualification work.
 
-Screenshots are in `docs/screenshots`. Hosting deployment details are appended after the deployment result is verified.
+Screenshots are in `docs/screenshots`. Verified hosting deployment details follow.
 
 ## Hosting status
 
-The user selected GitHub repository `Ahmad-Alaziz/PapuPay` and Vercel for hosting on 25 October 2026. Root-level Vercel configuration is included. The previously reserved Sites project has no deployment and is not the selected hosting destination.
+GitHub repository `Ahmad-Alaziz/PapuPay` is connected to the Vercel `papupay` project. Production is live at https://papupay.vercel.app/ on the existing Hobby workspace, with root-level build configuration and `main` as the production branch.
+
+Hosted checks on 25 October 2026:
+
+- Public HTML loads without authentication.
+- Classic Smash + Tantanmen ramen produce the correct 82 zł checkout total and two persisted kitchen tickets.
+- `/clip?venue=koszyki&table=37` renders the React fallback with table 37.
+- Self-hosted font, image and Rive assets render. No browser console errors were observed; the Rive runtime emits a non-blocking deprecation warning for state-machine inputs, which should be migrated before a future major runtime upgrade.
+- A public table-24 QR is included as PNG and SVG in `docs/testing`.
+
+The previously reserved Sites project has no deployment and is not the selected hosting destination.
