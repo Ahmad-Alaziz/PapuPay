@@ -32,7 +32,7 @@ struct RestaurantView: View {
             Text(restaurant.name).font(Papu.display(42))
             Text(
               store.text(restaurant.cuisine, restaurant.cuisineEn)
-                + " · \(restaurant.minutes)–\(restaurant.minutes+5) min"
+                + store.text(" · Demo 12–28 s", " · Demo 12–28 sec")
             ).font(Papu.body(14))
           }.foregroundStyle(Papu.butter).padding(25)
         }.frame(height: 250)
@@ -211,6 +211,7 @@ struct FlowTags: View {
 struct BasketView: View {
   @EnvironmentObject var store: PapuStore
   @Environment(\.dismiss) private var dismiss
+  @Environment(\.accessibilityReduceMotion) private var reduceMotion
   @State private var checkout = false
   @State private var name = ""
   @State private var paying = false
@@ -250,58 +251,77 @@ struct BasketView: View {
                 }
               }.frame(maxWidth: .infinity).padding(.vertical, 40)
             } else {
-              ForEach(store.groupedCart, id: \.0.id) { restaurant, lines in
-                VStack(alignment: .leading, spacing: 17) {
-                  HStack(spacing: 9) {
-                    Text(String(restaurant.name.prefix(1))).font(Papu.display(18)).frame(
-                      width: 29, height: 29
-                    ).background(
-                      Color(hex: restaurant.color), in: RoundedRectangle(cornerRadius: 9))
-                    Text(restaurant.name).font(Papu.body(15).bold())
-                    Spacer()
-                    Text(store.text("Lokal ", "Unit ") + String(restaurant.unit)).font(
-                      Papu.body(12)
-                    ).foregroundStyle(Papu.muted)
+              if !checkout {
+                ForEach(store.groupedCart, id: \.0.id) { restaurant, lines in
+                  VStack(alignment: .leading, spacing: 17) {
+                    HStack(spacing: 9) {
+                      Text(String(restaurant.name.prefix(1))).font(Papu.display(18)).frame(
+                        width: 29, height: 29
+                      ).background(
+                        Color(hex: restaurant.color), in: RoundedRectangle(cornerRadius: 9))
+                      Text(restaurant.name).font(Papu.body(15).bold())
+                      Spacer()
+                      Text(store.text("Lokal ", "Unit ") + String(restaurant.unit)).font(
+                        Papu.body(12)
+                      ).foregroundStyle(Papu.muted)
+                    }
+                    ForEach(lines) { line in
+                      HStack(alignment: .top, spacing: 13) {
+                        FoodPhoto(name: line.item.image).frame(width: 66, height: 72).clipped()
+                          .clipShape(RoundedRectangle(cornerRadius: 12))
+                        VStack(alignment: .leading, spacing: 6) {
+                          Text(store.text(line.item.name, line.item.nameEn)).font(
+                            Papu.body(15).weight(.semibold))
+                          if line.extra {
+                            Text(store.text("+ Dodatkowy sos", "+ Extra sauce")).font(Papu.body(12))
+                              .foregroundStyle(Papu.muted)
+                          }
+                          if !line.note.isEmpty {
+                            Text(line.note).font(Papu.body(12)).foregroundStyle(Papu.muted)
+                          }
+                          HStack {
+                            HStack(spacing: 4) {
+                              Button {
+                                store.change(line, by: -1)
+                              } label: {
+                                Image(systemName: "minus").font(.system(size: 11)).frame(
+                                  width: 44, height: 44)
+                              }.accessibilityLabel(
+                                store.text("Zmniejsz ", "Decrease ") + line.item.name)
+                              Text(verbatim: String(line.quantity)).font(Papu.body(13).bold())
+                              Button {
+                                store.change(line, by: 1)
+                              } label: {
+                                Image(systemName: "plus").font(.system(size: 11)).frame(
+                                  width: 44, height: 44)
+                              }.disabled(line.quantity >= 20).accessibilityLabel(
+                                store.text("Zwiększ ", "Increase ") + line.item.name)
+                            }.background(Papu.sage, in: Capsule())
+                            Spacer()
+                            Text(money(line.total, english: store.english)).font(
+                              Papu.body(14).bold())
+                          }
+                        }.frame(maxWidth: .infinity, alignment: .leading)
+                      }.disabled(paying)
+                    }
+                  }.padding(.vertical, 5)
+                }
+              } else {
+                HStack(spacing: 14) {
+                  Image(systemName: "takeoutbag.and.cup.and.straw.fill").font(.title2)
+                    .foregroundStyle(Papu.green)
+                  VStack(alignment: .leading, spacing: 4) {
+                    Text(store.text("Twój koszyk jest gotowy.", "Your basket is ready.")).font(
+                      Papu.display(20))
+                    Text(
+                      "\(store.count) "
+                        + store.text(
+                          "produktów · \(store.groupedCart.count) kuchnie",
+                          "items · \(store.groupedCart.count) kitchens")
+                    )
+                    .font(Papu.body(13)).foregroundStyle(Papu.muted)
                   }
-                  ForEach(lines) { line in
-                    HStack(alignment: .top, spacing: 13) {
-                      FoodPhoto(name: line.item.image).frame(width: 66, height: 72).clipped()
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
-                      VStack(alignment: .leading, spacing: 6) {
-                        Text(store.text(line.item.name, line.item.nameEn)).font(
-                          Papu.body(15).weight(.semibold))
-                        if line.extra {
-                          Text(store.text("+ Dodatkowy sos", "+ Extra sauce")).font(Papu.body(12))
-                            .foregroundStyle(Papu.muted)
-                        }
-                        if !line.note.isEmpty {
-                          Text(line.note).font(Papu.body(12)).foregroundStyle(Papu.muted)
-                        }
-                        HStack {
-                          HStack(spacing: 4) {
-                            Button {
-                              store.change(line, by: -1)
-                            } label: {
-                              Image(systemName: "minus").font(.system(size: 11)).frame(
-                                width: 44, height: 44)
-                            }.accessibilityLabel(
-                              store.text("Zmniejsz ", "Decrease ") + line.item.name)
-                            Text(verbatim: String(line.quantity)).font(Papu.body(13).bold())
-                            Button {
-                              store.change(line, by: 1)
-                            } label: {
-                              Image(systemName: "plus").font(.system(size: 11)).frame(
-                                width: 44, height: 44)
-                            }.disabled(line.quantity >= 20).accessibilityLabel(
-                              store.text("Zwiększ ", "Increase ") + line.item.name)
-                          }.background(Papu.sage, in: Capsule())
-                          Spacer()
-                          Text(money(line.total, english: store.english)).font(Papu.body(14).bold())
-                        }
-                      }.frame(maxWidth: .infinity, alignment: .leading)
-                    }.disabled(paying)
-                  }
-                }.padding(.vertical, 5)
+                }.padding(18).papuCard()
               }
               if !checkout && !store.cart.contains(where: { $0.itemId == "bar-lemonade" }) {
                 Button {
@@ -325,6 +345,19 @@ struct BasketView: View {
                 }.buttonStyle(PressStyle())
               }
               if checkout {
+                Toggle(isOn: $store.wantsReadyAlerts) {
+                  VStack(alignment: .leading, spacing: 5) {
+                    Label(
+                      store.text("Daj znać, gdy gotowe", "Tell me when it’s ready"),
+                      systemImage: "bell.badge"
+                    )
+                    .font(Papu.body(16).weight(.semibold))
+                    Text(
+                      store.text("Demo: gotowe za 12–28 sekund.", "Demo: ready in 12–28 seconds.")
+                    )
+                    .font(Papu.body(13)).foregroundStyle(Papu.muted)
+                  }
+                }.tint(Papu.green).padding(18).papuCard().disabled(paying)
                 VStack(alignment: .leading, spacing: 10) {
                   Text(store.text("Jak mamy Cię wołać?", "What should we call you?")).font(
                     Papu.body(14).bold())
@@ -370,12 +403,12 @@ struct BasketView: View {
                   Task {
                     try? await Task.sleep(for: .seconds(1.4))
                     guard !Task.isCancelled else { return }
-                    store.placeOrder(name: name)
+                    await store.placeOrder(name: name)
                     paying = false
                     withAnimation(.spring) { success = true }
                   }
                 } else {
-                  withAnimation { checkout = true }
+                  withAnimation(.smooth(duration: 0.3)) { checkout = true }
                 }
               } label: {
                 HStack {
@@ -394,7 +427,7 @@ struct BasketView: View {
               }.disabled(paying).buttonStyle(PressStyle())
               if checkout {
                 Button {
-                  checkout = false
+                  withAnimation(.smooth(duration: 0.3)) { checkout = false }
                 } label: {
                   Label(store.text("Wróć do koszyka", "Back to basket"), systemImage: "arrow.left")
                     .font(Papu.body(13)).frame(maxWidth: .infinity)
@@ -406,8 +439,9 @@ struct BasketView: View {
                   "Collect your food at each restaurant’s counter.")
               ).font(Papu.body(12)).foregroundStyle(Papu.muted).frame(maxWidth: .infinity)
             }
-          }.padding(25).padding(.top, 24).padding(.bottom, 20)
-        }
+          }.padding(24).padding(.top, 24).padding(.bottom, 20)
+        }.id(checkout).transition(
+          reduceMotion ? .opacity : .opacity.combined(with: .offset(x: checkout ? 24 : -24)))
       }
     }.background(Papu.cream).foregroundStyle(Papu.ink).overlay(alignment: .topTrailing) {
       if !paying { SheetClose() }
@@ -416,9 +450,9 @@ struct BasketView: View {
   private var successView: some View {
     ScrollView {
       VStack(spacing: 20) {
-        PapuAnimation(celebrate: true).frame(height: 235)
+        PapuAnimation(scene: 3).frame(height: 220)
         Eyebrow(text: store.text("TERAZ CHWILA DLA CIEBIE.", "NOW TAKE A MOMENT."))
-        Text(store.text("Papu się robi!", "Good things are cooking!")).font(Papu.display(42))
+        Text(store.text("Już się robi.", "On its way.")).font(Papu.display(42))
           .multilineTextAlignment(.center)
         Text(
           store.text(
@@ -434,6 +468,9 @@ struct BasketView: View {
           Text("Hala Koszyki").font(Papu.body(13)).foregroundStyle(Papu.muted)
         }.font(Papu.body(16).bold()).padding(18).background(
           Papu.sage, in: RoundedRectangle(cornerRadius: 16))
+        if let message = store.notificationMessage {
+          Label(message, systemImage: "bell").font(Papu.body(13)).foregroundStyle(Papu.muted)
+        }
         PrimaryButton(title: store.text("Śledź moje papu", "Track my food"), symbol: "arrow.right")
         {
           dismiss()

@@ -9,7 +9,16 @@ struct SVGShape: Shape {
     self.data = data
     self.canvas = canvas
   }
+  private static let cache = NSCache<NSString, CachedPath>()
+  private final class CachedPath { let path: Path; init(_ path: Path) { self.path = path } }
   func path(in rect: CGRect) -> Path {
+    let cached: Path
+    if let value = Self.cache.object(forKey: data as NSString) { cached = value.path }
+    else { cached = parse(); Self.cache.setObject(CachedPath(cached), forKey: data as NSString) }
+    return cached.applying(CGAffineTransform(scaleX: rect.width / canvas.width, y: rect.height / canvas.height))
+      .applying(CGAffineTransform(translationX: rect.minX, y: rect.minY))
+  }
+  private func parse() -> Path {
     let regex = try! NSRegularExpression(
       pattern: "[MmLlHhVvCcQqZz]|[-+]?(?:[0-9]*\\.)?[0-9]+(?:[eE][-+]?[0-9]+)?")
     let ns = data as NSString
@@ -74,7 +83,6 @@ struct SVGShape: Shape {
       default: i = tokens.count
       }
     }
-    return path.applying(
-      CGAffineTransform(scaleX: rect.width / canvas.width, y: rect.height / canvas.height))
+    return path
   }
 }

@@ -21,7 +21,7 @@
 	<key>NSAppClip</key>
 	<dict>
 		<key>NSAppClipRequestEphemeralUserNotification</key>
-		<false/>
+		<true/>
 		<key>NSAppClipRequestLocationConfirmation</key>
 		<false/>
 	</dict>
@@ -31,6 +31,7 @@
 	<array>
 		<string>PapuDisplay-Bold.ttf</string>
 		<string>PapuDisplay-ExtraBold.ttf</string>
+		<string>PapuPoster.ttf</string>
 	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>

@@ -1,72 +1,57 @@
-# PapuPay design and Apple HIG review
+# PapuPay design review — 25 October 2026
 
-## Design thesis
+## Direction
 
-PapuPay should feel like the friendly host at a shared table: warm, appetizing, and clear enough to order immediately. The signature is a dimensional papaya with QR-like seeds, paired with expressive food photography, butter paper surfaces, forest-green controls, and restrained orange moments.
+The user's latest references are more emphatic than the original soft concept: extra-bold friendly sans headings, condensed poster lettering, paper tickets, generous food imagery and calm rounded surfaces. This pass replaces the thin editorial feeling with **DM Sans 800** for headings, **Anton** for the opening poster and counter numbers, and **Fredoka 650** for the capitalized **PapuPay** wordmark. The dimensional papaya remains the brand mark. The reference images supplied direction only; their contact details and text were not copied into the product.
 
-The ordering hierarchy is: table context → cravings → restaurant → dish → one basket → separate kitchen tickets → pickup. The brand makes the opening memorable; controls use familiar conventions.
+Research: [Food ordering app](https://dribbble.com/shots/23147654-Food-ordering-app), [Burger & Pizza](https://dribbble.com/shots/26971353-Burger-Pizza-Food-App-UI-UX-Design), [CoCoNuts](https://dribbble.com/shots/20468519-CoCoNuts-Restaurant-App), [Gourmeat](https://www.behance.net/gallery/239040745/Gourmeat-Food-APP-UI-UX-Mobile-App-Orbix-Studio), [QuickCrave](https://www.behance.net/gallery/255115259/QuickCrave-Building-a-Bold-Food-Ordering-Experience), [Ordr](https://www.behance.net/gallery/120875341/Ordr-Food-Delivery-App-Launch-Campaign), and [Peazi](https://creativespark.co.uk/work/peazi/). Useful principles were food-first hierarchy, a recognizable typographic voice, restrained chrome and immediate action feedback. The implementation is original.
 
-## Research and type decision
+## Type and spacing
 
-Reviewed Dribbble and Behance food-ordering and identity work, including:
-
-- [Eatsy — Food Delivery App UI & Visual Identity](https://www.behance.net/gallery/232601021/Food-Delivery-App-UI-Visual-Identity): warm identity and clear contrast between expressive branding and ordering information. Its Recoleta direction was considered, not copied.
-- [Purrmato — Delivery Mobile iOS App](https://dribbble.com/shots/24642221-Delivery-Mobile-iOS-App-Design-Concept): orange accents, large food images, and disciplined interface typography. Its Forma direction informed the need for calmer controls.
-- [Fresh Food delivery UI](https://dribbble.com/shots/16973141): food imagery and discovery hierarchy, reviewed during initial research.
-
-Compared the actual PapuPay wordmark, Polish headings and menu cards in Bricolage Grotesque + Manrope and Fraunces + Manrope. Selected **Bricolage Grotesque**: distinctive forms and a strong lowercase rhythm without the uniformly bubbly appearance of the previous Fredoka direction. Fraunces was too editorial for the main ordering flow.
-
-The logo is explicitly **PapuPay**, capital P twice, weight 800, optical sizing, tighter wordmark tracking. The 3D papaya adds depth without making every UI component decorative.
-
-Fonts are self-hosted, OFL-licensed, and include Polish glyphs. iOS uses named static Bricolage instances for predictable rendering and smaller bundles; native body and controls use system text styles with Dynamic Type.
-
-## Tokens and hierarchy
-
-| Role | Web | iOS |
-| --- | --- | --- |
-| Brand | Bricolage 800, 29 mobile / 36 desktop | Bricolage 800, 27 navigation |
-| Hero | Bricolage 750, 43–58 mobile / 56–80 desktop | Bricolage Bold, 43–48 base, Dynamic Type |
-| Section title | Bricolage 700, 34 mobile / 44 desktop | Bricolage Bold, 34 base |
-| Card heading | Bricolage 650–700, 22–26 | Bricolage Bold, 23 |
-| Main body | Manrope 500, 16–17 | SF body/callout styles |
-| Metadata | Manrope 11–14, medium | SF caption/footnote styles |
-
-Spacing scale: **4, 8, 12, 16, 20, 24, 32, 40, 48, 64**. Mobile page gutters 20 web / 24 native; desktop gutters 40. Sheets use 24 mobile / 32 desktop. Card gaps 16 mobile and 24 desktop, with more vertical separation between restaurants. Primary actions are at least 52 high. Compact icon actions, favorites, close, map zoom, and quantity controls have 44-point/pixel targets.
-
-| Color | Purpose |
+| Role | Choice |
 | --- | --- |
-| `#173C2B` | Primary text and main actions |
-| `#FBF7ED` | Paper background |
-| `#FFF2D6` | Butter accents / text on dark buttons |
-| `#FF8848` | Brand papaya and decorative orange |
-| `#C95521` | Large orange headline text |
-| `#2B744B` | Green accents |
-| `#536451` | Secondary reading text |
+| Brand | Fredoka 650, capital P twice; dimensional papaya |
+| Hero / counter number | Anton; short uppercase phrases, never long reading text |
+| Headings | DM Sans 800; 28–40 page, 21–26 card |
+| Web body | DM Sans 450–650; 14–17 reading text |
+| Native body | System semantic text styles and Dynamic Type |
+| Page gutters | 20 mobile; 40 desktop |
+| Spacing scale | 4, 8, 12, 16, 20, 24, 32, 40, 48, 64 |
+| Touch controls | 44 minimum; primary actions 52+ |
+| Card shape | 22–28 radii; pills reserved for controls/status |
 
-Measured on paper: primary text 11.43:1. The original muted `#61705F` was 4.92:1; the final muted tone is darker. Orange headline `#C95521` is 4.09:1, suitable for large bold text. Bright papaya orange is reserved for logos, illustration and accents, not small reading text.
+Native fonts are static, Polish-capable subsets. Their line metrics were normalized to remove excessive blank leading while retaining full glyph bounds for accents. Fonts and OFL licenses are self-hosted.
 
-## Apple Design Skill applied
+## Palette
 
-User-requested skill: [dickwu/apple-design-skill](https://github.com/dickwu/apple-design-skill/blob/main/SKILL.md). Read its accessibility, layout, typography, color, iOS, branding, motion, Liquid Glass, buttons and cross-platform references before this pass.
-
-Audit findings and changes, using the skill’s review format:
-
-| Severity | Finding → correction | Reference |
+| Token | Value | Use |
 | --- | --- | --- |
-| High | Small quantity/favorite targets → 44-point targets, without relying on tiny glyphs | `references/accessibility.md`, buttons and touch targets |
-| High | Mobile sticky add-to-basket footer partly offscreen → anchored at bottom 0 with safe-area padding | `references/layout.md`, safe areas |
-| Medium | All headings had the same bubbly voice → expressive Bricolage headings plus restrained body text | `references/typography.md`, hierarchy; `branding.md` |
-| Medium | Restaurant names shrank to fit → natural wrapping; native accessibility sizes use a single column | `references/accessibility.md`, larger text |
-| Medium | Native custom small body fonts → native text-style roles with Dynamic Type | `references/typography.md` |
-| Medium | Bright orange headline contrast → darker text-specific orange | `references/color.md`, contrast |
-| Medium | Glass used for static table content → solid paper pill; native glass retained for navigation and actions | `references/liquid-glass.md`, control layer |
-| Medium | Lock Screen inherited device RTL layout despite English content → explicit selected-language locale and LTR activity content | `references/designing-for-ios.md`, platform behavior |
-| Low | Decorative labels competed with food → reduced hero ornaments and consistent metadata spacing | `references/branding.md`, deference to content |
+| Forest | #123C2D | Primary text/actions |
+| Paper | #FAF6ED | Reading surfaces |
+| Papaya | #FF7837 | Illustration, counter badge, active accent |
+| Text orange | #B7471B | Orange text requiring contrast |
+| Green | #2B744B | Ready state and secondary emphasis |
+| Butter | #FFF2D6 | Pickup number and warm accents |
 
-Native navigation uses system TabView and NavigationStack, with actual iOS 26 Liquid Glass rather than a web imitation. The browser uses translucent CSS navigation as an analogous treatment. Both retain solid food cards. Reduced Motion replaces the Rive animation with the static papaya; web transitions honor the media query. Web increased-contrast / reduced-transparency requests make the floating controls opaque. Native glass follows system accessibility behavior.
+Bright orange carries dark text. It is not used for small orange-on-paper reading text. Ready states use both text/checkmarks and green, never color alone.
 
-The demo deliberately has a light art direction. A full semantic dark palette, exhaustive VoiceOver auditing and testing every Dynamic Type size on physical hardware remain production work; this document does not claim complete HIG compliance.
+## Apple design review
 
-## Motion
+Applied the requested [Apple design skill](https://github.com/dickwu/apple-design-skill/blob/main/SKILL.md), including typography, layout, motion, accessibility, notifications, Live Activities and Liquid Glass references.
 
-Motion answers a user action: scan focuses the papaya, adding food confirms locally, checkout celebrates, map selection highlights a destination. Idle movement is gentle. The Rive is a custom state machine with an embedded dimensional illustration, not a real-time 3D model. See `MOTION.md` for editable sources and reproduction.
+| Severity | Finding → correction |
+| --- | --- |
+| High | Missing food-ready alert → permission-aware, OS-scheduled per-kitchen local notification, with table/order/counter context and a deep link |
+| High | Notification tap restoration crash → completion-handler delegate with main-actor completion; retested successfully |
+| High | Rewritten widget lacked an entry point → restored WidgetBundle and verified actual Lock Screen rendering |
+| Medium | Thin/undifferentiated type → heavy DM Sans, focused Anton poster and friendly Fredoka brand |
+| Medium | Title-only checkout/onboarding changes → transition each complete scene, illustration and copy together |
+| Medium | Global one-second rendering → stage-boundary store changes, scoped countdowns, cached paths/formatters |
+| Medium | Long demo wait → first kitchen ready after 12 seconds, all nine within 28 seconds |
+| Medium | Small useful map area → food-counter focus, full-plan toggle, destination card and drawn route |
+| Medium | Unclear pickup hierarchy → perforated tickets, prominent unit/order numbers and clear route/collect actions |
+| Medium | Inconsistent widget colors → paper/forest card, orange cooking counter, green ready confirmation; restrained Dynamic Island on black |
+
+Native navigation uses real system TabView/NavigationStack Liquid Glass on iOS 26+, with paper content surfaces. Web navigation is translucent CSS. Reduced Motion disables decorative Rive loops and uses simple fades/static artwork; web reduced transparency increases control opacity. The map remains native/SVG with accessible venue controls rather than embedding essential navigation in a canvas.
+
+This is a deliberately light art direction. Exhaustive VoiceOver/Dynamic Type, physical-device frame profiling and a full semantic dark palette remain production qualification work.

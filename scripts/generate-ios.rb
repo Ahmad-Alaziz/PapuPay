@@ -64,10 +64,10 @@ ids.each do |target,bundle|
     info['UIApplicationSceneManifest'] = {'UIApplicationSupportsMultipleScenes'=>false}
     info['UISupportedInterfaceOrientations'] = ['UIInterfaceOrientationPortrait']
     info['UIRequiredDeviceCapabilities'] = ['arm64']
-    info['UIAppFonts'] = ['PapuDisplay-Bold.ttf','PapuDisplay-ExtraBold.ttf']
+    info['UIAppFonts'] = ['PapuDisplay-Bold.ttf','PapuDisplay-ExtraBold.ttf','PapuPoster.ttf']
     info['ITSAppUsesNonExemptEncryption'] = false
     info['CFBundleURLTypes'] = [{'CFBundleURLName'=>'com.papupay.app','CFBundleURLSchemes'=>['papupay']}] if target==app
-    info['NSAppClip'] = {'NSAppClipRequestEphemeralUserNotification'=>false,'NSAppClipRequestLocationConfirmation'=>false} if target==clip
+    info['NSAppClip'] = {'NSAppClipRequestEphemeralUserNotification'=>true,'NSAppClipRequestLocationConfirmation'=>false} if target==clip
   end
   Xcodeproj::Plist.write_to_path(info,File.join(ios,info_path))
   entitlements = {}

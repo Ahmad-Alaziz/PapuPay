@@ -10,63 +10,119 @@ def key(id,prop,frames,curve=(.4,0,.2,1)):
  return f'<KeyedObject objectId="0:{id}"><KeyedProperty property="{prop}">'+''.join(f'<KeyFrameDouble frame="{f}" value="{v}" interpolationType="cubic"><CubicEaseInterpolator x1="{curve[0]}" y1="{curve[1]}" x2="{curve[2]}" y2="{curve[3]}"/></KeyFrameDouble>' for f,v in frames)+'</KeyedProperty></KeyedObject>'
 def anim(id,name,duration,content,loop='oneShot'):
  return f'<LinearAnimation id="0:{id}" name="{name}" fps="60" duration="{duration}" loopValue="{loop}">{content}</LinearAnimation>'
-# First child paints on top. All illustrations are asset-local and transparent.
-emit('<Rive version="1" kind="fragment"><Artboard id="0:2" name="Papu" width="500" height="500" styleId="0:3" defaultStateMachineId="0:7"><LayoutComponentStyle id="0:3"/>')
-emit(shape(25,'Interaction surface',250,250,'<Rectangle width="420" height="440" cornerRadiusTL="100"/>','01173C2B'))
-# Celebration confetti, with a restrained papaya/leaf palette.
-for i in range(14):
- geom='<Star width="16" height="16" points="4" innerRadius="0.22"/>' if i%3==0 else '<Rectangle width="7" height="15" cornerRadiusTL="3"/>'
- emit(shape(100+i,f'Petal {i+1}',250,250,geom,['FFFF8848','FF2B744B','FFFFC66B'][i%3],0))
-# A tactile ready seal, its tick draws via a reveal scale.
-emit('<Node id="0:40" name="Ready seal" x="377" y="350" scaleX="0" scaleY="0">')
-emit('<Shape name="Tick"><PointsPath><StraightVertex x="-13" y="0"/><StraightVertex x="-3" y="10"/><StraightVertex x="16" y="-12"/></PointsPath><Stroke thickness="5" cap="round"><SolidColor colorValue="FFFFF2D6"/></Stroke></Shape>')
-emit(shape(41,'Seal',0,0,'<Ellipse width="65" height="65"/>','FF2B744B'))
-emit('</Node>')
-# Scanner frame and beam are distinct, timed parts of the scan interaction.
-emit('<Node id="0:50" name="Scan frame" opacity="0">')
-for i,(x,y,sx,sy) in enumerate([(88,85,1,1),(412,85,-1,1),(88,407,1,-1),(412,407,-1,-1)]):
- emit(f'<Shape name="Corner {i}" x="{x}" y="{y}" scaleX="{sx}" scaleY="{sy}"><PointsPath><StraightVertex x="0" y="31"/><StraightVertex x="0" y="0" radius="12"/><StraightVertex x="31" y="0"/></PointsPath><Stroke thickness="4" cap="round"><SolidColor colorValue="FF2B744B"/></Stroke></Shape>')
-emit('</Node>')
-emit('<Shape id="0:51" name="Scan beam" x="250" y="110" opacity="0"><Rectangle width="300" height="3" cornerRadiusTL="1.5"/><Fill><LinearGradient startX="-150" endX="150"><GradientStop colorValue="002B744B" position="0"/><GradientStop colorValue="FF2B744B" position="0.5"/><GradientStop colorValue="002B744B" position="1"/></LinearGradient></Fill></Shape>')
-# The brand's dimensional image, not a generic flat mascot.
-emit('<Node id="0:20" name="Papaya motion" x="250" y="237"><Image id="0:21" name="Sculpted papaya" assetId="0:900" scaleX="0.67" scaleY="0.67"/></Node>')
-for id,x,y,s,color in [(30,88,175,22,'FFFF8848'),(31,400,290,16,'FF2B744B'),(32,346,78,14,'FFFFC66B')]:
- emit(shape(id,'Twinkle',x,y,f'<Star width="{s}" height="{s}" points="4" innerRadius="0.18"/>',color,.7))
-emit('<Shape id="0:22" name="Soft landing shadow" x="250" y="432" scaleY="0.14" opacity="0.25"><Ellipse width="230" height="230"/><Fill><RadialGradient startX="0" startY="0" endX="115" endY="0"><GradientStop colorValue="50173C2B" position="0"/><GradientStop colorValue="00173C2B" position="1"/></RadialGradient></Fill></Shape>')
-emit('<Shape id="0:23" name="Quiet orbit" x="250" y="244"><Ellipse width="365" height="365"/><Stroke thickness="1.1"><SolidColor colorValue="44B1C29A"/></Stroke></Shape>')
-# Inputs retained intentionally for the pinned stable iOS runtime and React API.
-emit('''<StateMachine id="0:7" name="Papu">
-<StateMachineTrigger id="0:60" name="Celebrate"/><StateMachineTrigger id="0:61" name="Scan"/><StateMachineBool id="0:62" name="Hover"/>
-<StateMachineListenerSingle targetId="0:25" listenerTypeValue="click" name="Tap for delight"><ListenerTriggerChange inputId="0:60"/></StateMachineListenerSingle>
-<StateMachineListenerSingle targetId="0:25" listenerTypeValue="enter" name="Notice pointer"><ListenerBoolChange inputId="0:62" value="true"/></StateMachineListenerSingle>
-<StateMachineListenerSingle targetId="0:25" listenerTypeValue="exit" name="Rest"><ListenerBoolChange inputId="0:62" value="false"/></StateMachineListenerSingle>
-<StateMachineLayer name="Papaya choreography">
-<EntryState x="0" y="0"><StateTransition stateToId="0:71"/></EntryState>
-<AnyState x="0" y="-220"><StateTransition stateToId="0:73" duration="80"><TransitionTriggerCondition inputId="0:60"/></StateTransition><StateTransition stateToId="0:74" duration="80"><TransitionTriggerCondition inputId="0:61"/></StateTransition></AnyState>
-<ExitState x="700" y="-220"/>
-<AnimationState id="0:71" x="220" y="0" animationId="0:200"><StateTransition stateToId="0:72" duration="180"><TransitionBoolCondition inputId="0:62" opValue="equal"/></StateTransition></AnimationState>
-<AnimationState id="0:72" x="220" y="210" animationId="0:201"><StateTransition stateToId="0:71" duration="250"><TransitionBoolCondition inputId="0:62" opValue="notEqual"/></StateTransition></AnimationState>
-<AnimationState id="0:73" x="470" y="-110" animationId="0:202" reset="true"><StateTransition stateToId="0:71" duration="250" enableExitTime="true" exitTimeIsPercetange="true" exitTime="100"/></AnimationState>
-<AnimationState id="0:74" x="470" y="210" animationId="0:203" reset="true"><StateTransition stateToId="0:73" duration="120" enableExitTime="true" exitTimeIsPercetange="true" exitTime="100"/></AnimationState>
-</StateMachineLayer></StateMachine>''')
-def rest(duration):
- s=key(40,'scaleX',[(0,0),(duration,0)])+key(40,'scaleY',[(0,0),(duration,0)])+key(50,'opacity',[(0,0)])+key(51,'opacity',[(0,0)])
- for i in range(14):s+=key(100+i,'opacity',[(0,0)])
+
+# Five authored scenes share one data-bound state machine. No runtime scripts.
+emit('<Rive version="1" kind="fragment"><Artboard id="0:2" name="Papu" width="500" height="500" styleId="0:3" defaultStateMachineId="0:7" viewModelId="0:800" viewModelInstanceId="0:801"><LayoutComponentStyle id="0:3"/>')
+def rect(w,h,r=0):return f'<Rectangle width="{w}" height="{h}" cornerRadiusTL="{r}" cornerRadiusTR="{r}" cornerRadiusBL="{r}" cornerRadiusBR="{r}"/>'
+def line(points,color='FF123C2D',width=5):
+ return '<Shape><PointsPath>'+''.join(f'<StraightVertex x="{x}" y="{y}"/>' for x,y in points)+f'</PointsPath><Stroke thickness="{width}" cap="round" join="round"><SolidColor colorValue="{color}"/></Stroke></Shape>'
+def node(id,name,x=250,y=250,opacity=1):emit(f'<Node id="0:{id}" name="{name}" x="{x}" y="{y}" opacity="{opacity}">')
+def end():emit('</Node>')
+ink='FF123C2D';cream='FFFFF6E6';orange='FFFF7837';green='FF317A53'
+# Press feedback is driven by a second state-machine layer, independent of the journey scene.
+emit(shape(25,'Tap surface',250,250,rect(440,460,80),'01173C2B'))
+for i in range(12):
+ emit(shape(100+i,f'Confetti {i}',250,250,'<Star width="16" height="16" points="4" innerRadius="0.23"/>' if i%3==0 else rect(7,15,3),[orange,green,'FFFFC96B'][i%3],0))
+# Ready pickup ticket with perforation, bold check and tiny receipt rows.
+node(400,'Pickup ticket',250,250,0)
+node(410,'Ready stamp',65,-72)
+emit(line([(-16,0),(-4,12),(21,-15)],cream,7))
+emit(shape(411,'Seal',0,0,'<Ellipse width="78" height="78"/>',green));end()
+for i in range(9):emit(shape(420+i,'Perforation',-96+i*24,25,'<Ellipse width="5" height="5"/>','FFB9C6B0'))
+emit(shape(430,'Receipt line',-20,65,rect(125,10,5),'FFD9E1CF'))
+emit(shape(431,'Receipt line',-35,88,rect(95,8,4),'FFD9E1CF'))
+emit(shape(432,'Paid bar',0,127,rect(180,28,14),ink))
+emit('<Node name="Ticket papaya" x="-60" y="-65"><Image assetId="0:900" scaleX="0.20" scaleY="0.20"/></Node>')
+emit(shape(433,'Paper',0,0,rect(266,340,22),cream))
+emit(shape(434,'Paper edge',5,8,rect(266,340,22),'FFE1CCAA'));end()
+# Cooking cloche. Steam is independently timed, with a lifting lid.
+node(300,'Kitchen',250,270,0)
+for i in range(3):
+ node(310+i,'Steam',-46+i*46,-95)
+ emit(line([(0,0),(-7,-15),(5,-32),(0,-48)],green,6));end()
+node(320,'Cloche lid',0,0)
+emit(shape(321,'Knob',0,-70,'<Ellipse width="25" height="25"/>',ink))
+emit(shape(322,'Handle glint',-4,-74,'<Ellipse width="7" height="7"/>',cream))
+emit('<Shape name="Dome"><PointsPath isClosed="true"><CubicDetachedVertex x="-125" y="45" outRotation="-1.570796" outDistance="180"/><CubicDetachedVertex x="125" y="45" inRotation="-1.570796" inDistance="180"/></PointsPath>'+fill(orange)+'</Shape>')
+emit(shape(323,'Cloche rim',0,46,rect(280,17,8),ink));end()
+emit(shape(324,'Platter',0,70,rect(302,16,8),cream))
+emit(shape(325,'Platter shadow',0,82,rect(260,8,4),'FFCAD5C0'))
+emit(shape(326,'Progress',0,125,rect(175,8,4),green))
+end()
+# A paper takeaway bag: food coins fall in, the bag gives a soft catch.
+node(200,'Basket',250,260,0)
+node(210,'Bag body',0,35)
+emit(line([(-48,-92),(-48,-120),(48,-120),(48,-92)],ink,9))
+emit('<Node name="Bag mark" x="0" y="0"><Image assetId="0:900" scaleX="0.25" scaleY="0.25"/></Node>')
+emit(shape(212,'Bag fold',0,104,rect(218,17,3),'FFE7B876'))
+emit(shape(213,'Bag front',0,0,rect(225,230,16),'FFFAD7A2'))
+emit(shape(214,'Bag side',9,5,rect(225,230,16),'FFD49F60'));end()
+for i,(x,color) in enumerate([(-82,orange),(0,green),(82,'FFE6B633')]):
+ node(220+i,'Food coin',x,-125)
+ if i==0:
+  emit(shape(230,'Burger filling',0,2,rect(45,7,3),green));emit(shape(231,'Burger bun',0,-9,rect(45,15,7),orange));emit(shape(232,'Burger base',0,13,rect(45,8,4),orange))
+ elif i==1:
+  emit(line([(-20,-13),(20,-13)],green,6));emit(shape(233,'Noodle bowl',0,5,rect(41,24,11),orange));emit(line([(-6,-22),(5,-34)],green,3))
+ else:
+  emit(shape(234,'Drink',0,2,rect(25,40,5),orange));emit(line([(2,-18),(8,-33),(19,-33)],ink,3))
+ emit(shape(235+i,'Food circle',0,0,'<Ellipse width="77" height="77"/>',cream));end()
+end()
+# Dimensional brand and scanning frame.
+node(20,'Brand',250,236)
+emit('<Image name="Papaya sculpture" assetId="0:900" scaleX="0.60" scaleY="0.60"/>');end()
+node(50,'Scanner',0,0,0)
+for x,y,sx,sy in [(88,85,1,1),(412,85,-1,1),(88,407,1,-1),(412,407,-1,-1)]:
+ emit(f'<Node x="{x}" y="{y}" scaleX="{sx}" scaleY="{sy}">'+line([(0,31),(0,0),(31,0)],green,5)+'</Node>')
+emit(shape(51,'Scan beam',250,110,rect(310,3,1.5),green));end()
+for id,x,y,s,c in [(30,80,185,22,orange),(31,420,295,18,green),(32,355,68,17,'FFFFC96B')]:
+ emit(shape(id,'Spark',x,y,f'<Star width="{s}" height="{s}" points="4" innerRadius="0.2"/>',c))
+emit(shape(22,'Ground shadow',250,450,'<Ellipse width="230" height="18"/>','1C123C2D'))
+emit(shape(23,'Backdrop',250,250,'<Ellipse width="420" height="420"/>','FFF1E8D4'))
+def condition(value):
+ return f'<TransitionViewModelCondition><TransitionPropertyViewModelComparator><BindablePropertyNumber><DataBindContext sourcePathIds="0:800-0:802" propertyKey="636"/></BindablePropertyNumber></TransitionPropertyViewModelComparator><TransitionValueNumberComparator value="{value}"/></TransitionViewModelCondition>'
+emit('<StateMachine id="0:7" name="Papu"><StateMachineLayer name="Order journey"><EntryState x="-250" y="0"><StateTransition stateToId="0:70"/></EntryState><AnyState x="-250" y="-200"/><ExitState x="1000" y="-200"/>')
+for scene in range(5):
+ emit(f'<AnimationState id="0:{70+scene}" animationId="0:{600+scene}" x="{scene*250}" y="0">')
+ for other in range(5):
+  if scene!=other:emit(f'<StateTransition stateToId="0:{70+other}" duration="220">'+condition(other)+'</StateTransition>')
+ emit('</AnimationState>')
+emit('</StateMachineLayer>')
+for event,value in [('down','true'),('up','false'),('exit','false')]:
+ emit(f'<StateMachineListenerSingle targetId="0:25" listenerTypeValue="{event}"><ListenerViewModelChange><BindablePropertyBoolean propertyValue="{value}"><DataBindContext sourcePathIds="0:800-0:803" propertyKey="634" direction="true"/></BindablePropertyBoolean></ListenerViewModelChange></StateMachineListenerSingle>')
+def presscondition(value):
+ return f'<TransitionViewModelCondition><TransitionPropertyViewModelComparator><BindablePropertyBoolean><DataBindContext sourcePathIds="0:800-0:803" propertyKey="634"/></BindablePropertyBoolean></TransitionPropertyViewModelComparator><TransitionValueBooleanComparator value="{value}"/></TransitionViewModelCondition>'
+emit('<StateMachineLayer name="Tactile press"><EntryState x="-200" y="0"><StateTransition stateToId="0:85"/></EntryState><AnyState x="-200" y="-200"/><ExitState x="400" y="-200"/><AnimationState id="0:85" x="0" y="0" animationId="0:610"><StateTransition stateToId="0:86" duration="100">'+presscondition('true')+'</StateTransition></AnimationState><AnimationState id="0:86" x="250" y="0" animationId="0:611"><StateTransition stateToId="0:85" duration="200">'+presscondition('false')+'</StateTransition></AnimationState></StateMachineLayer></StateMachine>')
+for id,scale in [(610,1),(611,.94)]:
+ emit(anim(id,'Release' if id==610 else 'Press',1,''.join(key(node,'scaleX',[(0,scale)])+key(node,'scaleY',[(0,scale)]) for node in (20,200,300,400))))
+def base(scene):
+ s=''
+ for id,visible in [(20,scene<2),(50,scene==1),(200,scene==2),(300,scene==3),(400,scene==4)]:s+=key(id,'opacity',[(0,int(visible))])
+ for i in range(12):s+=key(100+i,'opacity',[(0,0)])
+ for id in (30,31,32):s+=key(id,'scaleX',[(0,.75),(90,1.05),(180,.75)])+key(id,'scaleY',[(0,.75),(90,1.05),(180,.75)])
  return s
-idle=key(20,'y',[(0,237),(120,230),(240,237)],(.42,0,.58,1))+key(20,'rotation',[(0,-.025),(120,.025),(240,-.025)],(.42,0,.58,1))+key(20,'scaleX',[(0,1)])+key(20,'scaleY',[(0,1)])+key(22,'scaleX',[(0,1),(120,.86),(240,1)])+rest(240)
-for id,offset in [(30,0),(31,35),(32,75)]:
- idle+=key(id,'scaleX',[(0,.7),(60+offset,1.1),(160+offset,.7),(240,.7)])+key(id,'scaleY',[(0,.7),(60+offset,1.1),(160+offset,.7),(240,.7)])
-emit(anim(200,'Breathe',240,idle,'loop'))
-hover=key(20,'y',[(0,228),(90,223),(180,228)])+key(20,'rotation',[(0,-.055),(90,-.025),(180,-.055)])+key(20,'scaleX',[(0,1.055)])+key(20,'scaleY',[(0,1.055)])+rest(180)
-emit(anim(201,'Lean in',180,hover,'loop'))
-celebrate=key(20,'y',[(0,237),(8,248),(20,201),(34,240),(46,225),(65,237),(100,237)])+key(20,'rotation',[(0,0),(8,.06),(20,-.14),(34,.07),(48,-.035),(65,0)])+key(20,'scaleX',[(0,1),(8,1.10),(20,.95),(34,1.045),(65,1)])+key(20,'scaleY',[(0,1),(8,.90),(20,1.075),(34,.96),(65,1)])+key(40,'scaleX',[(0,0),(25,0),(39,1.15),(50,1),(85,1),(100,0)])+key(40,'scaleY',[(0,0),(25,0),(39,1.15),(50,1),(85,1),(100,0)])+key(50,'opacity',[(0,0)])+key(51,'opacity',[(0,0)])
-for i in range(14):
- angle=2*math.pi*i/14;dist=190+(i%3)*18;x=250+math.cos(angle)*dist;y=240+math.sin(angle)*dist
- celebrate+=key(100+i,'x',[(0,250),(13,250),(43,x),(85,x+math.cos(angle)*15)])+key(100+i,'y',[(0,240),(13,240),(43,y),(85,y+28)])+key(100+i,'opacity',[(0,0),(12,0),(15,1),(50,1),(82,0)])+key(100+i,'rotation',[(0,0),(85,2.5+i*.2)])+key(100+i,'scaleX',[(0,.3),(23,1),(85,.4)])+key(100+i,'scaleY',[(0,.3),(23,1),(85,.4)])
-emit(anim(202,'Made your day',100,celebrate))
-scan=rest(110).replace(key(50,'opacity',[(0,0)]),'').replace(key(51,'opacity',[(0,0)]),'')
-scan+=key(20,'rotation',[(0,0),(110,0)])+key(20,'y',[(0,237)])+key(20,'scaleX',[(0,1),(20,.96),(95,.96),(110,1)])+key(20,'scaleY',[(0,1),(20,.96),(95,.96),(110,1)])+key(50,'opacity',[(0,0),(12,1),(90,1),(110,0)])+key(51,'opacity',[(0,0),(12,1),(85,1),(100,0)])+key(51,'y',[(0,105),(12,105),(85,395),(110,395)],(.3,0,.7,1))
-emit(anim(203,'Little scan big yum',110,scan))
-emit('</Artboard><ImageAsset id="0:900" name="Papaya sculpture" file="papaya.png"/></Rive>')
+for scene in range(5):
+ s=base(scene);duration=180
+ if scene<2:
+  s+=key(20,'y',[(0,236),(90,225),(180,236)])+key(20,'rotation',[(0,-.04),(90,.04),(180,-.04)])
+  s+=key(51,'y',[(0,110),(135,390),(180,110)])+key(51,'opacity',[(0,0),(15,.9),(130,.9),(145,0),(180,0)])
+ if scene==2:
+  s+=key(210,'scaleX',[(0,1),(40,1),(50,1.06),(65,1),(100,1),(110,1.06),(125,1),(160,1),(170,1.06),(180,1)])
+  for i in range(3):
+   start=i*50
+   s+=key(220+i,'y',[(0,-160),(start,-160),(start+35,-75),(start+45,0),(start+48,0),(180,0)])+key(220+i,'opacity',[(0,0),(start,0),(start+8,1),(start+34,1),(start+44,0),(180,0)])+key(220+i,'rotation',[(0,-.3),(start+40,.2)])
+ if scene==3:
+  s+=key(320,'y',[(0,0),(80,-9),(110,-5),(180,0)])+key(320,'rotation',[(0,-.015),(90,.015),(180,-.015)])
+  for i in range(3):s+=key(310+i,'y',[(0,-85),(180,-125)])+key(310+i,'opacity',[(0,0),(25+i*15,.65),(100+i*15,.65),(180,0)])
+  s+=key(326,'scaleX',[(0,.12),(180,1)])
+ if scene==4:
+  duration=240
+  s+=key(400,'rotation',[(0,-.04),(120,.04),(240,-.04)])+key(400,'y',[(0,250),(120,242),(240,250)])
+  s+=key(410,'scaleX',[(0,.2),(22,1.15),(35,1),(240,1)])+key(410,'scaleY',[(0,.2),(22,1.15),(35,1),(240,1)])
+  for i in range(12):
+   angle=math.pi*2*i/12;x=250+math.cos(angle)*220;y=250+math.sin(angle)*215
+   s=s.replace(key(100+i,'opacity',[(0,0)]),'')
+   s+=key(100+i,'opacity',[(0,0),(10,1),(45,1),(85,0),(240,0)])+key(100+i,'x',[(0,250),(45,x),(85,x)])+key(100+i,'y',[(0,250),(45,y),(85,y+30)])+key(100+i,'rotation',[(0,0),(85,2+i*.3)])
+ emit(anim(600+scene,['Welcome','Scan your table','Mix your cravings','Kitchen rhythm','Pickup moment'][scene],duration,s,'loop'))
+emit('</Artboard><ViewModel id="0:800" name="PapuJourney" defaultInstanceId="0:801"><ViewModelPropertyNumber id="0:802" name="scene"/><ViewModelPropertyBoolean id="0:803" name="pressed"/><ViewModelInstance id="0:801" name="Default" exports="true"><ViewModelInstanceNumber viewModelPropertyId="0:802" propertyValue="0"/><ViewModelInstanceBoolean viewModelPropertyId="0:803" propertyValue="false"/></ViewModelInstance></ViewModel><ImageAsset id="0:900" name="Papaya sculpture" file="papaya.png"/></Rive>')
 (ROOT/'packages/motion/papupay/scene.rml').write_text('\n'.join(parts))
-print('Authored Papu: 4 timelines, 3 inputs, pointer listeners, 14 celebration particles.')
+print('Authored five data-bound journey scenes: scan, basket, cooking and pickup with brand welcome.')

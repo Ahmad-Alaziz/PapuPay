@@ -37,12 +37,20 @@ export const initialStore: Store = {
   favorites: [],
   locale: "pl",
 };
+const priceFormatters = Object.fromEntries(
+  ["pl", "en"].flatMap((locale) =>
+    [0, 2].map((digits) => [
+      `${locale}-${digits}`,
+      new Intl.NumberFormat(locale === "pl" ? "pl-PL" : "en-GB", {
+        style: "currency",
+        currency: "PLN",
+        maximumFractionDigits: digits,
+      }),
+    ]),
+  ),
+);
 export const price = (cents: number, locale: Locale = "pl") =>
-  new Intl.NumberFormat(locale === "pl" ? "pl-PL" : "en-GB", {
-    style: "currency",
-    currency: "PLN",
-    maximumFractionDigits: cents % 100 === 0 ? 0 : 2,
-  }).format(cents / 100);
+  priceFormatters[`${locale}-${cents % 100 === 0 ? 0 : 2}`].format(cents / 100);
 export const dishFor = (id: string) => menu.find((x) => x.id === id)!;
 export const restaurantFor = (id: string) =>
   restaurants.find((x) => x.id === id)!;
@@ -111,7 +119,7 @@ export function statusFor(
     ? "collected"
     : now >= order.readyAt
       ? "ready"
-      : now - order.createdAt > 8000
+      : now - order.createdAt > 3000
         ? "preparing"
         : "received";
 }
@@ -130,7 +138,7 @@ export function createOrders(
     lines: structuredClone(lines),
     total: cartTotal(lines),
     createdAt: now,
-    readyAt: now + 45000 + i * 12000,
+    readyAt: now + 12000 + i * 2000,
     collected: false,
   }));
 }

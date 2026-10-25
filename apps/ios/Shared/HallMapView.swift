@@ -24,7 +24,10 @@ private struct MapUnit: Decodable, Identifiable {
 struct HallMapView: View {
   @EnvironmentObject var store: PapuStore
   @State private var selectedRestaurant: Restaurant?
-  @State private var zoom: CGFloat = 1
+  @Environment(\.accessibilityReduceMotion) private var reduceMotion
+  @State private var pan = CGSize.zero
+  @GestureState private var drag = CGSize.zero
+  @State private var zoom: CGFloat = 1.5
   @State private var showRoute = true
   private static let units: [MapUnit] = {
     guard let url = Bundle.main.url(forResource: "map", withExtension: "json"),
@@ -63,18 +66,31 @@ struct HallMapView: View {
         Eyebrow(text: "HALA KOSZYKI · WARSZAWA")
         (Text(store.text("Podążaj za ", "Follow the "))
           + Text(store.text("apetytem.", "good food.")).foregroundColor(Papu.green)).font(
-            Papu.display(41)
+            Papu.display(36)
           ).fixedSize(horizontal: false, vertical: true)
         VStack(spacing: 0) {
           HStack {
-            Label(
-              store.text("Poziom 0 · Parter", "Level 0 · Ground floor"), systemImage: "circle.fill"
-            ).font(Papu.body(12)).foregroundStyle(Papu.green).padding(.horizontal, 12).padding(
+            Button {
+              withAnimation(reduceMotion ? nil : .smooth(duration: 0.3)) {
+                zoom = zoom > 1 ? 1 : 1.5
+                pan = .zero
+              }
+            } label: {
+              Label(
+                zoom > 1
+                  ? store.text("Strefa gastro · Parter", "Food court · Ground")
+                  : store.text("Cały plan · Parter", "Full plan · Ground"),
+                systemImage: "circle.fill"
+              )
+            }.font(Papu.body(12)).foregroundStyle(Papu.green).padding(.horizontal, 12).padding(
               .vertical, 9
             ).background(Papu.cream, in: Capsule())
             Spacer()
             Button {
-              withAnimation(.spring) { zoom = 1 }
+              withAnimation(.smooth(duration: 0.3)) {
+                zoom = 1.5
+                pan = .zero
+              }
             } label: {
               Image(systemName: "location.viewfinder").frame(width: 44, height: 44).background(
                 Papu.cream, in: Circle())
@@ -87,17 +103,17 @@ struct HallMapView: View {
               SVGShape(
                 "M18 578 V310 L148 300 V163 L182 170 L230 109 L291 145 L389 44 L452 109 L365 199 L595 285 V580 H417 V467 H222 V580 Z",
                 canvas: .init(width: 609, height: 620)
-              ).fill(Papu.cream)
+              ).fill(Color(hex: "BDCAAF")).offset(y: 6)
               ForEach(Self.units) { unit in
                 let n = Int(unit.number) ?? 0
                 let r = store.catalog.restaurants.first { $0.unit == n }
                 let active = r?.id == selected.id
                 SVGShape(unit.path, canvas: .init(width: 609, height: 620)).fill(
-                  active ? Papu.orange : r != nil ? Color(hex: "C4D3B4") : Color(hex: "DFE4D5")
+                  active ? Papu.orange : r != nil ? Color(hex: "B4C7A5") : Color(hex: "DEE5D4")
                 ).overlay(
                   SVGShape(unit.path, canvas: .init(width: 609, height: 620)).stroke(
                     Papu.cream, lineWidth: 1.5)
-                ).onTapGesture {
+                ).offset(y: active ? -3 : 0).onTapGesture {
                   if let r {
                     withAnimation(.smooth) { store.mapRestaurant = r.id }
                     UISelectionFeedbackGenerator().selectionChanged()
@@ -112,9 +128,20 @@ struct HallMapView: View {
                 }
               }
               if showRoute, let route = routes[selected.unit] {
-                SVGShape(route, canvas: .init(width: 609, height: 620)).stroke(
-                  Papu.ink, style: StrokeStyle(lineWidth: 2, lineCap: .round, dash: [2, 4])
-                ).allowsHitTesting(false)
+                MapRoute(path: route).id(selected.id).allowsHitTesting(false)
+              }
+              if let destination = positions[selected.unit] {
+                Text(String(format: "%02d", selected.unit))
+                  .font(.system(size: 11, weight: .heavy)).foregroundStyle(Papu.ink)
+                  .padding(.horizontal, 12).padding(.vertical, 8).background(
+                    Papu.orange, in: Capsule()
+                  )
+                  .overlay(Capsule().stroke(Papu.butter, lineWidth: 2))
+                  .position(
+                    x: min(geometry.size.width - 76, max(76, destination.x * sx)),
+                    y: destination.y * sy - 26
+                  )
+                  .allowsHitTesting(false)
               }
               Circle().fill(Papu.green.opacity(0.15)).frame(width: 22, height: 22).position(
                 x: 318 * sx, y: 317 * sy)
@@ -122,14 +149,29 @@ struct HallMapView: View {
                 Circle().stroke(.white, lineWidth: 2)
               ).position(x: 318 * sx, y: 317 * sy)
               Text(store.text("Twój stolik ", "Your table ") + store.table).font(
-                .system(size: 7, weight: .bold)
+                .system(size: 9, weight: .bold)
               ).foregroundStyle(Papu.butter).padding(.horizontal, 8).padding(.vertical, 5)
-                .background(Papu.ink, in: Capsule()).position(x: 318 * sx, y: 282 * sy)
+                .background(Papu.ink, in: Capsule()).position(x: 318 * sx, y: 272 * sy)
               Text("KOSZYKOWA").font(.system(size: 8, weight: .medium)).tracking(2).foregroundStyle(
                 Papu.muted
               ).position(x: 315 * sx, y: 598 * sy)
-            }.scaleEffect(zoom).frame(width: geometry.size.width, height: geometry.size.height)
-          }.frame(height: 370).clipped().accessibilityLabel(
+            }.scaleEffect(zoom)
+              .offset(
+                x: zoom > 1 ? pan.width + drag.width : 0, y: zoom > 1 ? pan.height + drag.height : 0
+              )
+              .gesture(
+                DragGesture(minimumDistance: 10).updating($drag) { value, state, _ in
+                  if zoom > 1 { state = value.translation }
+                }.onEnded { value in
+                  guard zoom > 1 else { return }
+                  let limit = (zoom - 1) * 170
+                  pan = CGSize(
+                    width: max(-limit, min(limit, pan.width + value.translation.width)),
+                    height: max(-limit, min(limit, pan.height + value.translation.height)))
+                }, including: zoom > 1 ? .all : .subviews
+              )
+              .frame(width: geometry.size.width, height: geometry.size.height)
+          }.frame(height: 340).clipped().accessibilityElement(children: .ignore).accessibilityLabel(
             store.text(
               "Plan Hali Koszyki. Wybierz restaurację na liście poniżej.",
               "Hala Koszyki plan. Choose a restaurant from the list below."))
@@ -154,6 +196,32 @@ struct HallMapView: View {
           }.padding(16)
         }.background(Papu.sage.opacity(0.7), in: RoundedRectangle(cornerRadius: 23)).overlay(
           RoundedRectangle(cornerRadius: 23).stroke(Papu.line))
+        VStack(alignment: .leading, spacing: 11) {
+          HStack(spacing: 14) {
+            FoodPhoto(name: selected.image).frame(width: 76, height: 80).clipped().clipShape(
+              RoundedRectangle(cornerRadius: 14))
+            VStack(alignment: .leading, spacing: 7) {
+              Eyebrow(text: store.text("TWÓJ KIERUNEK", "YOUR DESTINATION"))
+              Text(selected.name).font(Papu.display(25))
+              Text(
+                store.text(
+                  "Lokal \(selected.unit) · Parter", "Unit \(selected.unit) · Ground floor")
+              ).font(Papu.body(14)).foregroundStyle(Papu.muted)
+            }.frame(maxWidth: .infinity, alignment: .leading)
+          }
+          PrimaryButton(title: store.text("Zobacz menu", "See menu")) {
+            selectedRestaurant = selected
+          }
+          Button {
+            showRoute.toggle()
+          } label: {
+            Label(
+              showRoute
+                ? store.text("Ukryj trasę", "Hide route") : store.text("Pokaż trasę", "Show route"),
+              systemImage: "location"
+            ).font(Papu.body(13)).frame(maxWidth: .infinity)
+          }
+        }.padding(18).papuCard().id(selected.id).transition(.opacity)
         LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 9) {
           ForEach(store.catalog.restaurants) { r in
             Button {
@@ -180,35 +248,27 @@ struct HallMapView: View {
               selected.id == r.id ? .isSelected : [])
           }
         }
-        VStack(alignment: .leading, spacing: 11) {
-          Eyebrow(text: store.text("TWÓJ KIERUNEK", "YOUR DESTINATION"))
-          Text(selected.name).font(Papu.display(30))
-          Text(
-            store.text("Lokal \(selected.unit) · Parter", "Unit \(selected.unit) · Ground floor")
-          ).font(Papu.body(14)).foregroundStyle(Papu.muted)
-          PrimaryButton(title: store.text("Zobacz menu", "See menu")) {
-            selectedRestaurant = selected
-          }
-          Button {
-            showRoute.toggle()
-          } label: {
-            Label(
-              showRoute
-                ? store.text("Ukryj trasę", "Hide route") : store.text("Pokaż trasę", "Show route"),
-              systemImage: "location"
-            ).font(Papu.body(13)).frame(maxWidth: .infinity)
-          }
-        }.padding(22).background(Papu.butter, in: RoundedRectangle(cornerRadius: 22))
         Text(
           store.text(
             "Plan lokali na podstawie koszyki.com. Położenie stolika i trasa są przykładowe.",
             "Venue plan based on koszyki.com. Table position and walking route are illustrative.")
         ).font(Papu.body(12)).foregroundStyle(Papu.muted).lineSpacing(3)
-      }.padding(24).padding(.top, 10).padding(.bottom, 25)
+      }.padding(20).padding(.top, 10).padding(.bottom, 25)
     }
     .sheet(item: $selectedRestaurant) {
       RestaurantView(restaurant: $0).environmentObject(store).presentationDetents([.large])
         .presentationCornerRadius(30)
     }
+  }
+}
+
+private struct MapRoute: View {
+  @Environment(\.accessibilityReduceMotion) private var reduceMotion
+  @State private var progress: CGFloat = 0
+  let path: String
+  var body: some View {
+    SVGShape(path, canvas: .init(width: 609, height: 620)).trim(from: 0, to: progress)
+      .stroke(Papu.ink, style: StrokeStyle(lineWidth: 3, lineCap: .round, lineJoin: .round))
+      .onAppear { withAnimation(reduceMotion ? nil : .easeInOut(duration: 0.65)) { progress = 1 } }
   }
 }

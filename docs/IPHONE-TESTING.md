@@ -74,3 +74,10 @@ The demo really uses ActivityKit and WidgetKit. It displays aggregate kitchen pr
 - [Maximum App Clip build sizes](https://developer.apple.com/help/app-store-connect/reference/app-uploads/maximum-build-file-sizes/)
 - [Testing the launch experience of your App Clip](https://developer.apple.com/documentation/appclip/testing-the-launch-experience-of-your-app-clip)
 - [Offering Live Activities with your App Clip](https://developer.apple.com/documentation/appclip/offering-live-activities-with-your-app-clip)
+
+
+## Fast demo and ready alerts
+
+At checkout, leave “Daj znać, gdy gotowe” enabled and allow notifications if iOS asks. The first kitchen is ready after 12 seconds; additional kitchens are staggered by 2 seconds, up to 28 seconds for all nine. Lock the phone immediately after placing the demo order to see the notification and Live Activity. Tap the ready notification to return to the correct table's pickup tickets.
+
+The full app schedules local alerts through UserNotifications. The App Clip requests the temporary notification entitlement and accepts Apple's ephemeral authorization; see [Apple's App Clip notification guidance](https://developer.apple.com/documentation/AppClip/enabling-notifications-in-app-clips). This is a short-lived demo permission, not permanent push registration. A finite background task attempts to finish the short Live Activity demo. The OS can still suspend/terminate the app; production needs server-driven APNs updates. Browser alerts require permission and an open tab; the web UI states this limitation.

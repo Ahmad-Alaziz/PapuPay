@@ -30,11 +30,11 @@ Build **1.0 (2.1)** is uploaded to TestFlight through GitHub Actions, with cloud
 
 ## Try the complete journey
 
-1. Open table 24, then “Jak to działa?” / “How it works” for the animated introduction. Tap the papaya for a small celebration.
+1. Open table 24, then “Jak to działa?” / “How it works” for the animated introduction. Tap an illustration for tactile feedback.
 2. Browse the nine restaurants, search dishes, filter cuisines or vegetarian options, and save favorites.
 3. Customize a Classic Smash, add a ramen from KAGO, and open the grouped basket.
 4. Place a **demo** order. There is no charge and nothing is sent to a restaurant.
-5. Watch each kitchen progress, or use the demo-ready control. In native iOS, inspect the real Lock Screen Live Activity and Dynamic Island.
+5. Watch each kitchen progress: the first is ready in 12 seconds, all nine within 28 seconds. Enable ready alerts at checkout. In native iOS, inspect the real Lock Screen Live Activity and Dynamic Island.
 6. Find the pickup counter on the interactive hall map, mark a ticket collected, and try ordering it again.
 7. About this demo → kitchen demo gives a second view of the same local orders. Web tabs on the same origin synchronize through local storage.
 
@@ -43,8 +43,8 @@ Build **1.0 (2.1)** is uploaded to TestFlight through GitHub Actions, with cloud
 - React + TypeScript + Vite, responsive layouts, Polish/English, accessible native HTML dialogs.
 - SwiftUI app and App Clip, native tab navigation and sheets, haptics, ActivityKit / WidgetKit.
 - Shared catalog and official hall geometry, nine demo kitchens, menu customization, multi-venue checkout, persisted order tickets and pickup.
-- Original dimensional papaya artwork and custom Rive state machine: idle breathing, pointer response, QR scan, and celebration. Editable Rive source is included.
-- Bricolage Grotesque display typography and capitalized **PapuPay** wordmark; Manrope web interface text and system text styles on iOS.
+- Original dimensional papaya artwork and custom Rive state machine: scanner, food bag, cooking cloche and ready receipt, with pointer response. Editable Rive source is included.
+- Heavy DM Sans headings, Anton poster accents and a Fredoka **PapuPay** wordmark; system text styles on iOS.
 - Size gate, domain tests, source provenance, and verification notes.
 
 ## Project map
@@ -67,7 +67,7 @@ python3 scripts/check-clip-size.py /path/to/Release-iphoneos/PapuPayClip.app --j
 
 ## Demo boundaries
 
-Names and unit locations come from Hala Koszyki’s official directory. Menus, prices, food photos, allergens, order times and the table marker are illustrative. This is an independent concept, not an official Hala Koszyki service. Both apps use local state, not a backend. Payments, POS dispatch, push updates, and cross-device synchronization are intentionally simulated or absent. Native Live Activities are real, with updates driven by the foreground demo app; server push is a production integration.
+Names and unit locations come from Hala Koszyki’s official directory. Menus, prices, food photos, allergens, order times and the table marker are illustrative. This is an independent concept, not an official Hala Koszyki service. Both apps use local state, not a backend. Payments, POS dispatch, push updates, and cross-device synchronization are intentionally simulated or absent. Native ready alerts are real OS-scheduled local notifications, including while the app is backgrounded. App Clips request the temporary notification entitlement. Live Activities use a finite background task for the short demo; reliable long-running production updates require server push. Browser alerts require permission and an open tab; closed-tab web push is not implemented.
 
 See [design and accessibility review](docs/DESIGN.md), [motion authorship](docs/MOTION.md), [asset provenance](docs/ASSETS.md), and [verification evidence](docs/verification/QA.md).
 

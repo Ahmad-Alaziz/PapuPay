@@ -6,7 +6,6 @@ import {
   ArrowUpRight,
   Beef,
   Check,
-  CheckCheck,
   ChefHat,
   ChevronDown,
   Clock,
@@ -27,10 +26,8 @@ import {
   Zap,
   GlassWater,
   Pizza,
-  Navigation,
   Play,
   LockKeyhole,
-  RotateCcw,
   QrCode,
 } from "lucide-react";
 import {
@@ -49,6 +46,7 @@ import {
 } from "./domain";
 import type { Restaurant, Dish } from "./domain";
 import HallMap from "./HallMap";
+import OrderTicket from "./OrderTicket";
 import { qrPath, type OrderContext } from "./routing";
 import Modal from "./Modal";
 const PapuMotion = lazy(() => import("./PapuMotion"));
@@ -143,9 +141,9 @@ export default function App({ context }: { context: OrderContext }) {
   }, [store]);
   useEffect(() => {
     document.documentElement.lang = locale;
+    document.title = "PapuPay · Hala Koszyki";
   }, [locale]);
   useEffect(() => {
-    const timer = setInterval(() => setNow(Date.now()), 1000);
     const hash = () => setTab(validTab());
     const sync = (e: StorageEvent) => {
       if (e.key === "papupay-v1") setStore(readStore(e.newValue));
@@ -153,7 +151,6 @@ export default function App({ context }: { context: OrderContext }) {
     window.addEventListener("hashchange", hash);
     window.addEventListener("storage", sync);
     return () => {
-      clearInterval(timer);
       if (toastTimer.current) clearTimeout(toastTimer.current);
       if (paymentTimer.current) clearTimeout(paymentTimer.current);
       window.removeEventListener("hashchange", hash);
@@ -167,6 +164,92 @@ export default function App({ context }: { context: OrderContext }) {
     setToast(message);
     if (toastTimer.current) clearTimeout(toastTimer.current);
     toastTimer.current = setTimeout(() => setToast(""), 2600);
+  };
+  const [alertMessage, setAlertMessage] = useState("");
+  const notified = useRef(
+    new Set(orders.filter((o) => o.readyAt <= Date.now()).map((o) => o.id)),
+  );
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>;
+    const sync = () => {
+      clearTimeout(timer);
+      const time = Date.now();
+      setNow(time);
+      const newlyReady = orders.filter(
+        (o) => !o.collected && o.readyAt <= time && !notified.current.has(o.id),
+      );
+      for (const o of newlyReady) {
+        notified.current.add(o.id);
+        const r = restaurantFor(o.restaurantId);
+        const message = `${r.name} · ${t("Pora na papu! Lokal", "Your papu is ready! Unit")} ${r.unit}`;
+        notify(message);
+        if (navigator.vibrate) navigator.vibrate([40, 60, 40]);
+        if (
+          "Notification" in window &&
+          Notification.permission === "granted" &&
+          document.hidden
+        ) {
+          try {
+            const n = new Notification(
+              t("Pora na papu!", "Your papu is ready!"),
+              { body: message, tag: o.id, icon: "/assets/papaya-3d.webp" },
+            );
+            n.onclick = () => {
+              window.focus();
+              setCartOpen(false);
+              setSuccess(false);
+              location.hash = "orders";
+              n.close();
+            };
+          } catch {
+            /* Mobile browsers may require a Home Screen web app and Web Push. */
+          }
+        }
+      }
+      const next = orders
+        .filter((o) => !o.collected)
+        .flatMap((o) => [o.createdAt + 3001, o.readyAt])
+        .filter((d) => d > time);
+      if (next.length) timer = setTimeout(sync, Math.min(...next) - time + 20);
+    };
+    sync();
+    document.addEventListener("visibilitychange", sync);
+    return () => {
+      clearTimeout(timer);
+      document.removeEventListener("visibilitychange", sync);
+    };
+  }, [orders, locale]);
+  const enableAlerts = async () => {
+    if (!("Notification" in window)) {
+      setAlertMessage(
+        t(
+          "Zostaw tę kartę otwartą — pokażemy gotowe zamówienie tutaj.",
+          "Keep this tab open — we’ll show your ready order here.",
+        ),
+      );
+      return;
+    }
+    try {
+      const permission = await Notification.requestPermission();
+      setAlertMessage(
+        permission === "granted"
+          ? t(
+              "Alerty włączone. Zostaw kartę otwartą w tle.",
+              "Alerts enabled. Keep this tab open in the background.",
+            )
+          : t(
+              "Powiadomienia wyłączone. Status zobaczysz tutaj.",
+              "Notifications are off. Follow your order here.",
+            ),
+      );
+    } catch {
+      setAlertMessage(
+        t(
+          "Ten browser nie obsługuje alertów. Status zobaczysz tutaj.",
+          "This browser cannot send alerts. Follow your order here.",
+        ),
+      );
+    }
   };
   const navigate = (destination: Tab) => {
     setTab(destination);
@@ -247,13 +330,6 @@ export default function App({ context }: { context: OrderContext }) {
     { id: "veggie", Icon: Leaf, label: "Vege" },
     { id: "drinks", Icon: GlassWater, label: t("Napoje", "Drinks") },
   ];
-  const statusText = (status: ReturnType<typeof statusFor>) =>
-    ({
-      received: t("Przyjęte", "Received"),
-      preparing: t("W kuchni", "Cooking"),
-      ready: t("Do odbioru!", "Ready to collect!"),
-      collected: t("Odebrane", "Collected"),
-    })[status];
   const browse = () => {
     navigate("discover");
     setTimeout(
@@ -347,727 +423,532 @@ export default function App({ context }: { context: OrderContext }) {
           </div>
         </header>
         <main id="main">
-          {tab === "discover" && (
+          <AnimatePresence mode="wait" initial={false}>
             <motion.div
-              key="discover"
-              initial={{ opacity: 0, y: 12 }}
+              key={tab}
+              initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.18, ease: [0.2, 0.8, 0.2, 1] }}
             >
-              <section className="hero">
-                <div className="hero-copy">
-                  <div className="eyebrow hero-eyebrow">
-                    <span className="green-dot" />
-                    {t("HALA KOSZYKI · WARSZAWA", "HALA KOSZYKI · WARSAW")}
-                  </div>
-                  <h1>
-                    {t("Tyle smaków.", "So many flavours.")}
-                    <br />
-                    <span>{t("Jeden stolik.", "One happy table.")}</span>
-                    <svg
-                      className="headline-star"
-                      viewBox="0 0 50 50"
-                      aria-hidden="true"
-                    >
-                      <path
-                        d="M25 0Q28 22 50 25Q28 28 25 50Q22 28 0 25Q22 22 25 0Z"
-                        fill="currentColor"
-                      />
-                    </svg>
-                  </h1>
-                  <p>
-                    {t(
-                      "Ty wybierasz, na co masz ochotę. My łączymy smaki Hali Koszyki w jednym koszyku.",
-                      "You follow your cravings. We bring the flavours of Hala Koszyki together in one basket.",
-                    )}
-                  </p>
-                  <div className="hero-actions">
-                    <button className="primary" onClick={browse}>
-                      {t("Pora na papu", "Let’s eat")}
-                      <ArrowUpRight size={21} />
-                    </button>
-                    <button className="text-button" onClick={() => setTour(0)}>
-                      <span className="play-circle">
-                        <Play size={13} fill="currentColor" />
-                      </span>
-                      {t("Jak to działa?", "How does it work?")}
-                    </button>
-                  </div>
-                  <div className="hero-benefits">
-                    <span>
-                      <Check size={14} />
-                      {t("Bez instalacji", "No downloads")}
-                    </span>
-                    <span>
-                      <Check size={14} />
-                      {t("Bez kolejki", "Skip the queue")}
-                    </span>
-                    <span>
-                      <Check size={14} />
-                      {t("Cała hala w kieszeni", "A hall in your pocket")}
-                    </span>
-                  </div>
-                </div>
-                <div className="hero-art">
-                  <div className="food-orbit" />
-                  <span className="handwritten hero-scribble">
-                    {t("na co masz ochotę?", "what are you craving?")}
-                    <svg viewBox="0 0 100 60">
-                      <path d="M5 5Q60 0 75 45M63 35L76 47L83 29" />
-                    </svg>
-                  </span>
-                  <img
-                    className="hero-food"
-                    src="/assets/feast.webp"
-                    alt={t(
-                      "Apetyczny burger, ramen i pizza",
-                      "An appetising burger, ramen and pizza",
-                    )}
-                  />
-                  <div className="hero-sticker">
-                    <Sparkles size={19} />
-                    <span>
-                      {t("Mały skan.", "Little scan.")}
-                      <br />
-                      <strong>{t("Wielkie mniam.", "Big yum.")}</strong>
-                    </span>
-                  </div>
-                  <div className="hero-table">
-                    <span className="green-dot" />
-                    <span>
-                      {t("Jesteś przy stoliku", "You’re at table")}{" "}
-                      <b>{table}</b>
-                    </span>
-                    <Check size={15} />
-                  </div>
-                  <span className="sparkle one">✳</span>
-                  <span className="sparkle two">✦</span>
-                </div>
-              </section>
-              <div className="promise-strip">
-                <span>
-                  HALA KOSZYKI <span className="dot-separator">✳</span>{" "}
-                  {t("DOBRE JEDZENIE ŁĄCZY", "GOOD FOOD BRINGS US TOGETHER")}
-                </span>
-                <button onClick={() => navigate("map")}>
-                  {t("Odkryj halę", "Explore the hall")}
-                  <ArrowUpRight size={16} />
-                </button>
-              </div>
-              <section className="discovery section" id="restaurants">
-                <div className="section-heading">
-                  <div>
-                    <p className="eyebrow">
-                      {t(
-                        "TWOJA MAŁA PODRÓŻ KULINARNA",
-                        "YOUR LITTLE FOOD ADVENTURE",
-                      )}
-                    </p>
-                    <h2>
-                      {t("Na co dziś", "What are you")}{" "}
-                      <em>{t("masz ochotę?", "craving?")}</em>
-                    </h2>
-                  </div>
-                  <label className="search-field">
-                    <Search size={19} />
-                    <input
-                      value={search}
-                      onChange={(e) => setSearch(e.target.value)}
-                      placeholder={t(
-                        "Restauracja, danie, zachcianka…",
-                        "Restaurant, dish, little craving…",
-                      )}
-                      aria-label={t(
-                        "Szukaj restauracji lub dania",
-                        "Search restaurants or dishes",
-                      )}
-                    />
-                    {search && (
-                      <button
-                        aria-label={t("Wyczyść wyszukiwanie", "Clear search")}
-                        onClick={() => setSearch("")}
-                      >
-                        <X size={16} />
-                      </button>
-                    )}
-                  </label>
-                </div>
-                <div className="filter-row">
-                  <div className="categories">
-                    {categories.map(({ id, Icon, label }) => (
-                      <button
-                        className={`category ${category === id ? "selected" : ""}`}
-                        key={id}
-                        onClick={() => setCategory(id)}
-                        aria-pressed={category === id}
-                      >
-                        <Icon size={21} />
-                        {label}
-                      </button>
-                    ))}
-                  </div>
-                  <div className="filter-toggles">
-                    <button
-                      className={`icon-button ${onlyVeg ? "selected" : ""}`}
-                      aria-label={t(
-                        "Tylko z opcjami wege",
-                        "Vegetarian options only",
-                      )}
-                      aria-pressed={onlyVeg}
-                      onClick={() => setOnlyVeg(!onlyVeg)}
-                    >
-                      <Leaf size={19} />
-                    </button>
-                    <button
-                      className={`icon-button ${onlyFavorites ? "selected" : ""}`}
-                      aria-label={t("Tylko ulubione", "Favorites only")}
-                      aria-pressed={onlyFavorites}
-                      onClick={() => setOnlyFavorites(!onlyFavorites)}
-                    >
-                      <Heart
-                        size={19}
-                        fill={onlyFavorites ? "currentColor" : "none"}
-                      />
-                    </button>
-                  </div>
-                </div>
-                <div className="results-heading">
-                  <span>
-                    {filteredRestaurants.length}{" "}
-                    {t(
-                      "miejsc na coś pysznego",
-                      "places for something delicious",
-                    )}
-                  </span>
-                  <span className="demo-label">
-                    <span />
-                    {t("Menu pokazowe", "Demo menus")}
-                  </span>
-                </div>
-                <motion.div layout className="restaurant-grid">
-                  <AnimatePresence mode="popLayout">
-                    {filteredRestaurants.map((r, i) => (
-                      <motion.article
-                        layout
-                        initial={{ opacity: 0, y: 16 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.95 }}
-                        transition={{
-                          duration: 0.25,
-                          delay: Math.min(i * 0.035, 0.2),
-                        }}
-                        className="restaurant-card"
-                        key={r.id}
-                      >
-                        <button
-                          className="restaurant-image-button"
-                          onClick={() => setRestaurant(r)}
-                          aria-label={`${t("Zobacz menu", "View menu")}: ${r.name}`}
-                        >
-                          <FoodImage
-                            src={r.image}
-                            alt={pl ? r.cuisine : r.cuisineEn}
-                          />
-                          <span className="card-tag">
-                            {pl ? r.tag : r.tagEn}
-                          </span>
-                          <span className="image-arrow">
-                            <ArrowUpRight size={21} />
-                          </span>
+              {tab === "discover" && (
+                <motion.div
+                  key="discover"
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4 }}
+                >
+                  <section className="hero paper-hero">
+                    <div className="hero-copy">
+                      <div className="eyebrow hero-eyebrow">
+                        <span className="green-dot" /> HALA KOSZYKI ·{" "}
+                        {t("WARSZAWA", "WARSAW")}
+                      </div>
+                      <h1>
+                        {t("PORA NA", "TAKE A")}
+                        <br />
+                        <span>{t("PAPU.", "SEAT.")}</span>
+                      </h1>
+                      <span className="papaya-stroke" aria-hidden="true" />
+                      <p>
+                        {t(
+                          "Różne smaki. Jeden wspólny stół.",
+                          "Different cravings. One happy table.",
+                        )}
+                      </p>
+                      <div className="hero-actions">
+                        <button className="primary" onClick={browse}>
+                          {t("Co dziś jesz?", "Let’s eat")}
+                          <ArrowUpRight size={20} />
                         </button>
                         <button
-                          className={`favorite-button ${favorites.includes(r.id) ? "saved" : ""}`}
-                          aria-label={`${t("Ulubione", "Favorite")}: ${r.name}`}
-                          aria-pressed={favorites.includes(r.id)}
-                          onClick={() => favorite(r.id)}
+                          className="text-button"
+                          onClick={() => setTour(0)}
+                        >
+                          <span className="play-circle">
+                            <Play size={13} fill="currentColor" />
+                          </span>
+                          {t("Jak to działa?", "How it works")}
+                        </button>
+                      </div>
+                    </div>
+                    <div className="hero-art">
+                      <div className="food-orbit" />
+                      <img
+                        className="hero-food"
+                        src="/assets/feast.webp"
+                        alt={t(
+                          "Burger, ramen i pizza",
+                          "Burger, ramen and pizza",
+                        )}
+                      />
+                      <div className="hero-table">
+                        <Check size={16} />
+                        <span>
+                          {t("Twój stolik", "Your table")} <b>{table}</b>
+                        </span>
+                      </div>
+                      <span className="sparkle two">✳</span>
+                    </div>
+                  </section>
+                  <section className="discovery section" id="restaurants">
+                    <div className="section-heading">
+                      <div>
+                        <p className="eyebrow">
+                          {t("DOBRE RZECZY SĄ BLISKO", "GOOD THINGS ARE CLOSE")}
+                        </p>
+                        <h2>{t("Co dziś jesz?", "What’s your craving?")}</h2>
+                      </div>
+                      <label className="search-field">
+                        <Search size={19} />
+                        <input
+                          value={search}
+                          onChange={(e) => setSearch(e.target.value)}
+                          placeholder={t(
+                            "Restauracja, danie, zachcianka…",
+                            "Restaurant, dish, little craving…",
+                          )}
+                          aria-label={t(
+                            "Szukaj restauracji lub dania",
+                            "Search restaurants or dishes",
+                          )}
+                        />
+                        {search && (
+                          <button
+                            aria-label={t(
+                              "Wyczyść wyszukiwanie",
+                              "Clear search",
+                            )}
+                            onClick={() => setSearch("")}
+                          >
+                            <X size={16} />
+                          </button>
+                        )}
+                      </label>
+                    </div>
+                    <div className="filter-row">
+                      <div className="categories">
+                        {categories.map(({ id, Icon, label }) => (
+                          <button
+                            className={`category ${category === id ? "selected" : ""}`}
+                            key={id}
+                            onClick={() => setCategory(id)}
+                            aria-pressed={category === id}
+                          >
+                            <Icon size={21} />
+                            {label}
+                          </button>
+                        ))}
+                      </div>
+                      <div className="filter-toggles">
+                        <button
+                          className={`icon-button ${onlyVeg ? "selected" : ""}`}
+                          aria-label={t(
+                            "Tylko z opcjami wege",
+                            "Vegetarian options only",
+                          )}
+                          aria-pressed={onlyVeg}
+                          onClick={() => setOnlyVeg(!onlyVeg)}
+                        >
+                          <Leaf size={19} />
+                        </button>
+                        <button
+                          className={`icon-button ${onlyFavorites ? "selected" : ""}`}
+                          aria-label={t("Tylko ulubione", "Favorites only")}
+                          aria-pressed={onlyFavorites}
+                          onClick={() => setOnlyFavorites(!onlyFavorites)}
                         >
                           <Heart
                             size={19}
-                            fill={
-                              favorites.includes(r.id) ? "currentColor" : "none"
-                            }
+                            fill={onlyFavorites ? "currentColor" : "none"}
                           />
                         </button>
-                        <button
-                          className="restaurant-info"
-                          onClick={() => setRestaurant(r)}
-                        >
-                          <div>
-                            <h3>{r.name}</h3>
-                            <p>{pl ? r.cuisine : r.cuisineEn}</p>
-                          </div>
-                          <div className="restaurant-meta">
-                            <span>
-                              <Clock size={13} />
-                              {r.minutes}–{r.minutes + 5} min
-                            </span>
-                            <span>
-                              {t("Lokal", "Unit")}{" "}
-                              {String(r.unit).padStart(2, "0")}
-                            </span>
-                          </div>
-                        </button>
-                      </motion.article>
-                    ))}
-                  </AnimatePresence>
-                </motion.div>
-                {!filteredRestaurants.length && (
-                  <div className="empty-state">
-                    <Search size={38} />
-                    <h3>
-                      {t(
-                        "Tego smaku jeszcze nie znamy.",
-                        "We haven’t found that flavour.",
-                      )}
-                    </h3>
-                    <p>
-                      {t(
-                        "Spróbuj innego hasła albo wyczyść filtry.",
-                        "Try another search or clear the filters.",
-                      )}
-                    </p>
-                    <button
-                      className="secondary"
-                      onClick={() => {
-                        setSearch("");
-                        setCategory("all");
-                        setOnlyVeg(false);
-                        setOnlyFavorites(false);
-                      }}
-                    >
-                      {t("Pokaż wszystkie", "Show everything")}
-                    </button>
-                  </div>
-                )}
-              </section>
-              <section className="gather-banner">
-                <div className="gather-illustration">
-                  <div className="plate">
-                    <UtensilsCrossed size={36} />
-                  </div>
-                  <span className="little-orbit">
-                    <Heart size={24} />
-                  </span>
-                  <Papaya />
-                </div>
-                <div>
-                  <p className="eyebrow">
-                    {t(
-                      "RÓŻNE APETYTY. WSPÓLNY STOLIK.",
-                      "DIFFERENT CRAVINGS. SAME TABLE.",
-                    )}
-                  </p>
-                  <h2>
-                    {t(
-                      "Ty ramen. Ja burgera.",
-                      "You get ramen. I get a burger.",
-                    )}
-                    <br />
-                    {t("Razem? Idealnie.", "Together? Perfect.")}
-                  </h2>
-                  <p>
-                    {t(
-                      "Mieszaj kuchnie, jak lubisz. Jedno zamówienie, więcej przyjemności.",
-                      "Mix your favourite kitchens. One checkout, more happy moments.",
-                    )}
-                  </p>
-                </div>
-                <button
-                  className="round-arrow"
-                  onClick={() => setTour(1)}
-                  aria-label={t(
-                    "Jak zamawiać z kilku restauracji",
-                    "How to order from multiple restaurants",
-                  )}
-                >
-                  <ArrowUpRight size={27} />
-                </button>
-              </section>
-              <section className="section cravings">
-                <div className="section-heading">
-                  <div>
-                    <p className="eyebrow">
-                      {t("MIŁOŚĆ OD PIERWSZEGO KĘSA", "LOVE AT FIRST BITE")}
-                    </p>
-                    <h2>
-                      {t("Małe", "Little")}{" "}
-                      <em>{t("zachcianki.", "cravings.")}</em>
-                    </h2>
-                  </div>
-                  <span className="handwritten">
-                    {t(
-                      "zawsze jest miejsce na coś dobrego",
-                      "there’s always room for something good",
-                    )}{" "}
-                    ↘
-                  </span>
-                </div>
-                <div className="dish-grid">
-                  {[menu[0], menu[2], menu[4], menu[8]].map((item) => (
-                    <article className="dish-card" key={item.id}>
-                      <button
-                        className="dish-photo"
-                        onClick={() => chooseDish(item)}
-                      >
-                        <FoodImage
-                          src={item.image}
-                          alt={pl ? item.name : item.nameEn}
-                        />
-                        {item.vegetarian && (
-                          <span className="vege-badge">
-                            <Leaf size={14} />
-                          </span>
+                      </div>
+                    </div>
+                    <div className="results-heading">
+                      <span>
+                        {filteredRestaurants.length}{" "}
+                        {t(
+                          "miejsc na coś pysznego",
+                          "places for something delicious",
                         )}
-                      </button>
-                      <span className="eyebrow">
-                        {restaurantFor(item.restaurantId).name}
                       </span>
-                      <button
-                        className="dish-title"
-                        onClick={() => chooseDish(item)}
-                      >
-                        {pl ? item.name : item.nameEn}
-                      </button>
-                      <div>
-                        <strong>{price(item.price, locale)}</strong>
+                      <span className="demo-label">
+                        <span />
+                        {t("Menu pokazowe", "Demo menus")}
+                      </span>
+                    </div>
+                    <motion.div layout className="restaurant-grid">
+                      <AnimatePresence mode="popLayout">
+                        {filteredRestaurants.map((r, i) => (
+                          <motion.article
+                            layout
+                            initial={{ opacity: 0, y: 16 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            transition={{
+                              duration: 0.25,
+                              delay: Math.min(i * 0.035, 0.2),
+                            }}
+                            className="restaurant-card"
+                            key={r.id}
+                          >
+                            <button
+                              className="restaurant-image-button"
+                              onClick={() => setRestaurant(r)}
+                              aria-label={`${t("Zobacz menu", "View menu")}: ${r.name}`}
+                            >
+                              <FoodImage
+                                src={r.image}
+                                alt={pl ? r.cuisine : r.cuisineEn}
+                              />
+                              <span className="card-tag">
+                                {pl ? r.tag : r.tagEn}
+                              </span>
+                              <span className="image-arrow">
+                                <ArrowUpRight size={21} />
+                              </span>
+                            </button>
+                            <button
+                              className={`favorite-button ${favorites.includes(r.id) ? "saved" : ""}`}
+                              aria-label={`${t("Ulubione", "Favorite")}: ${r.name}`}
+                              aria-pressed={favorites.includes(r.id)}
+                              onClick={() => favorite(r.id)}
+                            >
+                              <Heart
+                                size={19}
+                                fill={
+                                  favorites.includes(r.id)
+                                    ? "currentColor"
+                                    : "none"
+                                }
+                              />
+                            </button>
+                            <button
+                              className="restaurant-info"
+                              onClick={() => setRestaurant(r)}
+                            >
+                              <div>
+                                <h3>{r.name}</h3>
+                                <p>{pl ? r.cuisine : r.cuisineEn}</p>
+                              </div>
+                              <div className="restaurant-meta">
+                                <span>
+                                  <Clock size={13} />
+                                  {t("Demo · 12 s", "Demo · 12 sec")}
+                                </span>
+                                <span>
+                                  {t("Lokal", "Unit")}{" "}
+                                  {String(r.unit).padStart(2, "0")}
+                                </span>
+                              </div>
+                            </button>
+                          </motion.article>
+                        ))}
+                      </AnimatePresence>
+                    </motion.div>
+                    {!filteredRestaurants.length && (
+                      <div className="empty-state">
+                        <Search size={38} />
+                        <h3>
+                          {t(
+                            "Tego smaku jeszcze nie znamy.",
+                            "We haven’t found that flavour.",
+                          )}
+                        </h3>
+                        <p>
+                          {t(
+                            "Spróbuj innego hasła albo wyczyść filtry.",
+                            "Try another search or clear the filters.",
+                          )}
+                        </p>
                         <button
-                          className="add-button"
-                          onClick={() => add(item)}
-                          aria-label={`${t("Dodaj", "Add")} ${item.name}`}
+                          className="secondary"
+                          onClick={() => {
+                            setSearch("");
+                            setCategory("all");
+                            setOnlyVeg(false);
+                            setOnlyFavorites(false);
+                          }}
                         >
-                          <Plus size={19} />
+                          {t("Pokaż wszystkie", "Show everything")}
                         </button>
                       </div>
-                    </article>
-                  ))}
-                </div>
-              </section>
-              <section className="hall-banner">
-                <img
-                  src="/assets/hall.jpg"
-                  alt="Hala Koszyki, Warszawa"
-                  loading="lazy"
-                />
-                <div>
-                  <p className="eyebrow">KOSZYKOWA 63 · WARSZAWA</p>
-                  <h2>
-                    {t("Jedna hala.", "One hall.")}
-                    <br />
-                    {t("Cały świat smaków.", "A world of flavours.")}
-                  </h2>
-                  <button
-                    className="cream-button"
-                    onClick={() => navigate("map")}
-                  >
-                    {t("Rozejrzyj się", "Take a look around")}
-                    <ArrowUpRight size={18} />
-                  </button>
-                </div>
-                <span className="hall-seal">
-                  HALA
-                  <br />
-                  <b>KOSZYKI</b>
-                  <br />
-                  OD 1909
-                </span>
-              </section>
-            </motion.div>
-          )}
-          {tab === "map" && (
-            <div className="section page-section">
-              <div className="section-heading">
-                <div>
-                  <p className="eyebrow">HALA KOSZYKI · WARSZAWA</p>
-                  <h1 className="page-title">
-                    {t("Podążaj za", "Follow the")}{" "}
-                    <em>{t("apetytem.", "good food.")}</em>
-                  </h1>
-                </div>
-                <span className="pill">
-                  <MapPin size={16} />
-                  {t("Stolik", "Table")} {table}
-                </span>
-              </div>
-              <HallMap
-                locale={locale}
-                table={table}
-                selected={mapSelection}
-                onSelect={setMapSelection}
-                onMenu={(id) => setRestaurant(restaurantFor(id))}
-              />
-            </div>
-          )}
-          {tab === "orders" && (
-            <div className="section page-section orders-page">
-              <div className="section-heading">
-                <div>
-                  <p className="eyebrow">
-                    {t(
-                      "TY ODPOCZYWASZ. MY CZARUJEMY.",
-                      "YOU RELAX. WE’RE ON IT.",
                     )}
-                  </p>
-                  <h1 className="page-title">
-                    {t("Twoje", "Your")} <em>{t("papu.", "happy food.")}</em>
-                  </h1>
-                </div>
-                <span className="pill">
-                  <span className="green-dot" />
-                  {t("Stolik", "Table")} {table}
-                </span>
-              </div>
-              {!orders.length ? (
-                <div className="empty-state large">
-                  <Papaya className="empty-papaya" />
-                  <h2>
-                    {t(
-                      "Tu zaczyna się coś pysznego.",
-                      "Something delicious starts here.",
-                    )}
-                  </h2>
-                  <p>
-                    {t(
-                      "Twoje zamówienia pojawią się tutaj. Najpierw znajdź swój ulubiony smak.",
-                      "Your orders will appear here. First, find a flavour you love.",
-                    )}
-                  </p>
-                  <button className="primary" onClick={browse}>
-                    {t("Odkryj restauracje", "Explore restaurants")}
-                    <ArrowRight size={18} />
-                  </button>
-                </div>
-              ) : (
-                <>
-                  <div className="order-notice">
-                    <ChefHat size={20} />
-                    <span>
-                      {t(
-                        "Kuchnie pracują osobno. Odbierz każdą część, gdy będzie gotowa.",
-                        "Each kitchen cooks separately. Collect each part when it’s ready.",
+                  </section>
+                  <section className="gather-banner">
+                    <div className="gather-illustration">
+                      <div className="plate">
+                        <UtensilsCrossed size={36} />
+                      </div>
+                      <span className="little-orbit">
+                        <Heart size={24} />
+                      </span>
+                      <Papaya />
+                    </div>
+                    <div>
+                      <p className="eyebrow">
+                        {t(
+                          "RÓŻNE APETYTY. WSPÓLNY STOLIK.",
+                          "DIFFERENT CRAVINGS. SAME TABLE.",
+                        )}
+                      </p>
+                      <h2>
+                        {t(
+                          "Ty ramen. Ja burgera.",
+                          "You get ramen. I get a burger.",
+                        )}
+                        <br />
+                        {t("Razem? Idealnie.", "Together? Perfect.")}
+                      </h2>
+                      <p>
+                        {t(
+                          "Mieszaj kuchnie, jak lubisz. Jedno zamówienie, więcej przyjemności.",
+                          "Mix your favourite kitchens. One checkout, more happy moments.",
+                        )}
+                      </p>
+                    </div>
+                    <button
+                      className="round-arrow"
+                      onClick={() => setTour(1)}
+                      aria-label={t(
+                        "Jak zamawiać z kilku restauracji",
+                        "How to order from multiple restaurants",
                       )}
-                    </span>
-                    <span className="demo-label">DEMO</span>
-                  </div>
-                  <div className="orders-grid">
-                    {orders.map((order) => {
-                      const r = restaurantFor(order.restaurantId),
-                        status = statusFor(order, now),
-                        isReady = status === "ready",
-                        progress =
-                          status === "collected"
-                            ? 3
-                            : status === "ready"
-                              ? 2
-                              : status === "preparing"
-                                ? 1
-                                : 0;
-                      return (
-                        <motion.article
-                          layout
-                          className={`order-card ${isReady ? "ready" : ""} ${order.collected ? "collected" : ""}`}
-                          key={order.id}
-                        >
-                          <div className="order-card-top">
-                            <span
-                              className="order-brand"
-                              style={{ background: r.color }}
-                            >
-                              {r.name.slice(0, 1)}
-                            </span>
-                            <div>
-                              <h3>{r.name}</h3>
-                              <p>
-                                #{order.id} · {t("Stolik", "Table")}{" "}
-                                {order.table}
-                              </p>
-                            </div>
-                            <span className="status-label">
-                              {isReady ? (
-                                <Check size={14} />
-                              ) : (
-                                <Clock size={14} />
-                              )}{" "}
-                              {statusText(status)}
-                            </span>
-                          </div>
-                          <div className="order-food-preview">
+                    >
+                      <ArrowUpRight size={27} />
+                    </button>
+                  </section>
+                  <section className="section cravings">
+                    <div className="section-heading">
+                      <div>
+                        <p className="eyebrow">
+                          {t("MIŁOŚĆ OD PIERWSZEGO KĘSA", "LOVE AT FIRST BITE")}
+                        </p>
+                        <h2>
+                          {t("Małe", "Little")}{" "}
+                          <em>{t("zachcianki.", "cravings.")}</em>
+                        </h2>
+                      </div>
+                      <span className="handwritten">
+                        {t(
+                          "zawsze jest miejsce na coś dobrego",
+                          "there’s always room for something good",
+                        )}{" "}
+                        ↘
+                      </span>
+                    </div>
+                    <div className="dish-grid">
+                      {[menu[0], menu[2], menu[4], menu[8]].map((item) => (
+                        <article className="dish-card" key={item.id}>
+                          <button
+                            className="dish-photo"
+                            onClick={() => chooseDish(item)}
+                          >
                             <FoodImage
-                              src={dishFor(order.lines[0].itemId).image}
-                              alt={
-                                pl
-                                  ? dishFor(order.lines[0].itemId).name
-                                  : dishFor(order.lines[0].itemId).nameEn
-                              }
+                              src={item.image}
+                              alt={pl ? item.name : item.nameEn}
                             />
-                            <span>
-                              {isReady || order.collected
-                                ? t("Smacznego!", "Enjoy!")
-                                : t("Już się robi…", "On its way…")}
-                            </span>
-                          </div>
-                          <div className="order-message">
-                            <h2>
-                              {order.collected
-                                ? t("Smacznego!", "Enjoy every bite!")
-                                : isReady
-                                  ? t(
-                                      "Pora na pierwszy kęs.",
-                                      "Time for the first bite.",
-                                    )
-                                  : status === "preparing"
-                                    ? t(
-                                        "Robi się pysznie.",
-                                        "Good things are cooking.",
-                                      )
-                                    : t(
-                                        "Zamówienie w dobrych rękach.",
-                                        "Your order is in good hands.",
-                                      )}
-                            </h2>
-                            <p>
-                              {isReady
-                                ? `${t("Czekamy przy lokalu", "Meet us at unit")} ${r.unit}. ${t("Pokaż numer zamówienia.", "Show your order number.")}`
-                                : order.collected
-                                  ? t(
-                                      "Dzięki za wspólny stół.",
-                                      "Thanks for sharing the table.",
-                                    )
-                                  : t(
-                                      "Rozgość się. Damy znać, kiedy będzie gotowe.",
-                                      "Make yourself at home. We’ll show you when it’s ready.",
-                                    )}
-                            </p>
-                          </div>
-                          <div className="progress-track">
-                            {[0, 1, 2].map((i) => (
-                              <div
-                                key={i}
-                                className={progress >= i ? "done" : ""}
-                              >
-                                <span>
-                                  {progress > i ? <Check size={12} /> : i + 1}
-                                </span>
-                                <small>
-                                  {
-                                    [
-                                      t("Przyjęte", "Received"),
-                                      t("W kuchni", "Cooking"),
-                                      t("Gotowe", "Ready"),
-                                    ][i]
-                                  }
-                                </small>
-                              </div>
-                            ))}
-                          </div>
-                          <div className="order-items">
-                            {order.lines.map((line) => (
-                              <p key={line.id}>
-                                <span>
-                                  {line.quantity} ×{" "}
-                                  {pl
-                                    ? dishFor(line.itemId).name
-                                    : dishFor(line.itemId).nameEn}
-                                  {line.extra ? " + extra" : ""}
-                                </span>
-                                <strong>
-                                  {price(linePrice(line), locale)}
-                                </strong>
-                              </p>
-                            ))}
-                          </div>
-                          <div className="order-total">
-                            <span>{t("Suma demo", "Demo total")}</span>
-                            <strong>{price(order.total, locale)}</strong>
-                          </div>
-                          {isReady ? (
-                            <div className="order-actions">
-                              <button
-                                className="primary"
-                                onClick={() => {
-                                  setMapSelection(r.id);
-                                  navigate("map");
-                                }}
-                              >
-                                <Navigation size={18} />
-                                {t("Prowadź do odbioru", "Find pickup")}
-                              </button>
-                              <button
-                                className="secondary"
-                                onClick={() =>
-                                  setStore((s) => ({
-                                    ...s,
-                                    orders: s.orders.map((o) =>
-                                      o.id === order.id
-                                        ? { ...o, collected: true }
-                                        : o,
-                                    ),
-                                  }))
-                                }
-                              >
-                                {t("Odebrane", "Collected")}
-                                <CheckCheck size={17} />
-                              </button>
-                            </div>
-                          ) : !order.collected ? (
+                            {item.vegetarian && (
+                              <span className="vege-badge">
+                                <Leaf size={14} />
+                              </span>
+                            )}
+                          </button>
+                          <span className="eyebrow">
+                            {restaurantFor(item.restaurantId).name}
+                          </span>
+                          <button
+                            className="dish-title"
+                            onClick={() => chooseDish(item)}
+                          >
+                            {pl ? item.name : item.nameEn}
+                          </button>
+                          <div>
+                            <strong>{price(item.price, locale)}</strong>
                             <button
-                              className="text-button advance-demo"
-                              onClick={() =>
-                                setStore((s) => ({
-                                  ...s,
-                                  orders: s.orders.map((o) =>
-                                    o.id === order.id
-                                      ? { ...o, readyAt: Date.now() }
-                                      : o,
-                                  ),
-                                }))
-                              }
+                              className="add-button"
+                              onClick={() => add(item)}
+                              aria-label={`${t("Dodaj", "Add")} ${item.name}`}
                             >
-                              <Zap size={15} />
-                              {t(
-                                "Demo: pokaż gotowe zamówienie",
-                                "Demo: make order ready",
-                              )}
+                              <Plus size={19} />
                             </button>
-                          ) : (
-                            <button
-                              className="text-button"
-                              onClick={() => {
-                                setStore((s) => ({
-                                  ...s,
-                                  cart: order.lines.reduce(
-                                    (lines, line) =>
-                                      addLine(
-                                        lines,
-                                        line.itemId,
-                                        line.quantity,
-                                        line.extra,
-                                        line.note,
-                                      ),
-                                    s.cart,
-                                  ),
-                                }));
-                                setCartOpen(true);
-                                setCheckout(false);
-                              }}
-                            >
-                              <RotateCcw size={15} />
-                              {t("Zamów ponownie", "Order again")}
-                            </button>
-                          )}
-                        </motion.article>
-                      );
-                    })}
-                  </div>
-                  <p className="fine-print center">
-                    {t(
-                      "To demonstracja. Statusy zmieniają się automatycznie, płatności są symulowane.",
-                      "This is a demo. Statuses advance automatically and payments are simulated.",
-                    )}
-                  </p>
-                </>
+                          </div>
+                        </article>
+                      ))}
+                    </div>
+                  </section>
+                  <section className="hall-banner">
+                    <img
+                      src="/assets/hall.jpg"
+                      alt="Hala Koszyki, Warszawa"
+                      loading="lazy"
+                    />
+                    <div>
+                      <p className="eyebrow">KOSZYKOWA 63 · WARSZAWA</p>
+                      <h2>
+                        {t("Jedna hala.", "One hall.")}
+                        <br />
+                        {t("Cały świat smaków.", "A world of flavours.")}
+                      </h2>
+                      <button
+                        className="cream-button"
+                        onClick={() => navigate("map")}
+                      >
+                        {t("Rozejrzyj się", "Take a look around")}
+                        <ArrowUpRight size={18} />
+                      </button>
+                    </div>
+                    <span className="hall-seal">
+                      HALA
+                      <br />
+                      <b>KOSZYKI</b>
+                      <br />
+                      OD 1909
+                    </span>
+                  </section>
+                </motion.div>
               )}
-            </div>
-          )}
+              {tab === "map" && (
+                <div className="section page-section">
+                  <div className="section-heading">
+                    <div>
+                      <p className="eyebrow">HALA KOSZYKI · WARSZAWA</p>
+                      <h1 className="page-title">
+                        {t("Podążaj za", "Follow the")}{" "}
+                        <em>{t("apetytem.", "good food.")}</em>
+                      </h1>
+                    </div>
+                    <span className="pill">
+                      <MapPin size={16} />
+                      {t("Stolik", "Table")} {table}
+                    </span>
+                  </div>
+                  <HallMap
+                    locale={locale}
+                    table={table}
+                    selected={mapSelection}
+                    onSelect={setMapSelection}
+                    onMenu={(id) => setRestaurant(restaurantFor(id))}
+                  />
+                </div>
+              )}
+              {tab === "orders" && (
+                <div className="section page-section orders-page">
+                  <div className="section-heading">
+                    <div>
+                      <p className="eyebrow">
+                        {t(
+                          "TY ODPOCZYWASZ. MY CZARUJEMY.",
+                          "YOU RELAX. WE’RE ON IT.",
+                        )}
+                      </p>
+                      <h1 className="page-title">
+                        {t("Twoje", "Your")}{" "}
+                        <em>{t("papu.", "happy food.")}</em>
+                      </h1>
+                    </div>
+                    <span className="pill">
+                      <span className="green-dot" />
+                      {t("Stolik", "Table")} {table}
+                    </span>
+                  </div>
+                  {!orders.length ? (
+                    <div className="empty-state large">
+                      <Papaya className="empty-papaya" />
+                      <h2>
+                        {t(
+                          "Tu zaczyna się coś pysznego.",
+                          "Something delicious starts here.",
+                        )}
+                      </h2>
+                      <p>
+                        {t(
+                          "Twoje zamówienia pojawią się tutaj. Najpierw znajdź swój ulubiony smak.",
+                          "Your orders will appear here. First, find a flavour you love.",
+                        )}
+                      </p>
+                      <button className="primary" onClick={browse}>
+                        {t("Odkryj restauracje", "Explore restaurants")}
+                        <ArrowRight size={18} />
+                      </button>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="order-notice">
+                        <ChefHat size={20} />
+                        <span>
+                          {t(
+                            "Chwila dla Ciebie. Demo kuchni trwa 12–28 sekund.",
+                            "A moment for you. Demo kitchens take 12–28 seconds.",
+                          )}
+                        </span>
+                        <span className="demo-label">DEMO</span>
+                      </div>
+                      <div className="orders-grid">
+                        {orders.map((order) => (
+                          <OrderTicket
+                            key={order.id}
+                            order={order}
+                            locale={locale}
+                            now={now}
+                            onPickup={() => {
+                              setMapSelection(order.restaurantId);
+                              navigate("map");
+                            }}
+                            onCollect={() =>
+                              setStore((s) => ({
+                                ...s,
+                                orders: s.orders.map((o) =>
+                                  o.id === order.id
+                                    ? { ...o, collected: true }
+                                    : o,
+                                ),
+                              }))
+                            }
+                            onReady={() =>
+                              setStore((s) => ({
+                                ...s,
+                                orders: s.orders.map((o) =>
+                                  o.id === order.id
+                                    ? { ...o, readyAt: Date.now() }
+                                    : o,
+                                ),
+                              }))
+                            }
+                            onReorder={() => {
+                              setStore((s) => ({
+                                ...s,
+                                cart: order.lines.reduce(
+                                  (lines, line) =>
+                                    addLine(
+                                      lines,
+                                      line.itemId,
+                                      line.quantity,
+                                      line.extra,
+                                      line.note,
+                                    ),
+                                  s.cart,
+                                ),
+                              }));
+                              setCheckout(false);
+                              setCartOpen(true);
+                            }}
+                          />
+                        ))}
+                      </div>
+                      <p className="fine-print center">
+                        {t(
+                          "To demonstracja. Statusy zmieniają się automatycznie, płatności są symulowane.",
+                          "This is a demo. Statuses advance automatically and payments are simulated.",
+                        )}
+                      </p>
+                    </>
+                  )}
+                </div>
+              )}
+            </motion.div>
+          </AnimatePresence>
         </main>
         <footer>
           <Brand />
@@ -1170,7 +1051,7 @@ export default function App({ context }: { context: OrderContext }) {
                 <h2>{restaurant.name}</h2>
                 <span>
                   {pl ? restaurant.cuisine : restaurant.cuisineEn} <i>·</i>{" "}
-                  {restaurant.minutes}–{restaurant.minutes + 5} min
+                  {t("Demo · 12–28 s", "Demo · 12–28 sec")}
                 </span>
               </div>
             </div>
@@ -1381,218 +1262,273 @@ export default function App({ context }: { context: OrderContext }) {
               if (!paying) setCartOpen(false);
             }}
           >
-            <div className="modal-content basket-content">
-              <div className="eyebrow">
-                {t(
-                  "JEDEN KOSZYK. DUŻO SZCZĘŚCIA.",
-                  "ONE BASKET. LOTS OF HAPPINESS.",
-                )}
-              </div>
-              <h2>
-                {checkout
-                  ? t("Prawie przy stole.", "Almost at the table.")
-                  : t("Same dobre rzeczy.", "All the good stuff.")}
-              </h2>
-              <div className="basket-context">
-                <MapPin size={16} /> Hala Koszyki <span>·</span>{" "}
-                {t("Stolik", "Table")} {table}
-              </div>
-              {!cart.length ? (
-                <div className="empty-state">
-                  <Papaya className="empty-papaya" />
-                  <h3>
-                    {t(
-                      "Apetyt jest. Papu jeszcze nie.",
-                      "Appetite? Yes. Food? Not yet.",
-                    )}
-                  </h3>
-                  <p>
-                    {t(
-                      "Dodaj coś pysznego z dowolnej restauracji.",
-                      "Add something delicious from any restaurant.",
-                    )}
-                  </p>
-                  <button
-                    className="primary"
-                    onClick={() => {
-                      setCartOpen(false);
-                      browse();
-                    }}
-                  >
-                    {t("Znajdź swój smak", "Find your flavour")}
-                    <ArrowRight size={17} />
-                  </button>
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.div
+                key={checkout ? "checkout" : "basket"}
+                className="modal-content basket-content"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -16 }}
+                transition={{ duration: 0.2 }}
+              >
+                <div className="eyebrow">
+                  {t(
+                    "JEDEN KOSZYK. DUŻO SZCZĘŚCIA.",
+                    "ONE BASKET. LOTS OF HAPPINESS.",
+                  )}
                 </div>
-              ) : (
-                <>
-                  {groupCart(cart).map(({ restaurant: r, lines }) => (
-                    <section className="basket-group" key={r.id}>
-                      <h3>
-                        <span style={{ background: r.color }}>
-                          {r.name.slice(0, 1)}
-                        </span>
-                        {r.name}
-                        <small>
-                          {t("Lokal", "Unit")} {r.unit}
-                        </small>
-                      </h3>
-                      {lines.map((line) => (
-                        <div className="basket-item" key={line.id}>
-                          <FoodImage src={dishFor(line.itemId).image} alt="" />
-                          <div>
-                            <strong>
-                              {pl
-                                ? dishFor(line.itemId).name
-                                : dishFor(line.itemId).nameEn}
-                            </strong>
-                            {line.extra && (
-                              <small>
-                                + {t("Dodatkowy sos", "Extra sauce")}
-                              </small>
-                            )}
-                            {line.note && (
-                              <small className="line-note">{line.note}</small>
-                            )}
-                            <div className="basket-item-bottom">
-                              <div className="stepper small">
-                                <button
-                                  disabled={paying}
-                                  aria-label={`${t("Zmniejsz", "Decrease")} ${dishFor(line.itemId).name}`}
-                                  onClick={() => updateQuantity(line.id, -1)}
-                                >
-                                  <Minus size={13} />
-                                </button>
-                                <b>{line.quantity}</b>
-                                <button
-                                  disabled={paying || line.quantity >= 20}
-                                  aria-label={`${t("Zwiększ", "Increase")} ${dishFor(line.itemId).name}`}
-                                  onClick={() => updateQuantity(line.id, 1)}
-                                >
-                                  <Plus size={13} />
-                                </button>
+                <h2>
+                  {checkout
+                    ? t("Prawie przy stole.", "Almost at the table.")
+                    : t("Same dobre rzeczy.", "All the good stuff.")}
+                </h2>
+                <div className="basket-context">
+                  <MapPin size={16} /> Hala Koszyki <span>·</span>{" "}
+                  {t("Stolik", "Table")} {table}
+                </div>
+                {!cart.length ? (
+                  <div className="empty-state">
+                    <Papaya className="empty-papaya" />
+                    <h3>
+                      {t(
+                        "Apetyt jest. Papu jeszcze nie.",
+                        "Appetite? Yes. Food? Not yet.",
+                      )}
+                    </h3>
+                    <p>
+                      {t(
+                        "Dodaj coś pysznego z dowolnej restauracji.",
+                        "Add something delicious from any restaurant.",
+                      )}
+                    </p>
+                    <button
+                      className="primary"
+                      onClick={() => {
+                        setCartOpen(false);
+                        browse();
+                      }}
+                    >
+                      {t("Znajdź swój smak", "Find your flavour")}
+                      <ArrowRight size={17} />
+                    </button>
+                  </div>
+                ) : (
+                  <>
+                    {!checkout &&
+                      groupCart(cart).map(({ restaurant: r, lines }) => (
+                        <section className="basket-group" key={r.id}>
+                          <h3>
+                            <span style={{ background: r.color }}>
+                              {r.name.slice(0, 1)}
+                            </span>
+                            {r.name}
+                            <small>
+                              {t("Lokal", "Unit")} {r.unit}
+                            </small>
+                          </h3>
+                          {lines.map((line) => (
+                            <div className="basket-item" key={line.id}>
+                              <FoodImage
+                                src={dishFor(line.itemId).image}
+                                alt=""
+                              />
+                              <div>
+                                <strong>
+                                  {pl
+                                    ? dishFor(line.itemId).name
+                                    : dishFor(line.itemId).nameEn}
+                                </strong>
+                                {line.extra && (
+                                  <small>
+                                    + {t("Dodatkowy sos", "Extra sauce")}
+                                  </small>
+                                )}
+                                {line.note && (
+                                  <small className="line-note">
+                                    {line.note}
+                                  </small>
+                                )}
+                                <div className="basket-item-bottom">
+                                  <div className="stepper small">
+                                    <button
+                                      disabled={paying}
+                                      aria-label={`${t("Zmniejsz", "Decrease")} ${dishFor(line.itemId).name}`}
+                                      onClick={() =>
+                                        updateQuantity(line.id, -1)
+                                      }
+                                    >
+                                      <Minus size={13} />
+                                    </button>
+                                    <b>{line.quantity}</b>
+                                    <button
+                                      disabled={paying || line.quantity >= 20}
+                                      aria-label={`${t("Zwiększ", "Increase")} ${dishFor(line.itemId).name}`}
+                                      onClick={() => updateQuantity(line.id, 1)}
+                                    >
+                                      <Plus size={13} />
+                                    </button>
+                                  </div>
+                                  <strong>
+                                    {price(linePrice(line), locale)}
+                                  </strong>
+                                </div>
                               </div>
-                              <strong>{price(linePrice(line), locale)}</strong>
                             </div>
+                          ))}
+                        </section>
+                      ))}
+                    {!checkout &&
+                      !cart.some((x) => x.itemId === "bar-lemonade") && (
+                        <button
+                          className="upsell"
+                          onClick={() =>
+                            add(menu.find((x) => x.id === "bar-lemonade")!)
+                          }
+                        >
+                          <FoodImage src="lemonade.jpg" alt="" />
+                          <span>
+                            <strong>
+                              {t(
+                                "A do tego coś orzeźwiającego?",
+                                "Something refreshing with that?",
+                              )}
+                            </strong>
+                            <small>
+                              {t("Lemoniada yuzu", "Yuzu lemonade")} ·{" "}
+                              {price(1800, locale)}
+                            </small>
+                          </span>
+                          <Plus size={20} />
+                        </button>
+                      )}
+                    {checkout && (
+                      <>
+                        <div className="checkout-ready">
+                          <ShoppingBag size={26} />
+                          <div>
+                            <h3>
+                              {t(
+                                "Twój koszyk jest gotowy.",
+                                "Your basket is ready.",
+                              )}
+                            </h3>
+                            <p>
+                              {count} {t("produktów", "items")} ·{" "}
+                              {groupCart(cart).length}{" "}
+                              {t("kuchnie", "kitchens")}
+                            </p>
                           </div>
                         </div>
-                      ))}
-                    </section>
-                  ))}
-                  {!checkout &&
-                    !cart.some((x) => x.itemId === "bar-lemonade") && (
-                      <button
-                        className="upsell"
-                        onClick={() =>
-                          add(menu.find((x) => x.id === "bar-lemonade")!)
-                        }
-                      >
-                        <FoodImage src="lemonade.jpg" alt="" />
-                        <span>
-                          <strong>
-                            {t(
-                              "A do tego coś orzeźwiającego?",
-                              "Something refreshing with that?",
+                        <div className="notification-choice">
+                          <div>
+                            <strong>
+                              {t(
+                                "Daj znać, gdy gotowe",
+                                "Tell me when it’s ready",
+                              )}
+                            </strong>
+                            <p>
+                              {alertMessage ||
+                                t(
+                                  "Demo: 12–28 sekund. Zostaw tę kartę otwartą.",
+                                  "Demo: 12–28 seconds. Keep this tab open.",
+                                )}
+                            </p>
+                          </div>
+                          <button onClick={enableAlerts} type="button">
+                            {t("Włącz alert", "Enable alert")}
+                          </button>
+                        </div>
+                        <label className="checkout-name">
+                          {t("Jak mamy Cię wołać?", "What should we call you?")}
+                          <input
+                            maxLength={40}
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            placeholder={t(
+                              "Twoje imię (opcjonalnie)",
+                              "Your name (optional)",
                             )}
-                          </strong>
-                          <small>
-                            {t("Lemoniada yuzu", "Yuzu lemonade")} ·{" "}
-                            {price(1800, locale)}
-                          </small>
+                            disabled={paying}
+                          />
+                        </label>
+                        <div className="payment-explanation">
+                          <LockKeyhole size={20} />
+                          <span>
+                            <strong>
+                              {t("Płatność demonstracyjna", "Demo payment")}
+                            </strong>
+                            <small>
+                              {t(
+                                "Bez karty, bez obciążenia konta. Po prostu wypróbuj.",
+                                "No card, no charge. Just try the experience.",
+                              )}
+                            </small>
+                          </span>
+                        </div>
+                      </>
+                    )}
+                    <div className="basket-summary">
+                      <p>
+                        <span>
+                          {t("Produkty", "Items")} ({count})
                         </span>
-                        <Plus size={20} />
+                        <span>{price(total, locale)}</span>
+                      </p>
+                      <p>
+                        <span>{t("Opłata serwisowa", "Service fee")}</span>
+                        <span>{price(0, locale)}</span>
+                      </p>
+                      <div>
+                        <h3>{t("Razem", "Total")}</h3>
+                        <strong>{price(total, locale)}</strong>
+                      </div>
+                    </div>
+                    <button
+                      className="primary full-width checkout-cta"
+                      disabled={paying}
+                      onClick={checkout ? pay : () => setCheckout(true)}
+                    >
+                      {paying ? (
+                        <>
+                          <span className="spinner" />
+                          {t(
+                            "Papu w drodze do kuchni…",
+                            "Sending your happy food…",
+                          )}
+                        </>
+                      ) : (
+                        <>
+                          {checkout
+                            ? t("Zamawiam w demo", "Place demo order")
+                            : t(
+                                "Przejdź do podsumowania",
+                                "Continue to checkout",
+                              )}
+                          <ArrowRight size={20} />
+                        </>
+                      )}
+                    </button>
+                    {checkout && (
+                      <button
+                        disabled={paying}
+                        className="text-button back-to-cart"
+                        onClick={() => setCheckout(false)}
+                      >
+                        <ArrowLeft size={15} />
+                        {t("Wróć do koszyka", "Back to basket")}
                       </button>
                     )}
-                  {checkout && (
-                    <>
-                      <label className="checkout-name">
-                        {t("Jak mamy Cię wołać?", "What should we call you?")}
-                        <input
-                          maxLength={40}
-                          value={name}
-                          onChange={(e) => setName(e.target.value)}
-                          placeholder={t(
-                            "Twoje imię (opcjonalnie)",
-                            "Your name (optional)",
-                          )}
-                          disabled={paying}
-                        />
-                      </label>
-                      <div className="payment-explanation">
-                        <LockKeyhole size={20} />
-                        <span>
-                          <strong>
-                            {t("Płatność demonstracyjna", "Demo payment")}
-                          </strong>
-                          <small>
-                            {t(
-                              "Bez karty, bez obciążenia konta. Po prostu wypróbuj.",
-                              "No card, no charge. Just try the experience.",
-                            )}
-                          </small>
-                        </span>
-                      </div>
-                    </>
-                  )}
-                  <div className="basket-summary">
-                    <p>
-                      <span>
-                        {t("Produkty", "Items")} ({count})
-                      </span>
-                      <span>{price(total, locale)}</span>
+                    <p className="fine-print center">
+                      {t(
+                        "Odbiór osobisty przy stanowiskach restauracji.",
+                        "Collect your food at each restaurant’s counter.",
+                      )}
                     </p>
-                    <p>
-                      <span>{t("Opłata serwisowa", "Service fee")}</span>
-                      <span>{price(0, locale)}</span>
-                    </p>
-                    <div>
-                      <h3>{t("Razem", "Total")}</h3>
-                      <strong>{price(total, locale)}</strong>
-                    </div>
-                  </div>
-                  <button
-                    className="primary full-width checkout-cta"
-                    disabled={paying}
-                    onClick={checkout ? pay : () => setCheckout(true)}
-                  >
-                    {paying ? (
-                      <>
-                        <span className="spinner" />
-                        {t(
-                          "Papu w drodze do kuchni…",
-                          "Sending your happy food…",
-                        )}
-                      </>
-                    ) : (
-                      <>
-                        {checkout
-                          ? t("Zamawiam w demo", "Place demo order")
-                          : t(
-                              "Przejdź do podsumowania",
-                              "Continue to checkout",
-                            )}
-                        <ArrowRight size={20} />
-                      </>
-                    )}
-                  </button>
-                  {checkout && (
-                    <button
-                      disabled={paying}
-                      className="text-button back-to-cart"
-                      onClick={() => setCheckout(false)}
-                    >
-                      <ArrowLeft size={15} />
-                      {t("Wróć do koszyka", "Back to basket")}
-                    </button>
-                  )}
-                  <p className="fine-print center">
-                    {t(
-                      "Odbiór osobisty przy stanowiskach restauracji.",
-                      "Collect your food at each restaurant’s counter.",
-                    )}
-                  </p>
-                </>
-              )}
-            </div>
+                  </>
+                )}
+              </motion.div>
+            </AnimatePresence>
           </Modal>
         )}
         {success && (
@@ -1603,7 +1539,7 @@ export default function App({ context }: { context: OrderContext }) {
             <div className="success-content">
               <div className="success-motion">
                 <Suspense fallback={<Papaya />}>
-                  <PapuMotion celebrate />
+                  <PapuMotion scene={3} />
                 </Suspense>
                 <div className="confetti">
                   <span />
@@ -1620,7 +1556,7 @@ export default function App({ context }: { context: OrderContext }) {
                   "THAT’S IT. NOW TAKE A MOMENT.",
                 )}
               </p>
-              <h2>{t("Papu się robi!", "Good things are cooking!")}</h2>
+              <h2>{t("Już się robi.", "On its way.")}</h2>
               <p>
                 {t(
                   "Rozgość się przy stoliku. Twoje smaki są już w dobrych rękach.",
@@ -1654,77 +1590,66 @@ export default function App({ context }: { context: OrderContext }) {
             onClose={() => setTour(null)}
           >
             <div className="tour-content">
-              <div className={`tour-visual tour-${tour}`}>
-                <Suspense fallback={<Papaya />}>
-                  <PapuMotion
-                    key={tour}
-                    celebrate={tour === 2}
-                    scan={tour === 0}
-                  />
-                </Suspense>
-                <span className="tour-floating left">
-                  {tour === 0 ? (
-                    <QrCode size={27} />
-                  ) : tour === 1 ? (
-                    <Soup size={27} />
-                  ) : (
-                    <Check size={27} />
-                  )}
-                </span>
-                <span className="tour-floating right">
-                  {tour === 0 ? (
-                    <MapPin size={27} />
-                  ) : tour === 1 ? (
-                    <Pizza size={27} />
-                  ) : (
-                    <ShoppingBag size={27} />
-                  )}
-                </span>
-              </div>
-              <div className="tour-dots">
-                {[0, 1, 2].map((i) => (
-                  <button
-                    key={i}
-                    aria-label={`${t("Krok", "Step")} ${i + 1}`}
-                    aria-current={tour === i ? "step" : undefined}
-                    className={i === tour ? "active" : ""}
-                    onClick={() => setTour(i)}
-                  />
-                ))}
-              </div>
-              <p className="eyebrow">
-                {t("MAŁY SKAN. WIELKIE MNIAM.", "LITTLE SCAN. BIG YUM.")}
-              </p>
-              <h2>
-                {
-                  [
-                    t("Usiądź. Zeskanuj.", "Sit down. Scan."),
-                    t(
-                      "Każdy znajdzie swój smak.",
-                      "Every craving gets a seat.",
-                    ),
-                    t("Odbierz. I ciesz się chwilą.", "Pick up. Dig in."),
-                  ][tour]
-                }
-              </h2>
-              <p>
-                {
-                  [
-                    t(
-                      `Kod QR zna Twój stolik. Jesteś przy numerze ${table}. Bez konta, bez pobierania aplikacji.`,
-                      `The QR knows your table. You’re at number ${table}. No account, no app download.`,
-                    ),
-                    t(
-                      "Ramen z KAGO, burger z ATOM, lemoniada z baru. Wszystko w jednym koszyku, z jednym podsumowaniem.",
-                      "Ramen from KAGO, a burger from ATOM, a lemonade from the bar. All in one basket, one checkout.",
-                    ),
-                    t(
-                      "Obserwuj postęp zamówienia. Gdy kuchnia da znak, mapa poprowadzi Cię do odpowiedniego stanowiska.",
-                      "Follow your order’s progress. When a kitchen is ready, the map shows you the right counter.",
-                    ),
-                  ][tour]
-                }
-              </p>
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.div
+                  key={tour}
+                  className="tour-step"
+                  initial={{ opacity: 0, x: 22 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -22 }}
+                  transition={{ duration: 0.22 }}
+                >
+                  <div className={`tour-visual tour-${tour}`}>
+                    <Suspense fallback={<Papaya />}>
+                      <PapuMotion scene={[1, 2, 4][tour]} />
+                    </Suspense>
+                  </div>
+                  <div className="tour-dots">
+                    {[0, 1, 2].map((i) => (
+                      <button
+                        key={i}
+                        aria-label={`${t("Krok", "Step")} ${i + 1}`}
+                        aria-current={tour === i ? "step" : undefined}
+                        className={i === tour ? "active" : ""}
+                        onClick={() => setTour(i)}
+                      />
+                    ))}
+                  </div>
+                  <p className="eyebrow">
+                    {t("MAŁY SKAN. WIELKIE MNIAM.", "LITTLE SCAN. BIG YUM.")}
+                  </p>
+                  <h2>
+                    {
+                      [
+                        t("Usiądź. Zeskanuj.", "Sit down. Scan."),
+                        t(
+                          "Każdy znajdzie swój smak.",
+                          "Every craving gets a seat.",
+                        ),
+                        t("Odbierz. I ciesz się chwilą.", "Pick up. Dig in."),
+                      ][tour]
+                    }
+                  </h2>
+                  <p>
+                    {
+                      [
+                        t(
+                          `Kod QR zna Twój stolik. Jesteś przy numerze ${table}. Bez konta. Od razu do jedzenia.`,
+                          `The QR knows your table. You’re at number ${table}. No account. Straight to the good stuff.`,
+                        ),
+                        t(
+                          "Ramen z KAGO, burger z ATOM, lemoniada z baru. Wszystko w jednym koszyku, z jednym podsumowaniem.",
+                          "Ramen from KAGO, a burger from ATOM, a lemonade from the bar. All in one basket, one checkout.",
+                        ),
+                        t(
+                          "Obserwuj postęp zamówienia. Gdy kuchnia da znak, mapa poprowadzi Cię do odpowiedniego stanowiska.",
+                          "Follow your order’s progress. When a kitchen is ready, the map shows you the right counter.",
+                        ),
+                      ][tour]
+                    }
+                  </p>
+                </motion.div>
+              </AnimatePresence>
               <button
                 className="primary full-width"
                 onClick={() => {

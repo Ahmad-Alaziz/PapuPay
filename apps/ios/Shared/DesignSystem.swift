@@ -1,16 +1,22 @@
 import SwiftUI
 
-import class RiveRuntime.RiveViewModel
+import class RiveRuntime.File
+import struct RiveRuntime.NumberProperty
+import class RiveRuntime.Rive
+import struct RiveRuntime.RiveUIViewRepresentable
+import class RiveRuntime.Worker
 
 enum Papu {
-  static let ink = Color(hex: "173C2B"), orange = Color(hex: "FF8848"),
-    green = Color(hex: "2B744B"), cream = Color(hex: "FBF7ED"), butter = Color(hex: "FFF2D6"),
-    accentText = Color(hex: "C95521"), sage = Color(hex: "E7EDD9"), muted = Color(hex: "536451"),
+  static let ink = Color(hex: "123C2D"), orange = Color(hex: "FF7837"),
+    green = Color(hex: "2B744B"), cream = Color(hex: "FAF6ED"), butter = Color(hex: "FFF2D6"),
+    accentText = Color(hex: "B7471B"), sage = Color(hex: "E7EDD9"), muted = Color(hex: "536451"),
     line = Color(hex: "DFE6D2")
   static func display(_ size: CGFloat) -> Font {
     .custom("PapuDisplay-Bold", size: size, relativeTo: size >= 30 ? .largeTitle : .headline)
-      .weight(
-        .bold)
+
+  }
+  static func poster(_ size: CGFloat) -> Font {
+    .custom("PapuPoster-Regular", size: size, relativeTo: .largeTitle)
   }
   static func body(_ size: CGFloat = 17) -> Font {
     let style: Font.TextStyle =
@@ -100,9 +106,10 @@ struct PrimaryButton: View {
   }
 }
 struct PressStyle: ButtonStyle {
+  @Environment(\.accessibilityReduceMotion) private var reduceMotion
   func makeBody(configuration: Configuration) -> some View {
-    configuration.label.scaleEffect(configuration.isPressed ? 0.97 : 1).animation(
-      .spring(response: 0.25, dampingFraction: 0.65), value: configuration.isPressed)
+    configuration.label.scaleEffect(configuration.isPressed && !reduceMotion ? 0.97 : 1).animation(
+      .spring(response: 0.25, dampingFraction: 0.8), value: configuration.isPressed)
   }
 }
 struct FoodPhoto: View {
@@ -112,29 +119,69 @@ struct FoodPhoto: View {
       .accessibilityHidden(true)
   }
 }
+/// The file is decoded once; each presentation gets its own data-bound scene.
+@MainActor private enum PapuRiveAsset {
+  static let file = Task { () throws -> RiveRuntime.File in
+    let worker = try await Worker()
+    return try await RiveRuntime.File(source: .local("papu", Bundle.main), worker: worker)
+  }
+}
+@MainActor private final class JourneyAnimation: ObservableObject {
+  @Published var rive: Rive?
+  func load(scene: Int) async {
+    guard rive == nil else {
+      set(scene)
+      return
+    }
+    do {
+      let file = try await PapuRiveAsset.file.value
+      let instance = try await file.createViewModelInstance(
+        .viewModelDefault(from: .name("PapuJourney")))
+      instance.setValue(of: NumberProperty(path: "scene"), to: Float(scene))
+      rive = try await Rive(file: file, dataBind: .instance(instance))
+    } catch { /* The local brand artwork remains visible if rendering is unavailable. */  }
+  }
+  func set(_ scene: Int) {
+    rive?.viewModelInstance?.setValue(of: NumberProperty(path: "scene"), to: Float(scene))
+  }
+}
 struct PapuAnimation: View {
   @Environment(\.accessibilityReduceMotion) private var reduceMotion
-  @State private var model: RiveViewModel?
+  @Environment(\.scenePhase) private var phase
+  @StateObject private var model = JourneyAnimation()
+  @State private var visible = false
   var celebrate = false
   var scan = false
+  var scene: Int? = nil
+  private var currentScene: Int { scene ?? (scan ? 1 : celebrate ? 4 : 0) }
   var body: some View {
     Group {
-      if let model, !reduceMotion { model.view() } else { PapayaMark().padding(45) }
-    }
-    .task(id: "\(celebrate)-\(scan)-\(reduceMotion)") {
-      guard !reduceMotion, Bundle.main.url(forResource: "papu", withExtension: "riv") != nil else {
-        model = nil
-        return
+      if let rive = model.rive, !reduceMotion {
+        RiveUIViewRepresentable(rive: rive).paused(!visible || phase != .active).frameRate(.fps(60))
+      } else {
+        PapayaMark().padding(40)
       }
-      if model == nil {
-        model = RiveViewModel(
-          fileName: "papu", stateMachineName: "Papu", fit: .contain, autoPlay: true)
-      }
-      try? await Task.sleep(for: .milliseconds(350))
-      guard !Task.isCancelled else { return }
-      if scan { model?.triggerInput("Scan") } else if celebrate { model?.triggerInput("Celebrate") }
     }
+    .task(id: currentScene) { if !reduceMotion { await model.load(scene: currentScene) } }
+    .onAppear { visible = true }.onDisappear { visible = false }
     .accessibilityHidden(true)
+  }
+}
+
+/// A paper receipt detail shared by order cards and checkout.
+struct TicketRule: View {
+  var body: some View {
+    HStack(spacing: 0) {
+      Circle().fill(Papu.cream).frame(width: 16, height: 16).offset(x: -8)
+      Rectangle().fill(.clear).frame(height: 1).overlay {
+        Path { p in
+          p.move(to: .zero)
+          p.addLine(to: CGPoint(x: 1000, y: 0))
+        }
+        .stroke(Papu.line, style: StrokeStyle(lineWidth: 1, dash: [4, 5])).clipped()
+      }
+      Circle().fill(Papu.cream).frame(width: 16, height: 16).offset(x: 8)
+    }.accessibilityHidden(true)
   }
 }
 

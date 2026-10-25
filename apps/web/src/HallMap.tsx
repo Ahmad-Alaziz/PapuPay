@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   ArrowUpRight,
   MapPin,
@@ -7,6 +7,7 @@ import {
   LocateFixed,
   Navigation,
 } from "lucide-react";
+import { motion, useReducedMotion } from "motion/react";
 import geometry from "../../../packages/catalog/map.json";
 import { restaurants, restaurantFor } from "./domain";
 import type { Locale } from "./domain";
@@ -68,6 +69,11 @@ export default function HallMap({
   onSelect: (id: string) => void;
   onMenu: (id: string) => void;
 }) {
+  const [overview, setOverview] = useState(false);
+  const reduceMotion = useReducedMotion();
+  const [pan, setPan] = useState({ x: 0, y: 0 });
+  const [dragging, setDragging] = useState(false);
+  const pointer = useRef({ x: 0, y: 0, startX: 0, startY: 0, moved: false });
   const [zoom, setZoom] = useState(1),
     [route, setRoute] = useState(true);
   const pl = locale === "pl",
@@ -76,28 +82,89 @@ export default function HallMap({
     <section className="map-layout">
       <div className="map-canvas">
         <div className="map-top">
-          <span className="pill cream">
+          <button
+            className="pill cream"
+            onClick={() => {
+              setOverview(!overview);
+              setZoom(1);
+              setPan({ x: 0, y: 0 });
+            }}
+            aria-label={
+              pl
+                ? "Przełącz cały plan / strefa gastro"
+                : "Toggle full plan / food court"
+            }
+          >
             <span className="green-dot" />
-            {pl ? "Poziom 0 · Parter" : "Level 0 · Ground floor"}
-          </span>
+            {overview
+              ? pl
+                ? "Cały plan"
+                : "Full plan"
+              : pl
+                ? "Strefa gastro · Parter"
+                : "Food court · Ground"}
+          </button>
           <button
             className="icon-button"
             aria-label={pl ? "Wyśrodkuj mapę" : "Center map"}
-            onClick={() => setZoom(1)}
+            onClick={() => {
+              setZoom(1);
+              setPan({ x: 0, y: 0 });
+            }}
           >
             <LocateFixed size={20} />
           </button>
         </div>
-        <div className="map-drawing">
+        <div
+          className={`map-drawing ${zoom > 1 ? "is-zoomed" : ""} ${dragging ? "is-dragging" : ""}`}
+          onPointerDown={(e) => {
+            if (zoom <= 1) return;
+            pointer.current = {
+              x: e.clientX,
+              y: e.clientY,
+              startX: pan.x,
+              startY: pan.y,
+              moved: false,
+            };
+          }}
+          onPointerMove={(e) => {
+            if (zoom <= 1 || e.buttons !== 1) return;
+            const dx = e.clientX - pointer.current.x,
+              dy = e.clientY - pointer.current.y;
+            if (Math.abs(dx) + Math.abs(dy) < 6) return;
+            e.currentTarget.setPointerCapture(e.pointerId);
+            pointer.current.moved = true;
+            setDragging(true);
+            const limit = (zoom - 1) * 180;
+            setPan({
+              x: Math.max(-limit, Math.min(limit, pointer.current.startX + dx)),
+              y: Math.max(-limit, Math.min(limit, pointer.current.startY + dy)),
+            });
+          }}
+          onPointerUp={(e) => {
+            setDragging(false);
+            if (e.currentTarget.hasPointerCapture(e.pointerId))
+              e.currentTarget.releasePointerCapture(e.pointerId);
+          }}
+          onPointerCancel={() => setDragging(false)}
+          onClickCapture={(e) => {
+            if (pointer.current.moved) {
+              e.stopPropagation();
+              pointer.current.moved = false;
+            }
+          }}
+        >
           <svg
-            viewBox="0 30 609 590"
+            viewBox={overview ? "0 30 609 590" : "140 200 360 280"}
             role="group"
             aria-label={
               pl
                 ? "Interaktywny plan Hali Koszyki"
                 : "Interactive Hala Koszyki floor plan"
             }
-            style={{ transform: `scale(${zoom})` }}
+            style={{
+              transform: `translate(${zoom > 1 ? pan.x : 0}px, ${zoom > 1 ? pan.y : 0}px) scale(${zoom})`,
+            }}
           >
             <defs>
               <pattern
@@ -114,23 +181,23 @@ export default function HallMap({
             <rect width="609" height="630" fill="url(#dots)" />
             <path
               d="M18 578V310Q17 298 40 300H148V163L182 170L230 109L291 145L389 44L452 109L365 199L595 285V580H417V467H222V580Z"
-              fill="#f8f4e8"
-              stroke="#c9cebb"
-              strokeWidth="2"
+              fill="#fdf9ed"
+              stroke="#bdc9ae"
+              strokeWidth="5"
             />
             {geometry.units.map((u) => {
               const n = Number(u["data-id"]),
                 r = restaurants.find((x) => x.unit === n),
                 active = r?.id === selected;
               const props = {
-                fill: active ? "#ff8848" : r ? "#c4d3b4" : "#e0e4d6",
+                fill: active ? "#ff7837" : r ? "#b4c7a5" : "#d8e0cf",
                 stroke: "#faf7ef",
                 strokeWidth: 3,
               };
               return (
                 <g
                   key={u.id}
-                  className={r ? "map-unit" : ""}
+                  className={`${r ? "map-unit" : ""} ${active ? "map-unit-selected" : ""}`}
                   role={r ? "button" : undefined}
                   tabIndex={r ? 0 : undefined}
                   aria-label={
@@ -198,14 +265,19 @@ export default function HallMap({
               <circle cx="477" cy="530" r="7" />
             </g>
             {route && (
-              <path
+              <motion.path
                 key={selected}
+                initial={{ pathLength: reduceMotion ? 1 : 0, opacity: 0 }}
+                animate={{ pathLength: 1, opacity: 1 }}
+                transition={{
+                  duration: reduceMotion ? 0 : 0.7,
+                  ease: "easeInOut",
+                }}
                 className="walking-route"
                 d={routes[restaurant.unit]}
                 fill="none"
                 stroke="#173c2b"
-                strokeWidth="3"
-                strokeDasharray="3 7"
+                strokeWidth="4"
                 strokeLinecap="round"
               />
             )}
@@ -225,10 +297,32 @@ export default function HallMap({
               stroke="#fff"
               strokeWidth="3"
             />
-            <g className="destination-pin" transform={`translate(${Math.min(465, Math.max(75, positions[restaurant.unit][0]))} ${positions[restaurant.unit][1] - 30})`} pointerEvents="none">
-              <rect x="-73" y="-27" width="146" height="30" rx="15" fill="#ff8848" stroke="#fff2d6" strokeWidth="3" />
+            <g
+              className="destination-pin"
+              transform={`translate(${Math.min(465, Math.max(75, positions[restaurant.unit][0]))} ${positions[restaurant.unit][1] - 30})`}
+              pointerEvents="none"
+            >
+              <rect
+                x="-73"
+                y="-27"
+                width="146"
+                height="30"
+                rx="15"
+                fill="#ff8848"
+                stroke="#fff2d6"
+                strokeWidth="3"
+              />
               <path d="M-6 2 L0 10 L6 2" fill="#ff8848" />
-              <text y="-7" fontFamily="Bricolage Grotesque" fontSize="14" fontWeight="650" textAnchor="middle" fill="#173c2b">{String(restaurant.unit).padStart(2,'0')} · {restaurant.name}</text>
+              <text
+                y="-7"
+                fontFamily="DM Sans"
+                fontSize="14"
+                fontWeight="800"
+                textAnchor="middle"
+                fill="#173c2b"
+              >
+                {String(restaurant.unit).padStart(2, "0")} · {restaurant.name}
+              </text>
             </g>
             <g transform="translate(275 277)">
               <rect width="87" height="24" rx="12" fill="#173c2b" />
@@ -300,8 +394,18 @@ export default function HallMap({
             </button>
           ))}
         </div>
-        <div className="map-selected">
-          <img className="map-destination-photo" src={`/assets/${restaurant.image}`} alt="" />
+        <motion.div
+          key={selected}
+          className="map-selected"
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.22 }}
+        >
+          <img
+            className="map-destination-photo"
+            src={`/assets/${restaurant.image}`}
+            alt=""
+          />
           <span className="eyebrow">
             {pl ? "TWÓJ KIERUNEK" : "YOUR DESTINATION"}
           </span>
@@ -324,7 +428,7 @@ export default function HallMap({
                 ? "Pokaż trasę"
                 : "Show route"}
           </button>
-        </div>
+        </motion.div>
         <p className="fine-print">
           {pl
             ? "Plan lokali na podstawie koszyki.com. Położenie stolika i trasa są przykładowe."

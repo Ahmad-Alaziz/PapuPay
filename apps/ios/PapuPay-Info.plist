@@ -35,6 +35,7 @@
 	<array>
 		<string>PapuDisplay-Bold.ttf</string>
 		<string>PapuDisplay-ExtraBold.ttf</string>
+		<string>PapuPoster.ttf</string>
 	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>

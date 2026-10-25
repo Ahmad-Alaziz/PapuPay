@@ -80,3 +80,17 @@ Final public-domain checks:
 - **PapuPay Demo** has one internal tester and build **1.0 (2.1)**, with verified **Testing** status. App Store Connect reports the tester installed the build; this does not substitute for observed physical-device UX testing.
 - Saved App Clip invocations: **Koszyki · 24** (`https://papupay.com/go/koszyki/24`) and **Koszyki · 37** (`https://papupay.com/go/koszyki/37`). Polish test instructions identify simulated payments/orders and foreground-driven Live Activities.
 - No external beta review or public App Store release was submitted. Public QR links continue to serve the web fallback until the App Clip experience is released.
+
+
+## Full typography, motion and readiness pass — 25 October 2026
+
+This section supersedes the earlier typography/motion/timing details above.
+
+- 30 web tests passed, including stage-boundary timing and a nine-kitchen basket completing within 28 seconds; 20 compiled native invocation checks passed.
+- Web production build passed. Actual browser journeys covered customized multi-kitchen checkout, 12/14-second readiness, ticket collection/reorder, search recovery, Polish/English, focused/full hall map and destination selection. Responsive layouts were inspected at 320, 390, 430 and 1440 pixels; narrow hero clipping was corrected.
+- Native host, App Clip and both widget extensions compiled and archived. Release raw Clip was approximately 8.91 MB, comfortably below the conservative 15 MB gate; signed cloud report follows release.
+- Native ready alerts were delivered by iOS while PapuPay was off-screen. A notification-tap restoration crash was found, repaired and retested: the alert opened table 24's order tickets with no subsequent crash report.
+- Actual new Live Activity rendered on the Lock Screen and reached ready. A missing widget entry point was caught during runtime QA and restored. Older simulator activities from previous bundle IDs were distinguished from the new design.
+- Native home, pickup tickets, map and Rive onboarding were visually inspected. The map now exposes one coherent accessibility description instead of repeating it for every shape. Native horizontal dish cards reserve two title lines for consistent alignment.
+- Custom Rive scenes validated with zero warnings/errors and rendered in both runtimes. Runtime inputs now use data binding. Whole-scene transitions replace title-only swaps. Global one-second UI invalidations were removed; countdowns update locally and Rive pauses when hidden.
+- Native notification permission and finite background execution remain OS-controlled. Long-running server push, real payments/POS, closed-tab web push and physical-device frame profiling remain outside this local-data MVP.

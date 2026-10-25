@@ -1,0 +1,44 @@
+{
+  "bundle": "PapuPayClip.app",
+  "uncompressedBytes": 8910462,
+  "decimalMB": 8.91,
+  "MiB": 8.498,
+  "budgetBytes": 15000000,
+  "remainingBytes": 6089538,
+  "passesRawSizeGate": true,
+  "largestFiles": [
+    {
+      "path": "Frameworks/RiveRuntime.framework/RiveRuntime",
+      "bytes": 4824968
+    },
+    {
+      "path": "Assets.car",
+      "bytes": 2421288
+    },
+    {
+      "path": "PapuPayClip",
+      "bytes": 1030280
+    },
+    {
+      "path": "papu.riv",
+      "bytes": 351982
+    },
+    {
+      "path": "PlugIns/PapuPayClipLiveActivity.appex/PapuPayClipLiveActivity",
+      "bytes": 116304
+    },
+    {
+      "path": "PapuPoster.ttf",
+      "bytes": 68048
+    },
+    {
+      "path": "PapuDisplay-Bold.ttf",
+      "bytes": 39980
+    },
+    {
+      "path": "PapuDisplay-ExtraBold.ttf",
+      "bytes": 35608
+    }
+  ],
+  "note": "Raw device bundle, including the embedded Live Activity extension and Rive framework. Verify the signed, thinned variant in an Xcode archive/App Store size report before distribution."
+}

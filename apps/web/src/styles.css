@@ -1,17 +1,5 @@
-@font-face {
-  font-family: "Bricolage Grotesque";
-  src: url("/fonts/BricolageGrotesque.woff2") format("woff2");
-  font-weight: 200 800;
-  font-display: swap;
-}
-@font-face {
-  font-family: Manrope;
-  src: url("/fonts/Manrope.woff2") format("woff2");
-  font-weight: 200 800;
-  font-display: swap;
-}
 :root {
-  font-family: Manrope, sans-serif;
+  font-family: "DM Sans", sans-serif;
   color: #173c2b;
   background: #fbf7ed;
   font-synthesis: none;
@@ -24,7 +12,7 @@
   --green: #2b744b;
   --line: #e3e6d9;
   --paper: #fbf7ed;
-  --display: "Bricolage Grotesque", sans-serif;
+  --display: "DM Sans", sans-serif;
 }
 * {
   box-sizing: border-box;
@@ -150,7 +138,7 @@ svg {
   color: #f67836;
 }
 .brand i {
-  font: 9px Manrope;
+  font: 9px "DM Sans";
   vertical-align: super;
   margin-left: 3px;
 }
@@ -1980,7 +1968,7 @@ footer button:hover {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-family: Manrope;
+  font-family: "DM Sans";
   font-weight: 650;
   font-size: 13px;
   letter-spacing: 0;

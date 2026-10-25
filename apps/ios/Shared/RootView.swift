@@ -24,7 +24,7 @@ struct RootView: View {
         30)
     }
     .sheet(isPresented: $showTour) {
-      OnboardingView().environmentObject(store).presentationDetents([.height(620), .large])
+      OnboardingView().environmentObject(store).presentationDetents([.large])
         .presentationCornerRadius(30)
     }
     .sheet(isPresented: $showTable) {
@@ -50,8 +50,13 @@ struct RootView: View {
         Image(systemName: "qrcode").font(.system(size: 46)).foregroundStyle(Papu.green)
         Text(store.text("Sprawdź kod na stoliku.", "Check your table’s QR.")).font(Papu.display(32))
           .multilineTextAlignment(.center)
-        Text(store.text("Ten link nie wskazuje obsługiwanej hali i stolika. Zeskanuj kod ponownie albo poproś obsługę o pomoc.", "This link doesn’t identify a supported food hall and table. Scan again or ask a member of staff."))
-          .font(Papu.body(16)).multilineTextAlignment(.center)
+        Text(
+          store.text(
+            "Ten link nie wskazuje obsługiwanej hali i stolika. Zeskanuj kod ponownie albo poproś obsługę o pomoc.",
+            "This link doesn’t identify a supported food hall and table. Scan again or ask a member of staff."
+          )
+        )
+        .font(Papu.body(16)).multilineTextAlignment(.center)
         Button(store.text("Otwórz demo: Koszyki, stolik 24", "Open demo: Koszyki, table 24")) {
           store.handle(URL(string: "https://papupay.com/go/koszyki/24")!)
         }.buttonStyle(.borderedProminent).tint(Papu.green)
@@ -66,8 +71,8 @@ struct RootView: View {
     }
     .onChange(of: scenePhase) { _, phase in
       if phase == .active {
-        store.now = .now
-        store.updateActivities()
+        store.resumePendingActivity()
+        store.refreshOrderStages()
       }
     }
   }
@@ -160,29 +165,10 @@ struct DiscoverView: View {
         ScrollView {
           VStack(spacing: 0) {
             hero { withAnimation(.smooth) { reader.scrollTo("restaurants", anchor: .top) } }
-            HStack {
-              Text("HALA KOSZYKI").tracking(2)
-              Text("✳").foregroundStyle(Papu.orange)
-              Text(store.text("DOBRE JEDZENIE ŁĄCZY", "GOOD FOOD, GOOD COMPANY")).tracking(1)
-              Spacer()
-              Button {
-                store.selectedTab = 1
-              } label: {
-                Image(systemName: "arrow.up.right")
-              }
-            }.font(.system(size: 11, weight: .semibold)).padding(.vertical, 20).overlay(
-              alignment: .top
-            ) { Rectangle().fill(Papu.line).frame(height: 1) }.overlay(alignment: .bottom) {
-              Rectangle().fill(Papu.line).frame(height: 1)
-            }.padding(.horizontal, 24)
             VStack(alignment: .leading, spacing: 20) {
-              VStack(alignment: .leading, spacing: 9) {
-                Eyebrow(text: store.text("TWOJA PODRÓŻ KULINARNA", "YOUR LITTLE FOOD ADVENTURE"))
-                (Text(store.text("Na co dziś ", "What are you "))
-                  + Text(store.text("masz ochotę?", "craving?")).foregroundColor(Papu.green)).font(
-                    Papu.display(34)
-                  ).fixedSize(horizontal: false, vertical: true)
-              }.id("restaurants")
+              Text(store.text("Co dziś jesz?", "What’s your craving?"))
+                .font(Papu.display(32)).fixedSize(horizontal: false, vertical: true).id(
+                  "restaurants")
               HStack(spacing: 10) {
                 Image(systemName: "magnifyingglass").foregroundStyle(Papu.muted)
                 TextField(
@@ -264,13 +250,13 @@ struct DiscoverView: View {
                   RestaurantCard(restaurant: restaurant) { selectedRestaurant = restaurant }
                 }
               }
-            }.padding(24).padding(.top, 10)
-            gatherBanner.padding(.horizontal, 24).padding(.vertical, 16)
+            }.padding(20).padding(.top, 12)
+            gatherBanner.padding(.horizontal, 20).padding(.vertical, 16)
             VStack(alignment: .leading, spacing: 18) {
               Eyebrow(text: store.text("MIŁOŚĆ OD PIERWSZEGO KĘSA", "LOVE AT FIRST BITE"))
               Text(store.text("Małe zachcianki.", "Little cravings.")).font(Papu.display(34))
               ScrollView(.horizontal) {
-                HStack(spacing: 14) {
+                HStack(alignment: .top, spacing: 14) {
                   ForEach([
                     store.catalog.items[0], store.catalog.items[2], store.catalog.items[4],
                     store.catalog.items[8],
@@ -321,67 +307,43 @@ struct DiscoverView: View {
     }
   }
   private func hero(browse: @escaping () -> Void) -> some View {
-    VStack(alignment: .leading, spacing: 0) {
-      HStack(spacing: 7) {
-        Circle().fill(Papu.green).frame(width: 6, height: 6)
-        Eyebrow(
-          text: store.text("HALA KOSZYKI · WARSZAWA", "HALA KOSZYKI · WARSAW"))
-      }.padding(.bottom, 18)
-      (Text(store.text("Tyle smaków.\n", "So many flavours.\n"))
-        + Text(store.text("Jeden stolik.", "One happy table.")).foregroundColor(Papu.accentText))
-        .font(
-          Papu.display(store.english ? 43 : 48)
-        ).lineSpacing(0).tracking(-1.5).fixedSize(horizontal: false, vertical: true)
-      Text(
-        store.text(
-          "Ty wybierasz, na co masz ochotę. My łączymy smaki Hali Koszyki w jednym koszyku.",
-          "You follow your cravings. We bring Hala Koszyki’s flavours together in one basket.")
-      ).font(Papu.body(16)).lineSpacing(4).foregroundStyle(Papu.muted).padding(.top, 19).padding(
-        .bottom, 22)
+    VStack(alignment: .leading, spacing: 18) {
+      HStack {
+        Eyebrow(text: "HALA KOSZYKI")
+        Spacer()
+        Label(store.text("Stolik ", "Table ") + store.table, systemImage: "checkmark.circle.fill")
+          .font(Papu.body(13).weight(.semibold)).foregroundStyle(Papu.green)
+      }
       (typeSize.isAccessibilitySize
-        ? AnyLayout(VStackLayout(alignment: .leading, spacing: 16))
-        : AnyLayout(HStackLayout(spacing: 20))) {
-          Button(action: browse) {
-            HStack {
-              Text(store.text("Pora na papu", "Let’s eat"))
-              Image(systemName: "arrow.up.right")
-            }.font(Papu.body(15).weight(.semibold)).padding(.horizontal, 23).frame(minHeight: 52)
-              .background(Papu.ink, in: Capsule()).foregroundStyle(Papu.butter)
-          }.buttonStyle(PressStyle())
-          Button {
-            showTour = true
-          } label: {
-            Label(store.text("Jak to działa?", "How it works"), systemImage: "play.circle").font(
-              Papu.body(14).weight(.medium))
-          }.tint(Papu.ink)
+        ? AnyLayout(VStackLayout(alignment: .leading, spacing: 12))
+        : AnyLayout(HStackLayout(spacing: 0))) {
+          VStack(alignment: .leading, spacing: 12) {
+            Text(store.text("PORA NA\nPAPU.", "TAKE A\nSEAT.")).font(Papu.poster(52)).lineSpacing(
+              -2
+            ).lineLimit(2).minimumScaleFactor(0.8)
+              .fixedSize(horizontal: false, vertical: true)
+            Capsule().fill(Papu.orange).frame(width: 62, height: 6).rotationEffect(.degrees(-5))
+          }.frame(maxWidth: .infinity, alignment: .leading).layoutPriority(1)
+          Image("feast").resizable().scaledToFit().frame(
+            width: typeSize.isAccessibilitySize ? 240 : 150, height: 170
+          )
+          .rotationEffect(.degrees(-7)).accessibilityHidden(true)
         }
-      HStack(spacing: 15) {
-        Label(store.text("Bez instalacji", "No downloads"), systemImage: "checkmark")
-        Label(store.text("Bez kolejki", "Skip the queue"), systemImage: "checkmark")
-      }.font(.system(size: 11)).foregroundStyle(Papu.muted).padding(.top, 20)
-      ZStack {
-        Ellipse().fill(Papu.sage).frame(width: 300, height: 230).rotationEffect(.degrees(-12))
-          .offset(y: 10)
-        Image("feast").resizable().scaledToFit().frame(maxWidth: .infinity).frame(height: 295)
-          .rotationEffect(.degrees(-3))
-        HStack(spacing: 5) {
-          Image(systemName: "sparkles").foregroundStyle(Papu.orange)
-          VStack(alignment: .leading, spacing: 2) {
-            Text(store.text("Mały skan.", "Little scan.")).font(Papu.body(11))
-            Text(store.text("Wielkie mniam.", "Big yum.")).font(Papu.display(16))
-          }
-        }.padding(12).background(Papu.butter, in: RoundedRectangle(cornerRadius: 12))
-          .rotationEffect(.degrees(-10)).offset(x: -95, y: 75).shadow(
-            color: Papu.ink.opacity(0.08), radius: 12, y: 5)
-        HStack(spacing: 8) {
-          Circle().fill(Papu.green).frame(width: 5, height: 5)
-          Text(store.text("Jesteś przy stoliku", "You’re at table")).font(Papu.body(12))
-          Text(store.table).font(Papu.body(15).bold())
-          Image(systemName: "checkmark").font(.system(size: 11))
-        }.padding(.horizontal, 16).padding(.vertical, 12).background(Papu.cream, in: Capsule())
-          .overlay(Capsule().stroke(Papu.line)).offset(x: 20, y: 137)
-      }.frame(maxWidth: .infinity).frame(height: 320).padding(.top, 5)
-    }.padding(.horizontal, 24).padding(.top, 25).padding(.bottom, 18)
+      HStack(alignment: .center, spacing: 12) {
+        Text(
+          store.text("Różne smaki.\nJeden wspólny stół.", "Different cravings.\nOne happy table.")
+        )
+        .font(Papu.body(15)).foregroundStyle(Papu.muted)
+        Spacer(minLength: 0)
+        Button {
+          showTour = true
+        } label: {
+          Image(systemName: "play.fill").font(.system(size: 15)).frame(width: 48, height: 48)
+            .background(Papu.ink, in: Circle()).foregroundStyle(Papu.butter)
+        }.buttonStyle(PressStyle()).accessibilityLabel(store.text("Jak to działa?", "How it works"))
+      }
+    }.padding(20).background(Papu.butter, in: RoundedRectangle(cornerRadius: 28))
+      .padding(.horizontal, 20).padding(.top, 16).padding(.bottom, 8)
   }
   private var gatherBanner: some View {
     ZStack(alignment: .bottomTrailing) {
@@ -440,12 +402,13 @@ struct RestaurantCard: View {
       }
       Button(action: action) {
         VStack(alignment: .leading, spacing: 5) {
-          Text(restaurant.name).font(Papu.display(23)).fixedSize(horizontal: false, vertical: true)
+          Text(restaurant.name).font(Papu.display(21)).tracking(-0.5).fixedSize(
+            horizontal: false, vertical: true)
           Text(store.text(restaurant.cuisine, restaurant.cuisineEn)).font(Papu.body(12))
             .foregroundStyle(Papu.muted)
           HStack(spacing: 3) {
             Image(systemName: "clock")
-            Text("\(restaurant.minutes)–\(restaurant.minutes+5) min")
+            Text(store.text("Demo · 12 s", "Demo · 12 sec"))
             Spacer(minLength: 0)
             Text(store.text("Lokal ", "Unit ") + String(format: "%02d", restaurant.unit))
           }.font(.system(size: 11)).foregroundStyle(Papu.muted).padding(.top, 2)
@@ -466,8 +429,9 @@ struct SmallDishCard: View {
       }
       Eyebrow(text: store.catalog.restaurants.first { $0.id == dish.restaurantId }!.name)
       Button(action: action) {
-        Text(store.text(dish.name, dish.nameEn)).font(Papu.display(22)).fixedSize(
-          horizontal: false, vertical: true)
+        Text(store.text(dish.name, dish.nameEn)).font(Papu.display(22))
+          .lineLimit(2, reservesSpace: true).multilineTextAlignment(.leading)
+          .frame(maxWidth: .infinity, alignment: .leading)
       }
       HStack {
         Text(money(dish.price, english: store.english)).font(Papu.body(14).bold())

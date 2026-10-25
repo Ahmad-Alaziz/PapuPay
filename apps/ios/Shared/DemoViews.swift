@@ -14,8 +14,9 @@ struct OnboardingView: View {
   private var subtitle: String {
     [
       store.text(
-        "Kod QR zna Twój stolik. Jesteś przy numerze \(store.table). Bez konta, bez pobierania aplikacji.",
-        "The QR knows your table. You’re at number \(store.table). No account, no app download."),
+        "Kod QR zna Twój stolik. Jesteś przy numerze \(store.table). Bez konta. Od razu do jedzenia.",
+        "The QR knows your table. You’re at number \(store.table). No account. Straight to the good stuff."
+      ),
       store.text(
         "Ramen z KAGO, burger z ATOM, lemoniada z baru. Wszystko w jednym koszyku.",
         "Ramen from KAGO, a burger from ATOM, lemonade from the bar. All in one basket."),
@@ -25,62 +26,65 @@ struct OnboardingView: View {
       ),
     ][step]
   }
+  @Environment(\.accessibilityReduceMotion) private var reduceMotion
   var body: some View {
     ScrollView {
       VStack(spacing: 20) {
-        ZStack {
-          RoundedRectangle(cornerRadius: 27).fill(
-            RadialGradient(
-              colors: [Color(hex: "FFF0CE"), Papu.cream], center: .center, startRadius: 0,
-              endRadius: 180))
-          PapuAnimation(celebrate: step == 2, scan: step == 0).frame(width: 290, height: 290)
-          Image(systemName: ["qrcode", "fork.knife", "checkmark"][step]).font(.system(size: 26))
-            .foregroundStyle(Papu.orange).frame(width: 53, height: 53).background(
-              Papu.butter, in: RoundedRectangle(cornerRadius: 17)
-            ).rotationEffect(.degrees(-12)).offset(x: -112, y: -45)
-          Image(
-            systemName: ["mappin.and.ellipse", "fork.knife", "takeoutbag.and.cup.and.straw"][step]
-          ).font(.system(size: 25)).foregroundStyle(Papu.green).frame(width: 53, height: 53)
-            .background(Papu.butter, in: RoundedRectangle(cornerRadius: 17)).rotationEffect(
-              .degrees(12)
-            ).offset(x: 112, y: 55)
-        }.frame(height: 270)
-        HStack(spacing: 7) {
+        HStack {
+          BrandView(size: 24)
+          Spacer()
+          Text("0\(step + 1) / 03").font(Papu.body(13).weight(.semibold)).monospacedDigit()
+            .foregroundStyle(Papu.muted)
+        }.padding(.trailing, 36)
+        VStack(spacing: 20) {
+          PapuAnimation(scene: [1, 2, 4][step]).frame(height: 210)
+          Text(title).font(Papu.display(34)).tracking(-1).multilineTextAlignment(.center)
+            .fixedSize(horizontal: false, vertical: true)
+          Text(subtitle).font(Papu.body(16)).lineSpacing(3).foregroundStyle(Papu.muted)
+            .multilineTextAlignment(.center).fixedSize(horizontal: false, vertical: true)
+        }.id(step).transition(
+          reduceMotion
+            ? .opacity
+            : .asymmetric(
+              insertion: .opacity.combined(with: .offset(x: 24)),
+              removal: .opacity.combined(with: .offset(x: -24))))
+        HStack(spacing: 0) {
           ForEach(0..<3, id: \.self) { index in
             Button {
-              withAnimation(.spring) { step = index }
+              change(index)
             } label: {
-              Capsule().fill(step == index ? Papu.orange : Papu.line).frame(
-                width: step == index ? 24 : 8, height: 8
-              ).frame(width: 44, height: 44).contentShape(Rectangle())
+              Capsule().fill(step == index ? Papu.ink : Papu.line)
+                .frame(width: step == index ? 24 : 8, height: 6).frame(width: 44, height: 44)
             }.accessibilityLabel(store.text("Krok \(index+1)", "Step \(index+1)"))
+              .accessibilityAddTraits(step == index ? .isSelected : [])
           }
         }
-        Eyebrow(text: store.text("MAŁY SKAN. WIELKIE MNIAM.", "LITTLE SCAN. BIG YUM."))
-        Text(title).font(Papu.display(37)).multilineTextAlignment(.center).fixedSize(
-          horizontal: false, vertical: true)
-        Text(subtitle).font(Papu.body(15)).lineSpacing(4).foregroundStyle(Papu.muted)
-          .multilineTextAlignment(.center).fixedSize(horizontal: false, vertical: true)
         PrimaryButton(
-          title: step == 2
-            ? store.text("Mam apetyt. Zaczynamy!", "I’m hungry. Let’s go!")
-            : store.text("Dalej", "Next"), symbol: "arrow.right"
+          title: step == 2 ? store.text("Mam apetyt!", "Let’s eat!") : store.text("Dalej", "Next"),
+          symbol: "arrow.right"
         ) {
           if step < 2 {
-            withAnimation(.spring) { step += 1 }
+            change(step + 1)
           } else {
             store.selectedTab = 0
             dismiss()
           }
         }
-        Button(store.text("Już wiem, pomiń", "I’ve got it, skip")) { dismiss() }.font(Papu.body(13))
-          .foregroundStyle(Papu.muted)
-      }.padding(24).padding(.top, 20).padding(.bottom, 24)
+        Button(store.text("Pomiń wprowadzenie", "Skip introduction")) { dismiss() }
+          .font(Papu.body(14)).foregroundStyle(Papu.muted).frame(minHeight: 44)
+      }.padding(24).padding(.top, 24).padding(.bottom, 16)
     }.background(Papu.cream).foregroundStyle(Papu.ink).overlay(alignment: .topTrailing) {
       SheetClose()
     }
   }
+  private func change(_ value: Int) {
+    UISelectionFeedbackGenerator().selectionChanged()
+    withAnimation(reduceMotion ? .easeOut(duration: 0.15) : .smooth(duration: 0.32)) {
+      step = value
+    }
+  }
 }
+
 struct TableView: View {
   @EnvironmentObject var store: PapuStore
   @Environment(\.dismiss) private var dismiss

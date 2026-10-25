@@ -12,4 +12,5 @@ struct PapuOrderAttributes: ActivityAttributes {
   let table: String
   let restaurants: String
   let english: Bool
+  var pickupSummary: String? = nil
 }

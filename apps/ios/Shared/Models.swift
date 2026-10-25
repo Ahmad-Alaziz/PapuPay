@@ -52,7 +52,7 @@ struct DemoOrder: Codable, Identifiable {
   var collected: Bool
   var restaurant: Restaurant { Catalog.shared.restaurants.first { $0.id == restaurantId }! }
   func stage(at now: Date = .now) -> Int {
-    collected ? 3 : now >= readyAt ? 2 : now.timeIntervalSince(createdAt) > 8 ? 1 : 0
+    collected ? 3 : now >= readyAt ? 2 : now.timeIntervalSince(createdAt) >= 3 ? 1 : 0
   }
 }
 struct SavedState: Codable {
@@ -73,11 +73,15 @@ struct SavedState: Codable {
   @Published var mapRestaurant = "atom"
   @Published var showBasket = false
   @Published var toast: String?
-  @Published var now = Date.now
+  var now = Date.now
+  @Published var notificationMessage: String?
+  @Published var wantsReadyAlerts = true
+  private var backgroundTask: UIBackgroundTaskIdentifier = .invalid
   @Published var liveActivityMessage: String?
   let catalog = Catalog.shared
   private var timer: AnyCancellable?
-  private var lastActivityStage = -1
+  private var lastActivityStage = ""
+  private var pendingActivityIDs: [String] = []
   private var toastTask: Task<Void, Never>?
   var text: (String, String) -> String { { [english] pl, en in english ? en : pl } }
   var count: Int { cart.reduce(0) { $0 + $1.quantity } }
@@ -108,15 +112,39 @@ struct SavedState: Codable {
     if let url = ProcessInfo.processInfo.environment["_XCAppClipURL"].flatMap(URL.init(string:)) {
       handle(url)
     }
+    ReadyNotifications.shared.configure()
+    ReadyNotifications.shared.onOpen = { [weak self] url in
+      self?.handle(url)
+      self?.refreshOrderStages()
+    }
+    refreshOrderStages()
     timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect().sink { [weak self] date in
       guard let self else { return }
-      self.now = date
-      let signature = self.activeOrders.reduce(0) { $0 + $1.stage(at: date) }
-      if signature != self.lastActivityStage {
-        self.lastActivityStage = signature
-        self.updateActivities()
-      }
+      self.refreshOrderStages(at: date)
     }
+  }
+  /// The shared store only changes at stage boundaries, never for a one-second clock tick.
+  func refreshOrderStages(at date: Date = .now) {
+    now = date
+    let signature = orders.map { "\($0.id):\($0.stage(at: date))" }.joined(separator: "|")
+    if signature != lastActivityStage {
+      lastActivityStage = signature
+      objectWillChange.send()
+      updateActivities()
+    }
+
+  }
+  private func keepDemoUpdatesAlive() {
+    guard backgroundTask == .invalid else { return }
+    backgroundTask = UIApplication.shared.beginBackgroundTask(withName: "Finish short demo order") {
+      [weak self] in
+      Task { @MainActor in self?.finishBackgroundWork() }
+    }
+  }
+  private func finishBackgroundWork() {
+    guard backgroundTask != .invalid else { return }
+    UIApplication.shared.endBackgroundTask(backgroundTask)
+    backgroundTask = .invalid
   }
   private func save() {
     if let data = try? JSONEncoder().encode(
@@ -131,7 +159,9 @@ struct SavedState: Codable {
       table = number
       invocationError = false
       selectedTab = url.fragment == "orders" ? 2 : 0
+      if selectedTab == 2 { showBasket = false }
     case .orders:
+      showBasket = false
       selectedTab = 2
     case .invalid:
       showBasket = false
@@ -169,7 +199,9 @@ struct SavedState: Codable {
       withAnimation { toast = nil }
     }
   }
-  func placeOrder(name: String) {
+  func placeOrder(name: String) async {
+    guard !cart.isEmpty, !invocationError else { return }
+    let allowed = wantsReadyAlerts ? await ReadyNotifications.shared.authorize() : false
     guard !cart.isEmpty, !invocationError else { return }
     let time = Date.now
     let ticket = String(UUID().uuidString.prefix(4)).uppercased()
@@ -178,26 +210,55 @@ struct SavedState: Codable {
         id: "P\(ticket)\(index + 1)", restaurantId: group.0.id, table: table,
         name: name.trimmingCharacters(in: .whitespaces).isEmpty ? text("Gość", "Guest") : name,
         lines: group.1, total: group.1.reduce(0) { $0 + $1.total }, createdAt: time,
-        readyAt: time.addingTimeInterval(Double(45 + index * 12)), collected: false)
+        readyAt: time.addingTimeInterval(Double(12 + index * 2)), collected: false)
     }
     orders.insert(contentsOf: next, at: 0)
     cart = []
     selectedTab = 2
     UINotificationFeedbackGenerator().notificationOccurred(.success)
+    keepDemoUpdatesAlive()
     startActivity(for: next)
+    if allowed {
+      let scheduled = await ReadyNotifications.shared.schedule(next, english: english)
+      notificationMessage =
+        scheduled
+        ? text(
+          "Damy znać, nawet po zablokowaniu telefonu.",
+          "We’ll notify you, even with your phone locked.")
+        : text(
+          "Nie udało się zaplanować powiadomienia. Śledź status tutaj.",
+          "Couldn’t schedule the alert. Follow your order here.")
+    } else {
+      notificationMessage = text(
+        "Powiadomienia wyłączone. Status sprawdzisz tutaj.",
+        "Notifications are off. Follow your order here.")
+    }
+    refreshOrderStages()
   }
   func markReady(_ order: DemoOrder) {
     if let i = orders.firstIndex(where: { $0.id == order.id }) {
+      guard orders[i].stage() < 2 else { return }
       orders[i].readyAt = .now
-      now = .now
-      updateActivities()
+      let updated = orders[i]
+      ReadyNotifications.shared.cancel([updated.id])
+      if wantsReadyAlerts {
+        Task {
+          guard orders.contains(where: { $0.id == updated.id && !$0.collected }) else { return }
+          _ = await ReadyNotifications.shared.schedule([updated], english: english)
+          if !orders.contains(where: { $0.id == updated.id && !$0.collected }) {
+            ReadyNotifications.shared.cancel([updated.id])
+          }
+        }
+      }
+      refreshOrderStages()
     }
     UINotificationFeedbackGenerator().notificationOccurred(.success)
   }
   func collect(_ order: DemoOrder) {
     if let i = orders.firstIndex(where: { $0.id == order.id }) {
       orders[i].collected = true
-      updateActivities()
+      ReadyNotifications.shared.cancel([order.id])
+      refreshOrderStages()
     }
   }
   func reorder(_ order: DemoOrder) {
@@ -222,7 +283,20 @@ struct SavedState: Codable {
       stage: stage, readyAt: matching.map(\.readyAt).max() ?? .now, readyCount: ready,
       totalKitchens: matching.count)
   }
+  func resumePendingActivity() {
+    guard !pendingActivityIDs.isEmpty else { return }
+    let pending = orders.filter { pendingActivityIDs.contains($0.id) && !$0.collected }
+    pendingActivityIDs = []
+    if !pending.isEmpty {
+      startActivity(for: pending)
+      updateActivities()
+    }
+  }
   private func startActivity(for orders: [DemoOrder]) {
+    guard UIApplication.shared.applicationState == .active else {
+      pendingActivityIDs = orders.map(\.id)
+      return
+    }
     guard ActivityAuthorizationInfo().areActivitiesEnabled else {
       liveActivityMessage = text(
         "Live Activities są wyłączone w ustawieniach urządzenia.",
@@ -232,11 +306,13 @@ struct SavedState: Codable {
     do {
       let attributes = PapuOrderAttributes(
         orderIDs: orders.map(\.id), table: table,
-        restaurants: orders.map { $0.restaurant.name }.joined(separator: " + "), english: english)
+        restaurants: orders.map { $0.restaurant.name }.joined(separator: " + "), english: english,
+        pickupSummary: text("Odbiór · lokale ", "Pickup · units ")
+          + orders.map { String($0.restaurant.unit) }.joined(separator: ", "))
       let content = ActivityContent(
         state: PapuOrderAttributes.ContentState(
           stage: 0, readyAt: orders.map(\.readyAt).max() ?? .now, readyCount: 0,
-          totalKitchens: orders.count), staleDate: Date.now.addingTimeInterval(90))
+          totalKitchens: orders.count), staleDate: orders.map(\.readyAt).max())
       _ = try Activity.request(attributes: attributes, content: content, pushType: nil)
       liveActivityMessage = text(
         "Papu jest też na ekranie blokady.", "Your food is on your Lock Screen, too.")
@@ -247,21 +323,25 @@ struct SavedState: Codable {
     }
   }
   func updateActivities() {
-    for activity in Activity<PapuOrderAttributes>.activities {
-      let next = state(for: activity)
-      Task {
-        let content = ActivityContent(
-          state: next, staleDate: next.stage >= 2 ? nil : Date.now.addingTimeInterval(90))
+    Task {
+      for activity in Activity<PapuOrderAttributes>.activities {
+        let next = state(for: activity)
+        let content = ActivityContent(state: next, staleDate: next.stage >= 2 ? nil : next.readyAt)
         if next.stage == 3 {
           await activity.end(content, dismissalPolicy: .after(.now.addingTimeInterval(10)))
         } else {
           await activity.update(content)
         }
       }
+      // Do not surrender the short background task before ActivityKit has received its final state.
+      if activeOrders.allSatisfy({ $0.stage() >= 2 }) { finishBackgroundWork() }
     }
   }
   func resetOrders() {
+    ReadyNotifications.shared.cancel(orders.map(\.id))
     orders = []
+    pendingActivityIDs = []
+    finishBackgroundWork()
     for a in Activity<PapuOrderAttributes>.activities {
       Task { await a.end(nil, dismissalPolicy: .immediate) }
     }
@@ -269,10 +349,23 @@ struct SavedState: Codable {
 }
 
 func money(_ cents: Int, english: Bool = false) -> String {
-  let f = NumberFormatter()
-  f.numberStyle = .currency
-  f.currencyCode = "PLN"
-  f.locale = Locale(identifier: english ? "en_GB" : "pl_PL")
-  f.maximumFractionDigits = cents % 100 == 0 ? 0 : 2
+  let f = CurrencyFormatters.values["\(english)-\(cents % 100 == 0)"]!
   return f.string(from: NSNumber(value: Double(cents) / 100)) ?? "\(cents / 100) zł"
+}
+
+private enum CurrencyFormatters {
+  static let values: [String: NumberFormatter] = {
+    var values: [String: NumberFormatter] = [:]
+    for english in [false, true] {
+      for whole in [false, true] {
+        let f = NumberFormatter()
+        f.numberStyle = .currency
+        f.currencyCode = "PLN"
+        f.locale = Locale(identifier: english ? "en_GB" : "pl_PL")
+        f.maximumFractionDigits = whole ? 0 : 2
+        values["\(english)-\(whole)"] = f
+      }
+    }
+    return values
+  }()
 }
