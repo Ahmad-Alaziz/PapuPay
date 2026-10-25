@@ -59,7 +59,17 @@ PY_PROFILE
 xcode-project use-profiles --project apps/ios/PapuPay.xcodeproj \
   --profile "$signing_dir/profiles/*.mobileprovision" \
   --export-options-plist "$signing_dir/export-options.plist" \
-  --custom-export-options '{"method":"app-store-connect","destination":"export","manageAppVersionAndBuildNumber":false}'
+  --custom-export-options '{"destination":"export","manageAppVersionAndBuildNumber":false}'
+
+# The pinned signing helper models the old method enum; Xcode uses the current name.
+python3 - "$signing_dir/export-options.plist" <<'PY_EXPORT'
+import plistlib, sys
+from pathlib import Path
+path = Path(sys.argv[1])
+options = plistlib.loads(path.read_bytes())
+options['method'] = 'app-store-connect'
+path.write_bytes(plistlib.dumps(options))
+PY_EXPORT
 
 bash scripts/ci/archive-ios.sh signed
 xcodebuild -exportArchive -archivePath "$PWD/build/PapuPay.xcarchive" \
