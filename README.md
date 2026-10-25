@@ -20,7 +20,7 @@ npm run build
 npm run preview -w apps/web -- --host 0.0.0.0 --port 4173
 ```
 
-The React app works on Android, iPhone, and desktop browsers. It has no login and keeps demo state in local storage. A private Site has been reserved at `https://papupay-koszyki-demo.roundswift9.chatgpt.site`, but it is **not deployed**: external source upload awaits explicit approval. The local demo is ready. See `docs/verification/QA.md`.
+The React app works on Android, iPhone, and desktop browsers. It has no login and keeps demo state in local storage. Source repository: [Ahmad-Alaziz/PapuPay](https://github.com/Ahmad-Alaziz/PapuPay). Vercel deployment is configured at the repository root; see [deployment instructions](docs/DEPLOYMENT.md). The local demo is ready.
 
 ## Run native iOS / App Clip
 

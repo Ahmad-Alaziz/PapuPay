@@ -11,7 +11,7 @@ npm run preview -w apps/web -- --host 0.0.0.0 --port 4173
 
 Connect the phone and Mac to the same Wi-Fi. Open the network address Vite prints, adding `?table=24`. At handoff the address was `http://192.168.1.73:4173/?table=24`; it may change with Wi-Fi. The generated QR in `docs/testing/web-table-24.png` points to that address. This tests the React app, not native App Clip invocation. Camera scanning is performed by the phone’s Camera app; PapuPay itself requests no camera permission.
 
-The reserved private hosting URL is not deployed yet; external source upload awaits explicit approval. Android users can use the same local-network responsive web UI.
+For a hosted demo, use the Vercel deployment URL recorded in `docs/DEPLOYMENT.md` once connected. Android users can also use the same local-network responsive web UI.
 
 ## Native app and App Clip from Xcode
 

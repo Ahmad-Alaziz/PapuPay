@@ -37,4 +37,4 @@ Screenshots are in `docs/screenshots`. Hosting deployment details are appended a
 
 ## Hosting status
 
-Private Site registered, source not uploaded, deployment not started. Automatic approval review rejected export of the full source and assets to Sites without explicit destination approval. Local repository and preview are complete; a hosting approval question is pending.
+The user selected GitHub repository `Ahmad-Alaziz/PapuPay` and Vercel for hosting on 25 October 2026. Root-level Vercel configuration is included. The previously reserved Sites project has no deployment and is not the selected hosting destination.
