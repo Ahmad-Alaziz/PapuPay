@@ -124,7 +124,7 @@ describe("QR and persistence boundaries", () => {
         }),
       ).orders,
     ).toEqual(orders);
-    expect(restored.favorites).toEqual([restaurants[0].id]);
+    expect(restored).not.toHaveProperty("favorites");
     expect(readStore("{broken")).toEqual(initialStore);
     expect(
       readStore(

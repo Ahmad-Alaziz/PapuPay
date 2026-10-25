@@ -55,3 +55,19 @@ Applied the requested [Apple design skill](https://github.com/dickwu/apple-desig
 Native navigation uses real system TabView/NavigationStack Liquid Glass on iOS 26+, with paper content surfaces. Web navigation is translucent CSS. Reduced Motion disables decorative Rive loops and uses simple fades/static artwork; web reduced transparency increases control opacity. The map remains native/SVG with accessible venue controls rather than embedding essential navigation in a canvas.
 
 This is a deliberately light art direction. Exhaustive VoiceOver/Dynamic Type, physical-device frame profiling and a full semantic dark palette remain production qualification work.
+
+
+## Discovery and cart clarity refinement — 25 October 2026
+
+The discovery screen's single job is to turn a craving into an order. A large food photograph now leads the opening; burger, ramen and pizza selectors change the complete scene. A brief entrance establishes the composition, then control belongs to the person browsing. The brand sits directly on the page with aligned gutters. Favorites were removed to reduce competing actions. Headings omit trailing full stops; body copy keeps normal punctuation.
+
+Visual references inspected for this pass:
+
+- [MultiQoS Organic Food](https://dribbble.com/shots/18946486-Organic-Food-Delivery-App): one large bowl leads the composition, with secondary choices grouped around it.
+- [Flexin Add to Cart](https://dribbble.com/shots/11195369-Food-App-Add-to-Cart-Animation): the purchase action becomes a clearly readable added state. PapuPay retains browsing context and offers an explicit basket action.
+- [Common Foods](https://dribbble.com/shots/6955589-Add-to-Cart-Animation-Common-Foods): large product photography, a compact purchase area and visible quantity/cart changes.
+- [tubik Planetono](https://dribbble.com/shots/27100942-Planetono-Preloader-Animation-for-a-Fast-Food-Chain-Website): a short entrance leads into a large food scene with directly related selection controls. PapuPay uses a nonblocking entrance without sound.
+
+Cart success must remain understandable when all animation is disabled: item name, quantity and updated total appear with a View basket action. Feedback belongs inside the active sheet/dialog, because an outside toast can be hidden by native or HTML modal layering. A persistent basket control provides the next step without forcing a redirect after every dish. This follows the principles in Apple's `motion.md › Providing feedback` (brief, precise feedback and optional motion) and `layout.md › Visual hierarchy` (aligned, grouped content and distinct controls); the exact art direction is our design judgment.
+
+Map labels belong to actual unit shapes and the destination card. Large floating labels were removed from the map so the drawn route remains visible end to end. An unobtrusive endpoint marks the entrance; the origin table is identified outside the route.

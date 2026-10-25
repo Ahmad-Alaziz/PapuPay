@@ -7,12 +7,12 @@ struct OrdersView: View {
       VStack(alignment: .leading, spacing: 24) {
         VStack(alignment: .leading, spacing: 8) {
           Eyebrow(text: "HALA KOSZYKI · " + store.text("STOLIK ", "TABLE ") + store.table)
-          Text(store.text("Twoje papu.", "Your papu.")).font(Papu.display(38)).tracking(-1.2)
+          Text(store.text("Twoje papu", "Your papu")).font(Papu.display(38)).tracking(-1.2)
         }
         if store.orders.isEmpty {
           VStack(spacing: 20) {
             PapuAnimation(scene: 2).frame(height: 230)
-            Text(store.text("Jeszcze jeden mały krok.", "One delicious step away.")).font(
+            Text(store.text("Jeszcze jeden mały krok", "One delicious step away")).font(
               Papu.display(28)
             ).multilineTextAlignment(.center)
             Text(
@@ -29,7 +29,7 @@ struct OrdersView: View {
           HStack(spacing: 14) {
             Image(systemName: "bell.badge.fill").font(.system(size: 20)).foregroundStyle(Papu.green)
             VStack(alignment: .leading, spacing: 4) {
-              Text(store.text("Chwila dla Ciebie.", "A moment for you.")).font(Papu.display(21))
+              Text(store.text("Chwila dla Ciebie", "A moment for you")).font(Papu.display(21))
               Text(
                 store.notificationMessage
                   ?? store.text(
@@ -60,7 +60,7 @@ struct OrderCard: View {
   private var ready: Bool { stage == 2 }
   private var title: String {
     [
-      store.text("Przyjęte.", "All yours."), store.text("Już się robi.", "Cooking up."),
+      store.text("Przyjęte", "All yours"), store.text("Już się robi", "Cooking up"),
       store.text("Pora na papu!", "Come and get it!"),
       store.text("Smacznego!", "Enjoy every bite!"),
     ][stage]

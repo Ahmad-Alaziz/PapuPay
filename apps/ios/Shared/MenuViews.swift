@@ -2,9 +2,10 @@ import SwiftUI
 
 struct SheetClose: View {
   @Environment(\.dismiss) var dismiss
+  var action: (() -> Void)? = nil
   var body: some View {
     Button {
-      dismiss()
+      if let action { action() } else { dismiss() }
     } label: {
       Image(systemName: "xmark").font(.system(size: 13, weight: .semibold)).frame(
         width: 44, height: 44
@@ -17,6 +18,7 @@ struct RestaurantView: View {
   @Environment(\.dismiss) private var dismiss
   let restaurant: Restaurant
   @State private var dish: Dish?
+  @State private var showLocalBasket = false
   var body: some View {
     ScrollView {
       VStack(spacing: 0) {
@@ -92,10 +94,16 @@ struct RestaurantView: View {
               systemImage: "arrow.up.right"
             ).font(Papu.body(13))
           }
-        }.padding(24)
+        }.padding(20)
       }
     }.background(Papu.cream).foregroundStyle(Papu.ink).overlay(alignment: .topTrailing) {
       SheetClose()
+    }
+    .safeAreaInset(edge: .bottom, spacing: 0) {
+      if store.count > 0 { BasketDock { showLocalBasket = true } }
+    }
+    .sheet(isPresented: $showLocalBasket) {
+      BasketView().environmentObject(store).presentationDetents([.large]).presentationCornerRadius(30)
     }
     .sheet(item: $dish) {
       DishView(dish: $0).environmentObject(store).presentationDetents([.large])
@@ -110,6 +118,9 @@ struct DishView: View {
   @State private var quantity = 1
   @State private var extra = false
   @State private var note = ""
+  @State private var added = false
+  @State private var addedItem: CartAddition?
+  @State private var showLocalBasket = false
   private var total: Int { (dish.price + (extra ? 500 : 0)) * quantity }
   var body: some View {
     ScrollView {
@@ -155,41 +166,63 @@ struct DishView: View {
               "Alergeny są przykładowe. W realnym zamówieniu potwierdź je z restauracją.",
               "Allergens are illustrative. Confirm with the restaurant for a real order.")
           ).font(Papu.body(12)).foregroundStyle(Papu.muted)
-        }.padding(24)
+        }.padding(20)
       }
     }.background(Papu.cream).foregroundStyle(Papu.ink).overlay(alignment: .topTrailing) {
       SheetClose()
     }
-    .safeAreaInset(edge: .bottom) {
-      HStack(spacing: 14) {
-        HStack(spacing: 0) {
-          Button {
-            quantity = max(1, quantity - 1)
-          } label: {
-            Image(systemName: "minus").frame(width: 44, height: 48)
-          }.disabled(quantity <= 1).accessibilityLabel(
-            store.text("Zmniejsz ilość", "Decrease quantity"))
-          Text(verbatim: String(quantity)).font(Papu.body(16).bold())
-          Button {
-            quantity = min(20, quantity + 1)
-          } label: {
-            Image(systemName: "plus").frame(width: 44, height: 48)
-          }.disabled(quantity >= 20).accessibilityLabel(
-            store.text("Zwiększ ilość", "Increase quantity"))
-        }.padding(.horizontal, 4).frame(minHeight: 52).background(Papu.sage, in: Capsule())
-        Button {
-          store.add(dish, quantity: quantity, extra: extra, note: note)
-          dismiss()
-        } label: {
-          HStack {
-            Text(store.text("Dodaj", "Add"))
-            Spacer(minLength: 5)
-            Text(money(total, english: store.english))
-          }.font(Papu.body(15).weight(.semibold)).padding(.horizontal, 20).frame(height: 52)
-            .foregroundStyle(Papu.butter).background(Papu.ink, in: Capsule())
-        }.buttonStyle(PressStyle())
-      }.padding(.horizontal, 24).padding(.vertical, 12).background(.regularMaterial)
+    .safeAreaInset(edge: .bottom, spacing: 0) {
+      VStack(spacing: 12) {
+        if added, let addedItem {
+          CartAdditionCard(addition: addedItem)
+          HStack(spacing: 10) {
+            Button { dismiss() } label: {
+              Text(store.text("Wybieram dalej", "Keep exploring")).font(Papu.body(14).weight(.semibold))
+                .frame(maxWidth: .infinity, minHeight: 52).background(Papu.sage, in: Capsule())
+            }.buttonStyle(PressStyle())
+            Button { showLocalBasket = true } label: {
+              HStack(spacing: 7) {
+                Text(store.text("Zobacz koszyk", "View basket"))
+                Text(String(store.count)).monospacedDigit().padding(.horizontal, 6).padding(.vertical, 3)
+                  .background(.white.opacity(0.15), in: Capsule())
+              }.font(Papu.body(14).weight(.semibold)).frame(maxWidth: .infinity, minHeight: 52)
+                .foregroundStyle(Papu.butter).background(Papu.ink, in: Capsule())
+            }.buttonStyle(PressStyle())
+          }
+        } else {
+          HStack(spacing: 12) {
+            HStack(spacing: 0) {
+              Button { quantity = max(1, quantity - 1) } label: {
+                Image(systemName: "minus").frame(width: 44, height: 48)
+              }.disabled(quantity <= 1).accessibilityLabel(store.text("Zmniejsz ilość", "Decrease quantity"))
+              Text(verbatim: String(quantity)).font(Papu.body(16).bold()).monospacedDigit()
+              Button { quantity = min(20, quantity + 1) } label: {
+                Image(systemName: "plus").frame(width: 44, height: 48)
+              }.disabled(quantity >= 20).accessibilityLabel(store.text("Zwiększ ilość", "Increase quantity"))
+            }.padding(.horizontal, 3).frame(minHeight: 52).background(Papu.sage, in: Capsule())
+            Button {
+              store.add(dish, quantity: quantity, extra: extra, note: note)
+              addedItem = store.lastAddition
+              withAnimation(.spring(response: 0.35, dampingFraction: 0.86)) { added = true }
+            } label: {
+              HStack(spacing: 6) {
+                Image(systemName: added ? "checkmark" : "plus")
+                Text(added ? store.text("Dodano", "Added") : store.text("Dodaj", "Add"))
+                Spacer(minLength: 0)
+                Text(money(total, english: store.english)).lineLimit(1).minimumScaleFactor(0.85)
+              }.font(Papu.body(14).weight(.semibold)).padding(.horizontal, 16).frame(height: 52)
+                .foregroundStyle(Papu.butter).background(Papu.ink, in: Capsule())
+            }.buttonStyle(PressStyle())
+          }
+        }
+      }.padding(.horizontal, 20).padding(.vertical, 12).background(.regularMaterial)
     }
+    .sheet(isPresented: $showLocalBasket) {
+      BasketView().environmentObject(store).presentationDetents([.large]).presentationCornerRadius(30)
+    }
+    .onChange(of: quantity) { _, _ in added = false }
+    .onChange(of: extra) { _, _ in added = false }
+    .onChange(of: note) { _, _ in added = false }
   }
 }
 struct FlowTags: View {
@@ -224,21 +257,24 @@ struct BasketView: View {
         ScrollView {
           VStack(alignment: .leading, spacing: 20) {
             Eyebrow(
-              text: store.text("JEDEN KOSZYK. DUŻO SZCZĘŚCIA.", "ONE BASKET. LOTS OF HAPPINESS."))
+              text: store.text("JEDEN KOSZYK · DUŻO SZCZĘŚCIA", "ONE BASKET · LOTS OF HAPPINESS"))
             Text(
               checkout
-                ? store.text("Prawie przy stole.", "Almost at the table.")
-                : store.text("Same dobre rzeczy.", "All the good stuff.")
+                ? store.text("Prawie przy stole", "Almost at the table")
+                : store.text("Same dobre rzeczy", "All the good stuff")
             ).font(Papu.display(35))
             Label(
               "Hala Koszyki · " + store.text("Stolik ", "Table ") + store.table,
               systemImage: "mappin.and.ellipse"
             ).font(Papu.body(13)).foregroundStyle(Papu.muted)
             Divider().overlay(Papu.line)
+            if let addition = store.lastAddition, !checkout {
+              CartAdditionCard(addition: addition)
+            }
             if store.cart.isEmpty {
               VStack(spacing: 20) {
                 PapayaMark().frame(width: 85, height: 100).rotationEffect(.degrees(-10))
-                Text(store.text("Apetyt jest. Papu jeszcze nie.", "Appetite? Yes. Food? Not yet."))
+                Text(store.text("Apetyt jest\nPapu jeszcze nie", "Appetite? Yes\nFood? Not yet"))
                   .font(Papu.display(30)).multilineTextAlignment(.center)
                 Text(
                   store.text(
@@ -311,7 +347,7 @@ struct BasketView: View {
                   Image(systemName: "takeoutbag.and.cup.and.straw.fill").font(.title2)
                     .foregroundStyle(Papu.green)
                   VStack(alignment: .leading, spacing: 4) {
-                    Text(store.text("Twój koszyk jest gotowy.", "Your basket is ready.")).font(
+                    Text(store.text("Twój koszyk jest gotowy", "Your basket is ready")).font(
                       Papu.display(20))
                     Text(
                       store.text(
@@ -438,13 +474,18 @@ struct BasketView: View {
                   "Collect your food at each restaurant’s counter.")
               ).font(Papu.body(12)).foregroundStyle(Papu.muted).frame(maxWidth: .infinity)
             }
-          }.padding(24).padding(.top, 24).padding(.bottom, 20)
+          }.padding(20).padding(.top, 24).padding(.bottom, 20)
         }.id(checkout).transition(
           reduceMotion ? .opacity : .opacity.combined(with: .offset(x: checkout ? 24 : -24)))
       }
     }.background(Papu.cream).foregroundStyle(Papu.ink).overlay(alignment: .topTrailing) {
-      if !paying { SheetClose() }
-    }.interactiveDismissDisabled(paying)
+      if !paying {
+        SheetClose(action: {
+          if success { store.finishCheckoutPresentation() }
+          dismiss()
+        })
+      }
+    }.interactiveDismissDisabled(paying || success)
   }
   private var confirmationReady: Bool {
     guard let latest = store.orders.first?.createdAt else { return false }
@@ -456,11 +497,11 @@ struct BasketView: View {
     ScrollView {
       VStack(spacing: 20) {
         PapuAnimation(scene: confirmationReady ? 4 : 3).frame(height: 220)
-        Eyebrow(text: store.text("TERAZ CHWILA DLA CIEBIE.", "NOW TAKE A MOMENT."))
+        Eyebrow(text: store.text("TERAZ CHWILA DLA CIEBIE", "NOW TAKE A MOMENT"))
         Text(
           confirmationReady
             ? store.text("Pora na papu!", "Your papu is ready!")
-            : store.text("Już się robi.", "On its way.")
+            : store.text("Już się robi", "On its way")
         ).font(Papu.display(42))
           .multilineTextAlignment(.center)
         Text(
@@ -489,6 +530,7 @@ struct BasketView: View {
             ? store.text("Zobacz odbiór", "See pickup")
             : store.text("Śledź moje papu", "Track my food"), symbol: "arrow.right"
         ) {
+          store.finishCheckoutPresentation()
           dismiss()
         }
         Text(
@@ -496,7 +538,7 @@ struct BasketView: View {
             "Zamówienie demo — bez płatności i wysyłki do restauracji.",
             "Demo order — no payment or submission to restaurants.")
         ).font(Papu.body(12)).foregroundStyle(Papu.muted).multilineTextAlignment(.center)
-      }.padding(24).padding(.top, 24).id(confirmationReady).transition(.opacity)
+      }.padding(20).padding(.top, 24).id(confirmationReady).transition(.opacity)
     }.animation(reduceMotion ? nil : .easeOut(duration: 0.2), value: confirmationReady)
   }
 }

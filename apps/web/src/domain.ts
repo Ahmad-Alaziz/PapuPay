@@ -27,14 +27,12 @@ export type Store = {
   version: 1;
   cart: CartLine[];
   orders: Order[];
-  favorites: string[];
   locale: Locale;
 };
 export const initialStore: Store = {
   version: 1,
   cart: [],
   orders: [],
-  favorites: [],
   locale: "pl",
 };
 const priceFormatters = Object.fromEntries(
@@ -166,11 +164,6 @@ export function readStore(raw: string | null): Store {
       version: 1,
       locale: value.locale === "en" ? "en" : "pl",
       cart: Array.isArray(value.cart) ? value.cart.filter(validLine) : [],
-      favorites: Array.isArray(value.favorites)
-        ? value.favorites.filter((id: unknown) =>
-            restaurants.some((r) => r.id === id),
-          )
-        : [],
       orders: Array.isArray(value.orders)
         ? value.orders
             .map((o: Order | null) =>

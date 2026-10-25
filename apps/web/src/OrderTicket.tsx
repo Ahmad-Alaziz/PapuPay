@@ -68,8 +68,8 @@ export default function OrderTicket({
             <h2>
               {
                 [
-                  t("Przyjęte.", "All yours."),
-                  t("Już się robi.", "Cooking up."),
+                  t("Przyjęte", "All yours"),
+                  t("Już się robi", "Cooking up"),
                   t("Pora na papu!", "Come and get it!"),
                   t("Smacznego!", "Enjoy every bite!"),
                 ][stage]

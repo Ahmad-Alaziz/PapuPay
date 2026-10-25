@@ -31,7 +31,7 @@ Build **1.0 (4.1)** is available in the PapuPay Demo internal group and uploaded
 ## Try the complete journey
 
 1. Open table 24, then “Jak to działa?” / “How it works” for the animated introduction. Tap an illustration for tactile feedback.
-2. Browse the nine restaurants, search dishes, filter cuisines or vegetarian options, and save favorites.
+2. Browse the nine restaurants, search dishes, filter cuisines or vegetarian options, and explore the interactive food spotlight.
 3. Customize a Classic Smash, add a ramen from KAGO, and open the grouped basket.
 4. Place a **demo** order. There is no charge and nothing is sent to a restaurant.
 5. Watch each kitchen progress: the first is ready in 12 seconds, all nine within 28 seconds. Enable ready alerts at checkout. In native iOS, inspect the real Lock Screen Live Activity and Dynamic Island.

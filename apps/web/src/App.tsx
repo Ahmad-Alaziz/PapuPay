@@ -10,7 +10,6 @@ import {
   ChevronDown,
   Clock,
   Compass,
-  Heart,
   Leaf,
   Map,
   MapPin,
@@ -26,7 +25,6 @@ import {
   Zap,
   GlassWater,
   Pizza,
-  Play,
   LockKeyhole,
   QrCode,
 } from "lucide-react";
@@ -49,6 +47,7 @@ import HallMap from "./HallMap";
 import OrderTicket from "./OrderTicket";
 import { qrPath, type OrderContext } from "./routing";
 import Modal from "./Modal";
+import CravingHero from "./CravingHero";
 const PapuMotion = lazy(() => import("./PapuMotion"));
 type Tab = "discover" | "map" | "orders";
 const validTab = (): Tab =>
@@ -99,15 +98,14 @@ export default function App({ context }: { context: OrderContext }) {
       return readStore(null);
     }
   });
-  const { cart, orders, favorites, locale } = store,
+  const { cart, orders, locale } = store,
     pl = locale === "pl";
   const t = (a: string, b: string) => (pl ? a : b);
   const [tab, setTab] = useState<Tab>(validTab),
     [table, setTable] = useState(context.table);
   const [category, setCategory] = useState("all"),
     [search, setSearch] = useState(""),
-    [onlyVeg, setOnlyVeg] = useState(false),
-    [onlyFavorites, setOnlyFavorites] = useState(false);
+    [onlyVeg, setOnlyVeg] = useState(false);
   const [restaurant, setRestaurant] = useState<Restaurant | null>(null),
     [dish, setDish] = useState<Dish | null>(null),
     [quantity, setQuantity] = useState(1),
@@ -128,12 +126,23 @@ export default function App({ context }: { context: OrderContext }) {
     [now, setNow] = useState(Date.now()),
     [kitchen, setKitchen] = useState(false),
     [storageError, setStorageError] = useState(false);
+  const [lastAdded, setLastAdded] = useState<{
+    item: Dish;
+    quantity: number;
+    limited: boolean;
+    id: number;
+  } | null>(null);
+  const addedTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const persistedSnapshot = useRef<string | null>(null);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null),
     paymentTimer = useRef<ReturnType<typeof setTimeout> | null>(null),
     payingRef = useRef(false);
   useEffect(() => {
+    const snapshot = JSON.stringify(store);
+    if (snapshot === persistedSnapshot.current) return;
     try {
-      localStorage.setItem("papupay-v1", JSON.stringify(store));
+      localStorage.setItem("papupay-v1", snapshot);
+      persistedSnapshot.current = snapshot;
       setStorageError(false);
     } catch {
       setStorageError(true);
@@ -146,11 +155,20 @@ export default function App({ context }: { context: OrderContext }) {
   useEffect(() => {
     const hash = () => setTab(validTab());
     const sync = (e: StorageEvent) => {
-      if (e.key === "papupay-v1") setStore(readStore(e.newValue));
+      if (e.key !== "papupay-v1") return;
+      const incoming = readStore(e.newValue);
+      const snapshot = JSON.stringify(incoming);
+      if (snapshot === persistedSnapshot.current) return;
+      // Accept another tab's state without echoing a schema-normalized copy back.
+      // This also prevents older tabs reintroducing removed favorites in a loop.
+      persistedSnapshot.current = snapshot;
+      setStore(incoming);
+      setStorageError(false);
     };
     window.addEventListener("hashchange", hash);
     window.addEventListener("storage", sync);
     return () => {
+      if (addedTimer.current) clearTimeout(addedTimer.current);
       if (toastTimer.current) clearTimeout(toastTimer.current);
       if (paymentTimer.current) clearTimeout(paymentTimer.current);
       window.removeEventListener("hashchange", hash);
@@ -256,19 +274,27 @@ export default function App({ context }: { context: OrderContext }) {
     location.hash = destination;
     window.scrollTo({ top: 0, behavior: "instant" });
   };
-  const favorite = (id: string) =>
-    setStore((s) => ({
-      ...s,
-      favorites: s.favorites.includes(id)
-        ? s.favorites.filter((x) => x !== id)
-        : [...s.favorites, id],
-    }));
   const add = (item: Dish, qty = 1, withExtra = false, message = "") => {
-    setStore((s) => ({
-      ...s,
-      cart: addLine(s.cart, item.id, qty, withExtra, message),
-    }));
-    notify(t("Mniam! Dodano do koszyka.", "Yum! Added to your basket."));
+    const existing = cart.find(
+      (line) =>
+        line.itemId === item.id &&
+        line.extra === withExtra &&
+        line.note === message.trim().slice(0, 180),
+    );
+    const addedQuantity = Math.min(qty, 20 - (existing?.quantity ?? 0));
+    if (addedQuantity > 0)
+      setStore((s) => ({
+        ...s,
+        cart: addLine(s.cart, item.id, addedQuantity, withExtra, message),
+      }));
+    setLastAdded({
+      item,
+      quantity: addedQuantity || 20,
+      limited: addedQuantity === 0,
+      id: Date.now(),
+    });
+    if (addedTimer.current) clearTimeout(addedTimer.current);
+    addedTimer.current = setTimeout(() => setLastAdded(null), 7000);
     if (navigator.vibrate) navigator.vibrate(12);
   };
   const chooseDish = (item: Dish) => {
@@ -291,7 +317,6 @@ export default function App({ context }: { context: OrderContext }) {
   const filteredRestaurants = restaurants.filter(
     (r) =>
       (category === "all" || r.category === category) &&
-      (!onlyFavorites || favorites.includes(r.id)) &&
       (!onlyVeg || menu.some((m) => m.restaurantId === r.id && m.vegetarian)) &&
       `${r.name} ${r.cuisine} ${r.cuisineEn} ${menu
         .filter((m) => m.restaurantId === r.id)
@@ -317,6 +342,7 @@ export default function App({ context }: { context: OrderContext }) {
       payingRef.current = false;
       setCheckout(false);
       setCartOpen(false);
+      setLastAdded(null);
       setSuccess(true);
       navigate("orders");
     }, 1400);
@@ -345,6 +371,58 @@ export default function App({ context }: { context: OrderContext }) {
       100,
     );
   };
+  const openBasket = () => {
+    setRestaurant(null);
+    setDish(null);
+    setCheckout(false);
+    setCartOpen(true);
+  };
+  const addedNotice = (inBasket = false) =>
+    lastAdded && (
+      <motion.div
+        className={`basket-feedback ${inBasket ? "in-basket" : ""}`}
+        key={lastAdded.id}
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 8 }}
+        transition={{ duration: 0.2 }}
+      >
+        <img src={foodImage(lastAdded.item.image)} alt="" />
+        <div
+          className="basket-feedback-copy"
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          <strong>
+            <Check size={14} />
+            {lastAdded.limited
+              ? t("Masz już 20 w koszyku", "20 already in your basket")
+              : t("Dodano do koszyka", "Added to your basket")}
+          </strong>
+          <span>
+            {lastAdded.quantity} ×{" "}
+            {pl ? lastAdded.item.name : lastAdded.item.nameEn}
+          </span>
+          <small>
+            {t("Koszyk", "Basket")}: {count} · {price(total, locale)}
+          </small>
+        </div>
+        {!inBasket && (
+          <button onClick={openBasket}>
+            {t("Zobacz koszyk", "View basket")}
+            <ArrowRight size={16} />
+          </button>
+        )}
+        <button
+          className="feedback-dismiss"
+          aria-label={t("Zamknij potwierdzenie", "Dismiss confirmation")}
+          onClick={() => setLastAdded(null)}
+        >
+          <X size={16} />
+        </button>
+      </motion.div>
+    );
   return (
     <MotionConfig reducedMotion="user">
       <div className="app-shell">
@@ -443,59 +521,13 @@ export default function App({ context }: { context: OrderContext }) {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4 }}
                 >
-                  <section className="hero paper-hero">
-                    <div className="hero-copy">
-                      <div className="eyebrow hero-eyebrow">
-                        <span className="green-dot" /> HALA KOSZYKI ·{" "}
-                        {t("WARSZAWA", "WARSAW")}
-                      </div>
-                      <h1>
-                        {t("PORA NA", "TAKE A")}
-                        <br />
-                        <span>{t("PAPU.", "SEAT.")}</span>
-                      </h1>
-                      <span className="papaya-stroke" aria-hidden="true" />
-                      <p>
-                        {t(
-                          "Różne smaki. Jeden wspólny stół.",
-                          "Different cravings. One happy table.",
-                        )}
-                      </p>
-                      <div className="hero-actions">
-                        <button className="primary" onClick={browse}>
-                          {t("Co dziś jesz?", "Let’s eat")}
-                          <ArrowUpRight size={20} />
-                        </button>
-                        <button
-                          className="text-button"
-                          onClick={() => setTour(0)}
-                        >
-                          <span className="play-circle">
-                            <Play size={13} fill="currentColor" />
-                          </span>
-                          {t("Jak to działa?", "How it works")}
-                        </button>
-                      </div>
-                    </div>
-                    <div className="hero-art">
-                      <div className="food-orbit" />
-                      <img
-                        className="hero-food"
-                        src="/assets/feast.webp"
-                        alt={t(
-                          "Burger, ramen i pizza",
-                          "Burger, ramen and pizza",
-                        )}
-                      />
-                      <div className="hero-table">
-                        <Check size={16} />
-                        <span>
-                          {t("Twój stolik", "Your table")} <b>{table}</b>
-                        </span>
-                      </div>
-                      <span className="sparkle two">✳</span>
-                    </div>
-                  </section>
+                  <CravingHero
+                    locale={locale}
+                    table={table}
+                    onBrowse={browse}
+                    onTour={() => setTour(0)}
+                    onDish={chooseDish}
+                  />
                   <section className="discovery section" id="restaurants">
                     <div className="section-heading">
                       <div>
@@ -557,17 +589,6 @@ export default function App({ context }: { context: OrderContext }) {
                         >
                           <Leaf size={19} />
                         </button>
-                        <button
-                          className={`icon-button ${onlyFavorites ? "selected" : ""}`}
-                          aria-label={t("Tylko ulubione", "Favorites only")}
-                          aria-pressed={onlyFavorites}
-                          onClick={() => setOnlyFavorites(!onlyFavorites)}
-                        >
-                          <Heart
-                            size={19}
-                            fill={onlyFavorites ? "currentColor" : "none"}
-                          />
-                        </button>
                       </div>
                     </div>
                     <div className="results-heading">
@@ -615,21 +636,6 @@ export default function App({ context }: { context: OrderContext }) {
                               </span>
                             </button>
                             <button
-                              className={`favorite-button ${favorites.includes(r.id) ? "saved" : ""}`}
-                              aria-label={`${t("Ulubione", "Favorite")}: ${r.name}`}
-                              aria-pressed={favorites.includes(r.id)}
-                              onClick={() => favorite(r.id)}
-                            >
-                              <Heart
-                                size={19}
-                                fill={
-                                  favorites.includes(r.id)
-                                    ? "currentColor"
-                                    : "none"
-                                }
-                              />
-                            </button>
-                            <button
                               className="restaurant-info"
                               onClick={() => setRestaurant(r)}
                             >
@@ -657,8 +663,8 @@ export default function App({ context }: { context: OrderContext }) {
                         <Search size={38} />
                         <h3>
                           {t(
-                            "Tego smaku jeszcze nie znamy.",
-                            "We haven’t found that flavour.",
+                            "Tego smaku jeszcze nie znamy",
+                            "We haven’t found that flavour",
                           )}
                         </h3>
                         <p>
@@ -673,7 +679,6 @@ export default function App({ context }: { context: OrderContext }) {
                             setSearch("");
                             setCategory("all");
                             setOnlyVeg(false);
-                            setOnlyFavorites(false);
                           }}
                         >
                           {t("Pokaż wszystkie", "Show everything")}
@@ -687,24 +692,24 @@ export default function App({ context }: { context: OrderContext }) {
                         <UtensilsCrossed size={36} />
                       </div>
                       <span className="little-orbit">
-                        <Heart size={24} />
+                        <Sparkles size={24} />
                       </span>
                       <Papaya />
                     </div>
                     <div>
                       <p className="eyebrow">
                         {t(
-                          "RÓŻNE APETYTY. WSPÓLNY STOLIK.",
-                          "DIFFERENT CRAVINGS. SAME TABLE.",
+                          "RÓŻNE APETYTY · WSPÓLNY STOLIK",
+                          "DIFFERENT CRAVINGS · SAME TABLE",
                         )}
                       </p>
                       <h2>
                         {t(
-                          "Ty ramen. Ja burgera.",
-                          "You get ramen. I get a burger.",
+                          "Ty ramen, ja burgera",
+                          "You get ramen, I get a burger",
                         )}
                         <br />
-                        {t("Razem? Idealnie.", "Together? Perfect.")}
+                        {t("Razem? Idealnie", "Together? Perfect")}
                       </h2>
                       <p>
                         {t(
@@ -732,7 +737,7 @@ export default function App({ context }: { context: OrderContext }) {
                         </p>
                         <h2>
                           {t("Małe", "Little")}{" "}
-                          <em>{t("zachcianki.", "cravings.")}</em>
+                          <em>{t("zachcianki", "cravings")}</em>
                         </h2>
                       </div>
                       <span className="handwritten">
@@ -772,11 +777,15 @@ export default function App({ context }: { context: OrderContext }) {
                           <div>
                             <strong>{price(item.price, locale)}</strong>
                             <button
-                              className="add-button"
+                              className={`add-button ${lastAdded?.item.id === item.id ? "just-added" : ""}`}
                               onClick={() => add(item)}
                               aria-label={`${t("Dodaj", "Add")} ${item.name}`}
                             >
-                              <Plus size={19} />
+                              {lastAdded?.item.id === item.id ? (
+                                <Check size={19} />
+                              ) : (
+                                <Plus size={19} />
+                              )}
                             </button>
                           </div>
                         </article>
@@ -792,9 +801,9 @@ export default function App({ context }: { context: OrderContext }) {
                     <div>
                       <p className="eyebrow">KOSZYKOWA 63 · WARSZAWA</p>
                       <h2>
-                        {t("Jedna hala.", "One hall.")}
+                        {t("Jedna hala", "One hall")}
                         <br />
-                        {t("Cały świat smaków.", "A world of flavours.")}
+                        {t("Cały świat smaków", "A world of flavours")}
                       </h2>
                       <button
                         className="cream-button"
@@ -821,7 +830,7 @@ export default function App({ context }: { context: OrderContext }) {
                       <p className="eyebrow">HALA KOSZYKI · WARSZAWA</p>
                       <h1 className="page-title">
                         {t("Podążaj za", "Follow the")}{" "}
-                        <em>{t("apetytem.", "good food.")}</em>
+                        <em>{t("apetytem", "good food")}</em>
                       </h1>
                     </div>
                     <span className="pill">
@@ -844,13 +853,12 @@ export default function App({ context }: { context: OrderContext }) {
                     <div>
                       <p className="eyebrow">
                         {t(
-                          "TY ODPOCZYWASZ. MY CZARUJEMY.",
-                          "YOU RELAX. WE’RE ON IT.",
+                          "TY ODPOCZYWASZ · MY CZARUJEMY",
+                          "YOU RELAX · WE’RE ON IT",
                         )}
                       </p>
                       <h1 className="page-title">
-                        {t("Twoje", "Your")}{" "}
-                        <em>{t("papu.", "happy food.")}</em>
+                        {t("Twoje", "Your")} <em>{t("papu", "happy food")}</em>
                       </h1>
                     </div>
                     <span className="pill">
@@ -863,8 +871,8 @@ export default function App({ context }: { context: OrderContext }) {
                       <Papaya className="empty-papaya" />
                       <h2>
                         {t(
-                          "Tu zaczyna się coś pysznego.",
-                          "Something delicious starts here.",
+                          "Tu zaczyna się coś pysznego",
+                          "Something delicious starts here",
                         )}
                       </h2>
                       <p>
@@ -995,9 +1003,10 @@ export default function App({ context }: { context: OrderContext }) {
           {count > 0 && !cartOpen && !dish && (
             <motion.button
               className="floating-cart"
-              initial={{ y: 90, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: 90, opacity: 0 }}
+              initial={{ scale: 0.97, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.97, opacity: 0 }}
+              transition={{ duration: 0.18 }}
               onClick={() => {
                 setCheckout(false);
                 setCartOpen(true);
@@ -1005,7 +1014,7 @@ export default function App({ context }: { context: OrderContext }) {
             >
               <span className="cart-count">{count}</span>
               <span>
-                {t("Twój koszyk", "Your basket")}
+                {t("Zobacz koszyk", "View basket")}
                 <small>
                   {t("Kuchnie", "Kitchens")}: {groupCart(cart).length} ·{" "}
                   {t("jedno zamówienie", "one checkout")}
@@ -1014,6 +1023,11 @@ export default function App({ context }: { context: OrderContext }) {
               <strong>{price(total, locale)}</strong>
               <ArrowRight size={20} />
             </motion.button>
+          )}
+        </AnimatePresence>
+        <AnimatePresence>
+          {lastAdded && !restaurant && !dish && !cartOpen && !success && (
+            <div className="page-basket-feedback">{addedNotice()}</div>
           )}
         </AnimatePresence>
         <AnimatePresence>
@@ -1136,6 +1150,24 @@ export default function App({ context }: { context: OrderContext }) {
                 <ArrowUpRight size={15} />
               </a>
             </div>
+            {count > 0 && (
+              <div className="restaurant-basket-rail">
+                <AnimatePresence>{addedNotice()}</AnimatePresence>
+                {!lastAdded && (
+                  <button className="menu-basket-cta" onClick={openBasket}>
+                    <ShoppingBag size={19} />
+                    <span>
+                      {t("Zobacz koszyk", "View basket")}{" "}
+                      <small>
+                        {count} {t("w koszyku", "in your basket")}
+                      </small>
+                    </span>
+                    <strong>{price(total, locale)}</strong>
+                    <ArrowRight size={18} />
+                  </button>
+                )}
+              </div>
+            )}
           </Modal>
         )}
         {dish && (
@@ -1278,14 +1310,14 @@ export default function App({ context }: { context: OrderContext }) {
               >
                 <div className="eyebrow">
                   {t(
-                    "JEDEN KOSZYK. DUŻO SZCZĘŚCIA.",
-                    "ONE BASKET. LOTS OF HAPPINESS.",
+                    "JEDEN KOSZYK · DUŻO SZCZĘŚCIA",
+                    "ONE BASKET · LOTS OF HAPPINESS",
                   )}
                 </div>
                 <h2>
                   {checkout
-                    ? t("Prawie przy stole.", "Almost at the table.")
-                    : t("Same dobre rzeczy.", "All the good stuff.")}
+                    ? t("Prawie przy stole", "Almost at the table")
+                    : t("Same dobre rzeczy", "All the good stuff")}
                 </h2>
                 <div className="basket-context">
                   <MapPin size={16} /> Hala Koszyki <span>·</span>{" "}
@@ -1296,8 +1328,8 @@ export default function App({ context }: { context: OrderContext }) {
                     <Papaya className="empty-papaya" />
                     <h3>
                       {t(
-                        "Apetyt jest. Papu jeszcze nie.",
-                        "Appetite? Yes. Food? Not yet.",
+                        "Apetyt jest, papu jeszcze nie",
+                        "Appetite? Yes. Food? Not yet",
                       )}
                     </h3>
                     <p>
@@ -1413,8 +1445,8 @@ export default function App({ context }: { context: OrderContext }) {
                           <div>
                             <h3>
                               {t(
-                                "Twój koszyk jest gotowy.",
-                                "Your basket is ready.",
+                                "Twój koszyk jest gotowy",
+                                "Your basket is ready",
                               )}
                             </h3>
                             <p>
@@ -1534,6 +1566,13 @@ export default function App({ context }: { context: OrderContext }) {
                 )}
               </motion.div>
             </AnimatePresence>
+            <AnimatePresence>
+              {lastAdded && (
+                <div className="basket-inline-feedback">
+                  {addedNotice(true)}
+                </div>
+              )}
+            </AnimatePresence>
           </Modal>
         )}
         {success && (
@@ -1565,14 +1604,14 @@ export default function App({ context }: { context: OrderContext }) {
                 </div>
                 <p className="eyebrow">
                   {t(
-                    "I JUŻ. TERAZ CHWILA DLA CIEBIE.",
-                    "THAT’S IT. NOW TAKE A MOMENT.",
+                    "I JUŻ · TERAZ CHWILA DLA CIEBIE",
+                    "THAT’S IT · NOW TAKE A MOMENT",
                   )}
                 </p>
                 <h2>
                   {confirmationReady
                     ? t("Pora na papu!", "Your papu is ready!")
-                    : t("Już się robi.", "On its way.")}
+                    : t("Już się robi", "On its way")}
                 </h2>
                 <p>
                   {confirmationReady
@@ -1641,17 +1680,17 @@ export default function App({ context }: { context: OrderContext }) {
                     ))}
                   </div>
                   <p className="eyebrow">
-                    {t("MAŁY SKAN. WIELKIE MNIAM.", "LITTLE SCAN. BIG YUM.")}
+                    {t("MAŁY SKAN · WIELKIE MNIAM", "LITTLE SCAN · BIG YUM")}
                   </p>
                   <h2>
                     {
                       [
-                        t("Usiądź. Zeskanuj.", "Sit down. Scan."),
+                        t("Usiądź i zeskanuj", "Sit down and scan"),
                         t(
-                          "Każdy znajdzie swój smak.",
-                          "Every craving gets a seat.",
+                          "Każdy znajdzie swój smak",
+                          "Every craving gets a seat",
                         ),
-                        t("Odbierz. I ciesz się chwilą.", "Pick up. Dig in."),
+                        t("Odbierz i ciesz się chwilą", "Pick up and dig in"),
                       ][tour]
                     }
                   </h2>
@@ -1706,7 +1745,7 @@ export default function App({ context }: { context: OrderContext }) {
                 <QrCode size={40} />
               </span>
               <p className="eyebrow">HALA KOSZYKI</p>
-              <h2>{t("Dobrze Cię tu widzieć.", "Good to have you here.")}</h2>
+              <h2>{t("Dobrze Cię tu widzieć", "Good to have you here")}</h2>
               <p>
                 {t(
                   "Numer stolika przychodzi z kodu QR. W demo możesz go zmienić.",
@@ -1774,8 +1813,8 @@ export default function App({ context }: { context: OrderContext }) {
               <Brand />
               <h2>
                 {t(
-                  "Mała próbka dużego pomysłu.",
-                  "A little taste of a big idea.",
+                  "Mała próbka dużego pomysłu",
+                  "A little taste of a big idea",
                 )}
               </h2>
               <p>
@@ -1838,7 +1877,7 @@ export default function App({ context }: { context: OrderContext }) {
             <div className="modal-content kitchen-content">
               <p className="eyebrow">PAPUPAY · KITCHEN DEMO</p>
               <h2>
-                {t("Dobre rzeczy się dzieją.", "Good things are happening.")}
+                {t("Dobre rzeczy się dzieją", "Good things are happening")}
               </h2>
               <p className="muted">
                 {t(

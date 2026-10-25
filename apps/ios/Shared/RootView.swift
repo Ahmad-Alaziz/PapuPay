@@ -3,6 +3,7 @@ import SwiftUI
 struct RootView: View {
   @EnvironmentObject var store: PapuStore
   @Environment(\.scenePhase) private var scenePhase
+  @Environment(\.accessibilityReduceMotion) private var reduceMotion
   @State private var showTour = false
   @State private var showTable = false
   @State private var showAbout = false
@@ -48,7 +49,7 @@ struct RootView: View {
     .fullScreenCover(isPresented: $store.invocationError) {
       VStack(spacing: 22) {
         Image(systemName: "qrcode").font(.system(size: 46)).foregroundStyle(Papu.green)
-        Text(store.text("Sprawdź kod na stoliku.", "Check your table’s QR.")).font(Papu.display(32))
+        Text(store.text("Sprawdź kod na stoliku", "Check your table’s QR")).font(Papu.display(32))
           .multilineTextAlignment(.center)
         Text(
           store.text(
@@ -76,37 +77,26 @@ struct RootView: View {
       }
     }
   }
+  private var brandButton: some View {
+    Button { store.selectedTab = 0 } label: {
+      BrandView(size: 26).fixedSize().padding(.leading, 4).padding(.vertical, 5)
+    }.buttonStyle(.plain).accessibilityLabel("PapuPay")
+  }
   private func shell<Content: View>(@ViewBuilder content: () -> Content) -> some View {
     NavigationStack {
       content().background(Papu.cream).foregroundStyle(Papu.ink)
         .safeAreaInset(edge: .bottom, spacing: 0) {
           if store.count > 0 {
-            Button {
-              store.showBasket = true
-            } label: {
-              HStack(spacing: 12) {
-                Text("\(store.count)").font(Papu.body(15).bold()).frame(width: 33, height: 35)
-                  .background(.white.opacity(0.13), in: RoundedRectangle(cornerRadius: 11))
-                VStack(alignment: .leading, spacing: 2) {
-                  Text(store.text("Twój koszyk", "Your basket")).font(
-                    Papu.body(15).weight(.semibold))
-                  Text(
-                    store.text("Kilka kuchni. Jedno zamówienie.", "Many kitchens. One checkout.")
-                  ).font(Papu.body(11)).foregroundStyle(Papu.sage.opacity(0.8))
-                }
-                Spacer(minLength: 5)
-                Text(money(store.total, english: store.english)).font(Papu.body(16).bold())
-                Image(systemName: "arrow.right").font(.system(size: 16))
-              }.padding(12).foregroundStyle(Papu.butter).background(
-                Papu.ink, in: RoundedRectangle(cornerRadius: 22)
-              ).shadow(color: Papu.ink.opacity(0.18), radius: 16, y: 6)
-            }.buttonStyle(PressStyle()).padding(.horizontal, 20).padding(.bottom, 8).transition(
-              .move(edge: .bottom).combined(with: .opacity))
+            BasketDock { store.showBasket = true }
           }
         }
         .toolbar {
-          ToolbarItem(placement: .topBarLeading) {
-            BrandView(size: 27).fixedSize().onTapGesture { store.selectedTab = 0 }
+          if #available(iOS 26.0, *) {
+            ToolbarItem(placement: .topBarLeading) {
+              brandButton
+            }.sharedBackgroundVisibility(.hidden)
+          } else {
+            ToolbarItem(placement: .topBarLeading) { brandButton }
           }
           ToolbarItemGroup(placement: .topBarTrailing) {
             Button {
@@ -124,7 +114,7 @@ struct RootView: View {
             }.accessibilityLabel(store.text("Stolik \(store.table)", "Table \(store.table)"))
           }
         }
-        .animation(.spring(response: 0.4, dampingFraction: 0.85), value: store.count)
+        .animation(reduceMotion ? nil : .spring(response: 0.4, dampingFraction: 0.85), value: store.count)
     }
   }
 }
@@ -138,7 +128,6 @@ struct DiscoverView: View {
   @State private var category = "all"
   @State private var selectedRestaurant: Restaurant?
   @State private var selectedDish: Dish?
-  @State private var favoritesOnly = false
   @State private var veggieOnly = false
   let categories: [(String, String, String, String)] = [
     ("all", "fork.knife", "Wszystko", "Everything"),
@@ -151,7 +140,6 @@ struct DiscoverView: View {
   var filtered: [Restaurant] {
     store.catalog.restaurants.filter { r in
       (category == "all" || r.category == category)
-        && (!favoritesOnly || store.favorites.contains(r.id))
         && (!veggieOnly
           || store.catalog.items.contains { $0.restaurantId == r.id && $0.vegetarian })
         && (search.isEmpty
@@ -164,7 +152,10 @@ struct DiscoverView: View {
       ScrollViewReader { reader in
         ScrollView {
           VStack(spacing: 0) {
-            hero { withAnimation(.smooth) { reader.scrollTo("restaurants", anchor: .top) } }
+            CravingSpotlight(
+              showTour: $showTour,
+              browse: { withAnimation(.smooth) { reader.scrollTo("restaurants", anchor: .top) } },
+              openMenu: { selectedRestaurant = $0 })
             VStack(alignment: .leading, spacing: 20) {
               Text(store.text("Co dziś jesz?", "What’s your craving?"))
                 .font(Papu.display(32)).fixedSize(horizontal: false, vertical: true).id(
@@ -217,25 +208,18 @@ struct DiscoverView: View {
                   Image(systemName: "leaf").frame(width: 44, height: 44).foregroundStyle(
                     veggieOnly ? Papu.green : Papu.muted)
                 }.accessibilityLabel(store.text("Opcje wege", "Vegetarian options"))
-                Button {
-                  withAnimation { favoritesOnly.toggle() }
-                } label: {
-                  Image(systemName: favoritesOnly ? "heart.fill" : "heart").foregroundStyle(
-                    favoritesOnly ? Papu.orange : Papu.muted
-                  ).frame(width: 44, height: 44)
-                }.accessibilityLabel(store.text("Tylko ulubione", "Favorites only"))
+
               }.foregroundStyle(Papu.muted)
               if filtered.isEmpty {
                 VStack(spacing: 13) {
                   Image(systemName: "magnifyingglass").font(.largeTitle)
                   Text(
-                    store.text("Tego smaku jeszcze nie znamy.", "We haven’t found that flavour.")
+                    store.text("Tego smaku jeszcze nie znamy", "We haven’t found that flavour")
                   )
                   .font(Papu.display(28))
                   Button(store.text("Wyczyść filtry", "Clear filters")) {
                     search = ""
                     category = "all"
-                    favoritesOnly = false
                     veggieOnly = false
                   }.font(Papu.body(16).bold())
                 }.frame(maxWidth: .infinity).padding(.vertical, 40)
@@ -254,7 +238,7 @@ struct DiscoverView: View {
             gatherBanner.padding(.horizontal, 20).padding(.vertical, 16)
             VStack(alignment: .leading, spacing: 18) {
               Eyebrow(text: store.text("MIŁOŚĆ OD PIERWSZEGO KĘSA", "LOVE AT FIRST BITE"))
-              Text(store.text("Małe zachcianki.", "Little cravings.")).font(Papu.display(34))
+              Text(store.text("Małe zachcianki", "Little cravings")).font(Papu.display(34))
               ScrollView(.horizontal) {
                 HStack(alignment: .top, spacing: 14) {
                   ForEach([
@@ -263,7 +247,7 @@ struct DiscoverView: View {
                   ]) { dish in SmallDishCard(dish: dish) { selectedDish = dish } }
                 }
               }.scrollIndicators(.hidden)
-            }.padding(24)
+            }.padding(20)
             ZStack(alignment: .leading) {
               Image("hall").resizable().scaledToFill().frame(height: 260).clipped()
               LinearGradient(
@@ -272,7 +256,7 @@ struct DiscoverView: View {
               VStack(alignment: .leading, spacing: 15) {
                 Text("KOSZYKOWA 63 · WARSZAWA").font(.system(size: 11, weight: .bold)).tracking(1.5)
                 Text(
-                  store.text("Jedna hala.\nCały świat smaków.", "One hall.\nA world of flavours.")
+                  store.text("Jedna hala\nCały świat smaków", "One hall\nA world of flavours")
                 )
                 .font(Papu.display(34))
                 Button {
@@ -285,17 +269,21 @@ struct DiscoverView: View {
                   ).background(Papu.butter, in: Capsule()).foregroundStyle(Papu.ink)
                 }
               }.padding(25).foregroundStyle(Papu.butter)
-            }.frame(height: 260).clipShape(RoundedRectangle(cornerRadius: 22)).padding(24)
+            }.frame(height: 260).clipShape(RoundedRectangle(cornerRadius: 22)).padding(20)
             HStack {
               BrandView(size: 24)
               Spacer()
               Button(store.text("O wersji demo", "About this demo")) { showAbout = true }.font(
                 Papu.body(13)
               ).foregroundStyle(Papu.muted)
-            }.padding(24).padding(.bottom, 15)
+            }.padding(20).padding(.bottom, 15)
           }.frame(width: viewport.size.width)
         }.scrollDismissesKeyboard(.interactively)
       }
+    }
+    .onChange(of: store.completedCheckoutID) { _, _ in
+      selectedRestaurant = nil
+      selectedDish = nil
     }
     .sheet(item: $selectedRestaurant) {
       RestaurantView(restaurant: $0).environmentObject(store).presentationDetents([.large])
@@ -306,45 +294,6 @@ struct DiscoverView: View {
         .presentationCornerRadius(30)
     }
   }
-  private func hero(browse: @escaping () -> Void) -> some View {
-    VStack(alignment: .leading, spacing: 18) {
-      HStack {
-        Eyebrow(text: "HALA KOSZYKI")
-        Spacer()
-        Label(store.text("Stolik ", "Table ") + store.table, systemImage: "checkmark.circle.fill")
-          .font(Papu.body(13).weight(.semibold)).foregroundStyle(Papu.green)
-      }
-      (typeSize.isAccessibilitySize
-        ? AnyLayout(VStackLayout(alignment: .leading, spacing: 12))
-        : AnyLayout(HStackLayout(spacing: 0))) {
-          VStack(alignment: .leading, spacing: 12) {
-            Text(store.text("PORA NA\nPAPU.", "TAKE A\nSEAT.")).font(Papu.poster(52)).lineSpacing(
-              -2
-            ).lineLimit(2).minimumScaleFactor(0.8)
-              .fixedSize(horizontal: false, vertical: true)
-            Capsule().fill(Papu.orange).frame(width: 62, height: 6).rotationEffect(.degrees(-5))
-          }.frame(maxWidth: .infinity, alignment: .leading).layoutPriority(1)
-          Image("feast").resizable().scaledToFit().frame(
-            width: typeSize.isAccessibilitySize ? 240 : 150, height: 170
-          )
-          .rotationEffect(.degrees(-7)).accessibilityHidden(true)
-        }
-      HStack(alignment: .center, spacing: 12) {
-        Text(
-          store.text("Różne smaki.\nJeden wspólny stół.", "Different cravings.\nOne happy table.")
-        )
-        .font(Papu.body(15)).foregroundStyle(Papu.muted)
-        Spacer(minLength: 0)
-        Button {
-          showTour = true
-        } label: {
-          Image(systemName: "play.fill").font(.system(size: 15)).frame(width: 48, height: 48)
-            .background(Papu.ink, in: Circle()).foregroundStyle(Papu.butter)
-        }.buttonStyle(PressStyle()).accessibilityLabel(store.text("Jak to działa?", "How it works"))
-      }
-    }.padding(20).background(Papu.butter, in: RoundedRectangle(cornerRadius: 28))
-      .padding(.horizontal, 20).padding(.top, 16).padding(.bottom, 8)
-  }
   private var gatherBanner: some View {
     ZStack(alignment: .bottomTrailing) {
       Papu.orange.opacity(0.23)
@@ -352,10 +301,10 @@ struct DiscoverView: View {
         .opacity(0.8)
       VStack(alignment: .leading, spacing: 12) {
         Eyebrow(
-          text: store.text("RÓŻNE APETYTY. WSPÓLNY STOLIK.", "DIFFERENT CRAVINGS. SAME TABLE."))
+          text: store.text("RÓŻNE APETYTY · WSPÓLNY STOLIK", "DIFFERENT CRAVINGS · SAME TABLE"))
         Text(
           store.text(
-            "Ty ramen. Ja burgera.\nRazem? Idealnie.", "You get ramen.\nI get a burger. Perfect.")
+            "Ty ramen, ja burgera\nRazem? Idealnie", "You get ramen\nI get a burger · Perfect")
         ).font(Papu.display(30))
         Text(
           store.text(
@@ -390,15 +339,7 @@ struct RestaurantCard: View {
               ).padding(9)
           }.clipShape(RoundedRectangle(cornerRadius: 18))
         }.buttonStyle(PressStyle())
-        Button {
-          store.favorite(restaurant.id)
-        } label: {
-          Image(systemName: store.favorites.contains(restaurant.id) ? "heart.fill" : "heart").font(
-            .system(size: 13)
-          ).foregroundStyle(store.favorites.contains(restaurant.id) ? Papu.orange : Papu.ink).frame(
-            width: 44, height: 44
-          ).background(.ultraThinMaterial, in: Circle())
-        }.padding(9).accessibilityLabel(store.text("Ulubione: ", "Favorite: ") + restaurant.name)
+
       }
       Button(action: action) {
         VStack(alignment: .leading, spacing: 5) {
@@ -436,14 +377,105 @@ struct SmallDishCard: View {
       HStack {
         Text(money(dish.price, english: store.english)).font(Papu.body(14).bold())
         Spacer()
-        Button {
-          store.add(dish)
-        } label: {
-          Image(systemName: "plus").font(.system(size: 14, weight: .semibold)).frame(
-            width: 44, height: 44
-          ).background(Papu.green, in: Circle()).foregroundStyle(Papu.butter)
-        }.accessibilityLabel(store.text("Dodaj ", "Add ") + dish.name)
+        QuickAddButton(dish: dish)
       }
     }.frame(width: 170).padding(12).papuCard()
+  }
+}
+
+
+/// The first screen is a small, useful food story: the whole scene follows the craving.
+private struct CravingSpotlight: View {
+  @EnvironmentObject var store: PapuStore
+  @Environment(\.accessibilityReduceMotion) private var reduceMotion
+  @Environment(\.dynamicTypeSize) private var typeSize
+  @Binding var showTour: Bool
+  var browse: () -> Void
+  var openMenu: (Restaurant) -> Void
+  @State private var selected = 0
+  @State private var entered = false
+  private let restaurantIDs = ["atom", "kago", "semolino"]
+  private var restaurant: Restaurant { store.catalog.restaurants.first { $0.id == restaurantIDs[selected] }! }
+  private var title: String {
+    [store.text("SOCZYSTY\nKĘS", "BIG BURGER\nENERGY"),
+     store.text("MISKA\nSZCZĘŚCIA", "A BOWL OF\nHAPPINESS"),
+     store.text("CIAO,\nPIZZO", "CIAO,\nPIZZA")][selected]
+  }
+  var body: some View {
+    VStack(alignment: .leading, spacing: 16) {
+      HStack(spacing: 8) {
+        Eyebrow(text: "HALA KOSZYKI")
+        Spacer(minLength: 8)
+        Label(store.text("Stolik ", "Table ") + store.table, systemImage: "checkmark.circle.fill")
+          .font(Papu.body(12).weight(.semibold)).foregroundStyle(Papu.green)
+      }
+      ZStack(alignment: .bottomLeading) {
+        GeometryReader { geometry in
+          FoodPhoto(name: restaurant.image)
+            .frame(width: geometry.size.width, height: geometry.size.height)
+            .scaleEffect(reduceMotion || entered ? 1 : 1.055)
+            .clipped()
+        }
+        LinearGradient(colors: [.black.opacity(0.02), Papu.ink.opacity(0.2), Papu.ink.opacity(0.95)],
+          startPoint: .top, endPoint: .bottom)
+        VStack(alignment: .leading, spacing: 14) {
+          HStack {
+            Text(restaurant.name.uppercased()).font(Papu.body(11).weight(.bold)).tracking(1.2)
+            Spacer()
+            Text("0\(selected + 1) / 03").font(Papu.body(11).weight(.semibold)).monospacedDigit()
+          }.foregroundStyle(Papu.butter.opacity(0.9))
+          Text(title).font(Papu.poster(typeSize.isAccessibilitySize ? 48 : 52)).lineSpacing(-2)
+            .fixedSize(horizontal: false, vertical: true).shadow(color: Papu.ink.opacity(0.3), radius: 8)
+          Button { openMenu(restaurant) } label: {
+            HStack {
+              Text(store.text("Mam na to ochotę", "That’s my craving"))
+              Spacer(minLength: 8)
+              Image(systemName: "arrow.up.right")
+            }.font(Papu.body(15).weight(.semibold)).padding(.horizontal, 18).frame(minHeight: 48)
+              .foregroundStyle(Papu.ink).background(Papu.butter, in: Capsule())
+          }.buttonStyle(PressStyle())
+        }.padding(22).foregroundStyle(Papu.butter)
+      }.frame(height: typeSize.isAccessibilitySize ? 420 : 350)
+        .clipShape(RoundedRectangle(cornerRadius: 27)).id(selected)
+        .transition(reduceMotion ? .opacity : .opacity.combined(with: .scale(scale: 0.985)))
+        .onAppear {
+          entered = false
+          withAnimation(reduceMotion ? nil : .easeOut(duration: 1.2)) { entered = true }
+        }
+        .gesture(DragGesture(minimumDistance: 30).onEnded { value in
+          guard abs(value.translation.width) > abs(value.translation.height) else { return }
+          choose((selected + (value.translation.width < 0 ? 1 : 2)) % 3)
+        })
+      HStack(spacing: 8) {
+        ForEach(0..<3, id: \.self) { index in
+          Button { choose(index) } label: {
+            HStack(spacing: 6) {
+              if selected == index { Circle().fill(Papu.orange).frame(width: 6, height: 6) }
+              Text([store.text("Burger", "Burger"), "Ramen", "Pizza"][index])
+            }.font(Papu.body(13).weight(.semibold)).frame(maxWidth: .infinity, minHeight: 44)
+              .foregroundStyle(selected == index ? Papu.butter : Papu.ink)
+              .background(selected == index ? Papu.ink : Papu.sage, in: Capsule())
+          }.buttonStyle(PressStyle()).accessibilityAddTraits(selected == index ? .isSelected : [])
+        }
+      }
+      HStack(alignment: .center, spacing: 12) {
+        Button(action: browse) {
+          Label(store.text("Wszystkie kuchnie", "All kitchens"), systemImage: "arrow.down")
+            .font(Papu.body(14).weight(.semibold)).frame(minHeight: 44)
+        }.buttonStyle(.plain)
+        Spacer(minLength: 0)
+        Button { showTour = true } label: {
+          Label(store.text("Jak to działa?", "How it works"), systemImage: "play.circle")
+            .font(Papu.body(13)).frame(minHeight: 44)
+        }.buttonStyle(.plain).foregroundStyle(Papu.muted)
+      }
+    }.padding(.horizontal, 20).padding(.top, 16).padding(.bottom, 8)
+
+  }
+  private func choose(_ index: Int) {
+    UISelectionFeedbackGenerator().selectionChanged()
+    withAnimation(reduceMotion ? .easeOut(duration: 0.15) : .spring(response: 0.48, dampingFraction: 0.88)) {
+      selected = index
+    }
   }
 }

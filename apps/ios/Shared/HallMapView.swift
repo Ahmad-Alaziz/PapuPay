@@ -65,7 +65,7 @@ struct HallMapView: View {
       VStack(alignment: .leading, spacing: 23) {
         Eyebrow(text: "HALA KOSZYKI · WARSZAWA")
         (Text(store.text("Podążaj za ", "Follow the "))
-          + Text(store.text("apetytem.", "good food.")).foregroundColor(Papu.green)).font(
+          + Text(store.text("apetytem", "good food")).foregroundColor(Papu.green)).font(
             Papu.display(36)
           ).fixedSize(horizontal: false, vertical: true)
         VStack(spacing: 0) {
@@ -130,28 +130,11 @@ struct HallMapView: View {
               if showRoute, let route = routes[selected.unit] {
                 MapRoute(path: route).id(selected.id).allowsHitTesting(false)
               }
-              if let destination = positions[selected.unit] {
-                Text(String(format: "%02d", selected.unit))
-                  .font(.system(size: 11, weight: .heavy)).foregroundStyle(Papu.ink)
-                  .padding(.horizontal, 12).padding(.vertical, 8).background(
-                    Papu.orange, in: Capsule()
-                  )
-                  .overlay(Capsule().stroke(Papu.butter, lineWidth: 2))
-                  .position(
-                    x: min(geometry.size.width - 76, max(76, destination.x * sx)),
-                    y: destination.y * sy - 26
-                  )
-                  .allowsHitTesting(false)
-              }
               Circle().fill(Papu.green.opacity(0.15)).frame(width: 22, height: 22).position(
                 x: 318 * sx, y: 317 * sy)
               Circle().fill(Papu.green).frame(width: 8, height: 8).overlay(
                 Circle().stroke(.white, lineWidth: 2)
               ).position(x: 318 * sx, y: 317 * sy)
-              Text(store.text("Twój stolik ", "Your table ") + store.table).font(
-                .system(size: 9, weight: .bold)
-              ).foregroundStyle(Papu.butter).padding(.horizontal, 8).padding(.vertical, 5)
-                .background(Papu.ink, in: Capsule()).position(x: 318 * sx, y: 272 * sy)
               Text("KOSZYKOWA").font(.system(size: 8, weight: .medium)).tracking(2).foregroundStyle(
                 Papu.muted
               ).position(x: 315 * sx, y: 598 * sy)
@@ -176,7 +159,7 @@ struct HallMapView: View {
               "Plan Hali Koszyki. Wybierz restaurację na liście poniżej.",
               "Hala Koszyki plan. Choose a restaurant from the list below."))
           HStack {
-            Text(store.text("Trasa i stolik pokazowe", "Illustrative route and table")).font(
+            Label(store.text("Stolik ", "Table ") + store.table, systemImage: "circle.inset.filled").font(
               Papu.body(11)
             ).foregroundStyle(Papu.muted)
             Spacer()
@@ -202,7 +185,13 @@ struct HallMapView: View {
               RoundedRectangle(cornerRadius: 14))
             VStack(alignment: .leading, spacing: 7) {
               Eyebrow(text: store.text("TWÓJ KIERUNEK", "YOUR DESTINATION"))
-              Text(selected.name).font(Papu.display(25))
+              HStack(alignment: .firstTextBaseline, spacing: 8) {
+                Text(selected.name).font(Papu.display(25)).fixedSize(horizontal: false, vertical: true)
+                Spacer(minLength: 0)
+                Text(String(format: "%02d", selected.unit)).font(Papu.poster(27))
+                  .padding(.horizontal, 11).padding(.vertical, 7)
+                  .background(Papu.orange, in: RoundedRectangle(cornerRadius: 11))
+              }
               Text(
                 store.text(
                   "Lokal \(selected.unit) · Parter", "Unit \(selected.unit) · Ground floor")
@@ -255,6 +244,7 @@ struct HallMapView: View {
         ).font(Papu.body(12)).foregroundStyle(Papu.muted).lineSpacing(3)
       }.padding(20).padding(.top, 10).padding(.bottom, 25)
     }
+    .onChange(of: store.completedCheckoutID) { _, _ in selectedRestaurant = nil }
     .sheet(item: $selectedRestaurant) {
       RestaurantView(restaurant: $0).environmentObject(store).presentationDetents([.large])
         .presentationCornerRadius(30)

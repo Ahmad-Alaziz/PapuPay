@@ -45,6 +45,17 @@ const positions: Record<number, [number, number]> = {
   32: [194, 505],
   33: [416, 367],
 };
+const arrivals: Record<number, [number, number]> = {
+  8: [215, 376],
+  7: [215, 358],
+  9: [215, 328],
+  11: [263, 280],
+  16: [450, 327],
+  15: [389, 328],
+  33: [406, 368],
+  30: [219, 408],
+  28: [318, 350],
+};
 const routes: Record<number, string> = {
   8: "M318 317 L318 338 Q318 340 310 340 L235 340 Q225 340 225 350 L225 376 L215 376",
   7: "M318 317 L318 338 L226 338 L226 358 L215 358",
@@ -297,52 +308,27 @@ export default function HallMap({
               stroke="#fff"
               strokeWidth="3"
             />
-            <g
-              className="destination-pin"
-              transform={`translate(${Math.min(465, Math.max(75, positions[restaurant.unit][0]))} ${positions[restaurant.unit][1] - 30})`}
-              pointerEvents="none"
-            >
-              <rect
-                x="-73"
-                y="-27"
-                width="146"
-                height="30"
-                rx="15"
-                fill="#ff8848"
-                stroke="#fff2d6"
-                strokeWidth="3"
+            {route && (
+              <motion.circle
+                key={`arrival-${selected}`}
+                cx={arrivals[restaurant.unit][0]}
+                cy={arrivals[restaurant.unit][1]}
+                r="4.5"
+                fill="#ff7837"
+                stroke="#173c2b"
+                strokeWidth="2"
+                pointerEvents="none"
+                initial={{ opacity: 0, scale: reduceMotion ? 1 : 0.7 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: reduceMotion ? 0 : 0.55, duration: 0.2 }}
               />
-              <path d="M-6 2 L0 10 L6 2" fill="#ff8848" />
-              <text
-                y="-7"
-                fontFamily="DM Sans"
-                fontSize="14"
-                fontWeight="800"
-                textAnchor="middle"
-                fill="#173c2b"
-              >
-                {String(restaurant.unit).padStart(2, "0")} · {restaurant.name}
-              </text>
-            </g>
-            <g transform="translate(275 277)">
-              <rect width="87" height="24" rx="12" fill="#173c2b" />
-              <text
-                x="43.5"
-                y="16"
-                fill="#fff9eb"
-                fontSize="10"
-                fontWeight="700"
-                textAnchor="middle"
-              >
-                {pl ? "Twój stolik" : "Your table"} {table}
-              </text>
-            </g>
+            )}
           </svg>
         </div>
         <div className="map-bottom">
           <span>
             <span className="legend-square" />
-            {pl ? "Restauracje w demo" : "Demo restaurants"}
+            {pl ? `Start: stolik ${table}` : `Start: table ${table}`}
           </span>
           <div className="zoom">
             <button
@@ -365,7 +351,7 @@ export default function HallMap({
         <h2>
           {pl ? "Pyszne jest" : "Good food is"}
           <br />
-          <em>{pl ? "tuż za rogiem." : "around the corner."}</em>
+          <em>{pl ? "tuż za rogiem" : "around the corner"}</em>
         </h2>
         <p className="muted">
           {pl

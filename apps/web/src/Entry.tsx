@@ -56,9 +56,9 @@ export default function Entry() {
               <i /> COMING SOON
             </span>
             <h1>
-              {t("Pora na", "Good food.")}
+              {t("Pora na", "Good food")}
               <br />
-              <span>{t("coś dobrego.", "Great company.")}</span>
+              <span>{t("coś dobrego", "Great company")}</span>
             </h1>
             <p>
               {t(
@@ -81,7 +81,7 @@ export default function Entry() {
             <div className="coming-sticker">
               {t("dobrze być", "better")}
               <br />
-              <b>{t("razem.", "together.")}</b>
+              <b>{t("razem", "together")}</b>
             </div>
           </div>
         </main>
@@ -100,10 +100,10 @@ export default function Entry() {
           <h1>
             {route.kind === "invalid"
               ? t(
-                  "Ten link nie prowadzi do stolika.",
-                  "This link doesn’t lead to a table.",
+                  "Ten link nie prowadzi do stolika",
+                  "This link doesn’t lead to a table",
                 )
-              : t("Twoje miejsce. Twoje smaki.", "Your table. Your cravings.")}
+              : t("Twoje miejsce. Twoje smaki", "Your table. Your cravings")}
           </h1>
           <p>
             {route.kind === "invalid"

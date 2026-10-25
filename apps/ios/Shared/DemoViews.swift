@@ -6,9 +6,9 @@ struct OnboardingView: View {
   @State private var step = 0
   private var title: String {
     [
-      store.text("Usiądź. Zeskanuj.", "Sit down. Scan."),
-      store.text("Każdy znajdzie swój smak.", "Every craving gets a seat."),
-      store.text("Odbierz. I ciesz się chwilą.", "Pick up. Dig in."),
+      store.text("Usiądź i zeskanuj", "Sit down and scan"),
+      store.text("Każdy znajdzie swój smak", "Every craving gets a seat"),
+      store.text("Odbierz i ciesz się chwilą", "Pick up and dig in"),
     ][step]
   }
   private var subtitle: String {
@@ -96,7 +96,7 @@ struct TableView: View {
         Image(systemName: "qrcode").font(.system(size: 38)).frame(width: 76, height: 76).background(
           Papu.sage, in: RoundedRectangle(cornerRadius: 23))
         Eyebrow(text: "HALA KOSZYKI")
-        Text(store.text("Dobrze Cię tu widzieć.", "Good to have you here.")).font(Papu.display(34))
+        Text(store.text("Dobrze Cię tu widzieć", "Good to have you here")).font(Papu.display(34))
           .multilineTextAlignment(.center)
         Text(
           store.text(
@@ -133,7 +133,7 @@ struct AboutView: View {
     ScrollView {
       VStack(alignment: .leading, spacing: 21) {
         BrandView()
-        Text(store.text("Mała próbka dużego pomysłu.", "A little taste of a big idea.")).font(
+        Text(store.text("Mała próbka dużego pomysłu", "A little taste of a big idea")).font(
           Papu.display(35))
         Text(
           store.text(
@@ -173,10 +173,10 @@ struct KitchenView: View {
     ScrollView {
       VStack(alignment: .leading, spacing: 22) {
         Eyebrow(text: "PAPUPAY · KITCHEN DEMO")
-        Text(store.text("Dobre rzeczy się dzieją.", "Good things are happening.")).font(
+        Text(store.text("Dobre rzeczy się dzieją", "Good things are happening")).font(
           Papu.display(35))
         if store.activeOrders.isEmpty {
-          Text(store.text("Brak aktywnych zamówień.", "No active orders.")).font(Papu.body(16))
+          Text(store.text("Brak aktywnych zamówień", "No active orders")).font(Papu.body(16))
         }
         ForEach(store.activeOrders) { order in
           VStack(alignment: .leading, spacing: 12) {

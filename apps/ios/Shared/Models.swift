@@ -55,22 +55,28 @@ struct DemoOrder: Codable, Identifiable {
     collected ? 3 : now >= readyAt ? 2 : now.timeIntervalSince(createdAt) >= 3 ? 1 : 0
   }
 }
+struct CartAddition: Identifiable {
+  let id = UUID()
+  let item: Dish
+  let quantity: Int
+}
+
 struct SavedState: Codable {
   var cart: [CartLine]
   var orders: [DemoOrder]
-  var favorites: Set<String>
   var english: Bool
 }
 
 @MainActor final class PapuStore: ObservableObject {
   @Published var cart: [CartLine] = [] { didSet { save() } }
   @Published var orders: [DemoOrder] = [] { didSet { save() } }
-  @Published var favorites: Set<String> = [] { didSet { save() } }
+  @Published var lastAddition: CartAddition?
   @Published var english = false { didSet { save() } }
   @Published var table = "24"
   @Published var invocationError = false
   @Published var selectedTab = 0
   @Published var mapRestaurant = "atom"
+  @Published var completedCheckoutID = UUID()
   @Published var showBasket = false
   @Published var toast: String?
   var now = Date.now
@@ -83,6 +89,7 @@ struct SavedState: Codable {
   private var lastActivityStage = ""
   private var pendingActivityIDs: [String] = []
   private var toastTask: Task<Void, Never>?
+  private var additionTask: Task<Void, Never>?
   var text: (String, String) -> String { { [english] pl, en in english ? en : pl } }
   var count: Int { cart.reduce(0) { $0 + $1.quantity } }
   var total: Int { cart.reduce(0) { $0 + $1.total } }
@@ -106,7 +113,6 @@ struct SavedState: Codable {
             validItems.contains($0.itemId) && (1...20).contains($0.quantity)
           }
       }
-      favorites = value.favorites.intersection(validRestaurants)
       english = value.english
     }
     if let url = ProcessInfo.processInfo.environment["_XCAppClipURL"].flatMap(URL.init(string:)) {
@@ -148,7 +154,7 @@ struct SavedState: Codable {
   }
   private func save() {
     if let data = try? JSONEncoder().encode(
-      SavedState(cart: cart, orders: orders, favorites: favorites, english: english))
+      SavedState(cart: cart, orders: orders, english: english))
     {
       UserDefaults.standard.set(data, forKey: "papupay.demo.v1")
     }
@@ -159,10 +165,9 @@ struct SavedState: Codable {
       table = number
       invocationError = false
       selectedTab = url.fragment == "orders" ? 2 : 0
-      if selectedTab == 2 { showBasket = false }
+      if selectedTab == 2 { finishCheckoutPresentation() }
     case .orders:
-      showBasket = false
-      selectedTab = 2
+      finishCheckoutPresentation()
     case .invalid:
       showBasket = false
       invocationError = true
@@ -171,6 +176,7 @@ struct SavedState: Codable {
   func add(_ item: Dish, quantity: Int = 1, extra: Bool = false, note: String = "") {
     let clean = String(note.trimmingCharacters(in: .whitespacesAndNewlines).prefix(180))
     let id = "\(item.id)|\(extra)|\(clean)"
+    let previousCount = count
     if let i = cart.firstIndex(where: { $0.id == id }) {
       cart[i].quantity = min(20, cart[i].quantity + max(1, quantity))
     } else {
@@ -179,16 +185,26 @@ struct SavedState: Codable {
           id: id, itemId: item.id, quantity: min(20, max(1, quantity)), extra: extra, note: clean))
     }
     UIImpactFeedbackGenerator(style: .soft).impactOccurred()
-    announce(text("Mniam! Dodano do koszyka.", "Yum! Added to your basket."))
+    additionTask?.cancel()
+    let added = max(0, count - previousCount)
+    withAnimation(UIAccessibility.isReduceMotionEnabled ? nil : .spring(response: 0.35, dampingFraction: 0.86)) {
+      lastAddition = CartAddition(item: item, quantity: added)
+    }
+    UIAccessibility.post(
+      notification: .announcement,
+      argument: (added > 0
+        ? text("Dodano do koszyka: ", "Added to basket: ")
+        : text("Limit 20 sztuk w koszyku: ", "20-item basket limit: ")) + text(item.name, item.nameEn))
+    additionTask = Task {
+      try? await Task.sleep(for: .seconds(6))
+      guard !Task.isCancelled else { return }
+      withAnimation(.easeOut(duration: 0.2)) { lastAddition = nil }
+    }
   }
   func change(_ line: CartLine, by delta: Int) {
     guard let index = cart.firstIndex(where: { $0.id == line.id }) else { return }
     let quantity = min(20, cart[index].quantity + delta)
     if quantity <= 0 { cart.remove(at: index) } else { cart[index].quantity = quantity }
-  }
-  func favorite(_ id: String) {
-    if favorites.contains(id) { favorites.remove(id) } else { favorites.insert(id) }
-    UIImpactFeedbackGenerator(style: .light).impactOccurred()
   }
   func announce(_ message: String) {
     toastTask?.cancel()
@@ -214,6 +230,7 @@ struct SavedState: Codable {
     }
     orders.insert(contentsOf: next, at: 0)
     cart = []
+    lastAddition = nil
     selectedTab = 2
     UINotificationFeedbackGenerator().notificationOccurred(.success)
     keepDemoUpdatesAlive()
@@ -234,6 +251,12 @@ struct SavedState: Codable {
         "Notifications are off. Follow your order here.")
     }
     refreshOrderStages()
+  }
+  func finishCheckoutPresentation() {
+    showBasket = false
+    selectedTab = 2
+    lastAddition = nil
+    completedCheckoutID = UUID()
   }
   func markReady(_ order: DemoOrder) {
     if let i = orders.firstIndex(where: { $0.id == order.id }) {

@@ -1555,3 +1555,868 @@ button svg {
     padding-inline: 8px;
   }
 }
+
+/* Photography is the first interaction; one scene, three cravings. */
+.craving-hero {
+  max-width: 1380px;
+  margin: 0 auto;
+  padding: 36px var(--content-padding) 32px;
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+  align-items: center;
+  gap: clamp(32px, 5vw, 76px);
+}
+.craving-copy {
+  min-width: 0;
+  padding-block: 24px 52px;
+}
+.craving-copy > .eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  letter-spacing: 1.1px;
+}
+.craving-copy h1 {
+  font-family: Anton, sans-serif;
+  font-weight: 400;
+  font-variation-settings: normal;
+  font-size: clamp(68px, 7.5vw, 104px);
+  line-height: 1.04;
+  letter-spacing: -0.025em;
+  margin: 26px 0 24px;
+  text-wrap: nowrap;
+}
+.craving-copy h1 > span {
+  display: block;
+}
+.craving-headline {
+  color: var(--accent-text);
+  min-height: 1.04em;
+  overflow: hidden;
+  padding-bottom: 0.04em;
+}
+.craving-headline > span {
+  display: block;
+}
+.craving-intro {
+  max-width: 350px;
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+.craving-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: 28px;
+}
+.craving-actions .primary {
+  background: var(--ink);
+  min-height: 54px;
+  padding-inline: 22px;
+  border-radius: 16px;
+  color: var(--butter);
+}
+.craving-actions .text-button {
+  font-size: 14px;
+}
+.craving-actions .play-circle {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #cad5c2;
+  border-radius: 50%;
+}
+.craving-promise {
+  margin-top: 24px;
+  display: flex;
+  gap: 7px;
+  align-items: center;
+  flex-wrap: wrap;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+}
+.craving-promise > svg {
+  color: var(--green);
+}
+.craving-stage {
+  position: relative;
+  min-width: 0;
+  perspective: 1000px;
+}
+.craving-photo-wrap {
+  position: relative;
+  height: clamp(360px, 38vw, 500px);
+  border-radius: 28px;
+  background: var(--ink);
+}
+.craving-scene {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+}
+.craving-scene > img {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+}
+.craving-photo-shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    transparent 40%,
+    #07170d99 83%,
+    #07170dcc
+  );
+}
+.craving-photo-caption {
+  position: absolute;
+  bottom: 30px;
+  left: 30px;
+  right: 90px;
+  color: var(--butter);
+}
+.craving-photo-caption > span {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 1.5px;
+  margin-bottom: 10px;
+}
+.craving-photo-caption h2 {
+  color: inherit;
+  font-size: clamp(22px, 2.2vw, 30px);
+  line-height: 1.12;
+  font-weight: 800;
+  font-variation-settings: normal;
+  max-width: 320px;
+  text-wrap: pretty;
+}
+.craving-sticker {
+  position: absolute;
+  top: 22px;
+  right: -14px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  background: var(--orange);
+  color: #173c2b;
+  border-radius: 14px;
+  padding: 14px 16px;
+  box-shadow: 0 5px 0 #00000015;
+}
+.craving-sticker > span {
+  font-size: 11px;
+  font-weight: 900;
+  line-height: 1.25;
+  letter-spacing: -0.15px;
+}
+.craving-photo-action {
+  position: absolute;
+  bottom: 28px;
+  right: 24px;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  background: var(--butter);
+  color: var(--ink);
+  border-radius: 50%;
+}
+.craving-photo-action:hover {
+  background: var(--orange);
+}
+.craving-selectors {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  padding-top: 16px;
+}
+.craving-selectors button {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 8px;
+  align-items: baseline;
+  text-align: left;
+  min-height: 48px;
+  padding: 8px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 650;
+}
+.craving-selector-number {
+  font-size: 10px;
+  font-weight: 650;
+  opacity: 0.7;
+}
+.craving-selector-line {
+  grid-column: 1/-1;
+  height: 3px;
+  width: 100%;
+  background: #dbe1ce;
+  border-radius: 3px;
+  transition: background-color 0.2s;
+}
+.craving-selectors button.selected {
+  color: var(--ink);
+}
+.craving-selectors button.selected .craving-selector-line {
+  background: var(--orange);
+}
+.craving-selectors button:hover .craving-selector-line {
+  background: var(--green);
+}
+
+/* The wordmark sits on the page baseline, with the same gutter as its content. */
+.site-header .brand-button {
+  min-height: 48px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.site-header .brand {
+  gap: 7px;
+  background: transparent;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+}
+.site-header .brand > img {
+  margin: 0;
+  width: 35px;
+  height: 45px;
+  object-fit: contain;
+}
+.site-header .brand > span {
+  font-size: 32px;
+  line-height: 1;
+  font-variation-settings: "wght" 650;
+  letter-spacing: -0.8px;
+}
+.header-inner {
+  padding-inline: var(--content-padding);
+}
+.language-button {
+  min-height: 44px;
+  min-width: 40px;
+  justify-content: center;
+}
+.header-actions {
+  margin-left: auto;
+}
+.page-title {
+  white-space: normal;
+}
+h1,
+h2,
+h3 {
+  font-variation-settings: normal;
+}
+.restaurant-info {
+  width: 100%;
+  text-align: left;
+}
+.restaurant-info h3 {
+  min-height: 1.15em;
+}
+.restaurant-info > div:first-child {
+  display: block;
+}
+.restaurant-grid {
+  align-items: start;
+}
+.dish-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.dish-card > div:last-child {
+  margin-top: auto;
+  padding-top: 8px;
+}
+.dish-title {
+  display: block;
+  text-align: left;
+}
+.add-button.just-added {
+  background: var(--green);
+  color: #fff;
+}
+.section-heading > div,
+.section-heading > label {
+  min-width: 0;
+}
+.menu-item-copy {
+  min-width: 0;
+}
+.menu-heading {
+  align-items: baseline;
+}
+.menu-heading h3 {
+  max-width: 100%;
+}
+.dish-modal-heading h2 {
+  min-width: 0;
+}
+.dish-modal-image {
+  background: #e8eddf;
+}
+.extra-option {
+  gap: 12px;
+}
+.extra-option > span {
+  min-width: 0;
+}
+.extra-option > b {
+  white-space: nowrap;
+}
+.basket-group h3 {
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.basket-group h3 > small {
+  margin-left: auto;
+}
+.basket-item > div {
+  min-width: 0;
+}
+.basket-item strong {
+  overflow-wrap: anywhere;
+}
+.basket-item-bottom > strong,
+.basket-summary strong {
+  overflow-wrap: normal;
+}
+
+/* Feedback is content, not a blink: name, quantity, total and a next action. */
+.page-basket-feedback {
+  position: fixed;
+  z-index: 100;
+  width: min(480px, calc(100vw - 40px));
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 110px;
+}
+.basket-feedback {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 42px 16px 16px;
+  background: #fffdf8;
+  border: 1px solid #bbcfb0;
+  box-shadow: 0 10px 36px #123c2d20;
+  border-radius: 20px;
+  width: 100%;
+  color: var(--ink);
+  text-align: left;
+}
+.basket-feedback > img {
+  width: 54px;
+  height: 58px;
+  object-fit: cover;
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+.basket-feedback-copy {
+  min-width: 0;
+  flex: 1;
+}
+.basket-feedback-copy > strong {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  line-height: 1.3;
+  color: var(--green);
+  font-weight: 800;
+}
+.basket-feedback-copy > span {
+  display: block;
+  font-size: 13px;
+  line-height: 1.3;
+  font-weight: 750;
+  margin-top: 5px;
+}
+.basket-feedback-copy > small {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+  font-weight: 550;
+  margin-top: 5px;
+}
+.basket-feedback > button:not(.feedback-dismiss) {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  justify-content: center;
+  min-height: 52px;
+  padding: 10px 12px;
+  background: var(--ink);
+  color: var(--butter);
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 750;
+  white-space: nowrap;
+}
+.feedback-dismiss {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  border-radius: 12px;
+}
+.restaurant-basket-rail,
+.basket-inline-feedback {
+  position: sticky;
+  bottom: 0;
+  z-index: 6;
+  padding: 12px 24px calc(12px + env(safe-area-inset-bottom, 0px));
+  background: var(--paper);
+  border-top: 1px solid var(--line);
+}
+.restaurant-basket-rail .basket-feedback,
+.basket-inline-feedback .basket-feedback {
+  box-shadow: none;
+}
+.menu-basket-cta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 56px;
+  border-radius: 16px;
+  padding: 12px 16px;
+  background: var(--ink);
+  color: var(--butter);
+  text-align: left;
+}
+.menu-basket-cta > span {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 750;
+}
+.menu-basket-cta small {
+  display: block;
+  font-size: 11px;
+  font-weight: 450;
+  margin-top: 4px;
+  opacity: 0.75;
+}
+.menu-basket-cta > strong {
+  font-size: 14px;
+}
+.floating-cart {
+  min-height: 64px;
+  min-width: 400px;
+  padding: 13px 18px 13px 14px;
+  border-radius: 20px;
+  background: var(--ink);
+  border-color: #496b50;
+  box-shadow: 0 8px 30px #123c2d24;
+}
+.floating-cart > span:nth-child(2) {
+  font-size: 14px;
+  font-weight: 750;
+}
+.floating-cart .cart-count {
+  font-size: 15px;
+  width: 36px;
+  height: 38px;
+}
+.floating-cart > strong {
+  font-size: 15px;
+}
+.floating-cart small {
+  color: #d1dec6;
+}
+.toast {
+  white-space: normal;
+  width: max-content;
+  max-width: min(500px, calc(100vw - 32px));
+}
+
+@media (max-width: 1000px) and (min-width: 761px) {
+  .craving-hero {
+    gap: 28px;
+    padding-top: 28px;
+  }
+  .craving-copy h1 {
+    font-size: clamp(64px, 8vw, 82px);
+  }
+  .craving-photo-wrap {
+    height: 420px;
+  }
+  .craving-copy > .eyebrow {
+    font-size: 9px;
+    letter-spacing: 0.5px;
+  }
+  .craving-intro {
+    font-size: 14px;
+  }
+  .craving-promise {
+    font-size: 10px;
+    gap: 5px;
+  }
+  .craving-sticker {
+    right: -8px;
+    padding: 12px;
+  }
+  .craving-photo-caption {
+    bottom: 24px;
+    left: 24px;
+  }
+  .craving-photo-caption h2 {
+    font-size: 25px;
+  }
+  .header-inner {
+    gap: 16px;
+  }
+  .site-header .brand > span {
+    font-size: 29px;
+  }
+  .site-header .brand > img {
+    width: 30px;
+  }
+  .desktop-nav button {
+    padding-inline: 11px;
+  }
+  .header-actions {
+    gap: 8px;
+  }
+}
+@media (max-width: 760px) {
+  .craving-hero {
+    padding: 22px 20px 16px;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+  }
+  .craving-copy {
+    padding: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0 12px;
+    align-items: end;
+  }
+  .craving-copy > .eyebrow {
+    grid-column: 1/-1;
+    font-size: 9px;
+    letter-spacing: 0.7px;
+  }
+  .craving-copy h1 {
+    font-size: clamp(58px, 15vw, 76px);
+    margin: 18px 0 14px;
+    grid-column: 1/-1;
+    line-height: 1.02;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0 0.2em;
+  }
+  .craving-headline {
+    min-height: 1.06em;
+  }
+  .craving-intro {
+    grid-column: 1/-1;
+    max-width: 330px;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .craving-actions {
+    grid-column: 1/-1;
+    margin-top: 18px;
+    gap: 12px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .craving-actions .primary {
+    min-height: 50px;
+    padding: 14px 16px;
+    gap: 10px;
+    font-size: 13px;
+    border-radius: 14px;
+  }
+  .craving-actions .text-button {
+    font-size: 0;
+    gap: 0;
+    padding: 0;
+    min-width: 46px;
+  }
+  .craving-actions .play-circle {
+    height: 46px;
+    width: 46px;
+    border-color: #c3cdb9;
+  }
+  .craving-promise {
+    display: none;
+  }
+  .craving-photo-wrap {
+    height: clamp(260px, 76vw, 340px);
+    border-radius: 24px;
+  }
+  .craving-sticker {
+    top: 16px;
+    right: 12px;
+    padding: 11px 13px;
+    border-radius: 12px;
+  }
+  .craving-sticker > svg {
+    width: 17px;
+  }
+  .craving-sticker > span {
+    font-size: 9px;
+  }
+  .craving-photo-caption {
+    bottom: 22px;
+    left: 22px;
+    right: 78px;
+  }
+  .craving-photo-caption > span {
+    font-size: 9px;
+    margin-bottom: 8px;
+  }
+  .craving-photo-caption h2 {
+    font-size: 25px;
+    max-width: 230px;
+  }
+  .craving-photo-action {
+    bottom: 22px;
+    right: 18px;
+    height: 44px;
+    width: 44px;
+  }
+  .craving-selectors {
+    gap: 16px;
+    padding-top: 10px;
+  }
+  .craving-selectors button {
+    min-height: 48px;
+    font-size: 13px;
+    gap: 7px;
+  }
+  .craving-selector-number {
+    font-size: 9px;
+  }
+  .header-inner {
+    padding-inline: 20px;
+    gap: 12px;
+  }
+  .site-header {
+    height: 76px;
+  }
+  .site-header .brand {
+    gap: 5px;
+  }
+  .site-header .brand > img {
+    width: 30px;
+    height: 40px;
+  }
+  .site-header .brand > span {
+    font-size: 29px;
+    letter-spacing: -0.8px;
+  }
+  .header-actions {
+    gap: 4px;
+  }
+  .language-button {
+    min-width: 36px;
+    font-size: 11px;
+  }
+  .table-button {
+    background: transparent;
+    border: 0;
+    padding: 8px 0 8px 8px;
+    border-radius: 0;
+    gap: 6px;
+    font-size: 11px;
+  }
+  .table-button b {
+    font-size: 14px;
+  }
+  .restaurant-info h3 {
+    min-height: 2.3em;
+    text-wrap: pretty;
+  }
+  .restaurant-info p {
+    min-height: 2.8em;
+    font-size: 12px;
+  }
+  .restaurant-meta {
+    justify-content: space-between;
+    gap: 6px;
+  }
+  .restaurant-meta > span {
+    white-space: nowrap;
+  }
+  .filter-row {
+    flex-wrap: nowrap;
+  }
+  .filter-toggles {
+    padding-right: 20px;
+  }
+  .section-heading {
+    align-items: flex-start;
+  }
+  .section-heading .pill {
+    flex-shrink: 0;
+    font-size: 11px;
+    margin-top: 4px;
+  }
+  .page-title {
+    font-size: 34px;
+    white-space: normal;
+  }
+  .dish-modal-heading {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .dish-modal-heading > h2 {
+    flex-basis: 100%;
+  }
+  .dish-modal-footer {
+    padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  }
+  .dish-modal-footer > .primary {
+    gap: 8px;
+  }
+  .basket-item {
+    gap: 12px;
+  }
+  .basket-group h3 > small {
+    width: 100%;
+    margin: -4px 0 0 46px;
+  }
+  .page-basket-feedback {
+    bottom: calc(164px + env(safe-area-inset-bottom, 0px));
+    width: calc(100vw - 40px);
+  }
+  .basket-feedback {
+    gap: 10px;
+    padding: 14px 34px 14px 12px;
+    border-radius: 18px;
+    flex-wrap: wrap;
+  }
+  .basket-feedback > img {
+    width: 42px;
+    height: 50px;
+    border-radius: 10px;
+  }
+  .basket-feedback-copy {
+    min-width: 130px;
+  }
+  .basket-feedback-copy > strong {
+    font-size: 11px;
+  }
+  .basket-feedback-copy > span {
+    font-size: 12px;
+  }
+  .basket-feedback > button:not(.feedback-dismiss) {
+    flex-basis: 100%;
+    min-height: 44px;
+    flex-direction: row;
+    justify-content: space-between;
+    padding-inline: 14px;
+    font-size: 12px;
+    margin-top: 2px;
+  }
+  .restaurant-basket-rail,
+  .basket-inline-feedback {
+    padding-inline: 20px;
+  }
+  .basket-feedback.in-basket {
+    flex-wrap: nowrap;
+  }
+  .basket-feedback.in-basket .basket-feedback-copy {
+    min-width: 0;
+  }
+  .floating-cart {
+    width: calc(100vw - 40px);
+    left: 20px;
+    right: 20px;
+    bottom: calc(12px + 64px + 12px + env(safe-area-inset-bottom, 0px));
+    min-width: 0;
+    min-height: 62px;
+    padding: 12px;
+    gap: 12px;
+  }
+  .floating-cart > span:nth-child(2) {
+    font-size: 13px;
+  }
+  .floating-cart > strong {
+    font-size: 14px;
+  }
+  .floating-cart small {
+    font-size: 10px;
+  }
+  .mobile-nav {
+    left: 20px;
+    right: 20px;
+    width: calc(100vw - 40px);
+    height: 64px;
+    min-height: 64px;
+    padding: 6px;
+  }
+  footer {
+    padding-bottom: 180px;
+  }
+}
+@media (max-width: 359px) {
+  .site-header .brand > span {
+    font-size: 27px;
+  }
+  .site-header .brand > img {
+    width: 27px;
+  }
+  .language-button {
+    min-width: 30px;
+  }
+  .header-inner {
+    gap: 8px;
+  }
+  .table-button > svg {
+    display: none;
+  }
+  .craving-copy h1 {
+    font-size: 56px;
+  }
+  .craving-copy > .eyebrow {
+    font-size: 8px;
+    letter-spacing: 0.3px;
+  }
+  .craving-actions .primary {
+    font-size: 12px;
+    padding-inline: 13px;
+    gap: 8px;
+  }
+  .craving-photo-wrap {
+    height: 270px;
+  }
+  .restaurant-info h3,
+  .restaurant-info p {
+    min-height: 0;
+  }
+  .restaurant-meta {
+    justify-content: flex-start;
+    gap: 12px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .craving-photo-wrap {
+    transform: none !important;
+  }
+}

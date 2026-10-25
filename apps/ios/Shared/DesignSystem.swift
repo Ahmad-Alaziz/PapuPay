@@ -198,3 +198,88 @@ extension View {
       RoundedRectangle(cornerRadius: 23).stroke(Papu.line, lineWidth: 1))
   }
 }
+
+
+/// Feedback lives in each presentation, so a modal sheet can never cover it.
+struct CartAdditionCard: View {
+  @EnvironmentObject var store: PapuStore
+  let addition: CartAddition
+  var action: (() -> Void)? = nil
+  var body: some View {
+    HStack(spacing: 12) {
+      FoodPhoto(name: addition.item.image).frame(width: 48, height: 48).clipped()
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+      VStack(alignment: .leading, spacing: 4) {
+        Label(
+          addition.quantity > 0
+            ? store.text("Dodano do koszyka", "Added to basket")
+            : store.text("Już w koszyku · limit 20", "In your basket · limit 20"),
+          systemImage: "checkmark.circle.fill"
+        ).font(Papu.body(13).weight(.semibold)).foregroundStyle(Papu.green)
+        Text("\(addition.quantity > 0 ? String(addition.quantity) + " × " : "")"
+          + store.text(addition.item.name, addition.item.nameEn))
+          .font(Papu.body(14).weight(.semibold)).lineLimit(2)
+      }.frame(maxWidth: .infinity, alignment: .leading)
+      if let action {
+        Button(action: action) {
+          Image(systemName: "arrow.right").font(.system(size: 15, weight: .semibold))
+            .frame(width: 44, height: 44).background(Papu.sage, in: Circle())
+        }.accessibilityLabel(store.text("Zobacz koszyk", "View basket")).buttonStyle(PressStyle())
+      }
+    }.padding(14).background(Papu.cream, in: RoundedRectangle(cornerRadius: 20))
+      .overlay(RoundedRectangle(cornerRadius: 20).stroke(Papu.green.opacity(0.24)))
+      .foregroundStyle(Papu.ink).accessibilityElement(children: .contain)
+  }
+}
+
+struct BasketDock: View {
+  @EnvironmentObject var store: PapuStore
+  @Environment(\.accessibilityReduceMotion) private var reduceMotion
+  var showFeedback = true
+  var action: () -> Void
+  var body: some View {
+    VStack(spacing: 8) {
+      if showFeedback, let addition = store.lastAddition {
+        CartAdditionCard(addition: addition, action: action).id(addition.id)
+          .transition(.move(edge: .bottom).combined(with: .opacity))
+      }
+      Button(action: action) {
+        HStack(spacing: 12) {
+          Text(String(store.count)).font(Papu.body(15).bold()).monospacedDigit()
+            .contentTransition(.numericText()).frame(width: 34, height: 36)
+            .background(.white.opacity(0.14), in: RoundedRectangle(cornerRadius: 11))
+          Text(store.text("Zobacz koszyk", "View basket")).font(Papu.body(15).weight(.semibold))
+          Spacer(minLength: 8)
+          Text(money(store.total, english: store.english)).font(Papu.body(16).bold())
+          Image(systemName: "arrow.right").font(.system(size: 15, weight: .semibold))
+        }.padding(.horizontal, 16).padding(.vertical, 12).foregroundStyle(Papu.butter)
+          .background(Papu.ink, in: RoundedRectangle(cornerRadius: 21))
+          .shadow(color: Papu.ink.opacity(0.13), radius: 12, y: 5)
+      }.buttonStyle(PressStyle())
+    }.padding(.horizontal, 20).padding(.top, 8).padding(.bottom, 8)
+      .animation(reduceMotion ? nil : .spring(response: 0.35, dampingFraction: 0.88), value: store.lastAddition?.id)
+      .animation(reduceMotion ? nil : .spring(response: 0.3, dampingFraction: 0.88), value: store.count)
+  }
+}
+
+struct QuickAddButton: View {
+  @EnvironmentObject var store: PapuStore
+  @Environment(\.accessibilityReduceMotion) private var reduceMotion
+  let dish: Dish
+  private var quantity: Int { store.cart.filter { $0.itemId == dish.id }.reduce(0) { $0 + $1.quantity } }
+  private var justAdded: Bool { store.lastAddition?.item.id == dish.id }
+  var body: some View {
+    Button { store.add(dish) } label: {
+      HStack(spacing: 5) {
+        Image(systemName: justAdded ? "checkmark" : "plus")
+          .contentTransition(.symbolEffect(.replace))
+        if quantity > 0 { Text(String(quantity)).monospacedDigit().contentTransition(.numericText()) }
+      }.font(.system(size: 14, weight: .semibold)).frame(minWidth: 44, minHeight: 44)
+        .padding(.horizontal, quantity > 0 ? 8 : 0)
+        .background(Papu.green, in: Capsule()).foregroundStyle(Papu.butter)
+    }.buttonStyle(PressStyle())
+      .animation(reduceMotion ? nil : .spring(response: 0.28, dampingFraction: 0.8), value: quantity)
+      .accessibilityLabel(store.text("Dodaj ", "Add ") + store.text(dish.name, dish.nameEn))
+      .accessibilityValue(store.text("W koszyku: ", "In basket: ") + String(quantity))
+  }
+}

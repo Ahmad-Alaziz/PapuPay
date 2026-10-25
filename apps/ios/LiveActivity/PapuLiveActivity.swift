@@ -64,7 +64,7 @@ private func activityTitle(_ context: ActivityViewContext<PapuOrderAttributes>) 
     return context.attributes.english ? "Your papu is ready!" : "Pora na papu!"
   }
   if context.isStale { return context.attributes.english ? "Check your pickup" : "Sprawdź odbiór" }
-  return context.attributes.english ? "Good things cooking." : "Już się robi."
+  return context.attributes.english ? "Good things cooking" : "Już się robi"
 }
 private struct ActivityCounter: View {
   let context: ActivityViewContext<PapuOrderAttributes>
