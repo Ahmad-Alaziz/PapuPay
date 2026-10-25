@@ -71,3 +71,14 @@ Visual references inspected for this pass:
 Cart success must remain understandable when all animation is disabled: item name, quantity and updated total appear with a View basket action. Feedback belongs inside the active sheet/dialog, because an outside toast can be hidden by native or HTML modal layering. A persistent basket control provides the next step without forcing a redirect after every dish. This follows the principles in Apple's `motion.md › Providing feedback` (brief, precise feedback and optional motion) and `layout.md › Visual hierarchy` (aligned, grouped content and distinct controls); the exact art direction is our design judgment.
 
 Map labels belong to actual unit shapes and the destination card. Large floating labels were removed from the map so the drawn route remains visible end to end. An unobtrusive endpoint marks the entrance; the origin table is identified outside the route.
+
+
+## The shared table — banner redesign
+
+The opening now explains PapuPay's distinctive benefit: different kitchens, one basket, a meal together. The old single-food photo carousel has been replaced by an original interactive table composition. A stable two-line poster headline carries the proposition; a dimensional orange table brings three separate photographic dishes together. Selecting a plate brings that kitchen forward without hiding the rest, and the adjacent menu action opens the actual restaurant menu. Selecting artwork never adds an order. Copy explicitly describes collection at the counters.
+
+The source artwork was generated for this demo and is stored in `packages/brand/table-*-master.png`. It is illustrative food photography, not a photograph of the venue's exact dishes. Optimized alpha cutouts serve both native fallback artwork and the new Rive scene. The custom scene, source, generator, runtime contract, research references and verification commands are documented in `packages/motion/table/README.md`.
+
+Motion serves exploration: one short settling entrance, 320 ms selection poses, no automatic carousel, no perpetual loops. Both wrappers pause the renderer after two seconds, pause when inactive/offscreen, and wake for interaction. Accessible native/HTML controls sit above the visual scene; screen readers do not have to interpret a canvas. Reduced Motion and failed runtime loads preserve a complete static table with working menu controls. Resizing the web scene explicitly redraws the paused canvas.
+
+The layout keeps 20 px mobile gutters, emphatic Anton display type, DM Sans controls and the unboxed PapuPay brand. Food stays large enough to invite exploration. The web composition was inspected at 320, 390 and 1280 px in Polish and English; the native implementation uses the same 800:620 artboard ratio rather than compressing the art into a short banner.

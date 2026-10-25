@@ -1,47 +1,81 @@
-import { useState } from "react";
+import { Component, lazy, Suspense, useEffect, useRef, useState } from "react";
+import type { ReactNode } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import {
-  AnimatePresence,
-  motion,
-  useMotionValue,
-  useReducedMotion,
-  useSpring,
-} from "motion/react";
-import { ArrowUpRight, Check, Play, UtensilsCrossed } from "lucide-react";
+  ArrowRight,
+  Check,
+  CornerDownRight,
+  Play,
+  RotateCcw,
+} from "lucide-react";
 import type { Dish, Locale } from "./domain";
-import { menu, restaurantFor } from "./domain";
+import { menu } from "./domain";
+import "./table-hero.css";
 
-const cravings = [
+const TableMotion = lazy(() => import("./TableMotion"));
+const kitchens = [
   {
-    id: "burger",
-    image: "burger.jpg",
+    id: "atom",
+    selection: 1,
     dish: "atom-classic",
-    label: ["Burger", "Burger"],
-    heading: ["BURGERA", "BURGER"],
-    note: [
-      "Soczyście, chrupiąco, po Twojemu",
-      "Juicy, crispy, just your thing",
-    ],
-    position: "center 56%",
+    image: "table-burger.webp",
+    label: "ATOM",
+    taste: ["Smash burgery", "Smash burgers"],
+    control: ["Burgery z ATOM", "Burgers from ATOM"],
   },
   {
-    id: "ramen",
-    image: "ramen.jpg",
+    id: "kago",
+    selection: 2,
     dish: "kago-ramen",
-    label: ["Ramen", "Ramen"],
-    heading: ["RAMEN", "RAMEN"],
-    note: ["Ciepła miska, wielka przyjemność", "A warm bowl of pure happiness"],
-    position: "center 48%",
+    image: "table-ramen.webp",
+    label: "KAGO",
+    taste: ["Ramen i japońskie smaki", "Ramen and Japanese flavours"],
+    control: ["Ramen z KAGO", "Ramen from KAGO"],
   },
   {
-    id: "pizza",
-    image: "pizza.jpg",
+    id: "semolino",
+    selection: 3,
     dish: "semolino-margherita",
-    label: ["Pizza", "Pizza"],
-    heading: ["PIZZĘ", "PIZZA"],
-    note: ["Jeszcze jeden kawałek? Zawsze", "Room for one more slice? Always"],
-    position: "center 62%",
+    image: "table-pizza.webp",
+    label: "Semolino",
+    taste: ["Pizza, pasta, amore", "Pizza, pasta, amore"],
+    control: ["Pizza z Semolino", "Pizza from Semolino"],
   },
 ];
+
+class TableSceneBoundary extends Component<
+  { children: ReactNode; fallback: ReactNode },
+  { failed: boolean }
+> {
+  state = { failed: false };
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+  render() {
+    return this.state.failed ? this.props.fallback : this.props.children;
+  }
+}
+
+function TableFallback({ selected }: { selected: number }) {
+  return (
+    <div
+      className={`table-still ${selected ? "has-selection" : ""}`}
+      aria-hidden="true"
+    >
+      <div className="table-still-shadow" />
+      <div className="table-still-surface" />
+      {kitchens.map((kitchen) => (
+        <img
+          key={kitchen.id}
+          className={`table-food table-food-${kitchen.id} ${selected === kitchen.selection ? "is-selected" : ""}`}
+          src={`/assets/${kitchen.image}`}
+          alt=""
+          fetchPriority="high"
+        />
+      ))}
+    </div>
+  );
+}
 
 export default function CravingHero({
   locale,
@@ -49,194 +83,193 @@ export default function CravingHero({
   onBrowse,
   onTour,
   onDish,
+  onMenu,
 }: {
   locale: Locale;
   table: string;
   onBrowse: () => void;
   onTour: () => void;
   onDish: (dish: Dish) => void;
+  onMenu?: (restaurantId: string) => void;
 }) {
   const [selected, setSelected] = useState(0);
+  const [canAnimate, setCanAnimate] = useState(false);
+  const sceneHost = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
-  const rotateX = useSpring(useMotionValue(0), { stiffness: 110, damping: 24 });
-  const rotateY = useSpring(useMotionValue(0), { stiffness: 110, damping: 24 });
-  const craving = cravings[selected];
-  const index = locale === "pl" ? 0 : 1;
-  const item =
-    menu.find((dish) => dish.id === craving.dish) ||
-    menu.find((dish) => dish.image === craving.image)!;
+  const pl = locale === "pl";
+  const choice = kitchens.find((kitchen) => kitchen.selection === selected);
+  const fallback = <TableFallback selected={selected} />;
+  useEffect(() => {
+    if (reduced) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setCanAnimate(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "80px" },
+    );
+    if (sceneHost.current) observer.observe(sceneHost.current);
+    return () => observer.disconnect();
+  }, [reduced]);
+
   return (
     <section
-      className="craving-hero"
-      aria-label={
-        locale === "pl" ? "Na co masz ochotę?" : "What are you craving?"
-      }
+      className="table-hero"
+      aria-label={pl ? "Różne smaki, jeden stolik" : "Many cravings, one table"}
     >
-      <div className="craving-copy">
-        <motion.p
-          className="eyebrow"
-          initial={reduced ? false : { opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-        >
-          <span className="green-dot" /> HALA KOSZYKI ·{" "}
-          {locale === "pl"
-            ? "TWÓJ STÓŁ, CAŁA HALA"
-            : "YOUR TABLE, EVERY KITCHEN"}
-        </motion.p>
-        <h1>
-          <span>{locale === "pl" ? "PORA NA" : "TIME FOR"}</span>
-          <span
-            className="craving-headline"
-            aria-live="polite"
-            aria-atomic="true"
-          >
-            <AnimatePresence mode="wait" initial={false}>
-              <motion.span
-                key={craving.id}
-                initial={{ opacity: 0, y: reduced ? 0 : 25 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: reduced ? 0 : -16 }}
-                transition={{ duration: 0.2 }}
-              >
-                {craving.heading[index]}
-              </motion.span>
-            </AnimatePresence>
+      <div className="table-hero-copy">
+        <p className="eyebrow table-hero-context">
+          <span className="green-dot" />
+          HALA KOSZYKI
+          <span className="table-context-divider" aria-hidden="true">
+            /
           </span>
-        </h1>
-        <p className="craving-intro">
-          {locale === "pl"
-            ? "Różne zachcianki, jeden stolik. Zamów z całej hali i zostań w dobrym towarzystwie."
-            : "Different cravings, one table. Order from across the hall and stay in good company."}
+          <span>
+            {pl ? "STOLIK" : "TABLE"} {table}
+          </span>
         </p>
-        <div className="craving-actions">
+        <h1>
+          <span>{pl ? "RÓŻNE SMAKI" : "MANY CRAVINGS"}</span>
+          <span>{pl ? "JEDEN STOLIK" : "ONE TABLE"}</span>
+        </h1>
+        <p className="table-hero-intro">
+          {pl
+            ? "Łącz dania z różnych kuchni. Jeden koszyk, odbiór gdy gotowe."
+            : "Different kitchens, one basket. Pick up when ready and enjoy together."}
+        </p>
+        <div className="table-hero-actions">
           <button className="primary" onClick={onBrowse}>
-            {locale === "pl"
-              ? "Odkryj wszystkie smaki"
-              : "Explore every flavour"}
-            <ArrowUpRight size={20} />
+            {pl ? "Odkryj kuchnie" : "Explore kitchens"}
+            <ArrowRight size={19} />
           </button>
           <button className="text-button" onClick={onTour}>
-            <span className="play-circle">
-              <Play size={13} fill="currentColor" />
+            <span className="table-play">
+              <Play size={12} fill="currentColor" />
             </span>
-            {locale === "pl" ? "Jak to działa" : "How it works"}
+            {pl ? "Jak to działa" : "How it works"}
           </button>
         </div>
-        <div className="craving-promise">
-          <Check size={15} />
-          <span>{locale === "pl" ? "Bez konta" : "No account"}</span>
+        <p className="table-hero-promise">
+          <Check size={14} />
+          {pl ? "Bez konta" : "No account"}
           <span aria-hidden="true">·</span>
-          <span>{locale === "pl" ? "Jeden koszyk" : "One basket"}</span>
+          {pl ? "Jeden koszyk" : "One basket"}
           <span aria-hidden="true">·</span>
+          {pl ? "Więcej czasu razem" : "More time together"}
+        </p>
+      </div>
+      <div className="table-hero-scene" ref={sceneHost}>
+        <div className="table-scene-hint">
+          <CornerDownRight size={16} />
           <span>
-            {locale === "pl" ? "Twój stolik" : "Your table"} {table}
+            {pl
+              ? "Dotknij tego, na co masz ochotę"
+              : "Tap whatever you’re craving"}
           </span>
         </div>
-      </div>
-      <div
-        className="craving-stage"
-        onPointerMove={(event) => {
-          if (reduced || event.pointerType !== "mouse") return;
-          const rect = event.currentTarget.getBoundingClientRect();
-          rotateX.set(-((event.clientY - rect.top) / rect.height - 0.5) * 3);
-          rotateY.set(((event.clientX - rect.left) / rect.width - 0.5) * 3);
-        }}
-        onPointerLeave={() => {
-          rotateX.set(0);
-          rotateY.set(0);
-        }}
-      >
-        <motion.div
-          className="craving-photo-wrap"
-          style={{ rotateX, rotateY }}
-          initial={{ opacity: 0, scale: reduced ? 1 : 1.05 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{
-            duration: reduced ? 0.12 : 0.6,
-            ease: [0.2, 0.8, 0.2, 1],
-          }}
-        >
-          <AnimatePresence mode="sync" initial={false}>
-            <motion.div
-              className="craving-scene"
-              key={craving.id}
-              initial={{ opacity: 0, scale: reduced ? 1 : 1.035 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.4, ease: [0.2, 0.8, 0.2, 1] }}
-            >
-              <img
-                src={`/assets/${craving.image}`}
-                alt={
-                  item
-                    ? locale === "pl"
-                      ? item.name
-                      : item.nameEn
-                    : craving.label[index]
-                }
-                style={{ objectPosition: craving.position }}
-                fetchPriority={selected === 0 ? "high" : "auto"}
-              />
-              <div className="craving-photo-shade" />
-              <div className="craving-photo-caption">
-                <span>
-                  {item
-                    ? restaurantFor(item.restaurantId).name
-                    : "HALA KOSZYKI"}
-                </span>
-                <h2>{craving.note[index]}</h2>
-              </div>
-            </motion.div>
-          </AnimatePresence>
-          <motion.span
-            className="craving-sticker"
-            initial={reduced ? false : { scale: 0.5, rotate: -18, opacity: 0 }}
-            animate={{ scale: 1, rotate: 8, opacity: 1 }}
-            transition={{
-              type: "spring",
-              stiffness: 180,
-              damping: 15,
-              delay: 0.25,
-            }}
-          >
-            <UtensilsCrossed size={20} />
-            <span>
-              {locale === "pl" ? "DOBRZE" : "GOOD"}
-              <br />
-              {locale === "pl" ? "BYĆ GŁODNYM" : "TO BE HUNGRY"}
-            </span>
-          </motion.span>
-          <button
-            className="craving-photo-action"
-            onClick={() => (item ? onDish(item) : onBrowse())}
+        <div className="table-scene-visual">
+          {!reduced && canAnimate ? (
+            <TableSceneBoundary fallback={fallback}>
+              <Suspense fallback={fallback}>
+                <TableMotion selected={selected} fallback={fallback} />
+              </Suspense>
+            </TableSceneBoundary>
+          ) : (
+            fallback
+          )}
+          <div
+            className="table-food-controls"
+            role="group"
             aria-label={
-              locale === "pl" ? `Zobacz ${item.name}` : `See ${item.nameEn}`
+              pl ? "Kuchnie przy wspólnym stole" : "Kitchens at your table"
             }
           >
-            <ArrowUpRight size={23} />
-          </button>
-        </motion.div>
+            {kitchens.map((kitchen) => (
+              <button
+                key={kitchen.id}
+                className={`table-food-control table-control-${kitchen.id} ${selected === kitchen.selection ? "is-selected" : ""}`}
+                aria-label={kitchen.control[pl ? 0 : 1]}
+                aria-pressed={selected === kitchen.selection}
+                onClick={() =>
+                  setSelected(
+                    selected === kitchen.selection ? 0 : kitchen.selection,
+                  )
+                }
+              >
+                <span>
+                  {kitchen.label}
+                  <span className="table-selection-dot" />
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
         <div
-          className="craving-selectors"
-          role="group"
-          aria-label={
-            locale === "pl" ? "Wybierz zachciankę" : "Choose a craving"
-          }
+          className="table-scene-caption"
+          aria-live="polite"
+          aria-atomic="true"
         >
-          {cravings.map((choice, choiceIndex) => (
-            <button
-              key={choice.id}
-              className={selected === choiceIndex ? "selected" : ""}
-              aria-pressed={selected === choiceIndex}
-              onClick={() => setSelected(choiceIndex)}
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              key={selected}
+              className="table-caption-content"
+              initial={{ opacity: 0, y: reduced ? 0 : 5 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: reduced ? 0 : -4 }}
+              transition={{ duration: 0.14 }}
             >
-              <span className="craving-selector-number">
-                0{choiceIndex + 1}
-              </span>
-              <span>{choice.label[index]}</span>
-              <span className="craving-selector-line" aria-hidden="true" />
+              <div>
+                <strong>
+                  {choice
+                    ? choice.label
+                    : pl
+                      ? "Każdy wybiera po swojemu"
+                      : "Everyone gets their favourite"}
+                </strong>
+                <span>
+                  {choice
+                    ? choice.taste[pl ? 0 : 1]
+                    : pl
+                      ? "Wszystkie smaki spotykają się przy stole"
+                      : "Every flavour meets at one table"}
+                </span>
+              </div>
+              {choice ? (
+                <button
+                  className="table-menu-link"
+                  onClick={() =>
+                    onMenu
+                      ? onMenu(choice.id)
+                      : onDish(menu.find((dish) => dish.id === choice.dish)!)
+                  }
+                >
+                  {onMenu
+                    ? pl
+                      ? "Zobacz menu"
+                      : "View menu"
+                    : pl
+                      ? "Zobacz danie"
+                      : "See dish"}
+                  <ArrowRight size={16} />
+                </button>
+              ) : (
+                <span className="table-caption-mark" aria-hidden="true">
+                  <Check size={18} />
+                </span>
+              )}
+            </motion.div>
+          </AnimatePresence>
+          {choice && (
+            <button
+              className="table-reset"
+              aria-label={pl ? "Pokaż cały stolik" : "Show the whole table"}
+              onClick={() => setSelected(0)}
+            >
+              <RotateCcw size={15} />
             </button>
-          ))}
+          )}
         </div>
       </div>
     </section>

@@ -20,11 +20,13 @@
 		234BB9C0EA549D2CEC32DBE0 /* PapuPayApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47FC342D6FB5B867D1F310AA /* PapuPayApp.swift */; };
 		27700DBB0631FBF11D1208AC /* PapuDisplay-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 95CA44D1EC6FC51DE8E4440C /* PapuDisplay-Bold.ttf */; };
 		2D5A2A11D152F5742567F5CE /* PapuPoster.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C34EA5588A1F72FACDC4A4AB /* PapuPoster.ttf */; };
+		2EC291C9E141EE97140FDCA9 /* papu-table.riv in Resources */ = {isa = PBXBuildFile; fileRef = 3615414D56805E6E0E793723 /* papu-table.riv */; };
 		39B6718AECA26235F88FB9D8 /* HallMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F276840C6BFA800F70FDF9B8 /* HallMapView.swift */; };
 		59EB8457BD373A9C9095B2AB /* PapuPayClipLiveActivity.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = C44CE88B7632CDB567C1F272 /* PapuPayClipLiveActivity.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		5D3E0D12B2DB22CA8346BD93 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FDF18D8A4DB89B5573B18370 /* Foundation.framework */; };
 		674E6AE1EF469CDAAF83069A /* SVGShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C3BE65B13F47EFF59E66A51 /* SVGShape.swift */; };
 		6A54F77BED45B7F1EDEE6FE0 /* PapuPayClip.app in Embed App Clips */ = {isa = PBXBuildFile; fileRef = 93808F68CB432087ED8F8D5F /* PapuPayClip.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		6D05A36F513E127F338F0C21 /* papu-table.riv in Resources */ = {isa = PBXBuildFile; fileRef = 3615414D56805E6E0E793723 /* papu-table.riv */; };
 		722812C9F21B069A57586EAE /* RiveRuntime in Frameworks */ = {isa = PBXBuildFile; productRef = 9D44CCC38031E4AB0E1216A9 /* RiveRuntime */; };
 		79EA484B26E6B6A205AE53CE /* map.json in Resources */ = {isa = PBXBuildFile; fileRef = B728632C20FC373B68A89D02 /* map.json */; };
 		7C047961382F121DD845A6DD /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FDF18D8A4DB89B5573B18370 /* Foundation.framework */; };
@@ -126,6 +128,7 @@
 		03FCD8667DA8221F50F23888 /* PapuPayLiveActivity.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = PapuPayLiveActivity.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		33C2043A1E5388036852F638 /* PapuOrderAttributes.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PapuOrderAttributes.swift; sourceTree = "<group>"; };
 		33D5AA59F0E7D328E0B24CB1 /* Assets.xcassets */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		3615414D56805E6E0E793723 /* papu-table.riv */ = {isa = PBXFileReference; includeInIndex = 1; path = "papu-table.riv"; sourceTree = "<group>"; };
 		3A61897D92B78FA7F62DC2B1 /* ReadyNotifications.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ReadyNotifications.swift; sourceTree = "<group>"; };
 		3DF4BEE9BC0299DE9BA77CFD /* OrdersView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = OrdersView.swift; sourceTree = "<group>"; };
 		44C1AB173F9AB30B792D1045 /* PapuPay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PapuPay.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -238,6 +241,7 @@
 				46177319ACB0DE734847656B /* papu.riv */,
 				A2544EFAF5073DFD385E82A6 /* PrivacyInfo.xcprivacy */,
 				C34EA5588A1F72FACDC4A4AB /* PapuPoster.ttf */,
+				3615414D56805E6E0E793723 /* papu-table.riv */,
 			);
 			name = Resources;
 			path = Resources;
@@ -419,6 +423,7 @@
 				17F5229A37958D0A6D745F39 /* papu.riv in Resources */,
 				FA0779292BB45F4F2CD495C8 /* PrivacyInfo.xcprivacy in Resources */,
 				21421B4B8D4DC0FC467FAA33 /* PapuPoster.ttf in Resources */,
+				2EC291C9E141EE97140FDCA9 /* papu-table.riv in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -434,6 +439,7 @@
 				91838EEF2626A432C92BA2C9 /* papu.riv in Resources */,
 				A504707AA86DC34DC3999921 /* PrivacyInfo.xcprivacy in Resources */,
 				2D5A2A11D152F5742567F5CE /* PapuPoster.ttf in Resources */,
+				6D05A36F513E127F338F0C21 /* papu-table.riv in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -43,6 +43,7 @@ Build **1.0 (5.1)** is available in the PapuPay Demo internal group and uploaded
 - React + TypeScript + Vite, responsive layouts, Polish/English, accessible native HTML dialogs.
 - SwiftUI app and App Clip, native tab navigation and sheets, haptics, ActivityKit / WidgetKit.
 - Shared catalog and official hall geometry, nine demo kitchens, menu customization, multi-venue checkout, persisted order tickets and pickup.
+- Interactive shared-table opening with original food cutouts, a custom Rive scene, tappable kitchens and direct menu actions.
 - Original dimensional papaya artwork and custom Rive state machine: scanner, food bag, cooking cloche and ready receipt, with pointer response. Editable Rive source is included.
 - Heavy DM Sans headings, Anton poster accents and a Fredoka **PapuPay** wordmark; system text styles on iOS.
 - Size gate, domain tests, source provenance, and verification notes.
@@ -54,7 +55,8 @@ Build **1.0 (5.1)** is available in the PapuPay Demo internal group and uploaded
 | `apps/web` | React browser app |
 | `apps/ios` | Xcode project, shared SwiftUI, app, Clip and widgets |
 | `packages/catalog` | Restaurant/menu data and hall map |
-| `packages/motion/papupay` | Editable Rive CLI project |
+| `packages/motion/papupay` | Editable order-journey Rive project |
+| `packages/motion/table` | Editable shared-table Rive scene, generator and interaction contract |
 | `packages/brand` | Master artwork and licensed font sources |
 | `scripts` | Font preparation, Rive authoring, Xcode generation and size check |
 | `docs` | Design decisions, test instructions, research and evidence |

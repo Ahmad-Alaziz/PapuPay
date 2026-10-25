@@ -384,7 +384,7 @@ struct SmallDishCard: View {
 }
 
 
-/// The first screen is a small, useful food story: the whole scene follows the craving.
+/// One shared table introduces the food hall rather than a single featured dish.
 private struct CravingSpotlight: View {
   @EnvironmentObject var store: PapuStore
   @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -393,89 +393,74 @@ private struct CravingSpotlight: View {
   var browse: () -> Void
   var openMenu: (Restaurant) -> Void
   @State private var selected = 0
-  @State private var entered = false
   private let restaurantIDs = ["atom", "kago", "semolino"]
-  private var restaurant: Restaurant { store.catalog.restaurants.first { $0.id == restaurantIDs[selected] }! }
-  private var title: String {
-    [store.text("SOCZYSTY\nKĘS", "BIG BURGER\nENERGY"),
-     store.text("MISKA\nSZCZĘŚCIA", "A BOWL OF\nHAPPINESS"),
-     store.text("CIAO,\nPIZZO", "CIAO,\nPIZZA")][selected]
+  private var restaurant: Restaurant? {
+    guard selected > 0 else { return nil }
+    return store.catalog.restaurants.first { $0.id == restaurantIDs[selected - 1] }
   }
   var body: some View {
-    VStack(alignment: .leading, spacing: 16) {
+    VStack(alignment: .leading, spacing: 10) {
       HStack(spacing: 8) {
         Eyebrow(text: "HALA KOSZYKI")
         Spacer(minLength: 8)
         Label(store.text("Stolik ", "Table ") + store.table, systemImage: "checkmark.circle.fill")
           .font(Papu.body(12).weight(.semibold)).foregroundStyle(Papu.green)
       }
-      ZStack(alignment: .bottomLeading) {
-        GeometryReader { geometry in
-          FoodPhoto(name: restaurant.image)
-            .frame(width: geometry.size.width, height: geometry.size.height)
-            .scaleEffect(reduceMotion || entered ? 1 : 1.055)
-            .clipped()
-        }
-        LinearGradient(colors: [.black.opacity(0.02), Papu.ink.opacity(0.2), Papu.ink.opacity(0.95)],
-          startPoint: .top, endPoint: .bottom)
-        VStack(alignment: .leading, spacing: 14) {
-          HStack {
-            Text(restaurant.name.uppercased()).font(Papu.body(11).weight(.bold)).tracking(1.2)
-            Spacer()
-            Text("0\(selected + 1) / 03").font(Papu.body(11).weight(.semibold)).monospacedDigit()
-          }.foregroundStyle(Papu.butter.opacity(0.9))
-          Text(title).font(Papu.poster(typeSize.isAccessibilitySize ? 48 : 52)).lineSpacing(-2)
-            .fixedSize(horizontal: false, vertical: true).shadow(color: Papu.ink.opacity(0.3), radius: 8)
-          Button { openMenu(restaurant) } label: {
-            HStack {
-              Text(store.text("Mam na to ochotę", "That’s my craving"))
-              Spacer(minLength: 8)
-              Image(systemName: "arrow.up.right")
-            }.font(Papu.body(15).weight(.semibold)).padding(.horizontal, 18).frame(minHeight: 48)
-              .foregroundStyle(Papu.ink).background(Papu.butter, in: Capsule())
-          }.buttonStyle(PressStyle())
-        }.padding(22).foregroundStyle(Papu.butter)
-      }.frame(height: typeSize.isAccessibilitySize ? 420 : 350)
-        .clipShape(RoundedRectangle(cornerRadius: 27)).id(selected)
-        .transition(reduceMotion ? .opacity : .opacity.combined(with: .scale(scale: 0.985)))
-        .onAppear {
-          entered = false
-          withAnimation(reduceMotion ? nil : .easeOut(duration: 1.2)) { entered = true }
-        }
-        .gesture(DragGesture(minimumDistance: 30).onEnded { value in
-          guard abs(value.translation.width) > abs(value.translation.height) else { return }
-          choose((selected + (value.translation.width < 0 ? 1 : 2)) % 3)
-        })
-      HStack(spacing: 8) {
-        ForEach(0..<3, id: \.self) { index in
+      VStack(alignment: .leading, spacing: 8) {
+        Text(store.text("RÓŻNE SMAKI\nJEDEN STOLIK", "MANY CRAVINGS\nONE TABLE"))
+          .font(Papu.poster(typeSize.isAccessibilitySize ? 38 : 40)).lineSpacing(-1)
+          .fixedSize(horizontal: false, vertical: true)
+        Text(store.text(
+          "Łącz kuchnie w jednym koszyku. Odbierz przy lokalach.",
+          "Mix kitchens in one checkout. Collect at the counters."))
+          .font(Papu.body(13)).foregroundStyle(Papu.muted).fixedSize(horizontal: false, vertical: true)
+      }
+      PapuTableScene(selected: $selected)
+        .aspectRatio(800.0 / 620.0, contentMode: .fit)
+        .background(Color(hex: "F9E4CC"), in: RoundedRectangle(cornerRadius: 25))
+        .clipShape(RoundedRectangle(cornerRadius: 25))
+      HStack(spacing: 7) {
+        ForEach(0..<4, id: \.self) { index in
           Button { choose(index) } label: {
-            HStack(spacing: 6) {
-              if selected == index { Circle().fill(Papu.orange).frame(width: 6, height: 6) }
-              Text([store.text("Burger", "Burger"), "Ramen", "Pizza"][index])
-            }.font(Papu.body(13).weight(.semibold)).frame(maxWidth: .infinity, minHeight: 44)
+            Text([store.text("Razem", "Together"), "Burger", "Ramen", "Pizza"][index])
+              .font(Papu.body(12).weight(.semibold)).lineLimit(1).minimumScaleFactor(0.85)
+              .frame(maxWidth: .infinity, minHeight: 44)
               .foregroundStyle(selected == index ? Papu.butter : Papu.ink)
               .background(selected == index ? Papu.ink : Papu.sage, in: Capsule())
           }.buttonStyle(PressStyle()).accessibilityAddTraits(selected == index ? .isSelected : [])
         }
       }
-      HStack(alignment: .center, spacing: 12) {
+      HStack(spacing: 10) {
         Button(action: browse) {
-          Label(store.text("Wszystkie kuchnie", "All kitchens"), systemImage: "arrow.down")
-            .font(Papu.body(14).weight(.semibold)).frame(minHeight: 44)
-        }.buttonStyle(.plain)
-        Spacer(minLength: 0)
-        Button { showTour = true } label: {
-          Label(store.text("Jak to działa?", "How it works"), systemImage: "play.circle")
-            .font(Papu.body(13)).frame(minHeight: 44)
-        }.buttonStyle(.plain).foregroundStyle(Papu.muted)
+          HStack(spacing: 7) {
+            Text(store.text("Wszystkie kuchnie", "All kitchens"))
+            Image(systemName: "arrow.down")
+          }.font(Papu.body(14).weight(.semibold)).lineLimit(1).minimumScaleFactor(0.85)
+            .frame(maxWidth: .infinity, minHeight: 50)
+            .foregroundStyle(Papu.butter).background(Papu.ink, in: Capsule())
+        }.buttonStyle(PressStyle())
+        if let restaurant {
+          Button { openMenu(restaurant) } label: {
+            VStack(alignment: .leading, spacing: 2) {
+              Text(restaurant.name).font(Papu.body(11)).foregroundStyle(Papu.muted)
+              Label(store.text("Zobacz menu", "See menu"), systemImage: "arrow.up.right")
+                .font(Papu.body(13).weight(.semibold))
+            }.lineLimit(1).minimumScaleFactor(0.85).padding(.horizontal, 13)
+              .frame(minHeight: 50).background(Papu.butter, in: Capsule())
+          }.buttonStyle(PressStyle()).accessibilityLabel(
+            store.text("Zobacz menu ", "See menu at ") + restaurant.name)
+        } else {
+          Button { showTour = true } label: {
+            Image(systemName: "play.fill").font(.system(size: 14)).frame(width: 50, height: 50)
+              .background(Papu.butter, in: Circle())
+          }.buttonStyle(PressStyle()).accessibilityLabel(store.text("Jak to działa?", "How it works"))
+        }
       }
     }.padding(.horizontal, 20).padding(.top, 16).padding(.bottom, 8)
-
+      .animation(reduceMotion ? nil : .easeInOut(duration: 0.2), value: selected)
   }
   private func choose(_ index: Int) {
     UISelectionFeedbackGenerator().selectionChanged()
-    withAnimation(reduceMotion ? .easeOut(duration: 0.15) : .spring(response: 0.48, dampingFraction: 0.88)) {
-      selected = index
-    }
+    selected = index
   }
 }

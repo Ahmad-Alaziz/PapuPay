@@ -283,3 +283,148 @@ struct QuickAddButton: View {
       .accessibilityValue(store.text("W koszyku: ", "In basket: ") + String(quantity))
   }
 }
+
+
+@MainActor private enum PapuTableAsset {
+  static let file = Task { () throws -> RiveRuntime.File in
+    let worker = try await Worker()
+    return try await RiveRuntime.File(source: .local("papu-table", Bundle.main), worker: worker)
+  }
+}
+
+@MainActor private final class TableAnimation: ObservableObject {
+  @Published var rive: Rive?
+  func load(selected: Int) async {
+    guard rive == nil else { set(selected); return }
+    do {
+      let file = try await PapuTableAsset.file.value
+      let instance = try await file.createViewModelInstance(
+        .viewModelDefault(from: .name("PapuTableModel")))
+      instance.setValue(of: NumberProperty(path: "selected"), to: Float(selected))
+      rive = try await Rive(file: file, dataBind: .instance(instance))
+    } catch { /* The matching static table remains usable if rendering is unavailable. */ }
+  }
+  func set(_ selected: Int) {
+    rive?.viewModelInstance?.setValue(of: NumberProperty(path: "selected"), to: Float(selected))
+  }
+}
+
+/// Semantic controls remain native; Rive's plate taps share their selected-kitchen value.
+struct PapuTableScene: View {
+  @Environment(\.accessibilityReduceMotion) private var reduceMotion
+  @Environment(\.scenePhase) private var phase
+  @Binding var selected: Int
+  @StateObject private var model = TableAnimation()
+  @State private var visible = false
+  @State private var settled = false
+  @State private var playGeneration = 0
+  var body: some View {
+    ZStack {
+      Group {
+        if let rive = model.rive, !reduceMotion {
+          RiveUIViewRepresentable(rive: rive).paused(!visible || phase != .active || settled).frameRate(.fps(60))
+        } else {
+          SharedTableStill(selected: selected)
+        }
+      }.allowsHitTesting(false).accessibilityHidden(true)
+      NativeTableTargets(selected: $selected)
+    }
+    .task(id: reduceMotion) { if !reduceMotion { await model.load(selected: selected) } }
+    .task(id: model.rive != nil) {
+      guard let instance = model.rive?.viewModelInstance else { return }
+      model.set(selected)
+      wake()
+      do {
+        for try await value in instance.valueStream(of: NumberProperty(path: "selected")) {
+          let next = min(3, max(0, Int(value.rounded())))
+          if next != selected {
+            selected = next
+            UISelectionFeedbackGenerator().selectionChanged()
+          }
+        }
+      } catch { /* Native selectors remain available if observation ends. */ }
+    }
+    .task(id: playGeneration) {
+      guard !reduceMotion else { return }
+      try? await Task.sleep(for: .seconds(2))
+      guard !Task.isCancelled else { return }
+      settled = true
+    }
+    .onChange(of: selected) { _, value in wake(); model.set(value) }
+    .onChange(of: phase) { _, value in if value == .active { wake() } }
+    .onAppear { visible = true; wake() }.onDisappear { visible = false }
+  }
+  private func wake() {
+    settled = false
+    playGeneration += 1
+  }
+}
+
+private enum TableComposition {
+  static let widths: [CGFloat] = [335, 320, 355]
+  static let centers: [CGPoint] = [.init(x: 230, y: 320), .init(x: 548, y: 242), .init(x: 478, y: 442)]
+  static let offsets: [CGPoint] = [.init(x: -12, y: -2), .init(x: 14, y: -8), .init(x: 18, y: 10)]
+  static func pose(_ index: Int, selected: Int) -> (center: CGPoint, scale: CGFloat) {
+    guard selected != 0 else { return (centers[index], 1) }
+    let active = selected == index + 1
+    return (
+      CGPoint(x: centers[index].x + (active ? 0 : offsets[index].x),
+        y: centers[index].y + (active ? -18 : offsets[index].y)),
+      active ? 1.13 : 0.88)
+  }
+}
+
+private struct SharedTableStill: View {
+  let selected: Int
+  private let plates = ["table-burger", "table-ramen", "table-pizza"]
+  var body: some View {
+    GeometryReader { geometry in
+      let w = geometry.size.width
+      let h = geometry.size.height
+      ZStack {
+        Ellipse().fill(Papu.orange).frame(width: w * 670 / 800, height: h * 390 / 620)
+          .position(x: w * 400 / 800, y: h * 367 / 620)
+        Ellipse().fill(Color(hex: "FFBE76")).frame(width: w * 670 / 800, height: h * 390 / 620)
+          .overlay(Ellipse().stroke(Papu.butter, lineWidth: 1))
+          .position(x: w * 400 / 800, y: h * 345 / 620)
+        ForEach(0..<3, id: \.self) { index in
+          let pose = TableComposition.pose(index, selected: selected)
+          Image(plates[index]).resizable().scaledToFit()
+            .frame(width: w * TableComposition.widths[index] / 800,
+              height: h * TableComposition.widths[index] / 620)
+            .scaleEffect(pose.scale)
+            .position(x: w * pose.center.x / 800, y: h * pose.center.y / 620)
+            .zIndex(selected == index + 1 ? 1 : 0)
+        }
+      }
+    }
+  }
+}
+
+/// Native hit targets keep every plate immediate even while the Rive renderer sleeps.
+private struct NativeTableTargets: View {
+  @EnvironmentObject var store: PapuStore
+  @Binding var selected: Int
+  var body: some View {
+    GeometryReader { geometry in
+      ForEach(0..<3, id: \.self) { index in
+        let pose = TableComposition.pose(index, selected: selected)
+        Button {
+          selected = index + 1
+          UISelectionFeedbackGenerator().selectionChanged()
+        } label: {
+          Color.clear.contentShape(Ellipse())
+        }.buttonStyle(.plain)
+          .frame(width: geometry.size.width * 275 / 800,
+            height: geometry.size.height * 245 / 620)
+          .scaleEffect(pose.scale)
+          .position(x: geometry.size.width * pose.center.x / 800,
+            y: geometry.size.height * pose.center.y / 620)
+          .zIndex(selected == index + 1 ? 1 : 0)
+          .accessibilityLabel(["ATOM Burgers", "KAGO", "Semolino"][index])
+          .accessibilityHint(store.text("Wybierz tę kuchnię przy wspólnym stole", "Focus this kitchen at the shared table"))
+          .accessibilityAddTraits(selected == index + 1 ? .isSelected : [])
+      }
+    }
+  }
+}
