@@ -44,7 +44,7 @@ end
 [widget,clip_widget].each do |target|
   target.add_file_references([widget_ref,shared_refs.find { |r| r.path == 'PapuOrderAttributes.swift' }])
 end
-base_id = 'com.papupay.demo'
+base_id = 'com.papupay.app'
 ids = {app=>base_id,clip=>base_id+'.Clip',widget=>base_id+'.LiveActivity',clip_widget=>base_id+'.Clip.LiveActivity'}
 ids.each do |target,bundle|
   extension = [widget,clip_widget].include?(target)
@@ -54,7 +54,7 @@ ids.each do |target,bundle|
     'CFBundleDisplayName'=>'PapuPay', 'CFBundleName'=>'$(PRODUCT_NAME)',
     'CFBundleIdentifier'=>'$(PRODUCT_BUNDLE_IDENTIFIER)', 'CFBundleExecutable'=>'$(EXECUTABLE_NAME)',
     'CFBundlePackageType'=>extension ? 'XPC!' : 'APPL',
-    'CFBundleShortVersionString'=>'0.1.0','CFBundleVersion'=>'1',
+    'CFBundleShortVersionString'=>'1.0','CFBundleVersion'=>'1',
     'NSSupportsLiveActivities'=>true
   }
   if extension
@@ -65,11 +65,13 @@ ids.each do |target,bundle|
     info['UISupportedInterfaceOrientations'] = ['UIInterfaceOrientationPortrait']
     info['UIRequiredDeviceCapabilities'] = ['arm64']
     info['UIAppFonts'] = ['PapuDisplay-Bold.ttf','PapuDisplay-ExtraBold.ttf']
-    info['CFBundleURLTypes'] = [{'CFBundleURLName'=>'com.papupay.demo','CFBundleURLSchemes'=>['papupay']}]
+    info['CFBundleURLTypes'] = [{'CFBundleURLName'=>'com.papupay.app','CFBundleURLSchemes'=>['papupay']}]
     info['NSAppClip'] = {'NSAppClipRequestEphemeralUserNotification'=>false,'NSAppClipRequestLocationConfirmation'=>false} if target==clip
   end
   Xcodeproj::Plist.write_to_path(info,File.join(ios,info_path))
   entitlements = {}
+  entitlements['com.apple.developer.associated-domains'] = ['appclips:papupay.com'] if [app,clip].include?(target)
+  entitlements['com.apple.developer.associated-domains'] << 'applinks:papupay.com' if target==app
   entitlements['com.apple.developer.associated-appclip-app-identifiers'] = ['$(AppIdentifierPrefix)'+ids[clip]] if target==app
   if target==clip
     entitlements['com.apple.developer.on-demand-install-capable'] = true
@@ -80,9 +82,9 @@ ids.each do |target,bundle|
   target.build_configurations.each do |config|
     config.build_settings.merge!({
       'PRODUCT_BUNDLE_IDENTIFIER'=>bundle,'INFOPLIST_FILE'=>info_path,'CODE_SIGN_ENTITLEMENTS'=>entitlements_path,
-      'CODE_SIGN_STYLE'=>'Automatic','DEVELOPMENT_TEAM'=>ENV.fetch('PAPUPAY_DEVELOPMENT_TEAM',''),
+      'CODE_SIGN_STYLE'=>'Automatic','DEVELOPMENT_TEAM'=>ENV.fetch('PAPUPAY_DEVELOPMENT_TEAM','5W4JVD497D'),
       'SWIFT_VERSION'=>'5.0','IPHONEOS_DEPLOYMENT_TARGET'=>'17.0','TARGETED_DEVICE_FAMILY'=>'1',
-      'MARKETING_VERSION'=>'0.1.0','CURRENT_PROJECT_VERSION'=>'1',
+      'MARKETING_VERSION'=>'1.0','CURRENT_PROJECT_VERSION'=>'1',
       'ENABLE_BITCODE'=>'NO','GENERATE_INFOPLIST_FILE'=>'NO',
       'LD_RUNPATH_SEARCH_PATHS'=>['$(inherited)','@executable_path/Frameworks', '@executable_path/../../Frameworks'],
       'ASSETCATALOG_COMPILER_APPICON_NAME'=>extension ? '' : 'AppIcon',
@@ -119,7 +121,7 @@ project.save
   scheme.archive_action.build_configuration = 'Release'
   if target==clip
     vars=REXML::Element.new('EnvironmentVariables')
-    vars.add_element('EnvironmentVariable',{'key'=>'_XCAppClipURL','value'=>'https://papupay.example/clip?venue=koszyki&table=24','isEnabled'=>'YES'})
+    vars.add_element('EnvironmentVariable',{'key'=>'_XCAppClipURL','value'=>'https://papupay.com/go/koszyki/24','isEnabled'=>'YES'})
     scheme.launch_action.xml_element.add_element(vars)
   end
   scheme.save_as(project_path,target.name,true)

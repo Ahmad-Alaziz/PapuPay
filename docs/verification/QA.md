@@ -48,3 +48,12 @@ Hosted checks on 25 October 2026:
 - A public table-24 QR is included as PNG and SVG in `docs/testing`.
 
 The previously reserved Sites project has no deployment and is not the selected hosting destination.
+
+## Custom domain and QR routing — 25 October 2026
+
+- Coming-soon homepage and separate web entry added; the QR path is `/go/koszyki/{table}`.
+- 29 web tests pass, including unknown halls, malformed/ambiguous links, legacy links, hall identity on order snapshots, and legacy-order migration.
+- 19 compiled Swift invocation checks pass, including host validation and the same hall/table failure cases.
+- Updated native host, Clip and widgets build in the simulator; unsigned device Release Clip passes the size gate at 11.632 MB.
+- Namecheap A/CNAME records point to Vercel; public apex HTTPS responds successfully. Email settings preserved.
+- Apple app record 6826778125 and four bundle identifiers registered under the personal team. Native signing/upload blocked by this Mac's managed Apple Account restriction. App Clip experience metadata requires an uploaded build; public invocation remains pending Apple release.

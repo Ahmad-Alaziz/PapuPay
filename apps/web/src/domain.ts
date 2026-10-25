@@ -12,6 +12,7 @@ export type CartLine = {
   extra: boolean;
 };
 export type Order = {
+  venueId: "koszyki";
   id: string;
   restaurantId: string;
   table: string;
@@ -123,6 +124,7 @@ export function createOrders(
   return groupCart(lines).map(({ restaurant, lines }, i) => ({
     id: `P${now.toString(36).slice(-4).toUpperCase()}${i + 1}`,
     restaurantId: restaurant.id,
+    venueId: "koszyki",
     table,
     name: name.trim() || "Gość",
     lines: structuredClone(lines),
@@ -162,25 +164,30 @@ export function readStore(raw: string | null): Store {
           )
         : [],
       orders: Array.isArray(value.orders)
-        ? value.orders.filter(
-            (o: Order) =>
-              o != null &&
-              typeof o.id === "string" &&
-              restaurants.some((r) => r.id === o.restaurantId) &&
-              Array.isArray(o.lines) &&
-              o.lines.length > 0 &&
-              o.lines.every(validLine) &&
-              o.lines.every(
-                (l) => dishFor(l.itemId).restaurantId === o.restaurantId,
-              ) &&
-              o.total === cartTotal(o.lines) &&
-              Number.isFinite(o.readyAt) &&
-              Number.isFinite(o.createdAt) &&
-              typeof o.collected === "boolean" &&
-              typeof o.name === "string" &&
-              typeof o.table === "string" &&
-              Number.isFinite(o.total),
-          )
+        ? value.orders
+            .map((o: Order | null) =>
+              o == null ? o : { ...o, venueId: o.venueId ?? "koszyki" },
+            )
+            .filter(
+              (o: Order) =>
+                o != null &&
+                o.venueId === "koszyki" &&
+                typeof o.id === "string" &&
+                restaurants.some((r) => r.id === o.restaurantId) &&
+                Array.isArray(o.lines) &&
+                o.lines.length > 0 &&
+                o.lines.every(validLine) &&
+                o.lines.every(
+                  (l) => dishFor(l.itemId).restaurantId === o.restaurantId,
+                ) &&
+                o.total === cartTotal(o.lines) &&
+                Number.isFinite(o.readyAt) &&
+                Number.isFinite(o.createdAt) &&
+                typeof o.collected === "boolean" &&
+                typeof o.name === "string" &&
+                typeof o.table === "string" &&
+                Number.isFinite(o.total),
+            )
         : [],
     };
   } catch {

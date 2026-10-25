@@ -1,0 +1,26 @@
+{
+  "appclips": {
+    "apps": [
+      "5W4JVD497D.com.papupay.app.Clip"
+    ]
+  },
+  "applinks": {
+    "details": [
+      {
+        "appIDs": [
+          "5W4JVD497D.com.papupay.app"
+        ],
+        "components": [
+          {
+            "/": "/go/*",
+            "comment": "Table QR links open the installed full app."
+          },
+          {
+            "/": "/clip",
+            "comment": "Legacy App Clip invocation links."
+          }
+        ]
+      }
+    ]
+  }
+}

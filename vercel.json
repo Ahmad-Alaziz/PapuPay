@@ -6,8 +6,44 @@
   "outputDirectory": "apps/web/dist",
   "rewrites": [
     {
+      "source": "/app",
+      "destination": "/app.html"
+    },
+    {
+      "source": "/go/:path*",
+      "destination": "/clip.html"
+    },
+    {
       "source": "/clip",
-      "destination": "/index.html"
+      "destination": "/clip.html"
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.papupay.com"
+        }
+      ],
+      "destination": "https://papupay.com/:path*",
+      "permanent": true
+    }
+  ],
+  "headers": [
+    {
+      "source": "/.well-known/apple-app-site-association",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600"
+        }
+      ]
     }
   ]
 }

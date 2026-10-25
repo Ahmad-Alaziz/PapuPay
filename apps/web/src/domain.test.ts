@@ -27,7 +27,7 @@ describe('multi-kitchen ordering', () => {
     const cart = addLine(addLine([], first.id), other.id, 2);
     const orders = createOrders(cart, '24', ' Alex ', 100000);
     expect(orders).toHaveLength(2); expect(new Set(orders.map(x => x.id)).size).toBe(2);
-    expect(orders.every(x => x.table === '24' && x.name === 'Alex')).toBe(true);
+    expect(orders.every(x => x.venueId === 'koszyki' && x.table === '24' && x.name === 'Alex')).toBe(true);
     expect(orders.reduce((sum,x) => sum+x.total,0)).toBe(cartTotal(cart));
     expect(orders[1].readyAt-orders[0].readyAt).toBe(12000);
     cart[0].quantity=20; expect(orders[0].lines[0].quantity).toBe(1);
@@ -45,6 +45,8 @@ describe('QR and persistence boundaries', () => {
     const state={...initialStore,cart,orders,locale:'en',favorites:[restaurants[0].id,'unknown']};
     const restored=readStore(JSON.stringify(state));
     expect(restored.cart).toEqual(cart); expect(restored.orders).toEqual(orders);
+    expect(readStore(JSON.stringify({...state, orders:[{...orders[0], venueId:'another-hall'}]})).orders).toEqual([]);
+    expect(readStore(JSON.stringify({...state, orders:orders.map(({venueId, ...old})=>old)})).orders).toEqual(orders);
     expect(restored.favorites).toEqual([restaurants[0].id]);
     expect(readStore('{broken')).toEqual(initialStore);
     expect(readStore(JSON.stringify({...state,orders:[null,{...orders[0],total:-1},orders[0]]})).orders).toEqual(orders);

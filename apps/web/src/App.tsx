@@ -44,12 +44,12 @@ import {
   groupCart,
   addLine,
   readStore,
-  tableFromURL,
   createOrders,
   statusFor,
 } from "./domain";
 import type { Restaurant, Dish } from "./domain";
 import HallMap from "./HallMap";
+import { qrPath, type OrderContext } from "./routing";
 import Modal from "./Modal";
 const PapuMotion = lazy(() => import("./PapuMotion"));
 type Tab = "discover" | "map" | "orders";
@@ -93,7 +93,7 @@ function FoodImage({
     />
   );
 }
-export default function App() {
+export default function App({ context }: { context: OrderContext }) {
   const [store, setStore] = useState(() => {
     try {
       return readStore(localStorage.getItem("papupay-v1"));
@@ -105,7 +105,7 @@ export default function App() {
     pl = locale === "pl";
   const t = (a: string, b: string) => (pl ? a : b);
   const [tab, setTab] = useState<Tab>(validTab),
-    [table, setTable] = useState(() => tableFromURL(location.search));
+    [table, setTable] = useState(context.table);
   const [category, setCategory] = useState("all"),
     [search, setSearch] = useState(""),
     [onlyVeg, setOnlyVeg] = useState(false),
@@ -358,10 +358,7 @@ export default function App() {
                 <div className="hero-copy">
                   <div className="eyebrow hero-eyebrow">
                     <span className="green-dot" />
-                    {t(
-                      "HALA KOSZYKI · WARSZAWA",
-                      "HALA KOSZYKI · WARSAW",
-                    )}
+                    {t("HALA KOSZYKI · WARSZAWA", "HALA KOSZYKI · WARSAW")}
                   </div>
                   <h1>
                     {t("Tyle smaków.", "So many flavours.")}
@@ -1799,7 +1796,9 @@ export default function App() {
                   const value = String(Number(tableInput));
                   setTable(value);
                   const url = new URL(location.href);
-                  url.searchParams.set("table", value);
+                  url.pathname = qrPath(value, context.venueId);
+                  url.searchParams.delete("table");
+                  url.searchParams.delete("venue");
                   history.replaceState({}, "", url);
                   setTableDialog(false);
                   notify(

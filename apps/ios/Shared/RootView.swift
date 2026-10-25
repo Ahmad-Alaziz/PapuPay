@@ -45,6 +45,19 @@ struct RootView: View {
         ).allowsHitTesting(false).accessibilityAddTraits(.updatesFrequently)
       }
     }
+    .fullScreenCover(isPresented: $store.invocationError) {
+      VStack(spacing: 22) {
+        Image(systemName: "qrcode").font(.system(size: 46)).foregroundStyle(Papu.green)
+        Text(store.text("Sprawdź kod na stoliku.", "Check your table’s QR.")).font(Papu.display(32))
+          .multilineTextAlignment(.center)
+        Text(store.text("Ten link nie wskazuje obsługiwanej hali i stolika. Zeskanuj kod ponownie albo poproś obsługę o pomoc.", "This link doesn’t identify a supported food hall and table. Scan again or ask a member of staff."))
+          .font(Papu.body(16)).multilineTextAlignment(.center)
+        Button(store.text("Otwórz demo: Koszyki, stolik 24", "Open demo: Koszyki, table 24")) {
+          store.handle(URL(string: "https://papupay.com/go/koszyki/24")!)
+        }.buttonStyle(.borderedProminent).tint(Papu.green)
+      }.padding(28).frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Papu.cream).foregroundStyle(Papu.ink).interactiveDismissDisabled()
+    }
     .environment(\.locale, Locale(identifier: store.english ? "en_GB" : "pl_PL"))
     .environment(\.layoutDirection, .leftToRight)
     .onOpenURL { store.handle($0) }

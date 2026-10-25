@@ -2,7 +2,7 @@
 
 ## Fastest: the web demo
 
-Open **https://papupay.vercel.app/?table=24** on your phone, or scan `docs/testing/hosted-web-table-24.png`. No installation or shared Wi-Fi is needed. This is the hosted React demo; native App Clip testing is described below.
+Open **https://papupay.com/go/koszyki/24** on your phone, or scan `docs/testing/koszyki-table-24.png`. No installation or shared Wi-Fi is needed. This is the hosted React demo; native App Clip testing is described below.
 
 For local development, run the production preview on the Mac:
 
@@ -20,12 +20,12 @@ Android and other browsers use the same hosted responsive web app. Deployment de
 1. Open `apps/ios/PapuPay.xcodeproj`. Let Swift Package Manager resolve Rive 6.27.0.
 2. Connect your iPhone, trust the Mac if needed, and enable Developer Mode on the phone.
 3. Under Signing & Capabilities select your Apple development team for **all four targets**: PapuPay, PapuPayClip, PapuPayLiveActivity, PapuPayClipLiveActivity.
-4. Use bundle identifiers available to your team. If changing the base `com.papupay.demo`, also update the host’s associated App Clip identifier and Clip’s parent-application entitlement. Preserve the hierarchy: host, host.Clip, host.LiveActivity, host.Clip.LiveActivity.
-5. Select the physical device and run **PapuPayClip**. Its scheme supplies `_XCAppClipURL=https://papupay.example/clip?venue=koszyki&table=24`.
-6. Change the scheme environment URL’s table parameter to 37 and run again to confirm invocation context. The simulator verification used the actual Clip bundle and table 37.
+4. Use bundle identifiers available to your team. If changing the base `com.papupay.app`, also update the host’s associated App Clip identifier and Clip’s parent-application entitlement. Preserve the hierarchy: host, host.Clip, host.LiveActivity, host.Clip.LiveActivity.
+5. Select the physical device and run **PapuPayClip**. Its scheme supplies `_XCAppClipURL=https://papupay.com/go/koszyki/24`.
+6. Change the scheme environment URL’s final path segment to 37 and run again to confirm invocation context. The simulator verification used the actual Clip bundle and table 37.
 7. Place a demo order, allow Live Activities if iOS asks, then lock the phone. Inspect the activity; on supported phones also inspect Dynamic Island. Return to PapuPay or use the demo-ready button to advance status.
 
-**Current signing limitation:** this Mac reported zero valid code-signing identities during verification. Simulator and unsigned device builds succeed, but a signed physical iPhone installation was not performed. An Apple team/certificate is required; no account or signing credentials were created or changed.
+**Current signing limitation:** this Mac reported zero valid code-signing identities during verification. Simulator and unsigned device builds succeed, but a signed physical iPhone installation was not performed. The project now selects the existing personal team `5W4JVD497D`. This managed Mac rejects personal Apple Account sign-in in Xcode. Use a personal Mac or an approved build environment to sign and upload; do not bypass the device policy. Browser sign-in alone does not provide signing credentials.
 
 ## Test the actual scan-to-App-Clip card
 
@@ -33,9 +33,9 @@ An arbitrary QR pointing to an unassociated URL will open Safari. A URL paramete
 
 For local development, install/run the signed Clip once, then use iPhone **Settings → Developer → Local Experiences** to register a local App Clip experience matching the test invocation URL and Clip bundle identifier. Configure the title, subtitle, action and image. Scan the matching QR with Camera. Apple’s local experience workflow allows testing before an App Store release and before configuring an associated website.
 
-`docs/testing/clip-table-24.png` contains the exact example invocation URL. It is for a registered **local experience**, not a deployed association. `papupay.example` is a reserved placeholder; no production ownership is claimed.
+`docs/testing/koszyki-table-24.png` contains `https://papupay.com/go/koszyki/24`. Register that exact URL as the local experience. Older `clip-table-24` artifacts use the original `.example` placeholder and are retained only as historical development assets.
 
-For distribution, configure your owned HTTPS domain, App Clip experience in App Store Connect, associated-domain entitlements, and an `apple-app-site-association` file containing your real Team ID and bundle identifiers. `docs/testing/apple-app-site-association.example.json` is a template, not a live association. Archive/upload the containing PapuPay app, then use the supported TestFlight App Clip testing flow.
+The real `papupay.com` domain, associated-domain entitlements and AASA file now use the registered team and production bundle IDs. App Store Connect record `6826778125` exists. Archive/upload the containing PapuPay app, configure its default and advanced App Clip experiences, then use TestFlight for pre-release testing. Public activation requires Apple review and release; DNS alone does not activate the Clip. See `DOMAIN-AND-QR.md`.
 
 ## Size budget
 

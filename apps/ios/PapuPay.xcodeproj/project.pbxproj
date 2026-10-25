@@ -12,6 +12,7 @@
 		0DA5F0D8F3062B5216E6FB0F /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0A3674E023AC919CC79A13 /* RootView.swift */; };
 		1448430F5FCAB8C7DD32D7F3 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FDF18D8A4DB89B5573B18370 /* Foundation.framework */; };
 		17F5229A37958D0A6D745F39 /* papu.riv in Resources */ = {isa = PBXBuildFile; fileRef = 46177319ACB0DE734847656B /* papu.riv */; };
+		196FA1BDAA2DA90A29098FEE /* Invocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B30D15EA463FFE8C81518AAD /* Invocation.swift */; };
 		1B52AC8F463F6C67DBDB9007 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC16EA73F97548DC535D903F /* Models.swift */; };
 		1F9BBBC7004380F2F28D112C /* catalog.json in Resources */ = {isa = PBXBuildFile; fileRef = DA98CBEE816F92D149193630 /* catalog.json */; };
 		234BB9C0EA549D2CEC32DBE0 /* PapuPayApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47FC342D6FB5B867D1F310AA /* PapuPayApp.swift */; };
@@ -29,6 +30,7 @@
 		89905EF8F526F6312498F11A /* PapuPayApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47FC342D6FB5B867D1F310AA /* PapuPayApp.swift */; };
 		8AD005752B7AA2DC82BF2BEB /* PapuDisplay-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 95CA44D1EC6FC51DE8E4440C /* PapuDisplay-Bold.ttf */; };
 		91838EEF2626A432C92BA2C9 /* papu.riv in Resources */ = {isa = PBXBuildFile; fileRef = 46177319ACB0DE734847656B /* papu.riv */; };
+		91CDEBE552E68806BBB3E3E1 /* Invocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B30D15EA463FFE8C81518AAD /* Invocation.swift */; };
 		9834A5D2DEBB02A57C77A0EF /* MenuViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD402D249B4EC08D71B3497 /* MenuViews.swift */; };
 		AA75239026ABE4E10CCB96C5 /* PapuPayLiveActivity.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 03FCD8667DA8221F50F23888 /* PapuPayLiveActivity.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		BA1B0DE34F3E36F0354A1C33 /* SVGShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C3BE65B13F47EFF59E66A51 /* SVGShape.swift */; };
@@ -128,6 +130,7 @@
 		93808F68CB432087ED8F8D5F /* PapuPayClip.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PapuPayClip.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		95CA44D1EC6FC51DE8E4440C /* PapuDisplay-Bold.ttf */ = {isa = PBXFileReference; includeInIndex = 1; path = "PapuDisplay-Bold.ttf"; sourceTree = "<group>"; };
 		AC16EA73F97548DC535D903F /* Models.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		B30D15EA463FFE8C81518AAD /* Invocation.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Invocation.swift; sourceTree = "<group>"; };
 		B728632C20FC373B68A89D02 /* map.json */ = {isa = PBXFileReference; includeInIndex = 1; path = map.json; sourceTree = "<group>"; };
 		BD1BF23C854B5F4197C2E55D /* DemoViews.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DemoViews.swift; sourceTree = "<group>"; };
 		C44CE88B7632CDB567C1F272 /* PapuPayClipLiveActivity.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = PapuPayClipLiveActivity.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -197,6 +200,7 @@
 				33C2043A1E5388036852F638 /* PapuOrderAttributes.swift */,
 				EE0A3674E023AC919CC79A13 /* RootView.swift */,
 				6C3BE65B13F47EFF59E66A51 /* SVGShape.swift */,
+				B30D15EA463FFE8C81518AAD /* Invocation.swift */,
 			);
 			name = Shared;
 			path = Shared;
@@ -441,6 +445,7 @@
 				0DA5F0D8F3062B5216E6FB0F /* RootView.swift in Sources */,
 				BA1B0DE34F3E36F0354A1C33 /* SVGShape.swift in Sources */,
 				89905EF8F526F6312498F11A /* PapuPayApp.swift in Sources */,
+				91CDEBE552E68806BBB3E3E1 /* Invocation.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -458,6 +463,7 @@
 				84814B3884A233CA19BE8C47 /* RootView.swift in Sources */,
 				674E6AE1EF469CDAAF83069A /* SVGShape.swift in Sources */,
 				234BB9C0EA549D2CEC32DBE0 /* PapuPayApp.swift in Sources */,
+				196FA1BDAA2DA90A29098FEE /* Invocation.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -514,14 +520,14 @@
 				COPY_PHASE_STRIP = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 5W4JVD497D;
 				ENABLE_BITCODE = NO;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = "PapuPayClipLiveActivity-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 0.1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.papupay.demo.Clip.LiveActivity;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.papupay.app.Clip.LiveActivity;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				STRIP_INSTALLED_PRODUCT = YES;
@@ -545,14 +551,14 @@
 				CODE_SIGN_ENTITLEMENTS = PapuPay.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 5W4JVD497D;
 				ENABLE_BITCODE = NO;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = "PapuPay-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 0.1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.papupay.demo;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.papupay.app;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = NO;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -572,14 +578,14 @@
 				CODE_SIGN_ENTITLEMENTS = PapuPayClip.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 5W4JVD497D;
 				ENABLE_BITCODE = NO;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = "PapuPayClip-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 0.1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.papupay.demo.Clip;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.papupay.app.Clip;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -600,14 +606,14 @@
 				CODE_SIGN_ENTITLEMENTS = PapuPayLiveActivity.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 5W4JVD497D;
 				ENABLE_BITCODE = NO;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = "PapuPayLiveActivity-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 0.1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.papupay.demo.LiveActivity;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.papupay.app.LiveActivity;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -628,14 +634,14 @@
 				CODE_SIGN_ENTITLEMENTS = PapuPayClipLiveActivity.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 5W4JVD497D;
 				ENABLE_BITCODE = NO;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = "PapuPayClipLiveActivity-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 0.1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.papupay.demo.Clip.LiveActivity;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.papupay.app.Clip.LiveActivity;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -777,14 +783,14 @@
 				COPY_PHASE_STRIP = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 5W4JVD497D;
 				ENABLE_BITCODE = NO;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = "PapuPayLiveActivity-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 0.1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.papupay.demo.LiveActivity;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.papupay.app.LiveActivity;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				STRIP_INSTALLED_PRODUCT = YES;
@@ -809,14 +815,14 @@
 				COPY_PHASE_STRIP = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 5W4JVD497D;
 				ENABLE_BITCODE = NO;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = "PapuPayClip-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 0.1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.papupay.demo.Clip;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.papupay.app.Clip;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				STRIP_INSTALLED_PRODUCT = YES;
@@ -842,14 +848,14 @@
 				COPY_PHASE_STRIP = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 5W4JVD497D;
 				ENABLE_BITCODE = NO;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = "PapuPay-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 0.1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.papupay.demo;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.papupay.app;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = NO;
 				STRIP_INSTALLED_PRODUCT = YES;

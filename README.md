@@ -20,13 +20,13 @@ npm run build
 npm run preview -w apps/web -- --host 0.0.0.0 --port 4173
 ```
 
-The React app works on Android, iPhone, and desktop browsers. It has no login and keeps demo state in local storage. Source repository: [Ahmad-Alaziz/PapuPay](https://github.com/Ahmad-Alaziz/PapuPay). Vercel deployment is configured at the repository root; see [deployment instructions](docs/DEPLOYMENT.md). The live demo is available at [papupay.vercel.app](https://papupay.vercel.app/?table=24), with automatic production deployments from `main`.
+The React app works on Android, iPhone, and desktop browsers. It has no login and keeps demo state in local storage. Source repository: [Ahmad-Alaziz/PapuPay](https://github.com/Ahmad-Alaziz/PapuPay). Vercel deployment is configured at the repository root; see [deployment instructions](docs/DEPLOYMENT.md). The live demo is available at [papupay.com](https://papupay.com/go/koszyki/24), with automatic production deployments from `main`.
 
 ## Run native iOS / App Clip
 
 Open `apps/ios/PapuPay.xcodeproj` in Xcode. Select **PapuPay** for the full app or **PapuPayClip** for the App Clip. The project contains separate Live Activity extensions for both. iOS 17+ is supported; native Liquid Glass appears on iOS 26+.
 
-Simulator builds need no development team. Physical iPhone builds need Apple signing. The Clip scheme already supplies `_XCAppClipURL=https://papupay.example/clip?venue=koszyki&table=24` for Xcode testing. Read [the complete iPhone and QR testing guide](docs/IPHONE-TESTING.md).
+Simulator builds need no development team. Physical iPhone builds need Apple signing. The Clip scheme already supplies `_XCAppClipURL=https://papupay.com/go/koszyki/24` for Xcode testing. Read [the complete iPhone and QR testing guide](docs/IPHONE-TESTING.md).
 
 ## Try the complete journey
 
@@ -70,3 +70,7 @@ python3 scripts/check-clip-size.py /path/to/Release-iphoneos/PapuPayClip.app --j
 Names and unit locations come from Hala Koszyki’s official directory. Menus, prices, food photos, allergens, order times and the table marker are illustrative. This is an independent concept, not an official Hala Koszyki service. Both apps use local state, not a backend. Payments, POS dispatch, push updates, and cross-device synchronization are intentionally simulated or absent. Native Live Activities are real, with updates driven by the foreground demo app; server push is a production integration.
 
 See [design and accessibility review](docs/DESIGN.md), [motion authorship](docs/MOTION.md), [asset provenance](docs/ASSETS.md), and [verification evidence](docs/verification/QA.md).
+
+## Domain and table QR links
+
+[Coming soon](https://papupay.com/) · [Web app](https://papupay.com/app) · [Koszyki table 24](https://papupay.com/go/koszyki/24). See [domain, QR and App Clip architecture](docs/DOMAIN-AND-QR.md).

@@ -1,10 +1,10 @@
 {
   "bundle": "PapuPayClip.app",
-  "uncompressedBytes": 11587148,
-  "decimalMB": 11.587,
-  "MiB": 11.05,
+  "uncompressedBytes": 11632013,
+  "decimalMB": 11.632,
+  "MiB": 11.093,
   "budgetBytes": 15000000,
-  "remainingBytes": 3412852,
+  "remainingBytes": 3367987,
   "passesRawSizeGate": true,
   "largestFiles": [
     {
@@ -13,7 +13,7 @@
     },
     {
       "path": "PapuPayClip",
-      "bytes": 3540704
+      "bytes": 3585576
     },
     {
       "path": "Assets.car",

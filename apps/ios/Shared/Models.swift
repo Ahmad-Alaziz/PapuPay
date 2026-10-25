@@ -43,6 +43,7 @@ struct CartLine: Codable, Identifiable, Hashable {
   var total: Int { (item.price + (extra ? 500 : 0)) * quantity }
 }
 struct DemoOrder: Codable, Identifiable {
+  var venueId: String? = "koszyki"
   let id, restaurantId, table, name: String
   let lines: [CartLine]
   let total: Int
@@ -67,6 +68,7 @@ struct SavedState: Codable {
   @Published var favorites: Set<String> = [] { didSet { save() } }
   @Published var english = false { didSet { save() } }
   @Published var table = "24"
+  @Published var invocationError = false
   @Published var selectedTab = 0
   @Published var mapRestaurant = "atom"
   @Published var showBasket = false
@@ -95,7 +97,7 @@ struct SavedState: Codable {
       let validRestaurants = Set(catalog.restaurants.map(\.id))
       cart = value.cart.filter { validItems.contains($0.itemId) && (1...20).contains($0.quantity) }
       orders = value.orders.filter {
-        validRestaurants.contains($0.restaurantId)
+        ($0.venueId ?? "koszyki") == "koszyki" && validRestaurants.contains($0.restaurantId)
           && $0.lines.allSatisfy {
             validItems.contains($0.itemId) && (1...20).contains($0.quantity)
           }
@@ -124,13 +126,17 @@ struct SavedState: Codable {
     }
   }
   func handle(_ url: URL) {
-    guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false) else { return }
-    if let raw = components.queryItems?.first(where: { $0.name == "table" })?.value,
-      let value = Int(raw), (1...999).contains(value)
-    {
-      table = String(value)
+    switch PapuInvocation.parse(url) {
+    case .table(_, let number):
+      table = number
+      invocationError = false
+      selectedTab = 0
+    case .orders:
+      selectedTab = 2
+    case .invalid:
+      showBasket = false
+      invocationError = true
     }
-    if components.path.contains("orders") || components.host == "orders" { selectedTab = 2 }
   }
   func add(_ item: Dish, quantity: Int = 1, extra: Bool = false, note: String = "") {
     let clean = String(note.trimmingCharacters(in: .whitespacesAndNewlines).prefix(180))
@@ -164,7 +170,7 @@ struct SavedState: Codable {
     }
   }
   func placeOrder(name: String) {
-    guard !cart.isEmpty else { return }
+    guard !cart.isEmpty, !invocationError else { return }
     let time = Date.now
     let ticket = String(UUID().uuidString.prefix(4)).uppercased()
     let next = groupedCart.enumerated().map { index, group in
