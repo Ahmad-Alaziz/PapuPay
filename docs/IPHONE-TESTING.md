@@ -63,7 +63,7 @@ python3 scripts/check-clip-size.py \
   /tmp/papupay-release/Build/Products/Release-iphoneos/PapuPayClip.app --json
 ```
 
-The successful cloud-signed archive measures **11.04 MB** including Rive, its Live Activity extension and signing material (`docs/verification/v7-signed-clip-size.json`). The earlier local unsigned device build is retained in `clip-size.json` as historical evidence. Keep margin for future content. Apple’s thinned size report remains the authoritative distribution measurement. Optimize imagery and fonts first; avoid bundling a full video or a large 3D engine. The order-journey `.riv` is about 352 KB. The new combo hero adds a 909 KB Rive scene, three optimized cutouts and matching still poses. The final signed size is checked again on every cloud upload.
+The successful cloud-signed archive measures **12.55 MB** including Rive, its Live Activity extension and signing material (`docs/verification/v8-signed-clip-size.json`). The earlier local unsigned device build is retained in `clip-size.json` as historical evidence. Keep margin for future content. Apple’s thinned size report remains the authoritative distribution measurement. Optimize imagery and fonts first; avoid bundling a full video or a large 3D engine. The order-journey `.riv` is about 352 KB. The vendor carousel uses a 652 KB Rive scene with ten compressed food cutouts and matching reduced-motion geometry. The simulator preview video is documentation only and is not bundled into the app. The final signed size is checked again on every cloud upload.
 
 ## Live Activity boundaries
 
@@ -83,6 +83,8 @@ At checkout, leave “Daj znać, gdy gotowe” enabled and allow notifications i
 The full app schedules local alerts through UserNotifications. The App Clip requests the temporary notification entitlement and accepts Apple's ephemeral authorization; see [Apple's App Clip notification guidance](https://developer.apple.com/documentation/AppClip/enabling-notifications-in-app-clips). This is a short-lived demo permission, not permanent push registration. A finite background task attempts to finish the short Live Activity demo. The OS can still suspend/terminate the app; production needs server-driven APNs updates. Browser alerts require permission and an open tab; the web UI states this limitation.
 
 
-## Three-kitchen combo
+## Kitchen carousel and multi-vendor combo
 
-On Discover, watch the ATOM burger gain The Fry fries and Na końcu tęczy ice cream. The one-shot introduction settles; tap the vendor cards or swipe to revisit each stage. With Reduce Motion enabled the matching still pose changes without travel. Choose “Zobacz ten zestaw” / “Explore this combo”, adjust quantities or notes, and explicitly add the selection. The real basket opens with separate kitchen groups. Choose Desserts to find Na końcu tęczy, and check its pickup route to unit 20. Vendor identities and food categories are verified; photography, portions, prices and ice-cream flavors are illustrative.
+On Discover, a large central dish is surrounded by kitchen windows. Watch the tour move one kitchen left, three right and two back. Drag either way, tap a window or use the arrows to take control; autoplay pauses. “Zobacz menu” / “Explore the menu” opens the selected kitchen. The play button resumes a tour from the current selection. With Reduce Motion enabled, a matching still replaces travel.
+
+Choose “Połącz trzy kuchnie” / “Build a three-kitchen combo” below the banner to review ATOM Burgers + The Fry + Na końcu tęczy. Adjust quantities or notes, then explicitly add the selection. The real basket opens with separate kitchen groups. Choose Desserts to find Na końcu tęczy and check its pickup route to unit 20. Vendor identities and food categories are verified; photography, portions, prices and ice-cream flavors are illustrative.

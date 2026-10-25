@@ -4,7 +4,7 @@ PapuPay can be built, signed and uploaded entirely on GitHub-hosted macOS runner
 
 ## Verified delivery — 25 October 2026
 
-Version **1.0 (8.1)** was signed, exported and uploaded successfully by [GitHub Actions run 40219410134](https://github.com/Ahmad-Alaziz/PapuPay/actions/runs/40219410134), from commit `dfff323971ce4e1024fd97f73b35be5780316c2b`. Apple finished processing the build. All four embedded bundle identifiers and versions passed packaging checks; 20 compiled invocation checks passed. The signed raw App Clip is **11,037,954 bytes (11.038 MB)** against the 15 MB gate, including the new Rive combo scene and its Live Activity extension. The final signed reports are preserved in `docs/verification/v7-signed-clip-size.json` and `v7-signed-archive-summary.json`. Earlier reports remain for provenance. Apple's thinned size report remains the final distribution measurement.
+Version **1.0 (9.1)** was signed, exported and uploaded successfully by [GitHub Actions run 40222769511](https://github.com/Ahmad-Alaziz/PapuPay/actions/runs/40222769511), from commit `1c8c24a576766a3fe9c43c4d17f23fea152f71af`. Apple finished processing the build. All four embedded bundle identifiers and versions passed packaging checks; 20 compiled invocation checks passed. The signed raw App Clip is **12,546,454 bytes (12.546 MB)** against the 15 MB gate, including the ten-kitchen Rive carousel and its Live Activity extension. The final signed reports are preserved in `docs/verification/v8-signed-clip-size.json` and `v8-signed-archive-summary.json`. Earlier reports remain for provenance. Apple's thinned size report remains the final distribution measurement.
 
 The dedicated App Manager team API key and distribution key are stored in the four environment secrets below. The `apple-signing` environment allows deployments from `main` only. The certificate and four profiles were created successfully and reused by the next run. Local Xcode remains signed out.
 
@@ -35,7 +35,7 @@ GitHub encrypts secrets at rest. The signing job creates a temporary keychain, t
 
 ## Test on an iPhone
 
-The **PapuPay Demo** internal group contains the account holder and the latest build **1.0 (8.1)**. Its verified status is **Testing**. Physical-device installation of 8.1 has not been observed. Automatic group distribution is off, so future builds require explicit assignment. No external beta group or public invitation link is enabled.
+The **PapuPay Demo** internal group contains the account holder and the latest build **1.0 (9.1)**. Its verified status is **Testing**. Physical-device installation of 9.1 has not been observed. Automatic group distribution is off, so future builds require explicit assignment. No external beta group or public invitation link is enabled.
 
 The build has saved Polish test instructions and two App Clip invocations:
 
