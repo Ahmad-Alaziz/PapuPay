@@ -30,8 +30,8 @@ Internal TestFlight builds are distributed to the PapuPay Demo group through Git
 
 ## Try the complete journey
 
-1. Open table 24. The banner builds a meal from ATOM, The Fry and Na końcu tęczy; swipe or tap a vendor to control it. “Jak to działa” / “How it works” opens the guided introduction.
-2. Choose “Zobacz ten zestaw” / “Explore this combo”, review quantities and kitchen notes, then explicitly add your selection to the basket.
+1. Open table 24. Swipe or tap the curved kitchen windows to preview a large dish from any of the ten demo vendors, then choose “Zobacz menu” / “Explore the menu”. “Jak to działa” / “How it works” opens the guided introduction.
+2. The secondary “Burger + frytki + lody” / “Burger + fries + ice cream” action opens a three-kitchen combo review. Edit quantities and kitchen notes, then explicitly add your selection to the basket.
 3. Browse the ten demo kitchens, search dishes, filter cuisines or vegetarian options, and customize a Smash Burger or add a ramen from KAGO.
 4. Place a **demo** order. There is no charge and nothing is sent to a restaurant.
 5. Watch each kitchen progress: the first is ready in 12 seconds, all ten within 30 seconds. Enable ready alerts at checkout. In native iOS, inspect the real Lock Screen Live Activity and Dynamic Island.
@@ -43,7 +43,7 @@ Internal TestFlight builds are distributed to the PapuPay Demo group through Git
 - React + TypeScript + Vite, responsive layouts, Polish/English, accessible native HTML dialogs.
 - SwiftUI app and App Clip, native tab navigation and sheets, haptics, ActivityKit / WidgetKit.
 - Shared catalog and official hall geometry, ten demo kitchens, menu customization, multi-venue checkout, persisted order tickets and pickup.
-- Interactive Rive combo banner: an ATOM burger, The Fry fries and Na końcu tęczy ice cream assemble into one meal, with editable review before adding to the basket.
+- Curved carousel of ten kitchen windows with one large photographic dish, directional Rive transitions, drag/tap control and a menu action for the selected vendor. A secondary three-kitchen combo has editable review before adding to the basket.
 - Original dimensional papaya artwork and custom Rive state machine: scanner, food bag, cooking cloche and ready receipt, with pointer response. Editable Rive source is included.
 - Heavy DM Sans headings, Anton poster accents and a Fredoka **PapuPay** wordmark; system text styles on iOS.
 - Size gate, domain tests, source provenance, and verification notes.
@@ -56,7 +56,7 @@ Internal TestFlight builds are distributed to the PapuPay Demo group through Git
 | `apps/ios` | Xcode project, shared SwiftUI, app, Clip and widgets |
 | `packages/catalog` | Restaurant/menu data and hall map |
 | `packages/motion/papupay` | Editable order-journey Rive project |
-| `packages/motion/combo` | Current three-vendor Rive scene, generated food assets and interaction contract |
+| `packages/motion/combo` | Ten-vendor Rive foreground, generated food assets, fallback geometry and interaction contract |
 | `packages/motion/table` | Archived shared-table motion exploration |
 | `packages/brand` | Master artwork and licensed font sources |
 | `scripts` | Font preparation, Rive authoring, Xcode generation and size check |

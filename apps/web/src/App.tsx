@@ -553,6 +553,7 @@ export default function App({ context }: { context: OrderContext }) {
                     locale={locale}
                     table={table}
                     onBrowse={browse}
+                    onVendor={(id) => setRestaurant(restaurantFor(id))}
                     cart={cart}
                     onAddCombo={(items) => {
                       setStore(s => ({ ...s, cart: items.reduce((lines, item) => addLine(lines, item.itemId, item.quantity, item.extra, item.note), s.cart) }));

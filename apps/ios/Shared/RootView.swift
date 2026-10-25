@@ -150,12 +150,9 @@ struct DiscoverView: View {
   }
   var body: some View {
     GeometryReader { viewport in
-      ScrollViewReader { reader in
-        ScrollView {
+      ScrollView {
           VStack(spacing: 0) {
-            CravingSpotlight(
-              showTour: $showTour,
-              browse: { withAnimation(.smooth) { reader.scrollTo("restaurants", anchor: .top) } })
+            CravingSpotlight(showTour: $showTour)
             VStack(alignment: .leading, spacing: 20) {
               Text(store.text("Co dziś jesz?", "What’s your craving?"))
                 .font(Papu.display(32)).fixedSize(horizontal: false, vertical: true).id(
@@ -279,7 +276,6 @@ struct DiscoverView: View {
             }.padding(20).padding(.bottom, 15)
           }.frame(width: viewport.size.width)
         }.scrollDismissesKeyboard(.interactively)
-      }
     }
     .onChange(of: store.completedCheckoutID) { _, _ in
       selectedRestaurant = nil
@@ -384,24 +380,36 @@ struct SmallDishCard: View {
 }
 
 
-/// Three real Koszyki kitchens combine into one meal, without changing the cart.
+/// A curved window into the hall: each kitchen has one large, photograph-led moment.
 private struct CravingSpotlight: View {
   @EnvironmentObject var store: PapuStore
   @Environment(\.dynamicTypeSize) private var typeSize
   @Environment(\.accessibilityReduceMotion) private var reduceMotion
+  @Environment(\.accessibilityVoiceOverEnabled) private var voiceOver
   @Environment(\.scenePhase) private var phase
   @ScaledMetric(relativeTo: .body) private var introFontSize: CGFloat = 14
   @Binding var showTour: Bool
-  var browse: () -> Void
-  @State private var stage = 0
+  @State private var position = 0
+  @State private var direction = 1
+  @State private var dragOffset: CGFloat = 0
+  @State private var lastSwipe = Date.distantPast
   @State private var visible = true
-  @State private var autoplayFinished = false
+  @State private var autoplayStopped = false
+  @State private var autoStep = 0
+  @State private var autoplayOrigin = 0
   @State private var showCombo = false
+  @State private var selectedRestaurant: Restaurant?
   @State private var openBasketAfterReview = false
+  private var foods: [PapuCarouselFood] { PapuCarouselFood.all }
+  private func index(_ value: Int) -> Int { (value % foods.count + foods.count) % foods.count }
+  private var stage: Int { index(position) }
+  private var selectedFood: PapuCarouselFood { foods[stage] }
+  private var restaurant: Restaurant? { store.catalog.restaurants.first { $0.id == selectedFood.vendorID } }
+  private var dish: Dish? { store.catalog.items.first { $0.restaurantId == selectedFood.vendorID } }
   private var animationActive: Bool {
-    visible && phase == .active && store.selectedTab == 0 && !showCombo && !showTour
+    visible && phase == .active && store.selectedTab == 0 && !showCombo && selectedRestaurant == nil && !showTour
   }
-  private var autoplayActive: Bool { animationActive && !reduceMotion && !autoplayFinished }
+  private var autoplayActive: Bool { animationActive && !reduceMotion && !voiceOver && !autoplayStopped }
   var body: some View {
     VStack(alignment: .leading, spacing: 12) {
       HStack(spacing: 8) {
@@ -418,69 +426,120 @@ private struct CravingSpotlight: View {
           .lineLimit(typeSize.isAccessibilitySize ? nil : 1).minimumScaleFactor(0.75)
           .fixedSize(horizontal: false, vertical: true)
         Text(store.text(
-          "Burger z ATOM, frytki z The Fry, lody z Na końcu tęczy. Trzy kuchnie, jedna płatność.",
-          "An ATOM burger, The Fry fries, Na końcu tęczy gelato. Three kitchens, one checkout."))
+          "Różne kuchnie, wspólny apetyt. Wybieraj z całej hali i zamawiaj w jednym koszyku.",
+          "Different kitchens, one shared appetite. Find your favourites and order them together."))
           .font(.system(size: introFontSize)).foregroundStyle(Papu.muted)
           .fixedSize(horizontal: false, vertical: true)
       }
       GeometryReader { geometry in
         let width = geometry.size.width
         ZStack(alignment: .top) {
-          PapuComboScene(stage: stage, active: animationActive)
-            .frame(width: width, height: width * 560 / 720)
-            .offset(y: width * 80 / 720)
-          ForEach(0..<3, id: \.self) { index in
-            vendorCard(index, width: width)
+          RadialGradient(colors: [Color(hex: "416A43"), Papu.ink], center: UnitPoint(x: 0.5, y: 0.58), startRadius: 4, endRadius: width * 0.7)
+          ForEach(Array((position - 4)...(position + 4)), id: \.self) { slot in
+            vendorWindow(slot: slot, width: width)
           }
+          PapuCarouselScene(stage: stage, direction: direction, active: animationActive)
+            .frame(width: width, height: width * 640 / 720)
+            .offset(x: reduceMotion ? 0 : dragOffset * 0.13)
+            .zIndex(20)
+          HStack(spacing: 8) {
+            Text(store.text("10 KUCHNI · JEDEN KOSZYK", "10 KITCHENS · ONE BASKET"))
+              .font(.system(size: 11, weight: .semibold)).tracking(1)
+            Spacer(minLength: 4)
+            if !reduceMotion && !voiceOver {
+              Button {
+                if autoplayStopped { autoplayOrigin = position; autoStep = 0 }
+                autoplayStopped.toggle()
+              } label: {
+                Image(systemName: autoplayStopped ? "play.fill" : "pause.fill")
+                  .font(.system(size: 11, weight: .semibold)).frame(width: 44, height: 44)
+              }.buttonStyle(.plain)
+                .accessibilityLabel(store.text(autoplayStopped ? "Włącz animację" : "Wstrzymaj animację", autoplayStopped ? "Play carousel" : "Pause carousel"))
+            }
+          }.foregroundStyle(Papu.butter.opacity(0.85)).padding(.leading, 17).padding(.trailing, 3).padding(.top, 2).zIndex(30)
+          Text(store.text("Przesuń i poznaj kuchnie", "Swipe to explore the kitchens"))
+            .font(Papu.body(11).weight(.medium)).foregroundStyle(Papu.butter.opacity(0.8))
+            .position(x: width / 2, y: width * 610 / 720).zIndex(30).allowsHitTesting(false)
         }.frame(width: width, height: geometry.size.height)
           .contentShape(Rectangle())
-          .simultaneousGesture(DragGesture(minimumDistance: 24).onEnded { value in
+          .simultaneousGesture(DragGesture(minimumDistance: 16).onChanged { value in
             guard abs(value.translation.width) > abs(value.translation.height) else { return }
-            choose(max(0, min(2, stage + (value.translation.width < 0 ? 1 : -1))))
+            autoplayStopped = true
+            lastSwipe = Date()
+            dragOffset = value.translation.width
+          }.onEnded { value in
+            guard abs(value.translation.width) > abs(value.translation.height), abs(value.translation.width) > 24 else {
+              withAnimation(reduceMotion ? nil : .easeOut(duration: 0.2)) { dragOffset = 0 }
+              return
+            }
+            lastSwipe = Date()
+            let projected = value.predictedEndTranslation.width
+            let distance = max(1, min(3, Int((abs(projected) / (width * 0.38)).rounded())))
+            select(position + (value.translation.width < 0 ? distance : -distance), manual: true)
           })
-      }.aspectRatio(720.0 / 650.0, contentMode: .fit)
-        .background(Papu.ink, in: RoundedRectangle(cornerRadius: 22))
+      }.aspectRatio(720.0 / 640.0, contentMode: .fit)
         .clipShape(RoundedRectangle(cornerRadius: 22))
         .modifier(ComboVisibilityObserver(visible: $visible))
-      HStack(spacing: 10) {
+      HStack(spacing: 12) {
+        carouselArrow(-1)
+        VStack(spacing: 3) {
+          Text(restaurant?.name ?? "").font(Papu.display(21)).lineLimit(2).multilineTextAlignment(.center)
+          if let dish {
+            Text(store.text(dish.name, dish.nameEn)).font(Papu.body(12)).foregroundStyle(Papu.muted)
+              .lineLimit(2).multilineTextAlignment(.center)
+          }
+        }.frame(maxWidth: .infinity, minHeight: 48).id(stage)
+          .transition(.opacity.combined(with: .offset(y: reduceMotion ? 0 : 5)))
+          .accessibilityElement(children: .combine)
+        carouselArrow(1)
+      }.animation(reduceMotion ? nil : .easeInOut(duration: 0.22), value: stage)
+        .padding(.top, 2)
+      Button {
+        autoplayStopped = true
+        selectedRestaurant = restaurant
+      } label: {
+        HStack(spacing: 9) {
+          Text(store.text("Zobacz menu", "View menu"))
+          Image(systemName: "arrow.up.right")
+        }.font(Papu.body(15).weight(.semibold)).frame(maxWidth: .infinity, minHeight: 50)
+          .foregroundStyle(Papu.butter).background(Papu.ink, in: Capsule())
+      }.buttonStyle(PressStyle())
+        .accessibilityLabel(store.text("Zobacz menu: ", "View menu: ") + (restaurant?.name ?? ""))
+      HStack(spacing: 8) {
         Button {
-          autoplayFinished = true
+          autoplayStopped = true
           showCombo = true
         } label: {
           HStack(spacing: 7) {
-            Text(store.text("Zobacz ten zestaw", "Explore this combo"))
-            Image(systemName: "arrow.up.right")
-          }.font(Papu.body(14).weight(.semibold)).lineLimit(1).minimumScaleFactor(0.85)
-            .frame(maxWidth: .infinity, minHeight: 50)
-            .foregroundStyle(Papu.butter).background(Papu.ink, in: Capsule())
-        }.buttonStyle(PressStyle())
-        Button(action: browse) {
-          Image(systemName: "arrow.down").font(.system(size: 17, weight: .semibold))
-            .frame(width: 50, height: 50).background(Papu.butter, in: Circle())
-        }.buttonStyle(PressStyle())
-          .accessibilityLabel(store.text("Wszystkie kuchnie", "All kitchens"))
-      }
-      HStack(spacing: 7) {
-        Text(store.text("Przykładowy zestaw · odbiór w lokalach", "Demo combo · collect at each kitchen"))
-          .font(Papu.body(11)).foregroundStyle(Papu.muted)
+            Image(systemName: "basket")
+            Text(store.text("Połącz trzy kuchnie", "Mix three kitchens"))
+            Image(systemName: "arrow.up.right").font(.system(size: 10, weight: .semibold))
+          }.font(Papu.body(13).weight(.semibold)).frame(minHeight: 44)
+        }.buttonStyle(.plain)
         Spacer(minLength: 0)
-        Button { showTour = true } label: {
+        Button { autoplayStopped = true; showTour = true } label: {
           Image(systemName: "questionmark.circle").frame(width: 44, height: 44)
         }.buttonStyle(.plain).accessibilityLabel(store.text("Jak to działa?", "How it works"))
-      }.padding(.top, -7)
+      }.foregroundStyle(Papu.green).padding(.top, -7)
     }.padding(.horizontal, 20).padding(.top, 16).padding(.bottom, 8)
       .onDisappear { visible = false }
-      .task(id: reduceMotion) {
-        if reduceMotion { stage = 2; autoplayFinished = true }
-      }
       .task(id: autoplayActive) {
-        guard autoplayActive, stage < 2 else { return }
-        for nextStage in (stage + 1)...2 {
-          do { try await Task.sleep(for: .milliseconds(nextStage == 1 ? 1600 : 1800)) } catch { return }
+        guard autoplayActive else { return }
+        let targets = [autoplayOrigin - 1, autoplayOrigin + 2, autoplayOrigin]
+        let durations = [1.4, 1.8, 1.6]
+        while !Task.isCancelled, autoplayActive {
+          do { try await Task.sleep(for: .milliseconds(autoStep == 0 ? 4000 : 2400)) } catch { return }
           guard !Task.isCancelled, autoplayActive else { return }
-          stage = nextStage
+          let duration = durations[autoStep]
+          select(targets[autoStep], manual: false, duration: duration)
+          autoStep = (autoStep + 1) % targets.count
+          do { try await Task.sleep(for: .milliseconds(Int(duration * 1000))) } catch { return }
         }
-        autoplayFinished = true
+      }
+      .onChange(of: store.completedCheckoutID) { _, _ in selectedRestaurant = nil }
+      .sheet(item: $selectedRestaurant) {
+        RestaurantView(restaurant: $0).environmentObject(store).presentationDetents([.large])
+          .presentationCornerRadius(30)
       }
       .sheet(isPresented: $showCombo, onDismiss: {
         if openBasketAfterReview {
@@ -494,39 +553,73 @@ private struct CravingSpotlight: View {
         }.environmentObject(store).presentationDetents([.large]).presentationCornerRadius(30)
       }
   }
-  private func choose(_ value: Int) {
-    autoplayFinished = true
-    guard stage != value else { return }
-    stage = value
-    UISelectionFeedbackGenerator().selectionChanged()
+  private func select(_ value: Int, manual: Bool, duration: Double = 0.7) {
+    if manual { autoplayStopped = true }
+    guard value != position else {
+      withAnimation(reduceMotion ? nil : .easeOut(duration: 0.2)) { dragOffset = 0 }
+      return
+    }
+    direction = value > position ? 1 : -1
+    withAnimation(reduceMotion ? nil : .timingCurve(0.22, 0.75, 0.18, 1, duration: duration)) {
+      position = value
+      dragOffset = 0
+    }
+    if manual { UISelectionFeedbackGenerator().selectionChanged() }
   }
-  private func vendorCard(_ index: Int, width: CGFloat) -> some View {
-    let relative = (index - stage + 4) % 3 - 1
-    let active = relative == 0
-    let name = ["ATOM", "The Fry", "Na końcu tęczy"][index]
-    let subtitle = ["Smash Burger", store.text("+ frytki", "+ fries"), store.text("+ lody", "+ gelato")][index]
-    return Button { choose(index) } label: {
-      VStack(spacing: 4) {
-        Text(name).font(Papu.display(active ? 17 : 14)).lineLimit(2)
-          .minimumScaleFactor(0.85).multilineTextAlignment(.center)
-        Text(subtitle).font(Papu.body(11).weight(.medium)).lineLimit(1).minimumScaleFactor(0.8)
-      }.padding(.horizontal, 7).padding(.bottom, active ? 8 : 0)
-        .frame(width: width * (active ? 0.35 : 0.28), height: active ? 72 : 63)
-        .foregroundStyle(Papu.ink)
-        .background(active ? Papu.butter : Color(hex: "DFE6D2"), in: RoundedRectangle(cornerRadius: 15))
-        .overlay(alignment: .bottom) {
-          if active { Capsule().fill(Papu.orange).frame(width: 22, height: 3).offset(y: -6) }
-        }.shadow(color: .black.opacity(active ? 0.15 : 0.08), radius: active ? 12 : 5, y: 6)
+  private func carouselArrow(_ delta: Int) -> some View {
+    Button { select(position + delta, manual: true) } label: {
+      Image(systemName: delta < 0 ? "chevron.left" : "chevron.right")
+        .font(.system(size: 14, weight: .semibold)).frame(width: 44, height: 44)
+        .background(Papu.butter, in: Circle())
     }.buttonStyle(PressStyle())
-      .rotationEffect(.degrees(Double(relative) * 10))
-      .position(x: width * (0.5 + CGFloat(relative) * 0.32), y: active ? 51 : 42)
-      .zIndex(active ? 2 : 1)
-      .animation(reduceMotion ? nil : .spring(response: 0.7, dampingFraction: 0.85), value: stage)
-      .accessibilityLabel(["ATOM Smash Burger", "The Fry", "Na końcu tęczy"][index] + ", " + subtitle)
-      .accessibilityAddTraits(active ? .isSelected : [])
+      .accessibilityLabel(store.text(delta < 0 ? "Poprzednia kuchnia" : "Następna kuchnia", delta < 0 ? "Previous kitchen" : "Next kitchen"))
   }
-
+  private func vendorWindow(slot: Int, width: CGFloat) -> some View {
+    let food = foods[index(slot)]
+    let vendor = store.catalog.restaurants.first { $0.id == food.vendorID }
+    let relative = Double(slot - position) + Double(dragOffset / (width * 0.36))
+    return Button {
+      guard Date().timeIntervalSince(lastSwipe) > 0.25 else { return }
+      select(slot, manual: true)
+    } label: {
+      VStack(spacing: 0) {
+        Image(food.imageName).resizable().scaledToFit().padding(.horizontal, 6).frame(height: width * 0.22)
+          .accessibilityHidden(true)
+        Text(vendor?.name ?? "").font(Papu.display(14)).lineLimit(2).minimumScaleFactor(0.8)
+          .multilineTextAlignment(.center).frame(maxWidth: .infinity, minHeight: width * 0.065)
+          .padding(.horizontal, 5).padding(.bottom, 8)
+      }.frame(width: width * 0.305, height: width * 0.33)
+        .foregroundStyle(Papu.ink).background(Papu.butter, in: RoundedRectangle(cornerRadius: 16))
+        .shadow(color: .black.opacity(0.18), radius: 10, y: 8)
+    }.buttonStyle(.plain)
+      .modifier(VendorWindowArc(relative: relative, width: width))
+      .zIndex(10 - abs(Double(slot - position)))
+      .accessibilityLabel(vendor?.name ?? "")
+      .accessibilityAddTraits(slot == position ? .isSelected : [])
+      .accessibilityHidden(abs(slot - position) > 1)
+  }
 }
+
+/// Interpolating the track parameter (rather than x/y endpoints) keeps every window on the arc.
+private struct VendorWindowArc: AnimatableModifier {
+  var relative: Double
+  let width: CGFloat
+  var animatableData: Double {
+    get { relative }
+    set { relative = newValue }
+  }
+  func body(content: Content) -> some View {
+    let distance = abs(relative)
+    let x = 0.5 + 0.389 * relative / (1 + 0.08 * relative * relative)
+    let y = 0.31 + 0.12 * pow(min(distance, 3), 1.7)
+    let scale = max(0.58, 0.98 - 0.13 * distance)
+    return content.scaleEffect(scale)
+      .rotationEffect(.degrees(max(-38, min(38, relative * 14))))
+      .opacity(min(1, distance * 1.6) * (distance <= 2.3 ? 1 : max(0, 1 - (distance - 2.3) / 0.7)))
+      .position(x: width * x, y: width * 640 / 720 * y)
+  }
+}
+
 private struct ComboVisibilityObserver: ViewModifier {
   @Binding var visible: Bool
   @ViewBuilder func body(content: Content) -> some View {

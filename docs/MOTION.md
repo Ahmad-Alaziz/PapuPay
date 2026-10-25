@@ -4,15 +4,17 @@
 
 ## The opening
 
-The banner demonstrates one meal assembled across three actual Hala Koszyki kitchens: **ATOM Smash Burger (08), The Fry Belgian fries (07), Na końcu tęczy ice cream (20)**. Photographic cutouts join a shared composition while curved vendor cards move into focus. Earlier dishes remain visible. The headline stays **CAŁA HALA / JEDEN KOSZYK**, with its second line in **#B7471B** on web and native.
+One large photographic dish sits in front of a curved carousel containing all ten demo vendors. The kitchen windows move together with linked position, depth, scale and rotation. Selecting a window changes the food, vendor caption and menu destination together. The headline stays **CAŁA HALA / JEDEN KOSZYK**, with its second line in **#B7471B** on web and native. Cuisine filters remain in the catalog.
 
-The custom Rive artboard and state machine are both `PapuCombo`; number property `PapuComboModel.stage` selects burger (0), burger + fries (1), or the complete meal (2). The visible, active introduction advances at approximately 1.6 and 3.4 seconds, using 700 ms cubic transitions, then holds. There is no idle loop. Manual swipe or vendor tap cancels automatic progression. Hosts pause Rive while inactive and when resting; Reduced Motion and load failure show the matching exported still.
+The host retains an unbounded carousel position. Its introductory route `0 → -1 → 2 → 0` moves one window left, three right, then returns: ATOM → Na końcu tęczy → Semolino → ATOM. It begins after approximately 2.1 seconds, waits about four seconds between the following sweeps and rests longer after returning. Pause/resume, drag, window tap and previous/next controls provide explicit control; manual interaction stops automatic advancement. Autoplay pauses offscreen, in the background and during combo review. Reduced Motion disables autoplay and uses transparent fallback images with the same settled geometry.
 
-Vendor labels and controls stay outside the canvas. **Explore this combo** opens editable quantities, kitchen notes and available extras. It does not add anything automatically. **Add to basket** explicitly adds the reviewed selection and opens the grouped basket; ordering remains a separate checkout action. **All kitchens** scrolls to the ten-kitchen catalog, where cuisine filtering remains.
+The Rive artboard/state machine remains `PapuCombo`, now 720 × 640 with a transparent background. `PapuComboModel.stage` selects vendors 0–9; `direction` is set first to select left/right entry. Arrival takes 700 ms; departure takes 280 ms. At rest there is one dish and no idle Rive loop. The foreground pauses after settling; host windows and accessible controls remain native/HTML UI. `fallback-layout.json` normalizes each picture by its visible bounds so loading, failure and Reduced Motion match the Rive composition without an opaque layer hiding the windows.
+
+**Explore the menu** opens the selected vendor. A separate **Burger + fries + ice cream** action retains the ATOM/The Fry/Na końcu tęczy combo review with editable quantities, notes and extras. Only **Add to basket** changes the basket; ordering remains a separate checkout action. **All kitchens** scrolls to the ten-kitchen catalog.
 
 ## Research and decisions
 
-The following references informed the motion system. The approved combo direction takes its carousel composition from the user-selected [Kumo matcha example](https://dribbble.com/shots/26971799-Kumo-Interactive-Matcha-Tea-Landing-Page-UI-UX) and connects each movement to adding another kitchen to the meal:
+The following references informed the motion system. The current carousel follows the user-selected [Kumo matcha example](https://dribbble.com/shots/26971799-Kumo-Interactive-Matcha-Tea-Landing-Page-UI-UX): a large central food image, curved windows and linked transitions that reveal the selected kitchen:
 
 | Reference | Useful principle |
 | --- | --- |
@@ -28,15 +30,16 @@ The following references informed the motion system. The approved combo directio
 | [Apple: Live Activities](https://developer.apple.com/design/human-interface-guidelines/live-activities) | Consistent margins, bounded compact/minimal layouts and state transitions help glanceability. |
 | [Motion: Accessibility](https://motion.dev/docs/react-accessibility) | Reduced Motion can preserve simple opacity feedback while removing large transforms and parallax. |
 
-No marketplace file was bought, copied or bundled. `PapuCombo` is an original Rive composition with newly generated food photography. The existing custom Rive journey remains in onboarding and order illustrations. Motion and SwiftUI handle UI feedback and accessible controls; no second animation runtime was added for Lottie.
+No marketplace file was bought, copied or bundled. `PapuCombo` is an original Rive composition with generated category photography, including two reused brand-source cutouts. The existing custom Rive journey remains in onboarding and order illustrations. Motion and SwiftUI handle UI feedback and accessible controls; no second animation runtime was added for Lottie.
 
 ## Implemented interaction plan
 
 | Moment | Behavior | Boundary |
 | --- | --- | --- |
-| Discovery opens | Burger → burger + fries → complete meal, with the corresponding real vendor in focus. | Stages at approximately 0/1.6/3.4 s; each transition 700 ms, then hold. |
-| Banner swipe or vendor tap | Select a composition stage and cancel the automatic sequence. | Interruptible transitions; matching still with Reduced Motion. |
-| Explore this combo | Review quantities, extras and notes before explicitly adding to the basket. | No automatic cart mutation or order; zero quantity omits a dish. |
+| Discovery opens | Curved windows sweep left, right and back around one large featured dish. | Ten vendors; a pause/resume control; no autoplay under Reduced Motion. |
+| Banner drag, arrow or window tap | Select a kitchen and cancel automatic advancement. | Continuous window movement, 700 ms food arrival / 280 ms departure; matching transparent fallback. |
+| Explore the menu | Open the selected vendor’s actual demo menu. | Independent of catalog cuisine filters; no basket mutation. |
+| Secondary combo review | Review ATOM burger, The Fry fries and Na końcu tęczy ice cream quantities, extras and notes before adding. | No automatic cart mutation or order; zero quantity omits a dish. |
 | Add a dish | Plus becomes a check immediately. On web a 48 px food image travels from its visible source to an actual visible basket, followed by a basket pulse. | 420 ms flight, 240 ms pulse; rapid input replaces the prior flight. |
 | Cart success | Item, quantity, count and total remain visible in the active presentation. A persistent basket action follows transient feedback. | Understandable without motion; never hidden behind the modal. |
 | Kitchen becomes ready | The whole status row changes, progress fills and the ready check draws once. | Brief transition; order timers and notifications remain real app state. |
@@ -50,10 +53,10 @@ The Lock Screen card forced left-to-right layout but the Dynamic Island inherite
 ## Source and verification
 
 - Banner and review: `apps/web/src/CravingHero.tsx`, `ComboMotion.tsx`, `ComboReview.tsx`, `table-hero.css`, and native discovery/review views.
-- Combo Rive: `packages/motion/combo`, authored by `scripts/build-combo-motion.py`; artboard/state machine `PapuCombo`, VM `PapuComboModel.stage`. Its README records runtime validation, sources and asset provenance.
+- Carousel Rive: `packages/motion/combo`, authored by `scripts/build-combo-motion.py`; artboard/state machine `PapuCombo`, VM `PapuComboModel.stage` and `direction`. The 652,300-byte runtime embeds ten WebP images. Its README records scene validation and the fallback geometry contract.
 - Basket feedback: `AddGlyph.tsx`, `useBasketFlight.tsx`, native design-system controls.
 - Order feedback: `OrderTicket.tsx` and native order views.
 - Live Activity: `apps/ios/LiveActivity/PapuLiveActivity.swift`.
 - Existing Rive journey: `packages/motion/papupay`, generated by `scripts/build-motion.py`; artboard/state machine `Papu`, VM `PapuJourney` with `scene` and `pressed`; 351,982-byte export.
 
-The earlier table composition is archived; the shipping hero uses `PapuCombo`. Food photographs are generated category illustrations, not official vendor product images. Verification evidence remains in QA, including historical releases; current release checks must cover the combo review, all three vendors and unit 20 routing, Reduced Motion, browser interactions, native builds and the signed App Clip size gate. A successful build alone is not a claim of measured physical-device performance.
+The earlier table composition is archived; the shipping hero uses `PapuCombo`. Food photographs are generated category illustrations, not official vendor product images. Verification evidence remains in QA, including historical releases; current release checks must cover all ten carousel selections, selected-menu routing, the secondary combo review, unit 20 routing, Reduced Motion, browser interactions, native builds and the signed App Clip size gate. A successful build alone is not a claim of measured physical-device performance.

@@ -285,54 +285,79 @@ struct QuickAddButton: View {
 }
 
 
-/// A bundled three-stage meal composition. It renders only during state transitions.
-@MainActor private enum PapuComboAsset {
+/// Matching photo geometry for Rive, Reduce Motion, and an unavailable renderer.
+struct PapuCarouselFood {
+  let vendorID, imageName: String
+  let imageWidth, imageHeight, centerX, centerY: CGFloat
+  static let all: [PapuCarouselFood] = [
+    .init(vendorID: "atom", imageName: "combo-burger", imageWidth: 565.1214, imageHeight: 565.1214, centerX: 351.7219, centerY: 373.532),
+    .init(vendorID: "kago", imageName: "carousel-ramen", imageWidth: 501.7372, imageHeight: 501.7372, centerX: 359.02, centerY: 356.3697),
+    .init(vendorID: "semolino", imageName: "carousel-pizza", imageWidth: 534.4468, imageHeight: 534.4468, centerX: 359.4781, centerY: 375.8455),
+    .init(vendorID: "curry", imageName: "carousel-curry", imageWidth: 541.2262, imageHeight: 541.2262, centerX: 359.4715, centerY: 367.0402),
+    .init(vendorID: "gringo", imageName: "carousel-tacos", imageWidth: 535.5649, imageHeight: 535.5649, centerX: 354.7699, centerY: 411.0042),
+    .init(vendorID: "tuktuk", imageName: "carousel-noodles", imageWidth: 526.749, imageHeight: 526.749, centerX: 358.9712, centerY: 374.5267),
+    .init(vendorID: "bibimbar", imageName: "carousel-bowl", imageWidth: 557.7342, imageHeight: 557.7342, centerX: 359.4553, centerY: 340.1525),
+    .init(vendorID: "fry", imageName: "combo-fries", imageWidth: 528.9256, imageHeight: 528.9256, centerX: 361.0331, centerY: 379.9174),
+    .init(vendorID: "bar", imageName: "carousel-lemonade", imageWidth: 469.3333, imageHeight: 469.3333, centerX: 354.5, centerY: 358.25),
+    .init(vendorID: "tecza", imageName: "combo-gelato", imageWidth: 522.6914, imageHeight: 522.6914, centerX: 356.4269, centerY: 350.5104),
+  ]
+}
+
+@MainActor private enum PapuCarouselAsset {
   static let file = Task { () throws -> RiveRuntime.File in
     let worker = try await Worker()
-    return try await RiveRuntime.File(source: .local("papu-combo", Bundle.main), worker: worker)
+    return try await RiveRuntime.File(source: .local("papu-carousel", Bundle.main), worker: worker)
   }
 }
-@MainActor private final class ComboAnimation: ObservableObject {
+@MainActor private final class CarouselAnimation: ObservableObject {
   @Published var rive: Rive?
-  func load(stage: Int) async {
-    guard rive == nil else { set(stage); return }
+  func load(stage: Int, direction: Int) async {
+    guard rive == nil else { set(stage, direction: direction); return }
     do {
-      let file = try await PapuComboAsset.file.value
+      let file = try await PapuCarouselAsset.file.value
       let instance = try await file.createViewModelInstance(.viewModelDefault(from: .name("PapuComboModel")))
+      instance.setValue(of: NumberProperty(path: "direction"), to: Float(direction))
       instance.setValue(of: NumberProperty(path: "stage"), to: Float(stage))
       rive = try await Rive(file: file, dataBind: .instance(instance))
-    } catch { /* The equivalent still remains available if the renderer cannot load. */ }
+    } catch { /* Every kitchen still has its matching, bundled photograph. */ }
   }
-  func set(_ stage: Int) {
+  func set(_ stage: Int, direction: Int) {
+    // Direction must reach the state machine before its next selected kitchen.
+    rive?.viewModelInstance?.setValue(of: NumberProperty(path: "direction"), to: Float(direction))
     rive?.viewModelInstance?.setValue(of: NumberProperty(path: "stage"), to: Float(stage))
   }
 }
-struct PapuComboScene: View {
+struct PapuCarouselScene: View {
   @Environment(\.accessibilityReduceMotion) private var reduceMotion
-  @StateObject private var model = ComboAnimation()
+  @StateObject private var model = CarouselAnimation()
   @State private var settled = false
   @State private var poseReady = false
   let stage: Int
+  let direction: Int
   let active: Bool
-  private var playbackID: String { "\(stage)-\(active)-\(reduceMotion)" }
+  private var playbackID: String { "\(stage)-\(direction)-\(active)-\(reduceMotion)" }
+  private var photo: PapuCarouselFood { PapuCarouselFood.all[stage] }
   var body: some View {
-    Group {
+    ZStack {
+      GeometryReader { geometry in
+        let scale = geometry.size.width / 720
+        Image(photo.imageName).resizable().scaledToFit()
+          .frame(width: photo.imageWidth * scale, height: photo.imageHeight * scale)
+          .position(x: photo.centerX * scale, y: photo.centerY * scale)
+      }.opacity(model.rive != nil && poseReady && !reduceMotion ? 0 : 1)
       if let rive = model.rive, !reduceMotion {
-        ZStack {
-          Image("combo-stage-\(stage)").resizable().scaledToFit().opacity(poseReady ? 0 : 1)
-          RiveUIViewRepresentable(rive: rive).paused(!active || settled).frameRate(.fps(60))
-            .opacity(poseReady ? 1 : 0)
-        }
-      } else {
-        Image("combo-stage-\(stage)").resizable().scaledToFit()
+        RiveUIViewRepresentable(rive: rive).paused(!active || settled).frameRate(.fps(60))
+          .opacity(poseReady ? 1 : 0)
       }
     }.allowsHitTesting(false).accessibilityHidden(true)
+      .onChange(of: reduceMotion) { _, enabled in if enabled { poseReady = false } }
       .task(id: playbackID) {
         guard active, !reduceMotion else { return }
         settled = false
-        await model.load(stage: stage)
+        await model.load(stage: stage, direction: direction)
         guard !Task.isCancelled else { return }
         if !poseReady {
+          // A newly mounted machine starts at its entry pose; conceal that during restoration.
           do { try await Task.sleep(for: .milliseconds(760)) } catch { return }
           poseReady = true
           do { try await Task.sleep(for: .milliseconds(140)) } catch { return }

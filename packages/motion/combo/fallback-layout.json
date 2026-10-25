@@ -1,0 +1,210 @@
+{
+  "width": 720,
+  "height": 640,
+  "stageCount": 10,
+  "background": "transparent",
+  "entranceMs": 700,
+  "exitMs": 280,
+  "foods": [
+    {
+      "stage": 0,
+      "vendorId": "atom",
+      "file": "burger",
+      "sourceWidth": 512,
+      "sourceHeight": 512,
+      "alphaBounds": [
+        37,
+        76,
+        490,
+        434
+      ],
+      "imageWidth": 565.1214,
+      "imageHeight": 565.1214,
+      "centerX": 351.7219,
+      "centerY": 373.532,
+      "visibleWidth": 500.0,
+      "visibleHeight": 395.1435,
+      "sourceScale": 1.1037527593818985
+    },
+    {
+      "stage": 1,
+      "vendorId": "kago",
+      "file": "ramen",
+      "sourceWidth": 512,
+      "sourceHeight": 512,
+      "alphaBounds": [
+        16,
+        25,
+        498,
+        474
+      ],
+      "imageWidth": 501.7372,
+      "imageHeight": 501.7372,
+      "centerX": 359.02,
+      "centerY": 356.3697,
+      "visibleWidth": 472.3385,
+      "visibleHeight": 440.0,
+      "sourceScale": 0.9799554565701559
+    },
+    {
+      "stage": 2,
+      "vendorId": "semolino",
+      "file": "pizza",
+      "sourceWidth": 512,
+      "sourceHeight": 512,
+      "alphaBounds": [
+        17,
+        61,
+        496,
+        442
+      ],
+      "imageWidth": 534.4468,
+      "imageHeight": 534.4468,
+      "centerX": 359.4781,
+      "centerY": 375.8455,
+      "visibleWidth": 500.0,
+      "visibleHeight": 397.7035,
+      "sourceScale": 1.0438413361169103
+    },
+    {
+      "stage": 3,
+      "vendorId": "curry",
+      "file": "curry",
+      "sourceWidth": 512,
+      "sourceHeight": 512,
+      "alphaBounds": [
+        20,
+        76,
+        493,
+        448
+      ],
+      "imageWidth": 541.2262,
+      "imageHeight": 541.2262,
+      "centerX": 359.4715,
+      "centerY": 367.0402,
+      "visibleWidth": 500.0,
+      "visibleHeight": 393.2347,
+      "sourceScale": 1.0570824524312896
+    },
+    {
+      "stage": 4,
+      "vendorId": "gringo",
+      "file": "tacos",
+      "sourceWidth": 512,
+      "sourceHeight": 512,
+      "alphaBounds": [
+        22,
+        121,
+        500,
+        408
+      ],
+      "imageWidth": 535.5649,
+      "imageHeight": 535.5649,
+      "centerX": 354.7699,
+      "centerY": 411.0042,
+      "visibleWidth": 500.0,
+      "visibleHeight": 300.2092,
+      "sourceScale": 1.0460251046025104
+    },
+    {
+      "stage": 5,
+      "vendorId": "tuktuk",
+      "file": "noodles",
+      "sourceWidth": 512,
+      "sourceHeight": 512,
+      "alphaBounds": [
+        14,
+        81,
+        500,
+        446
+      ],
+      "imageWidth": 526.749,
+      "imageHeight": 526.749,
+      "centerX": 358.9712,
+      "centerY": 374.5267,
+      "visibleWidth": 500.0,
+      "visibleHeight": 375.5144,
+      "sourceScale": 1.02880658436214
+    },
+    {
+      "stage": 6,
+      "vendorId": "bibimbar",
+      "file": "bowl",
+      "sourceWidth": 512,
+      "sourceHeight": 512,
+      "alphaBounds": [
+        27,
+        66,
+        486,
+        467
+      ],
+      "imageWidth": 557.7342,
+      "imageHeight": 557.7342,
+      "centerX": 359.4553,
+      "centerY": 340.1525,
+      "visibleWidth": 500.0,
+      "visibleHeight": 436.8192,
+      "sourceScale": 1.0893246187363834
+    },
+    {
+      "stage": 7,
+      "vendorId": "fry",
+      "file": "fries",
+      "sourceWidth": 512,
+      "sourceHeight": 512,
+      "alphaBounds": [
+        13,
+        125,
+        497,
+        440
+      ],
+      "imageWidth": 528.9256,
+      "imageHeight": 528.9256,
+      "centerX": 361.0331,
+      "centerY": 379.9174,
+      "visibleWidth": 500.0,
+      "visibleHeight": 325.4132,
+      "sourceScale": 1.0330578512396693
+    },
+    {
+      "stage": 8,
+      "vendorId": "bar",
+      "file": "lemonade",
+      "sourceWidth": 512,
+      "sourceHeight": 512,
+      "alphaBounds": [
+        140,
+        7,
+        384,
+        487
+      ],
+      "imageWidth": 469.3333,
+      "imageHeight": 469.3333,
+      "centerX": 354.5,
+      "centerY": 358.25,
+      "visibleWidth": 223.6667,
+      "visibleHeight": 440.0,
+      "sourceScale": 0.9166666666666666
+    },
+    {
+      "stage": 9,
+      "vendorId": "tecza",
+      "file": "gelato",
+      "sourceWidth": 512,
+      "sourceHeight": 512,
+      "alphaBounds": [
+        63,
+        40,
+        456,
+        471
+      ],
+      "imageWidth": 522.6914,
+      "imageHeight": 522.6914,
+      "centerX": 356.4269,
+      "centerY": 350.5104,
+      "visibleWidth": 401.2065,
+      "visibleHeight": 440.0,
+      "sourceScale": 1.0208816705336428
+    }
+  ]
+}

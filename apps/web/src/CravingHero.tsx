@@ -1,77 +1,114 @@
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
-import { motion, useReducedMotion } from "motion/react";
-import { ArrowRight, Check, MoveHorizontal } from "lucide-react";
+import { animate, AnimatePresence, motion, useMotionValue, useReducedMotion, useTransform, type MotionValue } from "motion/react";
+import { ArrowLeft, ArrowRight, MoveHorizontal, Pause, Play, Layers3 } from "lucide-react";
 import ComboReview from "./ComboReview";
 import type { ComboSelection } from "./ComboReview";
-import type { CartLine, Locale } from "./domain";
+import { restaurants, menu, type CartLine, type Locale } from "./domain";
+import layout from "../../../packages/motion/combo/fallback-layout.json";
 import "./table-hero.css";
 
-const ComboMotion = lazy(() => import("./ComboMotion").catch(() => ({ default: function StaticCombo({ stage, onReady }: { stage: number; onReady: () => void }) {
-  useEffect(onReady, [onReady]);
-  return <div className="combo-motion"><img className="combo-still" src={"/assets/combo-stage-" + stage + ".webp"} alt="" /></div>;
+const ComboMotion = lazy(() => import("./ComboMotion").catch(() => ({ default: function Still({ stage, onReady }: { stage: number; onReady: () => void }) {
+  useEffect(onReady, [onReady]); return <FoodStill stage={stage} />;
 } })));
-const vendors = [
-  { name: "ATOM", detail: "Burgers & Deli", pl: "Smash Burger", en: "Smash Burger", unit: "08" },
-  { name: "The Fry", detail: "Belgian fries", pl: "+ frytki", en: "+ fries", unit: "07" },
-  { name: "Na końcu tęczy", detail: "Lody rzemieślnicze", pl: "+ lody", en: "+ ice cream", unit: "20" },
-];
-function seen() { try { return sessionStorage.getItem("papupay-combo-seen") === "yes"; } catch { return false; } }
-function remember() { try { sessionStorage.setItem("papupay-combo-seen", "yes"); } catch { /* Storage is optional. */ } }
+const count = layout.foods.length;
+const wrap = (n: number) => ((n % count) + count) % count;
+const distance = (n: number) => wrap(n + count / 2) - count / 2;
+const vendors = layout.foods.map(food => ({ ...food, restaurant: restaurants.find(r => r.id === food.vendorId)!, dish: menu.find(d => d.restaurantId === food.vendorId)! }));
+export function FoodStill({ stage }: { stage: number }) {
+  const f = layout.foods[stage];
+  return <div className="carousel-food-still" aria-hidden="true"><img src={"/assets/carousel-" + f.file + ".webp"} alt="" style={{ width: `${f.imageWidth / 720 * 100}%`, height: `${f.imageHeight / 640 * 100}%`, left: `${f.centerX / 720 * 100}%`, top: `${f.centerY / 640 * 100}%` }} /></div>;
+}
+function VendorWindow({ index, phase, width, selected, pl, onChoose }: { index: number; phase: MotionValue<number>; width: number; selected: number; pl: boolean; onChoose: () => void }) {
+  const vendor = vendors[index];
+  const delta = useTransform(phase, value => distance(index - value));
+  const x = useTransform(delta, value => value * width * (width < 600 ? .36 : .255));
+  const y = useTransform(delta, value => Math.pow(Math.abs(value), 1.65) * (width < 600 ? 20 : 28));
+  const rotate = useTransform(delta, value => value * 13);
+  const scale = useTransform(delta, value => Math.max(.64, 1 - Math.abs(value) * .10));
+  const opacity = useTransform(delta, value => Math.min(1, Math.abs(value) * 1.6, Math.max(0, (3.1 - Math.abs(value)) * 2)));
+  const hidden = index === selected || Math.abs(distance(index - selected)) > 2;
+  return <motion.button type="button" className="vendor-window" style={{ x, y, rotate, scale, opacity }}
+    aria-label={(pl ? "Pokaż " : "Preview ") + vendor.restaurant.name} aria-hidden={hidden} tabIndex={hidden ? -1 : 0} onClick={onChoose}>
+    <span className="vendor-window-number">{pl ? "LOKAL" : "COUNTER"} {String(vendor.restaurant.unit).padStart(2, "0")}</span>
+    <img src={"/assets/carousel-" + vendor.file + ".webp"} alt="" draggable="false" />
+    <strong>{vendor.restaurant.name}</strong>
+  </motion.button>;
+}
 
-export default function CravingHero({ locale, table, cart, onBrowse, onAddCombo }: {
-  locale: Locale; table: string; cart: CartLine[]; onBrowse: () => void; onAddCombo: (items: ComboSelection[]) => void;
+export default function CravingHero({ locale, table, cart, onBrowse, onVendor, onAddCombo }: {
+  locale: Locale; table: string; cart: CartLine[]; onBrowse: () => void; onVendor: (id: string) => void; onAddCombo: (items: ComboSelection[]) => void;
 }) {
   const reduced = !!useReducedMotion(), pl = locale === "pl";
-  const [stage, setStage] = useState(() => seen() || matchMedia("(prefers-reduced-motion: reduce)").matches ? 2 : 0);
-  const [manual, setManual] = useState(seen), [ready, setReady] = useState(false);
-  const [visible, setVisible] = useState(false), [foreground, setForeground] = useState(!document.hidden);
-  const [review, setReview] = useState(false);
-  const scene = useRef<HTMLDivElement>(null), gesture = useRef<{ x: number; y: number } | null>(null);
-  const suppressClick = useRef(false);
+  const [cursor, setCursor] = useState(0), [direction, setDirection] = useState(1), [revision, setRevision] = useState(0);
+  const [manual, setManual] = useState(false), [ready, setReady] = useState(false), [sequence, setSequence] = useState(0);
+  const [visible, setVisible] = useState(false), [foreground, setForeground] = useState(!document.hidden), [review, setReview] = useState(false);
+  const [width, setWidth] = useState(720);
+  const autoplayOrigin = useRef(0), focusSelection = useRef(false), menuAction = useRef<HTMLButtonElement>(null);
+  const scene = useRef<HTMLDivElement>(null), phase = useMotionValue(0);
+  const transport = useRef<{ stop: () => void } | null>(null);
+  const gesture = useRef<{ x: number; y: number; phase: number; dragging: boolean } | null>(null), suppressClick = useRef(false);
+  const stage = wrap(cursor), selected = vendors[stage], active = visible && foreground && !review;
   const markReady = useCallback(() => setReady(true), []);
-  const choose = (next: number) => { setManual(true); remember(); setStage((next + 3) % 3); };
+  const select = (next: number, byHand = true, travelDirection?: number) => {
+    if (byHand) setManual(true);
+    setDirection(travelDirection ?? (next >= cursor ? 1 : -1));
+    setCursor(next); setRevision(n => n + 1);
+  };
+  const step = (offset: number) => select(Math.round(phase.get()) + offset);
   useEffect(() => {
-    const observer = new IntersectionObserver(([entry]) => setVisible(entry.isIntersecting), { threshold: 0.2 });
-    if (scene.current) observer.observe(scene.current);
+    const observer = new IntersectionObserver(([entry]) => setVisible(entry.isIntersecting), { threshold: .25 });
+    const resize = new ResizeObserver(([entry]) => setWidth(entry.contentRect.width));
+    if (scene.current) { observer.observe(scene.current); resize.observe(scene.current); }
     const sync = () => setForeground(!document.hidden);
     document.addEventListener("visibilitychange", sync);
-    return () => { observer.disconnect(); document.removeEventListener("visibilitychange", sync); };
+    return () => { observer.disconnect(); resize.disconnect(); document.removeEventListener("visibilitychange", sync); };
   }, []);
   useEffect(() => {
-    if (manual || reduced || !ready || !visible || !foreground || review) return;
-    if (stage === 2) { remember(); return; }
-    const timer = setTimeout(() => setStage(s => Math.min(s + 1, 2)), stage === 0 ? 1600 : 1800);
+    transport.current?.stop();
+    if (reduced || !active) { phase.set(cursor); return; }
+    const travel = Math.abs(cursor - phase.get());
+    transport.current = animate(phase, cursor, { duration: Math.min(1.7, .65 + travel * .3), ease: [.22, .8, .2, 1] });
+    return () => transport.current?.stop();
+  }, [cursor, revision, phase, reduced, active]);
+  useEffect(() => {
+    if (manual || reduced || !ready || !active) return;
+    const destinations = [-1, 2, 0];
+    const timer = setTimeout(() => {
+      const next = autoplayOrigin.current + destinations[sequence % destinations.length];
+      setDirection(next >= phase.get() ? 1 : -1); setCursor(next); setRevision(n => n + 1); setSequence(n => n + 1);
+    }, sequence === 0 ? 2100 : sequence % 3 === 0 ? 5700 : 4000);
     return () => clearTimeout(timer);
-  }, [manual, reduced, ready, visible, foreground, review, stage]);
-  useEffect(() => { if (reduced && !manual) setStage(2); }, [reduced, manual]);
+  }, [manual, reduced, ready, active, sequence, phase]);
+
   return <section className="venue-hero" aria-label={pl ? "Cała hala, jeden koszyk" : "One food hall, one basket"}>
     <div className="venue-hero-copy">
-      <p className="eyebrow venue-hero-context"><span className="green-dot" />HALA KOSZYKI<span aria-hidden="true">/</span><span>{pl ? "STOLIK" : "TABLE"} {table}</span></p>
-      <h1><span>{pl ? "CAŁA HALA" : "ONE FOOD HALL"}</span><span>{pl ? "JEDEN KOSZYK" : "ONE BASKET"}</span></h1>
-      <p className="venue-hero-intro">{pl ? "Burger z ATOM, frytki z The Fry, lody z Na końcu tęczy. Trzy kuchnie, jedna płatność." : "ATOM’s burger, The Fry’s fries, ice cream from Na końcu tęczy. Three kitchens, one payment."}</p>
-      <div className="venue-hero-actions"><button className="primary" onClick={() => { setReview(true); setManual(true); remember(); }}>{pl ? "Zobacz ten zestaw" : "Explore this combo"}<ArrowRight size={19} /></button><button className="text-button" onClick={onBrowse}>{pl ? "Wszystkie kuchnie" : "All kitchens"}<ArrowRight size={16} /></button></div>
-      <p className="venue-hero-promise"><Check size={14} />{pl ? "Zamów przy stoliku" : "Order from your seat"}<span aria-hidden="true">·</span>{pl ? "Odbierz przy ladach" : "Collect at the counters"}</p>
+      <div><p className="eyebrow venue-hero-context"><span className="green-dot" />HALA KOSZYKI<span>/</span>{pl ? "STOLIK" : "TABLE"} {table}</p>
+        <h1><span>{pl ? "CAŁA HALA" : "ONE FOOD HALL"}</span><span>{pl ? "JEDEN KOSZYK" : "ONE BASKET"}</span></h1></div>
+      <p className="venue-hero-intro">{pl ? "Na co masz ochotę? Przejrzyj kuchnie, połącz ulubione smaki i zapłać raz." : "What takes your fancy? Explore the kitchens, mix your favourites and pay once."}</p>
     </div>
-    <div className="combo-stage" ref={scene} role="group" aria-label={pl ? "Złóż zestaw z trzech kuchni" : "Build a meal from three kitchens"}
+    <div className="carousel-stage" ref={scene} role="group" aria-label={pl ? "Karuzela kuchni Hali Koszyki" : "Hala Koszyki kitchen carousel"}
       onClickCapture={e => { if (suppressClick.current) { e.preventDefault(); e.stopPropagation(); suppressClick.current = false; } }}
-      onPointerDown={e => { suppressClick.current = false; gesture.current = { x: e.clientX, y: e.clientY }; }}
-      onPointerCancel={() => { gesture.current = null; }}
-      onPointerUp={e => { const start = gesture.current; gesture.current = null; if (!start) return; const dx = e.clientX - start.x, dy = e.clientY - start.y; if (Math.abs(dx) > 36 && Math.abs(dx) > Math.abs(dy) * 1.4) { suppressClick.current = true; choose(stage + (dx < 0 ? 1 : -1)); } }}
-      onKeyDown={e => { if (e.key === "ArrowRight" || e.key === "ArrowLeft") { e.preventDefault(); choose(stage + (e.key === "ArrowRight" ? 1 : -1)); } }}>
-      <Suspense fallback={<div className="combo-motion"><img className="combo-still" src={"/assets/combo-stage-" + stage + ".webp"} alt="" /></div>}><ComboMotion stage={stage} active={visible && foreground && !review} reduced={reduced} onReady={markReady} /></Suspense>
-      <div className="combo-vendors">{vendors.map((vendor, index) => {
-        const delta = ((index - stage + 4) % 3) - 1, selected = index === stage;
-        return <motion.button key={vendor.name} type="button" className={"combo-vendor-card" + (selected ? " is-active" : "")} aria-pressed={selected}
-          aria-label={vendor.name + ": " + (pl ? vendor.pl : vendor.en) + (index <= stage ? (pl ? ", w podglądzie zestawu" : ", in the meal preview") : "")}
-          initial={false} animate={{ x: (delta * 118) + "%", y: selected ? 13 : -1, rotate: delta * 10, scale: selected ? 1 : 0.88 }}
-          transition={reduced ? { duration: 0 } : { duration: 0.7, ease: [0.22, 0.8, 0.2, 1] }}
-          style={{ zIndex: selected ? 3 : 1 }} onClick={() => choose(index)}>
-          <span className="combo-vendor-unit">{pl ? "LOKAL" : "COUNTER"} {vendor.unit}{index <= stage && <Check size={11} />}</span>
-          <strong>{vendor.name}</strong><span className="combo-vendor-food">{pl ? vendor.pl : vendor.en}</span>
-        </motion.button>;
-      })}</div>
-      <div className="combo-stage-footer"><span><b>{stage + 1}</b> {pl ? stage === 0 ? "kuchnia" : "kuchnie" : stage === 0 ? "kitchen" : "kitchens"}<span className="combo-separator">/</span>{pl ? "jeden koszyk" : "one basket"}</span><span className="combo-swipe"><MoveHorizontal size={16} />{pl ? "Przesuń" : "Swipe"}</span></div>
+      onPointerDown={e => { suppressClick.current = false; gesture.current = { x: e.clientX, y: e.clientY, phase: phase.get(), dragging: false }; }}
+      onPointerMove={e => { const g = gesture.current; if (!g) return; const dx = e.clientX - g.x, dy = e.clientY - g.y; if (Math.abs(dx) > 10 && Math.abs(dx) > Math.abs(dy) * 1.25) { g.dragging = true; setManual(true); transport.current?.stop(); e.currentTarget.setPointerCapture(e.pointerId); phase.set(g.phase - dx / (width * (width < 600 ? .36 : .255))); } }}
+      onPointerCancel={() => { gesture.current = null; setRevision(n => n + 1); }}
+      onPointerUp={e => { const g = gesture.current; gesture.current = null; if (!g?.dragging) return; suppressClick.current = true; const delta = phase.get() - g.phase; const next = Math.abs(delta) > .2 ? Math.round(g.phase) + Math.sign(delta) * Math.max(1, Math.round(Math.abs(delta))) : Math.round(g.phase); select(next, true, Math.sign(delta) || direction); if (e.currentTarget.hasPointerCapture(e.pointerId)) e.currentTarget.releasePointerCapture(e.pointerId); }}
+      onFocusCapture={e => { if (!(e.target as HTMLElement).closest(".carousel-play")) setManual(true); }}
+      onKeyDown={e => { if (e.key === "ArrowLeft" || e.key === "ArrowRight") { e.preventDefault(); step(e.key === "ArrowRight" ? 1 : -1); } }}>
+      <div className="carousel-utility"><span>{pl ? "10 KUCHNI · TWÓJ WYBÓR" : "10 KITCHENS · YOUR PICK"}</span><button className="carousel-play" aria-label={manual ? (pl ? "Wznów animację" : "Resume animation") : (pl ? "Wstrzymaj animację" : "Pause animation")} onClick={() => { if (manual) { autoplayOrigin.current = Math.round(phase.get()); select(autoplayOrigin.current, false); setSequence(0); setManual(false); } else setManual(true); }}>{manual ? <Play size={13} /> : <Pause size={13} />}</button></div>
+      <div className="carousel-ground" aria-hidden="true" />
+      <div className="carousel-windows">{vendors.map((vendor, index) => <VendorWindow key={vendor.vendorId} index={index} phase={phase} width={width} selected={stage} pl={pl} onChoose={() => { focusSelection.current = true; select(Math.round(phase.get()) + distance(index - Math.round(phase.get()))); }} />)}</div>
+      <div className="carousel-food"><Suspense fallback={<FoodStill stage={stage} />}><ComboMotion stage={stage} direction={direction} active={active} reduced={reduced} onReady={markReady} /></Suspense></div>
+      <div className="carousel-selection">
+        <button className="carousel-arrow" aria-label={pl ? "Poprzednia kuchnia" : "Previous kitchen"} onClick={() => step(-1)}><ArrowLeft size={20} /></button>
+        <div className="carousel-caption" aria-live={manual ? "polite" : "off"}><AnimatePresence initial={false} mode="wait"><motion.div key={stage} onAnimationComplete={definition => { if (typeof definition === "object" && "opacity" in definition && definition.opacity === 1 && focusSelection.current) { menuAction.current?.focus(); focusSelection.current = false; } }} initial={{ opacity: 0, y: reduced ? 0 : 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: reduced ? 0 : -8 }} transition={{ duration: reduced ? 0 : .2 }}>
+          <small>{pl ? "LOKAL" : "COUNTER"} {String(selected.restaurant.unit).padStart(2, "0")}<span> / </span>{String(stage + 1).padStart(2, "0")}—10</small>
+          <strong>{selected.restaurant.name}</strong><button ref={menuAction} className="carousel-menu" onClick={() => { setManual(true); onVendor(selected.vendorId); }}>{pl ? "Zobacz menu" : "Explore the menu"}<ArrowRight size={16} /></button>
+        </motion.div></AnimatePresence></div>
+        <button className="carousel-arrow" aria-label={pl ? "Następna kuchnia" : "Next kitchen"} onClick={() => step(1)}><ArrowRight size={20} /></button>
+      </div>
+      <div className="carousel-hint"><MoveHorizontal size={14} />{pl ? "Przesuń i odkrywaj" : "Swipe to explore"}</div>
     </div>
+    <div className="venue-hero-footer"><button className="combo-invitation" onClick={() => { setManual(true); setReview(true); }}><Layers3 size={18} /><span>{pl ? "Burger + frytki + lody" : "Burger + fries + ice cream"}<small>{pl ? "Połącz trzy kuchnie" : "Build a three-kitchen combo"}</small></span><ArrowRight size={18} /></button><button className="text-button" onClick={onBrowse}>{pl ? "Wszystkie kuchnie" : "All kitchens"}<ArrowRight size={16} /></button></div>
     {review && <ComboReview locale={locale} cart={cart} onClose={() => setReview(false)} onConfirm={items => { setReview(false); onAddCombo(items); }} />}
   </section>;
 }
