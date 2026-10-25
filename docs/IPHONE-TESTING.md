@@ -15,6 +15,10 @@ Connect the phone and Mac to the same Wi-Fi. Open the network address Vite print
 
 Android and other browsers use the same hosted responsive web app. Deployment details are recorded in `docs/DEPLOYMENT.md`.
 
+## Cloud signing without local Xcode sign-in
+
+The GitHub Actions workflows can archive and upload all four targets on a hosted Mac. See [Cloud builds and TestFlight](CLOUD-BUILDS.md) for the one-time Apple API and encrypted secret setup. Once the uploaded build is available in TestFlight, install it directly on the iPhone.
+
 ## Native app and App Clip from Xcode
 
 1. Open `apps/ios/PapuPay.xcodeproj`. Let Swift Package Manager resolve Rive 6.27.0.

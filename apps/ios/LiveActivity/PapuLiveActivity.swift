@@ -59,7 +59,7 @@ struct PapuLiveActivity: Widget {
         .environment(\.locale, Locale(identifier: context.attributes.english ? "en_GB" : "pl_PL"))
         .environment(\.layoutDirection, .leftToRight)
         .activityBackgroundTint(butter)
-        .activitySystemActionForegroundColor(ink).widgetURL(URL(string: "papupay://orders"))
+        .activitySystemActionForegroundColor(ink).widgetURL(URL(string: "https://papupay.com/go/koszyki/\(context.attributes.table)#orders"))
     } dynamicIsland: { context in
       DynamicIsland {
         DynamicIslandExpandedRegion(.leading) {
@@ -110,7 +110,7 @@ struct PapuLiveActivity: Widget {
         Image(systemName: context.state.stage >= 2 ? "checkmark" : "leaf.fill").foregroundStyle(
           orange)
       }
-      .widgetURL(URL(string: "papupay://orders")).keylineTint(orange)
+      .widgetURL(URL(string: "https://papupay.com/go/koszyki/\(context.attributes.table)#orders")).keylineTint(orange)
     }
   }
   private func title(_ context: ActivityViewContext<PapuOrderAttributes>) -> String {

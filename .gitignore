@@ -13,3 +13,13 @@ test-results/
 *.tsbuildinfo
 
 .vercel/
+
+# Cloud builds and Apple signing material
+build/
+*.p8
+*.p12
+*.mobileprovision
+*.keychain-db
+*.xcarchive/
+*.ipa
+__pycache__/

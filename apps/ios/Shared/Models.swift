@@ -130,7 +130,7 @@ struct SavedState: Codable {
     case .table(_, let number):
       table = number
       invocationError = false
-      selectedTab = 0
+      selectedTab = url.fragment == "orders" ? 2 : 0
     case .orders:
       selectedTab = 2
     case .invalid:

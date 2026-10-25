@@ -1,0 +1,39 @@
+name: iOS archive checks
+
+on:
+  push:
+    branches: [main]
+    paths: ['apps/ios/**', 'scripts/ci/**', 'scripts/test-invocation.swift', 'scripts/check-clip-size.py', '.github/workflows/ios-checks.yml']
+  pull_request:
+    paths: ['apps/ios/**', 'scripts/ci/**', 'scripts/test-invocation.swift', 'scripts/check-clip-size.py', '.github/workflows/ios-checks.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ios-checks-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  archive:
+    runs-on: macos-26
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          persist-credentials: false
+      - name: Verify invocation routing
+        run: |
+          swiftc apps/ios/Shared/Invocation.swift scripts/test-invocation.swift -o "$RUNNER_TEMP/invocation-tests"
+          "$RUNNER_TEMP/invocation-tests"
+      - name: Archive all four targets without signing
+        run: bash scripts/ci/archive-ios.sh unsigned
+      - name: Keep packaging reports
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: ios-packaging-${{ github.run_id }}
+          path: build/reports/
+          if-no-files-found: ignore
+          retention-days: 7

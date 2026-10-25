@@ -54,7 +54,7 @@ ids.each do |target,bundle|
     'CFBundleDisplayName'=>'PapuPay', 'CFBundleName'=>'$(PRODUCT_NAME)',
     'CFBundleIdentifier'=>'$(PRODUCT_BUNDLE_IDENTIFIER)', 'CFBundleExecutable'=>'$(EXECUTABLE_NAME)',
     'CFBundlePackageType'=>extension ? 'XPC!' : 'APPL',
-    'CFBundleShortVersionString'=>'1.0','CFBundleVersion'=>'1',
+    'CFBundleShortVersionString'=>'$(MARKETING_VERSION)','CFBundleVersion'=>'$(CURRENT_PROJECT_VERSION)',
     'NSSupportsLiveActivities'=>true
   }
   if extension
@@ -65,7 +65,8 @@ ids.each do |target,bundle|
     info['UISupportedInterfaceOrientations'] = ['UIInterfaceOrientationPortrait']
     info['UIRequiredDeviceCapabilities'] = ['arm64']
     info['UIAppFonts'] = ['PapuDisplay-Bold.ttf','PapuDisplay-ExtraBold.ttf']
-    info['CFBundleURLTypes'] = [{'CFBundleURLName'=>'com.papupay.app','CFBundleURLSchemes'=>['papupay']}]
+    info['ITSAppUsesNonExemptEncryption'] = false
+    info['CFBundleURLTypes'] = [{'CFBundleURLName'=>'com.papupay.app','CFBundleURLSchemes'=>['papupay']}] if target==app
     info['NSAppClip'] = {'NSAppClipRequestEphemeralUserNotification'=>false,'NSAppClipRequestLocationConfirmation'=>false} if target==clip
   end
   Xcodeproj::Plist.write_to_path(info,File.join(ios,info_path))

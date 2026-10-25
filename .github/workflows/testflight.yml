@@ -1,0 +1,49 @@
+name: Upload PapuPay to TestFlight
+run-name: TestFlight build ${{ github.run_number }}.${{ github.run_attempt }}
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: papupay-testflight
+  cancel-in-progress: false
+
+jobs:
+  testflight:
+    if: github.repository == 'Ahmad-Alaziz/PapuPay' && github.ref == 'refs/heads/main'
+    runs-on: macos-26
+    environment: apple-signing
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@e797f83bcb11b83ae66e0230d6156d7c80228e7c # v6.0.0
+        with:
+          python-version: '3.12'
+      - name: Install pinned signing tools
+        run: |
+          python -m pip install --disable-pip-version-check codemagic-cli-tools==0.70.0
+          gem install xcodeproj -v 1.27.0 --no-document --user-install
+      - name: Verify invocation routing
+        run: |
+          swiftc apps/ios/Shared/Invocation.swift scripts/test-invocation.swift -o "$RUNNER_TEMP/invocation-tests"
+          "$RUNNER_TEMP/invocation-tests"
+      - name: Sign, archive and upload to App Store Connect
+        env:
+          APP_STORE_CONNECT_KEY_IDENTIFIER: ${{ secrets.APP_STORE_CONNECT_KEY_IDENTIFIER }}
+          APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          APP_STORE_CONNECT_PRIVATE_KEY: ${{ secrets.APP_STORE_CONNECT_PRIVATE_KEY }}
+          CERTIFICATE_PRIVATE_KEY: ${{ secrets.CERTIFICATE_PRIVATE_KEY }}
+        run: bash scripts/ci/upload-testflight.sh
+      - name: Keep non-secret packaging reports
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: testflight-packaging-${{ github.run_id }}
+          path: build/reports/
+          if-no-files-found: ignore
+          retention-days: 7
