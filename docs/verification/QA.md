@@ -57,3 +57,14 @@ The previously reserved Sites project has no deployment and is not the selected 
 - Updated native host, Clip and widgets build in the simulator; unsigned device Release Clip passes the size gate at 11.632 MB.
 - Namecheap A/CNAME records point to Vercel; public apex HTTPS responds successfully. Email settings preserved.
 - Apple app record 6826778125 and four bundle identifiers registered under the personal team. Native signing/upload blocked by this Mac's managed Apple Account restriction. App Clip experience metadata requires an uploaded build; public invocation remains pending Apple release.
+
+Final public-domain checks:
+
+- Vercel reports Valid Configuration for both `papupay.com` and `www.papupay.com`.
+- Apex homepage renders the coming-soon design; `/app` presents the scan guidance and explicit table-24 demo link.
+- `/go/koszyki/37` renders the ordering document and preserves table 37 through a 36 zł simulated checkout, confirmation and kitchen ticket; the ticket survives reload.
+- `/go/another-hall/24` shows the invalid-link screen. The actual native Clip also blocks this invocation and only opens table 24 after its explicit demo recovery button is tapped.
+- `www.papupay.com/go/koszyki/37?test=1` returns HTTP 308 to the identical apex path and query.
+- The AASA endpoint returns HTTP 200 with `application/json`, the registered personal team IDs, and no redirect.
+- The QR HTML contains the real Smart App Banner metadata; the marketing HTML does not.
+- Live homepage screenshot captured after deployment. Physical-device signing and public App Clip activation remain pending as described above.
