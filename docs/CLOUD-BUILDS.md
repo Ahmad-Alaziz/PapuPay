@@ -4,7 +4,7 @@ PapuPay can be built, signed and uploaded entirely on GitHub-hosted macOS runner
 
 ## Verified delivery — 25 October 2026
 
-Version **1.0 (4.1)** was signed, exported and uploaded successfully by [GitHub Actions run 40186489169](https://github.com/Ahmad-Alaziz/PapuPay/actions/runs/40186489169), from commit `e3b08e4`. Apple finished processing the build. All four embedded bundle identifiers and versions passed packaging checks; 20 compiled invocation checks passed. The signed raw App Clip is **9,042,651 bytes (9.04 MB)** against the 15 MB gate, including Rive and its Live Activity extension. The final signed size report is preserved in `docs/verification/refinement-signed-clip-size.json`; the workflow retains the archive validation and packaging reports. Earlier reports remain for provenance. Apple's thinned size report remains the final distribution measurement.
+Version **1.0 (5.1)** was signed, exported and uploaded successfully by [GitHub Actions run 40189148142](https://github.com/Ahmad-Alaziz/PapuPay/actions/runs/40189148142), from commit `641500d`. Apple finished processing the build. All four embedded bundle identifiers and versions passed packaging checks; 20 compiled invocation checks passed. The signed raw App Clip is **9,128,059 bytes (9.13 MB)** against the 15 MB gate, including Rive and its Live Activity extension. The final signed size report is preserved in `docs/verification/v4-signed-clip-size.json`; the workflow retains the archive validation and packaging reports. Earlier reports remain for provenance. Apple's thinned size report remains the final distribution measurement.
 
 The dedicated App Manager team API key and distribution key are stored in the four environment secrets below. The `apple-signing` environment allows deployments from `main` only. The certificate and four profiles were created successfully and reused by the next run. Local Xcode remains signed out.
 
@@ -35,7 +35,7 @@ GitHub encrypts secrets at rest. The signing job creates a temporary keychain, t
 
 ## Test on an iPhone
 
-The **PapuPay Demo** internal group contains the account holder and the latest build **1.0 (4.1)**. Its verified status is **Testing**. The older 2.1 build was installed previously; installation of 4.1 has not been observed. Automatic group distribution is off, so future builds require explicit assignment. No external beta group or public invitation link is enabled.
+The **PapuPay Demo** internal group contains the account holder and the latest build **1.0 (5.1)**. Its verified status is **Testing**. The older 2.1 build was installed previously; installation of 5.1 has not been observed. Automatic group distribution is off, so future builds require explicit assignment. No external beta group or public invitation link is enabled.
 
 The build has saved Polish test instructions and two App Clip invocations:
 

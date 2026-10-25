@@ -17,7 +17,7 @@ Android and other browsers use the same hosted responsive web app. Deployment de
 
 ## Cloud signing without local Xcode sign-in
 
-Version **1.0 (4.1)** was successfully signed and uploaded from GitHub Actions on 25 October 2026. Local Xcode sign-in is not required. See [Cloud builds and TestFlight](CLOUD-BUILDS.md) for the verified workflow and encrypted secret configuration.
+Version **1.0 (5.1)** was successfully signed and uploaded from GitHub Actions on 25 October 2026. Local Xcode sign-in is not required. See [Cloud builds and TestFlight](CLOUD-BUILDS.md) for the verified workflow and encrypted secret configuration.
 
 1. Install Apple’s **TestFlight** app on your iPhone.
 2. Open the TestFlight invitation sent to the personal Apple account used for App Store Connect, and accept it.
@@ -63,7 +63,7 @@ python3 scripts/check-clip-size.py \
   /tmp/papupay-release/Build/Products/Release-iphoneos/PapuPayClip.app --json
 ```
 
-The successful cloud-signed archive measures **8.99 MB** including Rive, its Live Activity extension and signing material (`docs/verification/cloud-clip-size.json`). The earlier local unsigned device build is retained in `clip-size.json` as historical evidence. Keep margin for future content. Apple’s thinned size report remains the authoritative distribution measurement. Optimize imagery and fonts first; avoid bundling a full video or a large 3D engine. The custom `.riv` is about 348 KB.
+The successful cloud-signed archive measures **9.13 MB** including Rive, its Live Activity extension and signing material (`docs/verification/v4-signed-clip-size.json`). The earlier local unsigned device build is retained in `clip-size.json` as historical evidence. Keep margin for future content. Apple’s thinned size report remains the authoritative distribution measurement. Optimize imagery and fonts first; avoid bundling a full video or a large 3D engine. The custom `.riv` is about 352 KB.
 
 ## Live Activity boundaries
 
