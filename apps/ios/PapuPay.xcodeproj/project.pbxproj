@@ -60,6 +60,8 @@
 		F9BC9A5BC6123EC840D4C744 /* PapuDisplay-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CA8E989768EAF41BE1FB2012 /* PapuDisplay-ExtraBold.ttf */; };
 		FA0779292BB45F4F2CD495C8 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = A2544EFAF5073DFD385E82A6 /* PrivacyInfo.xcprivacy */; };
 		FCB22FD3A02EEA9643DA0E8C /* PapuOrderAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33C2043A1E5388036852F638 /* PapuOrderAttributes.swift */; };
+		CB012A13CB012A13CB012A13 /* papu-combo.riv in Resources */ = {isa = PBXBuildFile; fileRef = CB012F13CB012F13CB012F13 /* papu-combo.riv */; };
+		CB012B13CB012B13CB012B13 /* papu-combo.riv in Resources */ = {isa = PBXBuildFile; fileRef = CB012F13CB012F13CB012F13 /* papu-combo.riv */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -149,6 +151,7 @@
 		EFD402D249B4EC08D71B3497 /* MenuViews.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MenuViews.swift; sourceTree = "<group>"; };
 		F276840C6BFA800F70FDF9B8 /* HallMapView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HallMapView.swift; sourceTree = "<group>"; };
 		FDF18D8A4DB89B5573B18370 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		CB012F13CB012F13CB012F13 /* papu-combo.riv */ = {isa = PBXFileReference; includeInIndex = 1; path = "papu-combo.riv"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -236,6 +239,7 @@
 				DA98CBEE816F92D149193630 /* catalog.json */,
 				B728632C20FC373B68A89D02 /* map.json */,
 				46177319ACB0DE734847656B /* papu.riv */,
+				CB012F13CB012F13CB012F13 /* papu-combo.riv */,
 				A2544EFAF5073DFD385E82A6 /* PrivacyInfo.xcprivacy */,
 				C34EA5588A1F72FACDC4A4AB /* PapuPoster.ttf */,
 			);
@@ -417,6 +421,7 @@
 				0C179ED28FBE2F9B176B642E /* catalog.json in Resources */,
 				EBF2C3E441E7FDC529C85804 /* map.json in Resources */,
 				17F5229A37958D0A6D745F39 /* papu.riv in Resources */,
+				CB012A13CB012A13CB012A13 /* papu-combo.riv in Resources */,
 				FA0779292BB45F4F2CD495C8 /* PrivacyInfo.xcprivacy in Resources */,
 				21421B4B8D4DC0FC467FAA33 /* PapuPoster.ttf in Resources */,
 			);
@@ -432,6 +437,7 @@
 				1F9BBBC7004380F2F28D112C /* catalog.json in Resources */,
 				79EA484B26E6B6A205AE53CE /* map.json in Resources */,
 				91838EEF2626A432C92BA2C9 /* papu.riv in Resources */,
+				CB012B13CB012B13CB012B13 /* papu-combo.riv in Resources */,
 				A504707AA86DC34DC3999921 /* PrivacyInfo.xcprivacy in Resources */,
 				2D5A2A11D152F5742567F5CE /* PapuPoster.ttf in Resources */,
 			);

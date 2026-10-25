@@ -136,6 +136,7 @@ struct DiscoverView: View {
     ("pizza", "circle.lefthalf.filled", "Pizza i pasta", "Pizza & pasta"),
     ("street", "bolt", "Street food", "Street food"), ("veggie", "leaf", "Vege", "Veggie"),
     ("drinks", "waterbottle", "Napoje", "Drinks"),
+    ("desserts", "birthday.cake", "Desery", "Desserts"),
   ]
   var filtered: [Restaurant] {
     store.catalog.restaurants.filter { r in
@@ -383,15 +384,26 @@ struct SmallDishCard: View {
 }
 
 
-/// The real venue introduces the kitchens; the catalog owns all cuisine choices.
+/// Three real Koszyki kitchens combine into one meal, without changing the cart.
 private struct CravingSpotlight: View {
   @EnvironmentObject var store: PapuStore
   @Environment(\.dynamicTypeSize) private var typeSize
+  @Environment(\.accessibilityReduceMotion) private var reduceMotion
+  @Environment(\.scenePhase) private var phase
   @ScaledMetric(relativeTo: .body) private var introFontSize: CGFloat = 14
   @Binding var showTour: Bool
   var browse: () -> Void
+  @State private var stage = 0
+  @State private var visible = true
+  @State private var autoplayFinished = false
+  @State private var showCombo = false
+  @State private var openBasketAfterReview = false
+  private var animationActive: Bool {
+    visible && phase == .active && store.selectedTab == 0 && !showCombo && !showTour
+  }
+  private var autoplayActive: Bool { animationActive && !reduceMotion && !autoplayFinished }
   var body: some View {
-    VStack(alignment: .leading, spacing: 10) {
+    VStack(alignment: .leading, spacing: 12) {
       HStack(spacing: 8) {
         Eyebrow(text: "HALA KOSZYKI")
         Spacer(minLength: 8)
@@ -406,52 +418,228 @@ private struct CravingSpotlight: View {
           .lineLimit(typeSize.isAccessibilitySize ? nil : 1).minimumScaleFactor(0.75)
           .fixedSize(horizontal: false, vertical: true)
         Text(store.text(
-          "Wybieraj z kuchni Hali Koszyki. Płać raz. Odbierz, gdy gotowe.",
-          "Mix your favourites from Hala Koszyki. Pay once. Pick up when ready."))
-          .font(.system(size: introFontSize)).foregroundStyle(Papu.muted).fixedSize(horizontal: false, vertical: true)
+          "Burger z ATOM, frytki z The Fry, lody z Na końcu tęczy. Trzy kuchnie, jedna płatność.",
+          "An ATOM burger, The Fry fries, Na końcu tęczy gelato. Three kitchens, one checkout."))
+          .font(.system(size: introFontSize)).foregroundStyle(Papu.muted)
+          .fixedSize(horizontal: false, vertical: true)
       }
-      VenueIntroductionPhoto()
+      GeometryReader { geometry in
+        let width = geometry.size.width
+        ZStack(alignment: .top) {
+          PapuComboScene(stage: stage, active: animationActive)
+            .frame(width: width, height: width * 560 / 720)
+            .offset(y: width * 80 / 720)
+          ForEach(0..<3, id: \.self) { index in
+            vendorCard(index, width: width)
+          }
+        }.frame(width: width, height: geometry.size.height)
+          .contentShape(Rectangle())
+          .simultaneousGesture(DragGesture(minimumDistance: 24).onEnded { value in
+            guard abs(value.translation.width) > abs(value.translation.height) else { return }
+            choose(max(0, min(2, stage + (value.translation.width < 0 ? 1 : -1))))
+          })
+      }.aspectRatio(720.0 / 650.0, contentMode: .fit)
+        .background(Papu.ink, in: RoundedRectangle(cornerRadius: 22))
+        .clipShape(RoundedRectangle(cornerRadius: 22))
+        .modifier(ComboVisibilityObserver(visible: $visible))
       HStack(spacing: 10) {
-        Button(action: browse) {
+        Button {
+          autoplayFinished = true
+          showCombo = true
+        } label: {
           HStack(spacing: 7) {
-            Text(store.text("Poznaj kuchnie", "Explore kitchens"))
-            Image(systemName: "arrow.down")
+            Text(store.text("Zobacz ten zestaw", "Explore this combo"))
+            Image(systemName: "arrow.up.right")
           }.font(Papu.body(14).weight(.semibold)).lineLimit(1).minimumScaleFactor(0.85)
             .frame(maxWidth: .infinity, minHeight: 50)
             .foregroundStyle(Papu.butter).background(Papu.ink, in: Capsule())
         }.buttonStyle(PressStyle())
-        Button { showTour = true } label: {
-          Label(store.text("Jak to działa?", "How it works"), systemImage: "play.circle")
-            .font(Papu.body(12).weight(.semibold)).lineLimit(1).minimumScaleFactor(0.85)
-            .padding(.horizontal, 13).frame(minHeight: 50)
-            .background(Papu.butter, in: Capsule())
+        Button(action: browse) {
+          Image(systemName: "arrow.down").font(.system(size: 17, weight: .semibold))
+            .frame(width: 50, height: 50).background(Papu.butter, in: Circle())
         }.buttonStyle(PressStyle())
+          .accessibilityLabel(store.text("Wszystkie kuchnie", "All kitchens"))
       }
+      HStack(spacing: 7) {
+        Text(store.text("Przykładowy zestaw · odbiór w lokalach", "Demo combo · collect at each kitchen"))
+          .font(Papu.body(11)).foregroundStyle(Papu.muted)
+        Spacer(minLength: 0)
+        Button { showTour = true } label: {
+          Image(systemName: "questionmark.circle").frame(width: 44, height: 44)
+        }.buttonStyle(.plain).accessibilityLabel(store.text("Jak to działa?", "How it works"))
+      }.padding(.top, -7)
     }.padding(.horizontal, 20).padding(.top, 16).padding(.bottom, 8)
+      .onDisappear { visible = false }
+      .task(id: reduceMotion) {
+        if reduceMotion { stage = 2; autoplayFinished = true }
+      }
+      .task(id: autoplayActive) {
+        guard autoplayActive, stage < 2 else { return }
+        for nextStage in (stage + 1)...2 {
+          do { try await Task.sleep(for: .milliseconds(nextStage == 1 ? 1600 : 1800)) } catch { return }
+          guard !Task.isCancelled, autoplayActive else { return }
+          stage = nextStage
+        }
+        autoplayFinished = true
+      }
+      .sheet(isPresented: $showCombo, onDismiss: {
+        if openBasketAfterReview {
+          openBasketAfterReview = false
+          store.showBasket = true
+        }
+      }) {
+        ComboReviewView {
+          openBasketAfterReview = true
+          showCombo = false
+        }.environmentObject(store).presentationDetents([.large]).presentationCornerRadius(30)
+      }
+  }
+  private func choose(_ value: Int) {
+    autoplayFinished = true
+    guard stage != value else { return }
+    stage = value
+    UISelectionFeedbackGenerator().selectionChanged()
+  }
+  private func vendorCard(_ index: Int, width: CGFloat) -> some View {
+    let relative = (index - stage + 4) % 3 - 1
+    let active = relative == 0
+    let name = ["ATOM", "The Fry", "Na końcu tęczy"][index]
+    let subtitle = ["Smash Burger", store.text("+ frytki", "+ fries"), store.text("+ lody", "+ gelato")][index]
+    return Button { choose(index) } label: {
+      VStack(spacing: 4) {
+        Text(name).font(Papu.display(active ? 17 : 14)).lineLimit(2)
+          .minimumScaleFactor(0.85).multilineTextAlignment(.center)
+        Text(subtitle).font(Papu.body(11).weight(.medium)).lineLimit(1).minimumScaleFactor(0.8)
+      }.padding(.horizontal, 7).padding(.bottom, active ? 8 : 0)
+        .frame(width: width * (active ? 0.35 : 0.28), height: active ? 72 : 63)
+        .foregroundStyle(Papu.ink)
+        .background(active ? Papu.butter : Color(hex: "DFE6D2"), in: RoundedRectangle(cornerRadius: 15))
+        .overlay(alignment: .bottom) {
+          if active { Capsule().fill(Papu.orange).frame(width: 22, height: 3).offset(y: -6) }
+        }.shadow(color: .black.opacity(active ? 0.15 : 0.08), radius: active ? 12 : 5, y: 6)
+    }.buttonStyle(PressStyle())
+      .rotationEffect(.degrees(Double(relative) * 10))
+      .position(x: width * (0.5 + CGFloat(relative) * 0.32), y: active ? 51 : 42)
+      .zIndex(active ? 2 : 1)
+      .animation(reduceMotion ? nil : .spring(response: 0.7, dampingFraction: 0.85), value: stage)
+      .accessibilityLabel(["ATOM Smash Burger", "The Fry", "Na końcu tęczy"][index] + ", " + subtitle)
+      .accessibilityAddTraits(active ? .isSelected : [])
+  }
+
+}
+private struct ComboVisibilityObserver: ViewModifier {
+  @Binding var visible: Bool
+  @ViewBuilder func body(content: Content) -> some View {
+    if #available(iOS 18.0, *) {
+      content.onScrollVisibilityChange(threshold: 0.2) { visible = $0 }
+    } else {
+      content.background {
+        GeometryReader { geometry in
+          let frame = geometry.frame(in: .global)
+          Color.clear.preference(key: ComboVisibilityKey.self,
+            value: frame.maxY > 100 && frame.minY < UIScreen.main.bounds.height - 100)
+        }
+      }.onPreferenceChange(ComboVisibilityKey.self) { visible = $0 }
+    }
   }
 }
+private struct ComboVisibilityKey: PreferenceKey {
+  static var defaultValue = false
+  static func reduce(value: inout Bool, nextValue: () -> Bool) { value = value || nextValue() }
+}
 
-/// One short reveal brings the venue into view without running animation while browsing.
-private struct VenueIntroductionPhoto: View {
-  @Environment(\.accessibilityReduceMotion) private var reduceMotion
-  @State private var entered = false
+/// Editing a suggested meal is local until the person confirms the basket action.
+private struct ComboReviewView: View {
+  @EnvironmentObject var store: PapuStore
+  let confirm: () -> Void
+  @State private var quantities = ["atom-classic": 1, "fry-fries": 1, "tecza-gelato": 1]
+  @State private var notes: [String: String] = [:]
+  @State private var expanded: String?
+  private let itemIDs = ["atom-classic", "fry-fries", "tecza-gelato"]
+  private var dishes: [Dish] {
+    itemIDs.compactMap { id in store.catalog.items.first { $0.id == id } }
+  }
+  private var total: Int { dishes.reduce(0) { $0 + $1.price * (quantities[$1.id] ?? 0) } }
+  private var count: Int { dishes.reduce(0) { $0 + (quantities[$1.id] ?? 0) } }
   var body: some View {
-    GeometryReader { geometry in
-      ZStack(alignment: .bottomLeading) {
-        Image(decorative: "hall-detail").resizable().scaledToFill()
-          .frame(width: geometry.size.width, height: geometry.size.height)
-          .scaleEffect(reduceMotion || entered ? 1 : 1.02)
-          .opacity(reduceMotion || entered ? 1 : 0.65)
-        LinearGradient(colors: [.clear, .clear, .black.opacity(0.6)], startPoint: .top, endPoint: .bottom)
-        Text("Koszykowa 63, Warszawa")
-          .font(Papu.body(13).weight(.semibold)).foregroundStyle(Papu.cream)
-          .padding(16)
-      }.clipped()
-    }.frame(height: 214).clipShape(RoundedRectangle(cornerRadius: 22))
-      .onAppear {
-        guard !entered else { return }
-        if reduceMotion { entered = true }
-        else { withAnimation(.easeOut(duration: 0.5)) { entered = true } }
+    NavigationStack {
+      ScrollView {
+        VStack(alignment: .leading, spacing: 20) {
+          Text(store.text("Twój idealny zestaw", "Your perfect combo"))
+            .font(Papu.display(31)).fixedSize(horizontal: false, vertical: true)
+          Text(store.text(
+            "Połącz trzy kuchnie tak, jak lubisz. Zmień ilości lub pomiń wybrane danie.",
+            "Make three kitchens your own. Adjust quantities or leave a dish out."))
+            .font(Papu.body(15)).foregroundStyle(Papu.muted).fixedSize(horizontal: false, vertical: true)
+          ForEach(dishes) { dish in comboRow(dish) }
+          Text(store.text(
+            "To przykładowy zestaw. Dania, zdjęcia, ceny i alergeny są demonstracyjne. Odbiór osobno w każdej kuchni.",
+            "This is a sample combo. Dishes, photos, prices and allergens are illustrative. Collect from each kitchen separately."))
+            .font(Papu.body(12)).foregroundStyle(Papu.muted).lineSpacing(3)
+        }.padding(20)
+      }.background(Papu.cream).foregroundStyle(Papu.ink)
+        .navigationTitle(store.text("Zestaw z Koszyków", "The Koszyki combo"))
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar { ToolbarItem(placement: .topBarTrailing) { SheetClose().padding(-17) } }
+        .safeAreaInset(edge: .bottom, spacing: 0) {
+          Button {
+            for dish in dishes where (quantities[dish.id] ?? 0) > 0 {
+              store.add(dish, quantity: quantities[dish.id] ?? 1, note: notes[dish.id] ?? "")
+            }
+            confirm()
+          } label: {
+            HStack(spacing: 12) {
+              Image(systemName: "basket")
+              Text(store.text("Dodaj do koszyka", "Add to basket"))
+              Spacer(minLength: 0)
+              Text(money(total, english: store.english)).monospacedDigit()
+            }.font(Papu.body(14).weight(.semibold)).lineLimit(1).minimumScaleFactor(0.8)
+              .padding(.horizontal, 18).frame(minHeight: 54)
+              .foregroundStyle(Papu.butter).background(count > 0 ? Papu.ink : Papu.muted, in: Capsule())
+          }.buttonStyle(PressStyle()).disabled(count == 0).padding(20).background(.regularMaterial)
+        }
+    }
+  }
+  private func comboRow(_ dish: Dish) -> some View {
+    let quantity = quantities[dish.id] ?? 0
+    let restaurant = store.catalog.restaurants.first { $0.id == dish.restaurantId }
+    return VStack(alignment: .leading, spacing: 14) {
+      HStack(alignment: .top, spacing: 12) {
+        Image(["atom-classic": "combo-burger", "fry-fries": "combo-fries", "tecza-gelato": "combo-gelato"][dish.id] ?? (dish.image as NSString).deletingPathExtension).resizable().scaledToFit().frame(width: 72, height: 78).clipped().accessibilityHidden(true)
+          .clipShape(RoundedRectangle(cornerRadius: 14))
+        VStack(alignment: .leading, spacing: 5) {
+          Text(restaurant?.name ?? "").font(Papu.body(11).weight(.semibold)).foregroundStyle(Papu.green)
+            .fixedSize(horizontal: false, vertical: true)
+          Text(store.text(dish.name, dish.nameEn)).font(Papu.display(21))
+            .fixedSize(horizontal: false, vertical: true)
+          Text(money(dish.price, english: store.english)).font(Papu.body(13).weight(.semibold))
+        }.frame(maxWidth: .infinity, alignment: .leading)
       }
+      HStack(spacing: 10) {
+        Button { expanded = expanded == dish.id ? nil : dish.id } label: {
+          Label(store.text("Szczegóły", "Details"), systemImage: expanded == dish.id ? "chevron.up" : "chevron.down")
+            .font(Papu.body(12).weight(.semibold)).frame(minHeight: 44)
+        }.buttonStyle(.plain)
+        Spacer(minLength: 0)
+        HStack(spacing: 0) {
+          Button { quantities[dish.id] = max(0, quantity - 1) } label: {
+            Image(systemName: quantity == 1 ? "trash" : "minus").font(.system(size: 13)).frame(width: 44, height: 44)
+          }.disabled(quantity == 0).accessibilityLabel(store.text("Zmniejsz ilość: ", "Decrease quantity: ") + store.text(dish.name, dish.nameEn))
+          Text(String(quantity)).font(Papu.body(15).weight(.semibold)).monospacedDigit().frame(minWidth: 18)
+            .accessibilityLabel(store.text("Ilość: ", "Quantity: ") + String(quantity))
+          Button { quantities[dish.id] = min(20, quantity + 1) } label: {
+            Image(systemName: "plus").font(.system(size: 13)).frame(width: 44, height: 44)
+          }.disabled(quantity == 20).accessibilityLabel(store.text("Zwiększ ilość: ", "Increase quantity: ") + store.text(dish.name, dish.nameEn))
+        }.buttonStyle(PressStyle()).background(Papu.sage, in: Capsule())
+      }
+      if expanded == dish.id {
+        Text(store.text(dish.description, dish.descriptionEn)).font(Papu.body(14)).foregroundStyle(Papu.muted)
+        FlowTags(tags: (dish.vegetarian ? ["Vege"] : []) + dish.allergens)
+        TextField(store.text("Uwaga dla kuchni (opcjonalnie)", "Kitchen note (optional)"), text: Binding(
+          get: { notes[dish.id] ?? "" }, set: { notes[dish.id] = String($0.prefix(180)) }), axis: .vertical)
+          .lineLimit(2...4).font(Papu.body(14)).padding(13)
+          .background(Papu.sage.opacity(0.5), in: RoundedRectangle(cornerRadius: 12))
+      }
+    }.padding(16).papuCard()
   }
 }

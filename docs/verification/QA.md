@@ -144,3 +144,15 @@ Final direction: authentic Hala Koszyki photography, CAŁA HALA / JEDEN KOSZYK (
 - Physical iPhone performance and installation of the new build are not inferred from simulator checks.
 
 Evidence: `docs/screenshots/v6-venue-web-mobile.png`, `v6-venue-web-desktop.png`, `v6-venue-native.png`, `v6-live-activity-ready.png`. Release/signing outcomes are recorded after the actual upload and Apple processing.
+
+Signed delivery: final source commit `edc07abc80de62f1bbe0c7d3e0ccb4040c596e4e` deployed successfully on Vercel. [TestFlight workflow 40213630310](https://github.com/Ahmad-Alaziz/PapuPay/actions/runs/40213630310) signed, archived, validated and uploaded version 1.0 (7.1) with no upload errors. All four embedded bundle versions passed, as did 20 compiled native invocation checks. The signed raw Clip is 9,131,563 bytes (9.132 MB), leaving 5,868,437 bytes against the 15,000,000-byte gate. Reports are preserved as `v6-signed-clip-size.json` and `v6-signed-archive-summary.json`. Final web tests were rerun after the simple-photo source freeze: 30/30 passed.
+
+
+## Three-kitchen combo — 25 October 2026
+
+- Custom Rive scene `PapuCombo`, bound `stage` 0/1/2, uses three newly generated food cutouts with 700 ms reversible transitions. CLI verification found no errors/warnings. Settled 0→1→2→0 and interrupted-transition poses were checked against authored stills.
+- Real Koszyki vendors and categories verified against primary sources: ATOM Burgers unit 8, The Fry unit 7, Na końcu tęczy unit 20. Added the tenth kitchen and a demo ice-cream item to shared/native catalogs; map routes include the new destination.
+- Web: 30 domain/routing checks passed, including all ten kitchens ready within 12–28 seconds. Production TypeScript/Vite build passed. Actual 320/390-pixel layouts, PL/EN, three-stage controls and canvas resizing were inspected. A paused-canvas resize crop was found and fixed.
+- Actual combo review: all-zero selection disables confirmation; restoring three quantity-one items and confirming opens the real grouped basket at 72 PLN. Test items removed after the check. Notes, options and per-line limits were independently reviewed. A swipe followed by an unintended click was caught and fixed.
+- Native: all four targets compiled; actual simulator autoplay reached stage 2, manual/reverse controls rendered all poses, and the matching initial still avoids a remount flash. Empty review disables Add; confirming the three items opens the grouped 72 PLN basket.
+- Signed size, deployment and TestFlight assignment are recorded below after actual delivery. Physical-iPhone performance remains unobserved.

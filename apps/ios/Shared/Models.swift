@@ -226,7 +226,7 @@ struct SavedState: Codable {
         id: "P\(ticket)\(index + 1)", restaurantId: group.0.id, table: table,
         name: name.trimmingCharacters(in: .whitespaces).isEmpty ? text("Gość", "Guest") : name,
         lines: group.1, total: group.1.reduce(0) { $0 + $1.total }, createdAt: time,
-        readyAt: time.addingTimeInterval(Double(12 + index * 2)), collected: false)
+        readyAt: time.addingTimeInterval(Double(12 + min(index, 8) * 2)), collected: false)
     }
     orders.insert(contentsOf: next, at: 0)
     cart = []

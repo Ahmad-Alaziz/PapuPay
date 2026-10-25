@@ -47,7 +47,7 @@ Applied the requested [Apple design skill](https://github.com/dickwu/apple-desig
 | Medium | Thin/undifferentiated type → heavy DM Sans, focused Anton poster and friendly Fredoka brand |
 | Medium | Title-only checkout/onboarding changes → transition each complete scene, illustration and copy together |
 | Medium | Global one-second rendering → stage-boundary store changes, scoped countdowns, cached paths/formatters |
-| Medium | Long demo wait → first kitchen ready after 12 seconds, all nine within 28 seconds |
+| Medium | Long demo wait → first kitchen ready after 12 seconds, all ten within 30 seconds |
 | Medium | Small useful map area → food-counter focus, full-plan toggle, destination card and drawn route |
 | Medium | Unclear pickup hierarchy → perforated tickets, prominent unit/order numbers and clear route/collect actions |
 | Medium | Inconsistent widget colors → paper/forest card, orange cooking counter, green ready confirmation; restrained Dynamic Island on black |
@@ -59,7 +59,7 @@ This is a deliberately light art direction. Exhaustive VoiceOver/Dynamic Type, p
 
 ## Discovery and cart clarity refinement — 25 October 2026
 
-The discovery screen's single job is to turn a craving into an order. A large food photograph now leads the opening; burger, ramen and pizza selectors change the complete scene. A brief entrance establishes the composition, then control belongs to the person browsing. The brand sits directly on the page with aligned gutters. Favorites were removed to reduce competing actions. Headings omit trailing full stops; body copy keeps normal punctuation.
+The discovery screen's single job is to turn a craving into an order. The current opening demonstrates a meal assembled across three real kitchens; cuisine filters remain in the catalog. The brand sits directly on the page with aligned gutters. Favorites were removed to reduce competing actions. Headings omit trailing full stops; body copy keeps normal punctuation.
 
 Visual references inspected for this pass:
 
@@ -73,10 +73,14 @@ Cart success must remain understandable when all animation is disabled: item nam
 Map labels belong to actual unit shapes and the destination card. Large floating labels were removed from the map so the drawn route remains visible end to end. An unobtrusive endpoint marks the entrance; the origin table is identified outside the route.
 
 
-## Current opening — real venue, simple benefit
+## Current opening — build a meal across kitchens
 
-The opening establishes the actual place after a table scan, explains one basket across kitchens and makes browsing immediate. The authentic Hala Koszyki photograph carries the composition. The stable CAŁA HALA / JEDEN KOSZYK headline uses #123C2D then #B7471B on both platforms. A single small photo entrance settles into a still image. There are no banner selectors, hero canvas controls or recurring decorative motion.
+The approved banner explains PapuPay through a meal that grows: **ATOM Smash Burger (08) → The Fry fries (07) → Na końcu tęczy ice cream (20)**. These are actual Hala Koszyki vendors. The catalog now contains ten demo kitchens. Food images, portions, prices and flavor presentation are illustrative; ice-cream flavors rotate.
 
-The body explains one payment and counter pickup. Explore kitchens scrolls directly to the catalog; How it works opens the existing guide. Photo, copy and controls follow 20 px mobile gutters. Existing type, colors and ordering flows remain recognizable.
+The user-selected [Kumo matcha carousel](https://dribbble.com/shots/26971799-Kumo-Interactive-Matcha-Tea-Landing-Page-UI-UX) informed the curved vendor cards, photographic depth and coherent transitions. PapuPay retains the preceding food as each kitchen joins, so the movement explains one basket across vendors. The stable **CAŁA HALA / JEDEN KOSZYK** headline uses forest then text orange **#B7471B** on both platforms.
 
-Other changes are restrained: immediate plus-to-check feedback, a brief web photo-to-basket movement and coherent order-ready feedback. Live Activities share a PL/EN locale, left-to-right grid, aligned timer and bounded compact/minimal variants. Research, choreography and lifecycle details are recorded in [MOTION.md](MOTION.md).
+Custom Rive scene `PapuCombo` moves through stages 0, 1 and 2 at approximately 0, 1.6 and 3.4 seconds while visible and active. Each 700 ms transition settles into a still composition. Swiping or tapping a vendor takes control and stops automatic progression. Reduced Motion uses the matching exported still. Vendor controls, copy and actions remain accessible native/HTML UI outside the canvas.
+
+**Explore this combo** opens a review of all three dishes. Quantities can be changed or set to zero; kitchen notes and available extras can be edited. Only an explicit **Add to basket** adds the selection, then reveals the grouped basket. The preview itself never creates a cart line or order. **All kitchens** still leads directly to the full catalog, and the copy distinguishes ordering at the table from collecting at the counters.
+
+Other feedback remains brief: plus-to-check confirmation, a small web photo-to-basket movement and coherent order-ready feedback. Live Activities share a PL/EN locale, left-to-right grid, aligned timer and bounded compact/minimal variants. See [MOTION.md](MOTION.md) for the interaction contract and [ASSETS.md](ASSETS.md) for official sources and generated image provenance.

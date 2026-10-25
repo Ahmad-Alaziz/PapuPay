@@ -1,0 +1,656 @@
+<Rive version="1" kind="fragment">
+  <Artboard id="0:2" name="PapuCombo" width="720" height="560" styleId="0:3" defaultStateMachineId="0:7" viewModelId="0:800" viewModelInstanceId="0:801">
+    <LayoutComponentStyle id="0:3" />
+    <Fill>
+      <SolidColor colorValue="FF123C2D" />
+    </Fill>
+    <Node id="0:300" name="Na końcu tęczy gelato" x="710" y="370" scaleX="0.29296875" scaleY="0.29296875" rotation="0.12" opacity="0">
+      <Image id="0:301" name="Na końcu tęczy gelato photograph" assetId="0:902" scaleX="1.0" scaleY="1.0" />
+    </Node>
+    <Node id="0:200" name="The Fry fries" x="685" y="282" scaleX="0.37109375" scaleY="0.37109375" rotation="0.11" opacity="0">
+      <Image id="0:201" name="The Fry fries photograph" assetId="0:901" scaleX="1.0" scaleY="1.0" />
+    </Node>
+    <Node id="0:100" name="ATOM burger" x="360" y="284" scaleX="0.869140625" scaleY="0.869140625" rotation="0" opacity="1">
+      <Image id="0:101" name="ATOM burger photograph" assetId="0:900" scaleX="1.0" scaleY="1.0" />
+    </Node>
+    <Node id="0:110" name="ATOM burger contact shadow" x="360" y="435" scaleX="1.078125" scaleY="0.25875" opacity="0.2">
+      <Shape>
+        <Ellipse width="320" height="320" />
+        <Fill>
+          <RadialGradient startX="0" startY="0" endX="160" endY="0">
+            <GradientStop position="0" colorValue="FF071E17" />
+            <GradientStop position="0.32" colorValue="B8071E17" />
+            <GradientStop position="1" colorValue="00071E17" />
+          </RadialGradient>
+        </Fill>
+      </Shape>
+    </Node>
+    <Node id="0:210" name="The Fry fries contact shadow" x="685" y="420" scaleX="0.546875" scaleY="0.13125" opacity="0">
+      <Shape>
+        <Ellipse width="320" height="320" />
+        <Fill>
+          <RadialGradient startX="0" startY="0" endX="160" endY="0">
+            <GradientStop position="0" colorValue="FF071E17" />
+            <GradientStop position="0.32" colorValue="B8071E17" />
+            <GradientStop position="1" colorValue="00071E17" />
+          </RadialGradient>
+        </Fill>
+      </Shape>
+    </Node>
+    <Node id="0:310" name="Na końcu tęczy gelato contact shadow" x="710" y="465" scaleX="0.375" scaleY="0.09" opacity="0">
+      <Shape>
+        <Ellipse width="320" height="320" />
+        <Fill>
+          <RadialGradient startX="0" startY="0" endX="160" endY="0">
+            <GradientStop position="0" colorValue="FF071E17" />
+            <GradientStop position="0.32" colorValue="B8071E17" />
+            <GradientStop position="1" colorValue="00071E17" />
+          </RadialGradient>
+        </Fill>
+      </Shape>
+    </Node>
+    <Node id="0:500" name="Warm presentation light" x="360" y="405" scaleY="0.38">
+      <Shape>
+        <Ellipse width="690" height="690" />
+        <Fill>
+          <RadialGradient startX="0" startY="0" endX="345" endY="0">
+            <GradientStop position="0" colorValue="1CFFF0D6" />
+            <GradientStop position="0.55" colorValue="0EFFF0D6" />
+            <GradientStop position="1" colorValue="00FFF0D6" />
+          </RadialGradient>
+        </Fill>
+      </Shape>
+    </Node>
+    <StateMachine id="0:7" name="PapuCombo">
+      <StateMachineLayer name="Build your meal">
+        <EntryState x="-240" y="0">
+          <StateTransition stateToId="0:70" />
+        </EntryState>
+        <AnyState x="-240" y="-180" />
+        <ExitState x="700" y="-180" />
+        <AnimationState id="0:70" animationId="0:1000" x="0" y="0">
+          <StateTransition stateToId="0:71" duration="700" enableEarlyExit="true" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
+            <TransitionViewModelCondition>
+              <TransitionPropertyViewModelComparator>
+                <BindablePropertyNumber>
+                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
+                </BindablePropertyNumber>
+              </TransitionPropertyViewModelComparator>
+              <TransitionValueNumberComparator value="1" />
+            </TransitionViewModelCondition>
+          </StateTransition>
+          <StateTransition stateToId="0:72" duration="700" enableEarlyExit="true" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
+            <TransitionViewModelCondition>
+              <TransitionPropertyViewModelComparator>
+                <BindablePropertyNumber>
+                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
+                </BindablePropertyNumber>
+              </TransitionPropertyViewModelComparator>
+              <TransitionValueNumberComparator value="2" />
+            </TransitionViewModelCondition>
+          </StateTransition>
+        </AnimationState>
+        <AnimationState id="0:71" animationId="0:1001" x="260" y="0">
+          <StateTransition stateToId="0:70" duration="700" enableEarlyExit="true" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
+            <TransitionViewModelCondition>
+              <TransitionPropertyViewModelComparator>
+                <BindablePropertyNumber>
+                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
+                </BindablePropertyNumber>
+              </TransitionPropertyViewModelComparator>
+              <TransitionValueNumberComparator value="0" />
+            </TransitionViewModelCondition>
+          </StateTransition>
+          <StateTransition stateToId="0:72" duration="700" enableEarlyExit="true" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
+            <TransitionViewModelCondition>
+              <TransitionPropertyViewModelComparator>
+                <BindablePropertyNumber>
+                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
+                </BindablePropertyNumber>
+              </TransitionPropertyViewModelComparator>
+              <TransitionValueNumberComparator value="2" />
+            </TransitionViewModelCondition>
+          </StateTransition>
+        </AnimationState>
+        <AnimationState id="0:72" animationId="0:1002" x="520" y="0">
+          <StateTransition stateToId="0:70" duration="700" enableEarlyExit="true" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
+            <TransitionViewModelCondition>
+              <TransitionPropertyViewModelComparator>
+                <BindablePropertyNumber>
+                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
+                </BindablePropertyNumber>
+              </TransitionPropertyViewModelComparator>
+              <TransitionValueNumberComparator value="0" />
+            </TransitionViewModelCondition>
+          </StateTransition>
+          <StateTransition stateToId="0:71" duration="700" enableEarlyExit="true" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
+            <TransitionViewModelCondition>
+              <TransitionPropertyViewModelComparator>
+                <BindablePropertyNumber>
+                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
+                </BindablePropertyNumber>
+              </TransitionPropertyViewModelComparator>
+              <TransitionValueNumberComparator value="1" />
+            </TransitionViewModelCondition>
+          </StateTransition>
+        </AnimationState>
+      </StateMachineLayer>
+    </StateMachine>
+    <LinearAnimation id="0:1000" name="A main from ATOM" fps="60" duration="1" loopValue="oneShot">
+      <KeyedObject objectId="0:100">
+        <KeyedProperty property="x">
+          <KeyFrameDouble frame="0" value="360" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:100">
+        <KeyedProperty property="y">
+          <KeyFrameDouble frame="0" value="284" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:100">
+        <KeyedProperty property="scaleX">
+          <KeyFrameDouble frame="0" value="0.869140625" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:100">
+        <KeyedProperty property="scaleY">
+          <KeyFrameDouble frame="0" value="0.869140625" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:100">
+        <KeyedProperty property="rotation">
+          <KeyFrameDouble frame="0" value="0" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:100">
+        <KeyedProperty property="opacity">
+          <KeyFrameDouble frame="0" value="1" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:110">
+        <KeyedProperty property="x">
+          <KeyFrameDouble frame="0" value="360" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:110">
+        <KeyedProperty property="y">
+          <KeyFrameDouble frame="0" value="435" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:110">
+        <KeyedProperty property="scaleX">
+          <KeyFrameDouble frame="0" value="1.078125" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:110">
+        <KeyedProperty property="scaleY">
+          <KeyFrameDouble frame="0" value="0.25875" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:110">
+        <KeyedProperty property="opacity">
+          <KeyFrameDouble frame="0" value="0.2" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:200">
+        <KeyedProperty property="x">
+          <KeyFrameDouble frame="0" value="685" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:200">
+        <KeyedProperty property="y">
+          <KeyFrameDouble frame="0" value="282" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:200">
+        <KeyedProperty property="scaleX">
+          <KeyFrameDouble frame="0" value="0.37109375" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:200">
+        <KeyedProperty property="scaleY">
+          <KeyFrameDouble frame="0" value="0.37109375" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:200">
+        <KeyedProperty property="rotation">
+          <KeyFrameDouble frame="0" value="0.11" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:200">
+        <KeyedProperty property="opacity">
+          <KeyFrameDouble frame="0" value="0" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:210">
+        <KeyedProperty property="x">
+          <KeyFrameDouble frame="0" value="685" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:210">
+        <KeyedProperty property="y">
+          <KeyFrameDouble frame="0" value="420" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:210">
+        <KeyedProperty property="scaleX">
+          <KeyFrameDouble frame="0" value="0.546875" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:210">
+        <KeyedProperty property="scaleY">
+          <KeyFrameDouble frame="0" value="0.13125" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:210">
+        <KeyedProperty property="opacity">
+          <KeyFrameDouble frame="0" value="0" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:300">
+        <KeyedProperty property="x">
+          <KeyFrameDouble frame="0" value="710" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:300">
+        <KeyedProperty property="y">
+          <KeyFrameDouble frame="0" value="370" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:300">
+        <KeyedProperty property="scaleX">
+          <KeyFrameDouble frame="0" value="0.29296875" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:300">
+        <KeyedProperty property="scaleY">
+          <KeyFrameDouble frame="0" value="0.29296875" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:300">
+        <KeyedProperty property="rotation">
+          <KeyFrameDouble frame="0" value="0.12" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:300">
+        <KeyedProperty property="opacity">
+          <KeyFrameDouble frame="0" value="0" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:310">
+        <KeyedProperty property="x">
+          <KeyFrameDouble frame="0" value="710" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:310">
+        <KeyedProperty property="y">
+          <KeyFrameDouble frame="0" value="465" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:310">
+        <KeyedProperty property="scaleX">
+          <KeyFrameDouble frame="0" value="0.375" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:310">
+        <KeyedProperty property="scaleY">
+          <KeyFrameDouble frame="0" value="0.09" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:310">
+        <KeyedProperty property="opacity">
+          <KeyFrameDouble frame="0" value="0" />
+        </KeyedProperty>
+      </KeyedObject>
+    </LinearAnimation>
+    <LinearAnimation id="0:1001" name="Add fries from The Fry" fps="60" duration="1" loopValue="oneShot">
+      <KeyedObject objectId="0:100">
+        <KeyedProperty property="x">
+          <KeyFrameDouble frame="0" value="278" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:100">
+        <KeyedProperty property="y">
+          <KeyFrameDouble frame="0" value="300" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:100">
+        <KeyedProperty property="scaleX">
+          <KeyFrameDouble frame="0" value="0.75390625" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:100">
+        <KeyedProperty property="scaleY">
+          <KeyFrameDouble frame="0" value="0.75390625" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:100">
+        <KeyedProperty property="rotation">
+          <KeyFrameDouble frame="0" value="-0.015" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:100">
+        <KeyedProperty property="opacity">
+          <KeyFrameDouble frame="0" value="1" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:110">
+        <KeyedProperty property="x">
+          <KeyFrameDouble frame="0" value="278" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:110">
+        <KeyedProperty property="y">
+          <KeyFrameDouble frame="0" value="431" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:110">
+        <KeyedProperty property="scaleX">
+          <KeyFrameDouble frame="0" value="0.9375" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:110">
+        <KeyedProperty property="scaleY">
+          <KeyFrameDouble frame="0" value="0.22499999999999998" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:110">
+        <KeyedProperty property="opacity">
+          <KeyFrameDouble frame="0" value="0.2" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:200">
+        <KeyedProperty property="x">
+          <KeyFrameDouble frame="0" value="497" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:200">
+        <KeyedProperty property="y">
+          <KeyFrameDouble frame="0" value="321" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:200">
+        <KeyedProperty property="scaleX">
+          <KeyFrameDouble frame="0" value="0.57421875" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:200">
+        <KeyedProperty property="scaleY">
+          <KeyFrameDouble frame="0" value="0.57421875" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:200">
+        <KeyedProperty property="rotation">
+          <KeyFrameDouble frame="0" value="0.025" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:200">
+        <KeyedProperty property="opacity">
+          <KeyFrameDouble frame="0" value="1" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:210">
+        <KeyedProperty property="x">
+          <KeyFrameDouble frame="0" value="497" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:210">
+        <KeyedProperty property="y">
+          <KeyFrameDouble frame="0" value="426" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:210">
+        <KeyedProperty property="scaleX">
+          <KeyFrameDouble frame="0" value="0.671875" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:210">
+        <KeyedProperty property="scaleY">
+          <KeyFrameDouble frame="0" value="0.16125" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:210">
+        <KeyedProperty property="opacity">
+          <KeyFrameDouble frame="0" value="0.18" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:300">
+        <KeyedProperty property="x">
+          <KeyFrameDouble frame="0" value="720" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:300">
+        <KeyedProperty property="y">
+          <KeyFrameDouble frame="0" value="370" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:300">
+        <KeyedProperty property="scaleX">
+          <KeyFrameDouble frame="0" value="0.29296875" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:300">
+        <KeyedProperty property="scaleY">
+          <KeyFrameDouble frame="0" value="0.29296875" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:300">
+        <KeyedProperty property="rotation">
+          <KeyFrameDouble frame="0" value="0.12" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:300">
+        <KeyedProperty property="opacity">
+          <KeyFrameDouble frame="0" value="0" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:310">
+        <KeyedProperty property="x">
+          <KeyFrameDouble frame="0" value="720" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:310">
+        <KeyedProperty property="y">
+          <KeyFrameDouble frame="0" value="465" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:310">
+        <KeyedProperty property="scaleX">
+          <KeyFrameDouble frame="0" value="0.375" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:310">
+        <KeyedProperty property="scaleY">
+          <KeyFrameDouble frame="0" value="0.09" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:310">
+        <KeyedProperty property="opacity">
+          <KeyFrameDouble frame="0" value="0" />
+        </KeyedProperty>
+      </KeyedObject>
+    </LinearAnimation>
+    <LinearAnimation id="0:1002" name="Finish with Na końcu tęczy" fps="60" duration="1" loopValue="oneShot">
+      <KeyedObject objectId="0:100">
+        <KeyedProperty property="x">
+          <KeyFrameDouble frame="0" value="246" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:100">
+        <KeyedProperty property="y">
+          <KeyFrameDouble frame="0" value="293" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:100">
+        <KeyedProperty property="scaleX">
+          <KeyFrameDouble frame="0" value="0.6953125" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:100">
+        <KeyedProperty property="scaleY">
+          <KeyFrameDouble frame="0" value="0.6953125" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:100">
+        <KeyedProperty property="rotation">
+          <KeyFrameDouble frame="0" value="-0.015" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:100">
+        <KeyedProperty property="opacity">
+          <KeyFrameDouble frame="0" value="1" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:110">
+        <KeyedProperty property="x">
+          <KeyFrameDouble frame="0" value="246" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:110">
+        <KeyedProperty property="y">
+          <KeyFrameDouble frame="0" value="414" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:110">
+        <KeyedProperty property="scaleX">
+          <KeyFrameDouble frame="0" value="0.859375" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:110">
+        <KeyedProperty property="scaleY">
+          <KeyFrameDouble frame="0" value="0.20625" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:110">
+        <KeyedProperty property="opacity">
+          <KeyFrameDouble frame="0" value="0.2" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:200">
+        <KeyedProperty property="x">
+          <KeyFrameDouble frame="0" value="449" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:200">
+        <KeyedProperty property="y">
+          <KeyFrameDouble frame="0" value="281" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:200">
+        <KeyedProperty property="scaleX">
+          <KeyFrameDouble frame="0" value="0.546875" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:200">
+        <KeyedProperty property="scaleY">
+          <KeyFrameDouble frame="0" value="0.546875" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:200">
+        <KeyedProperty property="rotation">
+          <KeyFrameDouble frame="0" value="0.02" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:200">
+        <KeyedProperty property="opacity">
+          <KeyFrameDouble frame="0" value="1" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:210">
+        <KeyedProperty property="x">
+          <KeyFrameDouble frame="0" value="449" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:210">
+        <KeyedProperty property="y">
+          <KeyFrameDouble frame="0" value="381" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:210">
+        <KeyedProperty property="scaleX">
+          <KeyFrameDouble frame="0" value="0.640625" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:210">
+        <KeyedProperty property="scaleY">
+          <KeyFrameDouble frame="0" value="0.15375" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:210">
+        <KeyedProperty property="opacity">
+          <KeyFrameDouble frame="0" value="0.18" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:300">
+        <KeyedProperty property="x">
+          <KeyFrameDouble frame="0" value="553" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:300">
+        <KeyedProperty property="y">
+          <KeyFrameDouble frame="0" value="354" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:300">
+        <KeyedProperty property="scaleX">
+          <KeyFrameDouble frame="0" value="0.4453125" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:300">
+        <KeyedProperty property="scaleY">
+          <KeyFrameDouble frame="0" value="0.4453125" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:300">
+        <KeyedProperty property="rotation">
+          <KeyFrameDouble frame="0" value="-0.025" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:300">
+        <KeyedProperty property="opacity">
+          <KeyFrameDouble frame="0" value="1" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:310">
+        <KeyedProperty property="x">
+          <KeyFrameDouble frame="0" value="553" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:310">
+        <KeyedProperty property="y">
+          <KeyFrameDouble frame="0" value="435" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:310">
+        <KeyedProperty property="scaleX">
+          <KeyFrameDouble frame="0" value="0.53125" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:310">
+        <KeyedProperty property="scaleY">
+          <KeyFrameDouble frame="0" value="0.1275" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:310">
+        <KeyedProperty property="opacity">
+          <KeyFrameDouble frame="0" value="0.22" />
+        </KeyedProperty>
+      </KeyedObject>
+    </LinearAnimation>
+  </Artboard>
+  <ViewModel id="0:800" name="PapuComboModel" defaultInstanceId="0:801">
+    <ViewModelPropertyNumber id="0:802" name="stage" />
+    <ViewModelInstance id="0:801" name="Default" exports="true">
+      <ViewModelInstanceNumber viewModelPropertyId="0:802" propertyValue="0" />
+    </ViewModelInstance>
+  </ViewModel>
+  <ImageAsset id="0:900" name="ATOM burger" file="burger.png" />
+  <ImageAsset id="0:901" name="The Fry fries" file="fries.png" />
+  <ImageAsset id="0:902" name="Na końcu tęczy gelato" file="gelato.png" />
+</Rive>

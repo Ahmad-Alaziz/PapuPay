@@ -159,16 +159,33 @@
       "description": "Coś orzeźwiającego do Twojego zamówienia. Spotkajmy się w sercu hali.",
       "descriptionEn": "Something refreshing with your order. Meet us at the heart of the hall.",
       "source": "https://koszyki.com/services/bar-centralny-koszyki/"
+    },
+    {
+      "id": "tecza",
+      "name": "Na końcu tęczy",
+      "officialName": "Na końcu tęczy",
+      "cuisine": "Lody · Desery",
+      "cuisineEn": "Ice cream · Desserts",
+      "category": "desserts",
+      "unit": 20,
+      "minutes": 5,
+      "color": "#e5c6ac",
+      "image": "combo-gelato.webp",
+      "tag": "Słodki finał",
+      "tagEn": "A sweet finish",
+      "description": "Lody według autorskiej receptury, naturalne składniki i smaki, które zmieniają się wraz z porami roku.",
+      "descriptionEn": "Own-recipe ice cream, natural ingredients and flavours that change with the seasons.",
+      "source": "https://koszyki.com/services/na-koncu-teczy/"
     }
   ],
   "items": [
     {
       "id": "atom-classic",
       "restaurantId": "atom",
-      "name": "Classic Smash",
-      "nameEn": "Classic Smash",
-      "description": "Dwie wołowe smash patties, cheddar, pikle, sałata, sos ATOM, bułka brioche.",
-      "descriptionEn": "Double smashed beef, cheddar, pickles, lettuce, ATOM sauce, brioche bun.",
+      "name": "Smash Burger",
+      "nameEn": "Smash Burger",
+      "description": "Wołowina, ser, domowy sos ATOM i bułka brioche.",
+      "descriptionEn": "Beef, cheese, house-made ATOM sauce and a brioche bun.",
       "price": 3600,
       "image": "burger.jpg",
       "category": "Burgery",
@@ -379,6 +396,22 @@
       "category": "Napoje",
       "tag": "Fresh",
       "allergens": [],
+      "vegetarian": true
+    },
+    {
+      "id": "tecza-gelato",
+      "restaurantId": "tecza",
+      "name": "Lody · 2 gałki",
+      "nameEn": "Ice cream · 2 scoops",
+      "description": "Dwie gałki lodów według autorskiej receptury. Smaki zmieniają się sezonowo.",
+      "descriptionEn": "Two scoops of own-recipe ice cream. Flavours change with the seasons.",
+      "price": 1800,
+      "image": "combo-gelato.webp",
+      "category": "Desery",
+      "tag": "Na słodko",
+      "allergens": [
+        "milk"
+      ],
       "vegetarian": true
     }
   ]

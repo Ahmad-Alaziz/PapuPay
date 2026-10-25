@@ -1,4 +1,4 @@
-> Archived design exploration. The shipping opening now uses real Hala Koszyki photography. The editable source and original food cutouts remain here for provenance; its runtime assets are no longer bundled.
+> Archived design exploration. The shipping opening now uses the three-vendor `PapuCombo` composition in `../combo`. The editable source and original food cutouts remain here for provenance; its runtime assets are no longer bundled.
 
 # PapuPay shared table
 

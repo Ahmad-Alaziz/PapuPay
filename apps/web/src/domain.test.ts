@@ -66,7 +66,7 @@ describe("multi-kitchen ordering", () => {
     );
   });
 });
-it("finishes even a basket from all nine kitchens within the short demo window", () => {
+it("finishes even a basket from all kitchens within the short demo window", () => {
   const cart = restaurants.reduce(
     (lines, restaurant) =>
       addLine(
@@ -76,7 +76,7 @@ it("finishes even a basket from all nine kitchens within the short demo window",
     [] as ReturnType<typeof addLine>,
   );
   const orders = createOrders(cart, "24", "Guest", 100000);
-  expect(orders).toHaveLength(9);
+  expect(orders).toHaveLength(restaurants.length);
   expect(Math.min(...orders.map((order) => order.readyAt))).toBe(112000);
   expect(Math.max(...orders.map((order) => order.readyAt))).toBe(128000);
   expect(orders.every((order) => statusFor(order, 128000) === "ready")).toBe(

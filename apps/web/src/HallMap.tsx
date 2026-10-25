@@ -55,6 +55,7 @@ const arrivals: Record<number, [number, number]> = {
   33: [406, 368],
   30: [219, 408],
   28: [318, 350],
+  20: [494, 510],
 };
 const routes: Record<number, string> = {
   8: "M318 317 L318 338 Q318 340 310 340 L235 340 Q225 340 225 350 L225 376 L215 376",
@@ -66,6 +67,8 @@ const routes: Record<number, string> = {
   33: "M318 317 L342 317 L342 338 L390 338 L390 368 L406 368",
   30: "M318 317 L250 317 L250 340 L237 340 L237 395 L219 395 L219 408",
   28: "M318 317 L318 350",
+  // East aisle, finishing at Na końcu tęczy’s west counter edge.
+  20: "M318 317 L342 317 L342 338 L470 338 Q480 338 480 348 L480 500 Q480 510 490 510 L494 510",
 };
 export default function HallMap({
   locale,
@@ -166,7 +169,13 @@ export default function HallMap({
           }}
         >
           <svg
-            viewBox={overview ? "0 30 609 590" : "140 200 360 280"}
+            viewBox={
+              overview
+                ? "0 30 609 590"
+                : restaurant.unit === 20
+                  ? "280 280 300 310"
+                  : "140 200 360 280"
+            }
             role="group"
             aria-label={
               pl

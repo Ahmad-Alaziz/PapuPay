@@ -4,9 +4,9 @@
 
 Source: [Hala Koszyki restaurant directory](https://koszyki.com/uslugi/restauracje/), including its linked venue pages and hall map, reviewed 24–25 October 2026. Machine-readable evidence is in `docs/research/venues.json`, `official-assets.json`, and `PROVENANCE.txt`.
 
-The demo includes ATOM Burgers (08), KAGO (16), Semolino (11 / combined 11–12 footprint), Curry Leaves (33), Gringo Bar (30), TUK TUK (09), Bibimbar (15), The Fry (07), and Bar Koszyki (28). The official SVG geometry supplies the hall footprint and unit positions. The table marker, route and walking guidance are illustrative, not indoor positioning or an accessibility route certification.
+The demo includes ATOM Burgers (08), KAGO (16), Semolino (11 / combined 11–12 footprint), Curry Leaves (33), Gringo Bar (30), TUK TUK (09), Bibimbar (15), The Fry (07), Bar Koszyki (28), and Na końcu tęczy (20). The official SVG geometry supplies the hall footprint and unit positions. The table marker, route and walking guidance are illustrative, not indoor positioning or an accessibility route certification.
 
-No restaurant has supplied a transactional menu to this demo. Dish names/descriptions, prices, modifiers, allergens, photos and timing are example content, disclosed in both apps. Food photographs are illustrative Unsplash images; exact sources are recorded in `docs/research/demo-photos.json`. Official hall imagery is identified separately in `official-assets.json`.
+No restaurant has supplied a transactional menu to this demo. Dish names/descriptions, prices, modifiers, allergens, photos and timing are example content, disclosed in both apps. Existing catalog photographs are illustrative Unsplash images; exact sources are recorded in `docs/research/demo-photos.json`. The current combo banner and ice-cream catalog item use newly generated category photography, detailed below. Official hall imagery is identified separately in `official-assets.json`.
 
 ## Brand assets
 
@@ -20,6 +20,20 @@ Generated with the imagegen skill:
 Original generation output names: `exec-f91b8941-0237-4c6d-b950-c517fae57e0a.png` (feast) and `exec-1e7807f4-1f03-4d9a-8409-0c47d7dbfc9d.png` (papaya), in the Codex generated-images folder for this chat. Production derivatives and editable motion source live in this repository.
 
 QR-like seeds in the logo are decorative. Only QR images generated in `docs/testing` encode actual test URLs.
+
+## Three-vendor combo assets — 25 October 2026
+
+The current banner pairs independently verified vendor offerings: [ATOM smash burgers, unit 8](https://koszyki.com/services/soul-food/), [The Fry Belgian fries, unit 7](https://koszyki.com/services/the-fry/), and [Na końcu tęczy ice cream, unit 20](https://koszyki.com/services/na-koncu-teczy/). The ice-cream maker describes [seasonally changing flavors](https://www.nakoncuteczy.pl/nasza-oferta). No exact flavor availability, two-scoop portion or price is represented as a verified current offer.
+
+All three images were newly generated for this pass using imagegen. Shared prompt intent: isolated food on transparency, an approximately 18° elevated three-quarter camera angle and 70 mm lens look, warm-neutral light from upper left with right fill, realistic advertising photography, small contact shadow, no people, branding or text. Subject descriptions were:
+
+- **Burger:** brioche, two thin crisp beef patties, cheddar, house sauce and a few pickles on a square of greaseproof paper.
+- **Fries:** thick golden Belgian fries with salt in an ivory paper boat, without sauce or herb garnish.
+- **Ice cream:** ivory cup with cream-colored and chocolate scoops and a wooden spoon.
+
+These descriptions guided illustrative artwork; the visual toppings, container, portions and flavors are not official menu claims. Original outputs in this chat's `~/.codex/generated_images/01a16fda-8f79-72f2-9f49-0d750ee6ae1a/` directory are `exec-70c1684c-ea0e-4198-bf69-725dcba9227e.png`, `exec-bedd393c-71fa-4186-ba98-acaf75b171ea.png`, and `exec-04a3c126-4de8-4056-98d8-3f943ce1423c.png`, respectively.
+
+The portable 512 px derivatives live in `packages/motion/combo/{burger,fries,gelato}.png`. Web derivatives are `combo-{burger,fries,gelato}.webp`; static fallback stages are rendered from the actual Rive scene. See [the combo source README](../packages/motion/combo/README.md) for the runtime contract and reproducible build.
 
 ## Typography licenses
 

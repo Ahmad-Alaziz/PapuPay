@@ -24,6 +24,7 @@ import {
   X,
   Zap,
   GlassWater,
+  IceCreamBowl,
   Pizza,
   LockKeyhole,
   QrCode,
@@ -383,6 +384,7 @@ export default function App({ context }: { context: OrderContext }) {
     { id: "pizza", Icon: Pizza, label: t("Pizza i pasta", "Pizza & pasta") },
     { id: "street", Icon: Zap, label: "Street food" },
     { id: "veggie", Icon: Leaf, label: "Vege" },
+    { id: "desserts", Icon: IceCreamBowl, label: t("Desery", "Desserts") },
     { id: "drinks", Icon: GlassWater, label: t("Napoje", "Drinks") },
   ];
   const browse = () => {
@@ -551,7 +553,14 @@ export default function App({ context }: { context: OrderContext }) {
                     locale={locale}
                     table={table}
                     onBrowse={browse}
-                    onTour={() => setTour(0)}
+                    cart={cart}
+                    onAddCombo={(items) => {
+                      setStore(s => ({ ...s, cart: items.reduce((lines, item) => addLine(lines, item.itemId, item.quantity, item.extra, item.note), s.cart) }));
+                      setLastAdded(null);
+                      setCheckout(false);
+                      setCartOpen(true);
+                      if (navigator.vibrate) navigator.vibrate(12);
+                    }}
                   />
                   <section className="discovery section" id="restaurants">
                     <div className="section-heading">
@@ -620,8 +629,8 @@ export default function App({ context }: { context: OrderContext }) {
                       <span>
                         {filteredRestaurants.length}{" "}
                         {t(
-                          "miejsc na coś pysznego",
-                          "places for something delicious",
+                          filteredRestaurants.length === 1 ? "miejsce na coś pysznego" : filteredRestaurants.length >= 2 && filteredRestaurants.length <= 4 ? "miejsca na coś pysznego" : "miejsc na coś pysznego",
+                          filteredRestaurants.length === 1 ? "place for something delicious" : "places for something delicious",
                         )}
                       </span>
                       <span className="demo-label">
@@ -1248,7 +1257,7 @@ export default function App({ context }: { context: OrderContext }) {
                   </span>
                 ))}
               </div>
-              <div className="option-section">
+              {dish.restaurantId !== "tecza" && <div className="option-section">
                 <h3>
                   {t(
                     "Jeszcze trochę przyjemności?",
@@ -1272,7 +1281,7 @@ export default function App({ context }: { context: OrderContext }) {
                     onChange={(e) => setExtra(e.target.checked)}
                   />
                 </label>
-              </div>
+              </div>}
               <label className="note-label">
                 {t("Coś dla kuchni?", "A note for the kitchen?")}
                 <span>{t("opcjonalnie", "optional")}</span>

@@ -26,15 +26,15 @@ The React app works on Android, iPhone, and desktop browsers. It has no login an
 
 Open `apps/ios/PapuPay.xcodeproj` in Xcode. Select **PapuPay** for the full app or **PapuPayClip** for the App Clip. The project contains separate Live Activity extensions for both. iOS 17+ is supported; native Liquid Glass appears on iOS 26+.
 
-Build **1.0 (6.1)** is available in the PapuPay Demo internal group and uploaded to TestFlight through GitHub Actions, with cloud signing and no local Xcode sign-in. See [cloud builds](docs/CLOUD-BUILDS.md). Simulator builds need no development team. Physical iPhone builds outside TestFlight need Apple signing. The Clip scheme already supplies `_XCAppClipURL=https://papupay.com/go/koszyki/24` for Xcode testing. Read [the complete iPhone and QR testing guide](docs/IPHONE-TESTING.md).
+Internal TestFlight builds are distributed to the PapuPay Demo group through GitHub Actions, with cloud signing and no local Xcode sign-in. See [cloud builds](docs/CLOUD-BUILDS.md) for the latest verified release. Simulator builds need no development team. Physical iPhone builds outside TestFlight need Apple signing. The Clip scheme already supplies `_XCAppClipURL=https://papupay.com/go/koszyki/24` for Xcode testing. Read [the complete iPhone and QR testing guide](docs/IPHONE-TESTING.md).
 
 ## Try the complete journey
 
-1. Open table 24, then “Jak to działa?” / “How it works” for the animated introduction. Tap an illustration for tactile feedback.
-2. Browse the nine restaurants, search dishes, filter cuisines or vegetarian options, and explore the interactive food spotlight.
-3. Customize a Classic Smash, add a ramen from KAGO, and open the grouped basket.
+1. Open table 24. The banner builds a meal from ATOM, The Fry and Na końcu tęczy; swipe or tap a vendor to control it. “Jak to działa” / “How it works” opens the guided introduction.
+2. Choose “Zobacz ten zestaw” / “Explore this combo”, review quantities and kitchen notes, then explicitly add your selection to the basket.
+3. Browse the ten demo kitchens, search dishes, filter cuisines or vegetarian options, and customize a Smash Burger or add a ramen from KAGO.
 4. Place a **demo** order. There is no charge and nothing is sent to a restaurant.
-5. Watch each kitchen progress: the first is ready in 12 seconds, all nine within 28 seconds. Enable ready alerts at checkout. In native iOS, inspect the real Lock Screen Live Activity and Dynamic Island.
+5. Watch each kitchen progress: the first is ready in 12 seconds, all ten within 30 seconds. Enable ready alerts at checkout. In native iOS, inspect the real Lock Screen Live Activity and Dynamic Island.
 6. Find the pickup counter on the interactive hall map, mark a ticket collected, and try ordering it again.
 7. About this demo → kitchen demo gives a second view of the same local orders. Web tabs on the same origin synchronize through local storage.
 
@@ -42,8 +42,8 @@ Build **1.0 (6.1)** is available in the PapuPay Demo internal group and uploaded
 
 - React + TypeScript + Vite, responsive layouts, Polish/English, accessible native HTML dialogs.
 - SwiftUI app and App Clip, native tab navigation and sheets, haptics, ActivityKit / WidgetKit.
-- Shared catalog and official hall geometry, nine demo kitchens, menu customization, multi-venue checkout, persisted order tickets and pickup.
-- Animated shared-table opening with original food cutouts, a custom Rive scene and a clear path into the kitchen menus.
+- Shared catalog and official hall geometry, ten demo kitchens, menu customization, multi-venue checkout, persisted order tickets and pickup.
+- Interactive Rive combo banner: an ATOM burger, The Fry fries and Na końcu tęczy ice cream assemble into one meal, with editable review before adding to the basket.
 - Original dimensional papaya artwork and custom Rive state machine: scanner, food bag, cooking cloche and ready receipt, with pointer response. Editable Rive source is included.
 - Heavy DM Sans headings, Anton poster accents and a Fredoka **PapuPay** wordmark; system text styles on iOS.
 - Size gate, domain tests, source provenance, and verification notes.
@@ -56,7 +56,8 @@ Build **1.0 (6.1)** is available in the PapuPay Demo internal group and uploaded
 | `apps/ios` | Xcode project, shared SwiftUI, app, Clip and widgets |
 | `packages/catalog` | Restaurant/menu data and hall map |
 | `packages/motion/papupay` | Editable order-journey Rive project |
-| `packages/motion/table` | Editable shared-table Rive scene, generator and interaction contract |
+| `packages/motion/combo` | Current three-vendor Rive scene, generated food assets and interaction contract |
+| `packages/motion/table` | Archived shared-table motion exploration |
 | `packages/brand` | Master artwork and licensed font sources |
 | `scripts` | Font preparation, Rive authoring, Xcode generation and size check |
 | `docs` | Design decisions, test instructions, research and evidence |

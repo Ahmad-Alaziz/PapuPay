@@ -17,7 +17,7 @@ Android and other browsers use the same hosted responsive web app. Deployment de
 
 ## Cloud signing without local Xcode sign-in
 
-Version **1.0 (6.1)** was successfully signed and uploaded from GitHub Actions on 25 October 2026. Local Xcode sign-in is not required. See [Cloud builds and TestFlight](CLOUD-BUILDS.md) for the verified workflow and encrypted secret configuration.
+The latest verified signed version is recorded in [Cloud builds](CLOUD-BUILDS.md). Builds are signed and uploaded from GitHub Actions. Local Xcode sign-in is not required. See [Cloud builds and TestFlight](CLOUD-BUILDS.md) for the verified workflow and encrypted secret configuration.
 
 1. Install Apple’s **TestFlight** app on your iPhone.
 2. Open the TestFlight invitation sent to the personal Apple account used for App Store Connect, and accept it.
@@ -63,7 +63,7 @@ python3 scripts/check-clip-size.py \
   /tmp/papupay-release/Build/Products/Release-iphoneos/PapuPayClip.app --json
 ```
 
-The successful cloud-signed archive measures **12.47 MB** including Rive, its Live Activity extension and signing material (`docs/verification/v5-signed-clip-size.json`). The earlier local unsigned device build is retained in `clip-size.json` as historical evidence. Keep margin for future content. Apple’s thinned size report remains the authoritative distribution measurement. Optimize imagery and fonts first; avoid bundling a full video or a large 3D engine. The order-journey `.riv` is about 352 KB; the shared-table `.riv`, including its three food cutouts, is about 1.91 MB.
+The successful cloud-signed archive measures **9.13 MB** including Rive, its Live Activity extension and signing material (`docs/verification/v6-signed-clip-size.json`). The earlier local unsigned device build is retained in `clip-size.json` as historical evidence. Keep margin for future content. Apple’s thinned size report remains the authoritative distribution measurement. Optimize imagery and fonts first; avoid bundling a full video or a large 3D engine. The order-journey `.riv` is about 352 KB. The new combo hero adds a 909 KB Rive scene, three optimized cutouts and matching still poses. The final signed size is checked again on every cloud upload.
 
 ## Live Activity boundaries
 
@@ -78,6 +78,11 @@ The demo really uses ActivityKit and WidgetKit. It displays aggregate kitchen pr
 
 ## Fast demo and ready alerts
 
-At checkout, leave “Daj znać, gdy gotowe” enabled and allow notifications if iOS asks. The first kitchen is ready after 12 seconds; additional kitchens are staggered by 2 seconds, up to 28 seconds for all nine. Lock the phone immediately after placing the demo order to see the notification and Live Activity. Tap the ready notification to return to the correct table's pickup tickets.
+At checkout, leave “Daj znać, gdy gotowe” enabled and allow notifications if iOS asks. The first kitchen is ready after 12 seconds; additional kitchens are staggered by 2 seconds, up to 28 seconds for all ten. Lock the phone immediately after placing the demo order to see the notification and Live Activity. Tap the ready notification to return to the correct table's pickup tickets.
 
 The full app schedules local alerts through UserNotifications. The App Clip requests the temporary notification entitlement and accepts Apple's ephemeral authorization; see [Apple's App Clip notification guidance](https://developer.apple.com/documentation/AppClip/enabling-notifications-in-app-clips). This is a short-lived demo permission, not permanent push registration. A finite background task attempts to finish the short Live Activity demo. The OS can still suspend/terminate the app; production needs server-driven APNs updates. Browser alerts require permission and an open tab; the web UI states this limitation.
+
+
+## Three-kitchen combo
+
+On Discover, watch the ATOM burger gain The Fry fries and Na końcu tęczy ice cream. The one-shot introduction settles; tap the vendor cards or swipe to revisit each stage. With Reduce Motion enabled the matching still pose changes without travel. Choose “Zobacz ten zestaw” / “Explore this combo”, adjust quantities or notes, and explicitly add the selection. The real basket opens with separate kitchen groups. Choose Desserts to find Na końcu tęczy, and check its pickup route to unit 20. Vendor identities and food categories are verified; photography, portions, prices and ice-cream flavors are illustrative.

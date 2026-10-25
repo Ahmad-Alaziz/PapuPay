@@ -136,7 +136,7 @@ export function createOrders(
     lines: structuredClone(lines),
     total: cartTotal(lines),
     createdAt: now,
-    readyAt: now + 12000 + i * 2000,
+    readyAt: now + 12000 + Math.min(i, 8) * 2000,
     collected: false,
   }));
 }

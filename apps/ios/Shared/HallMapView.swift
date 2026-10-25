@@ -50,6 +50,7 @@ struct HallMapView: View {
     32: .init(x: 194, y: 505), 33: .init(x: 416, y: 367),
   ]
   private let routes: [Int: String] = [
+    20: "M318 317 L342 317 L342 338 L470 338 Q480 338 480 348 L480 500 Q480 510 490 510 L494 510",
     8: "M318 317 L318 338 L225 338 L225 376 L215 376",
     7: "M318 317 L318 338 L226 338 L226 358 L215 358", 9: "M318 317 L318 340 L215 340 L215 328",
     11: "M318 317 L285 317 L285 280 L263 280", 16: "M318 317 L342 317 L342 338 L450 338 L450 327",
@@ -88,7 +89,7 @@ struct HallMapView: View {
             Spacer()
             Button {
               withAnimation(.smooth(duration: 0.3)) {
-                zoom = 1.5
+                zoom = selected.unit == 20 ? 1 : 1.5
                 pan = .zero
               }
             } label: {
@@ -243,6 +244,17 @@ struct HallMapView: View {
             "Venue plan based on koszyki.com. Table position and walking route are illustrative.")
         ).font(Papu.body(12)).foregroundStyle(Papu.muted).lineSpacing(3)
       }.padding(20).padding(.top, 10).padding(.bottom, 25)
+    }
+    .onAppear {
+      if selected.unit == 20 { zoom = 1; pan = .zero }
+    }
+    .onChange(of: store.mapRestaurant) { _, _ in
+      if selected.unit == 20 {
+        withAnimation(reduceMotion ? nil : .smooth(duration: 0.3)) {
+          zoom = 1
+          pan = .zero
+        }
+      }
     }
     .onChange(of: store.completedCheckoutID) { _, _ in selectedRestaurant = nil }
     .sheet(item: $selectedRestaurant) {

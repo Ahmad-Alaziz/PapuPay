@@ -115,7 +115,7 @@ struct PressStyle: ButtonStyle {
 struct FoodPhoto: View {
   let name: String
   var body: some View {
-    Image(name.replacingOccurrences(of: ".jpg", with: "")).resizable().scaledToFill()
+    Image((name as NSString).deletingPathExtension).resizable().scaledToFill()
       .accessibilityHidden(true)
   }
 }
@@ -281,5 +281,65 @@ struct QuickAddButton: View {
       .animation(reduceMotion ? nil : .spring(response: 0.28, dampingFraction: 0.8), value: quantity)
       .accessibilityLabel(store.text("Dodaj ", "Add ") + store.text(dish.name, dish.nameEn))
       .accessibilityValue(store.text("W koszyku: ", "In basket: ") + String(quantity))
+  }
+}
+
+
+/// A bundled three-stage meal composition. It renders only during state transitions.
+@MainActor private enum PapuComboAsset {
+  static let file = Task { () throws -> RiveRuntime.File in
+    let worker = try await Worker()
+    return try await RiveRuntime.File(source: .local("papu-combo", Bundle.main), worker: worker)
+  }
+}
+@MainActor private final class ComboAnimation: ObservableObject {
+  @Published var rive: Rive?
+  func load(stage: Int) async {
+    guard rive == nil else { set(stage); return }
+    do {
+      let file = try await PapuComboAsset.file.value
+      let instance = try await file.createViewModelInstance(.viewModelDefault(from: .name("PapuComboModel")))
+      instance.setValue(of: NumberProperty(path: "stage"), to: Float(stage))
+      rive = try await Rive(file: file, dataBind: .instance(instance))
+    } catch { /* The equivalent still remains available if the renderer cannot load. */ }
+  }
+  func set(_ stage: Int) {
+    rive?.viewModelInstance?.setValue(of: NumberProperty(path: "stage"), to: Float(stage))
+  }
+}
+struct PapuComboScene: View {
+  @Environment(\.accessibilityReduceMotion) private var reduceMotion
+  @StateObject private var model = ComboAnimation()
+  @State private var settled = false
+  @State private var poseReady = false
+  let stage: Int
+  let active: Bool
+  private var playbackID: String { "\(stage)-\(active)-\(reduceMotion)" }
+  var body: some View {
+    Group {
+      if let rive = model.rive, !reduceMotion {
+        ZStack {
+          Image("combo-stage-\(stage)").resizable().scaledToFit().opacity(poseReady ? 0 : 1)
+          RiveUIViewRepresentable(rive: rive).paused(!active || settled).frameRate(.fps(60))
+            .opacity(poseReady ? 1 : 0)
+        }
+      } else {
+        Image("combo-stage-\(stage)").resizable().scaledToFit()
+      }
+    }.allowsHitTesting(false).accessibilityHidden(true)
+      .task(id: playbackID) {
+        guard active, !reduceMotion else { return }
+        settled = false
+        await model.load(stage: stage)
+        guard !Task.isCancelled else { return }
+        if !poseReady {
+          do { try await Task.sleep(for: .milliseconds(760)) } catch { return }
+          poseReady = true
+          do { try await Task.sleep(for: .milliseconds(140)) } catch { return }
+        } else {
+          do { try await Task.sleep(for: .milliseconds(900)) } catch { return }
+        }
+        settled = true
+      }
   }
 }
