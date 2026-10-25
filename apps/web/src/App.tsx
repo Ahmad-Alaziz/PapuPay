@@ -408,7 +408,7 @@ export default function App({ context }: { context: OrderContext }) {
                 key={count}
                 className="header-cart"
                 aria-label={t(
-                  `Koszyk, ${count} produktów`,
+                  `Koszyk, liczba produktów: ${count}`,
                   `Basket, ${count} items`,
                 )}
                 onClick={() => {
@@ -1002,8 +1002,8 @@ export default function App({ context }: { context: OrderContext }) {
               <span>
                 {t("Twój koszyk", "Your basket")}
                 <small>
-                  {groupCart(cart).length}{" "}
-                  {t("kuchnie · jedno zamówienie", "kitchens · one checkout")}
+                  {t("Kuchnie", "Kitchens")}: {groupCart(cart).length} ·{" "}
+                  {t("jedno zamówienie", "one checkout")}
                 </small>
               </span>
               <strong>{price(total, locale)}</strong>
@@ -1413,9 +1413,9 @@ export default function App({ context }: { context: OrderContext }) {
                               )}
                             </h3>
                             <p>
-                              {count} {t("produktów", "items")} ·{" "}
-                              {groupCart(cart).length}{" "}
-                              {t("kuchnie", "kitchens")}
+                              {t("Produkty", "Items")}: {count} ·{" "}
+                              {t("Kuchnie", "Kitchens")}:{" "}
+                              {groupCart(cart).length}
                             </p>
                           </div>
                         </div>

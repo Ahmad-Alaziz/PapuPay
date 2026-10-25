@@ -314,10 +314,9 @@ struct BasketView: View {
                     Text(store.text("Twój koszyk jest gotowy.", "Your basket is ready.")).font(
                       Papu.display(20))
                     Text(
-                      "\(store.count) "
-                        + store.text(
-                          "produktów · \(store.groupedCart.count) kuchnie",
-                          "items · \(store.groupedCart.count) kitchens")
+                      store.text(
+                        "Produkty: \(store.count) · Kuchnie: \(store.groupedCart.count)",
+                        "Items: \(store.count) · Kitchens: \(store.groupedCart.count)")
                     )
                     .font(Papu.body(13)).foregroundStyle(Papu.muted)
                   }
