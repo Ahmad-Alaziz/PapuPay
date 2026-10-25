@@ -10,14 +10,8 @@ import {
 
 RuntimeLoader.setWasmUrl("/assets/rive.wasm");
 
-/** The scene is visual; accessible HTML food controls own its selection. */
-export default function TableMotion({
-  selected,
-  fallback,
-}: {
-  selected: number;
-  fallback: ReactNode;
-}) {
+/** A decorative, one-shot shared-table arrival that settles without an idle loop. */
+export default function TableMotion({ fallback }: { fallback: ReactNode }) {
   const host = useRef<HTMLDivElement>(null);
   const [loaded, setLoaded] = useState(false);
   const [failed, setFailed] = useState(false);
@@ -65,15 +59,15 @@ export default function TableMotion({
   }, [rive]);
   useEffect(() => {
     const selection = rive?.viewModelInstance?.number("selected");
-    if (selection) selection.value = selected;
-  }, [rive, selected]);
+    if (selection) selection.value = 0;
+  }, [rive]);
   useEffect(() => {
     let settleTimer: ReturnType<typeof setTimeout> | undefined;
     const sync = () => {
       clearTimeout(settleTimer);
       if (loaded && visible && !document.hidden && !failed) {
         rive?.play();
-        // Entrance and selection poses settle. An idle hero does no render work.
+        // The arrival settles. An idle hero does no render work.
         settleTimer = setTimeout(() => rive?.pause(), 2000);
       } else rive?.pause();
     };
@@ -84,7 +78,7 @@ export default function TableMotion({
       document.removeEventListener("visibilitychange", sync);
       rive?.pause();
     };
-  }, [rive, loaded, visible, failed, selected, resizeVersion]);
+  }, [rive, loaded, visible, failed, resizeVersion]);
 
   return (
     <div className="table-rive" ref={host} aria-hidden="true">

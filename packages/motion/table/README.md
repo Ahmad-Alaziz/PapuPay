@@ -1,9 +1,9 @@
 # PapuPay shared table
 
 The hero explains PapuPay's core idea through one composition: dishes from ATOM,
-KAGO and Semolino meet at a shared table. Selecting a plate focuses its kitchen;
-the surrounding application offers the corresponding real demo menu. Selection
-does not add anything to the basket.
+KAGO and Semolino meet at a shared table. The shipping banner plays the shared
+composition as a decorative entrance. Cuisine filtering lives in the menu below,
+so the banner has no plate selectors, kitchen labels or menu shortcuts.
 
 ## Runtime contract
 
@@ -12,9 +12,9 @@ does not add anything to the basket.
 - Default view model: `PapuTableModel`.
 - Number property: `selected` — `0` whole table, `1` ATOM burger, `2` KAGO ramen,
   `3` Semolino pizza.
-- Scene plate click listeners write the same `selected` property in the authoring
-  preview. The applications place accessible HTML or SwiftUI controls over the
-  plates and write that property from them, so selection wakes a paused renderer.
+- The editable authoring preview retains focus poses and click listeners for
+  art direction. Shipping wrappers keep `selected` at its default 0 and disable
+  pointer interaction. These authoring affordances are not product controls.
 - Application headings, table number, localized descriptions and menu actions
   remain semantic HTML or SwiftUI controls outside the canvas.
 
@@ -36,8 +36,8 @@ The three state-machine layers own separate transforms:
 
 **All six timelines are one-shot. There are no animation loops, scripts, audio,
 video, or network resources inside the file.** Wrappers pause after 2 seconds,
-pause when hidden/inactive, and wake for selection. Reduced Motion uses matching
-static plates while keeping kitchen selection and menu actions available.
+pause when hidden/inactive, and redraw after resizing. Reduced Motion uses matching
+static plates. Explore kitchens and How it works remain normal accessible controls.
 
 ## Source and export
 

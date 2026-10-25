@@ -154,8 +154,7 @@ struct DiscoverView: View {
           VStack(spacing: 0) {
             CravingSpotlight(
               showTour: $showTour,
-              browse: { withAnimation(.smooth) { reader.scrollTo("restaurants", anchor: .top) } },
-              openMenu: { selectedRestaurant = $0 })
+              browse: { withAnimation(.smooth) { reader.scrollTo("restaurants", anchor: .top) } })
             VStack(alignment: .leading, spacing: 20) {
               Text(store.text("Co dziś jesz?", "What’s your craving?"))
                 .font(Papu.display(32)).fixedSize(horizontal: false, vertical: true).id(
@@ -384,20 +383,12 @@ struct SmallDishCard: View {
 }
 
 
-/// One shared table introduces the food hall rather than a single featured dish.
+/// A shared-table introduction leads to the single cuisine selector in the catalog.
 private struct CravingSpotlight: View {
   @EnvironmentObject var store: PapuStore
-  @Environment(\.accessibilityReduceMotion) private var reduceMotion
   @Environment(\.dynamicTypeSize) private var typeSize
   @Binding var showTour: Bool
   var browse: () -> Void
-  var openMenu: (Restaurant) -> Void
-  @State private var selected = 0
-  private let restaurantIDs = ["atom", "kago", "semolino"]
-  private var restaurant: Restaurant? {
-    guard selected > 0 else { return nil }
-    return store.catalog.restaurants.first { $0.id == restaurantIDs[selected - 1] }
-  }
   var body: some View {
     VStack(alignment: .leading, spacing: 10) {
       HStack(spacing: 8) {
@@ -415,21 +406,10 @@ private struct CravingSpotlight: View {
           "Mix kitchens in one checkout. Collect at the counters."))
           .font(Papu.body(13)).foregroundStyle(Papu.muted).fixedSize(horizontal: false, vertical: true)
       }
-      PapuTableScene(selected: $selected)
+      PapuTableScene()
         .aspectRatio(800.0 / 620.0, contentMode: .fit)
         .background(Color(hex: "F9E4CC"), in: RoundedRectangle(cornerRadius: 25))
         .clipShape(RoundedRectangle(cornerRadius: 25))
-      HStack(spacing: 7) {
-        ForEach(0..<4, id: \.self) { index in
-          Button { choose(index) } label: {
-            Text([store.text("Razem", "Together"), "Burger", "Ramen", "Pizza"][index])
-              .font(Papu.body(12).weight(.semibold)).lineLimit(1).minimumScaleFactor(0.85)
-              .frame(maxWidth: .infinity, minHeight: 44)
-              .foregroundStyle(selected == index ? Papu.butter : Papu.ink)
-              .background(selected == index ? Papu.ink : Papu.sage, in: Capsule())
-          }.buttonStyle(PressStyle()).accessibilityAddTraits(selected == index ? .isSelected : [])
-        }
-      }
       HStack(spacing: 10) {
         Button(action: browse) {
           HStack(spacing: 7) {
@@ -439,28 +419,13 @@ private struct CravingSpotlight: View {
             .frame(maxWidth: .infinity, minHeight: 50)
             .foregroundStyle(Papu.butter).background(Papu.ink, in: Capsule())
         }.buttonStyle(PressStyle())
-        if let restaurant {
-          Button { openMenu(restaurant) } label: {
-            VStack(alignment: .leading, spacing: 2) {
-              Text(restaurant.name).font(Papu.body(11)).foregroundStyle(Papu.muted)
-              Label(store.text("Zobacz menu", "See menu"), systemImage: "arrow.up.right")
-                .font(Papu.body(13).weight(.semibold))
-            }.lineLimit(1).minimumScaleFactor(0.85).padding(.horizontal, 13)
-              .frame(minHeight: 50).background(Papu.butter, in: Capsule())
-          }.buttonStyle(PressStyle()).accessibilityLabel(
-            store.text("Zobacz menu ", "See menu at ") + restaurant.name)
-        } else {
-          Button { showTour = true } label: {
-            Image(systemName: "play.fill").font(.system(size: 14)).frame(width: 50, height: 50)
-              .background(Papu.butter, in: Circle())
-          }.buttonStyle(PressStyle()).accessibilityLabel(store.text("Jak to działa?", "How it works"))
-        }
+        Button { showTour = true } label: {
+          Label(store.text("Jak to działa?", "How it works"), systemImage: "play.circle")
+            .font(Papu.body(12).weight(.semibold)).lineLimit(1).minimumScaleFactor(0.85)
+            .padding(.horizontal, 13).frame(minHeight: 50)
+            .background(Papu.butter, in: Capsule())
+        }.buttonStyle(PressStyle())
       }
     }.padding(.horizontal, 20).padding(.top, 16).padding(.bottom, 8)
-      .animation(reduceMotion ? nil : .easeInOut(duration: 0.2), value: selected)
-  }
-  private func choose(_ index: Int) {
-    UISelectionFeedbackGenerator().selectionChanged()
-    selected = index
   }
 }

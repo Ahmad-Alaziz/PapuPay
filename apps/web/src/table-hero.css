@@ -1,8 +1,8 @@
-/* PapuPay's shared table. Visual positions match the 800 × 620 Rive artboard. */
+/* A shared table expresses the brand; cuisine filtering lives in the menu. */
 .table-hero {
   max-width: 1380px;
   margin: 0 auto;
-  padding: 28px var(--content-padding) 24px;
+  padding: 28px var(--content-padding) 20px;
   display: grid;
   grid-template-columns: minmax(0, 0.88fr) minmax(0, 1.12fr);
   align-items: center;
@@ -10,15 +10,15 @@
 }
 .table-hero-copy {
   min-width: 0;
-  padding-block: 16px 32px;
+  padding-block: 16px 28px;
 }
 .table-hero-context {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 750;
-  letter-spacing: 1px;
+  letter-spacing: 0.9px;
 }
 .table-context-divider {
   color: #a2ad94;
@@ -76,7 +76,7 @@
   gap: 7px;
   flex-wrap: wrap;
   margin-top: 24px;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 600;
   color: var(--muted);
 }
@@ -87,21 +87,7 @@
   min-width: 0;
   position: relative;
   align-self: center;
-}
-.table-scene-hint {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  justify-content: center;
-  font-size: 11px;
-  font-weight: 650;
-  color: var(--muted);
-  margin: 0 0 -15px;
-  position: relative;
-  z-index: 1;
-}
-.table-scene-hint > svg {
-  color: var(--accent-text);
+  pointer-events: none;
 }
 .table-scene-visual {
   position: relative;
@@ -110,8 +96,7 @@
 }
 .table-rive,
 .table-still,
-.table-rive-canvas,
-.table-food-controls {
+.table-rive-canvas {
   position: absolute;
   inset: 0;
 }
@@ -163,13 +148,8 @@
   position: absolute;
   max-width: none;
   object-fit: contain;
-  --focus-x: 0%;
-  --focus-y: 0%;
-  --focus-scale: 1;
-  transform: translate(calc(-50% + var(--focus-x)), calc(-50% + var(--focus-y)))
-    scale(var(--focus-scale));
+  transform: translate(-50%, -50%);
   filter: drop-shadow(0 14px 10px #5b2d2226);
-  transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 .table-food-atom {
   left: 28.75%;
@@ -186,188 +166,21 @@
   top: 71.294%;
   width: 44.375%;
 }
-/* Percent offsets are relative to each square cutout, preserving Rive artboard
-   coordinates at every viewport size (335/320/355px nominal dish widths). */
-.table-still.has-selection .table-food {
-  --focus-scale: 0.88;
-}
-.table-still.has-selection .table-food-atom {
-  --focus-x: -3.58209%;
-  --focus-y: -0.59701%;
-}
-.table-still.has-selection .table-food-kago {
-  --focus-x: 4.375%;
-  --focus-y: -2.5%;
-}
-.table-still.has-selection .table-food-semolino {
-  --focus-x: 5.07042%;
-  --focus-y: 2.8169%;
-}
-.table-still.has-selection .table-food.is-selected {
-  --focus-x: 0%;
-  --focus-scale: 1.13;
-}
-.table-still.has-selection .table-food-atom.is-selected {
-  --focus-y: -5.37313%;
-}
-.table-still.has-selection .table-food-kago.is-selected {
-  --focus-y: -5.625%;
-}
-.table-still.has-selection .table-food-semolino.is-selected {
-  --focus-y: -5.07042%;
-}
-.table-food-controls {
-  z-index: 2;
-}
-.table-food-control {
+.table-rive-fallback {
   position: absolute;
-  padding: 0;
-  border: 2px solid transparent;
-  border-radius: 50%;
-  background: transparent;
-  min-width: 44px;
-  min-height: 44px;
+  inset: 0;
+  opacity: 1;
+  transition: opacity 0.18s;
 }
-.table-food-control:hover,
-.table-food-control:active {
-  background: transparent;
-  transform: none;
+.table-rive-fallback.is-hidden {
+  opacity: 0;
 }
-.table-control-atom {
-  left: 11.25%;
-  top: 33.074%;
-  width: 35%;
-  height: 37.1%;
-}
-.table-control-kago {
-  left: 51.25%;
-  top: 16.934%;
-  width: 35.625%;
-  height: 41.13%;
-}
-.table-control-semolino {
-  left: 39.375%;
-  top: 55.644%;
-  width: 40%;
-  height: 31.45%;
-}
-.table-food-control > span {
-  position: absolute;
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  border: 1px solid #e3ddc8;
-  border-radius: 20px;
-  padding: 8px 11px;
-  font-size: 10px;
-  line-height: 1;
-  font-weight: 800;
-  background: #fffaf0;
-  color: var(--ink);
-  box-shadow: 0 3px 10px #6b402010;
-  white-space: nowrap;
-  transition:
-    background 0.2s,
-    border-color 0.2s;
-}
-.table-control-atom > span {
-  left: -12%;
-  top: 0;
-}
-.table-control-kago > span {
-  right: -6%;
-  top: 7%;
-}
-.table-control-semolino > span {
-  right: -22%;
-  bottom: 8%;
-}
-.table-selection-dot {
-  width: 5px;
-  height: 5px;
-  background: #a7b69b;
-  border-radius: 50%;
-}
-.table-food-control.is-selected > span,
-.table-food-control:hover > span {
-  background: var(--ink);
-  color: var(--butter);
-  border-color: var(--ink);
-}
-.table-food-control.is-selected .table-selection-dot {
-  background: var(--orange);
-}
-.table-food-control:focus-visible {
-  outline: 3px solid var(--accent-text);
-  outline-offset: 3px;
-}
-.table-scene-caption {
-  min-height: 64px;
-  padding: 0 38px 0 18px;
-  position: relative;
-  margin-top: -14px;
-}
-.table-caption-content {
-  display: flex;
-  gap: 16px;
-  align-items: center;
-  justify-content: space-between;
-  min-height: 64px;
-}
-.table-caption-content > div {
-  min-width: 0;
-}
-.table-caption-content strong {
-  display: block;
-  font-size: 16px;
-  font-weight: 800;
-  letter-spacing: -0.025em;
-  line-height: 1.25;
-}
-.table-caption-content > div > span {
-  display: block;
-  margin-top: 5px;
-  color: var(--muted);
-  font-size: 11px;
-  line-height: 1.4;
-}
-.table-menu-link {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 12px;
-  font-weight: 750;
-  min-height: 44px;
-  white-space: nowrap;
-  padding: 10px 0 10px 12px;
-}
-.table-caption-mark {
-  display: grid;
-  place-items: center;
-  width: 36px;
-  height: 36px;
-  color: var(--green);
-  border: 1px solid #d3dec7;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-.table-reset {
-  position: absolute;
-  top: 10px;
-  right: -5px;
-  min-width: 44px;
-  min-height: 44px;
-  display: grid;
-  place-items: center;
-  color: var(--muted);
-}
-
 @media (min-width: 1100px) {
   .table-hero {
     gap: 56px;
   }
   .table-hero-scene {
-    margin: -12px -12px 0 -24px;
+    margin: -36px -12px -18px -24px;
   }
 }
 @media (max-width: 1000px) and (min-width: 761px) {
@@ -394,28 +207,16 @@
     font-size: 12px;
   }
   .table-hero-context {
-    font-size: 9px;
-    letter-spacing: 0.5px;
-    gap: 6px;
-  }
-  .table-caption-content strong {
-    font-size: 14px;
-  }
-  .table-caption-content > div > span {
-    font-size: 10px;
-  }
-  .table-scene-hint {
-    font-size: 10px;
-  }
-  .table-menu-link {
     font-size: 11px;
+    letter-spacing: 0.3px;
+    gap: 6px;
   }
 }
 @media (max-width: 760px) {
   .table-hero {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    padding: 20px 20px 12px;
+    padding: 20px 20px 8px;
     gap: 0;
   }
   .table-hero-copy {
@@ -432,7 +233,7 @@
     font-size: clamp(40px, 11vw, 48px);
     line-height: 1.07;
     letter-spacing: -0.015em;
-    margin: 12px 0 12px;
+    margin: 12px 0;
   }
   .table-hero-intro {
     grid-row: 3;
@@ -442,7 +243,7 @@
   }
   .table-hero-actions {
     grid-row: 5;
-    margin-top: 14px;
+    margin-top: 8px;
     gap: 20px;
     justify-content: space-between;
   }
@@ -462,75 +263,16 @@
   }
   .table-hero-scene {
     grid-row: 4;
-    margin: 8px -4px 0;
-  }
-  .table-scene-hint {
-    margin: 4px 0 -14px;
-    font-size: 11px;
-    gap: 5px;
-  }
-  .table-scene-hint > svg {
-    height: 13px;
-    width: 13px;
+    margin: -22px -4px -8px;
   }
   .table-scene-visual {
     width: min(100%, 360px);
     margin: 0 auto;
   }
-  .table-scene-caption {
-    min-height: 50px;
-    margin: -11px 0 0;
-    padding: 0 34px 0 4px;
-  }
-  .table-caption-content {
-    min-height: 50px;
-    gap: 10px;
-  }
-  .table-caption-content strong {
-    font-size: 13px;
-  }
-  .table-caption-content > div > span {
-    font-size: 11px;
-    margin-top: 3px;
-  }
-  .table-menu-link {
-    padding-left: 6px;
-    gap: 6px;
-    font-size: 13px;
-  }
-  .table-menu-link > svg {
-    width: 14px;
-  }
-  .table-reset {
-    top: 3px;
-    right: -8px;
-  }
-  .table-caption-mark {
-    width: 30px;
-    height: 30px;
-  }
-  .table-caption-mark > svg {
-    width: 16px;
-  }
-  .table-food-control > span {
-    font-size: 11px;
-    padding: 7px 9px;
-    gap: 5px;
-  }
-  .table-control-semolino > span {
-    right: -20%;
-    bottom: 5%;
-  }
 }
 @media (max-width: 359px) {
   .table-hero h1 {
     font-size: 38px;
-  }
-  .table-hero-context {
-    font-size: 11px;
-  }
-  .table-hero-intro {
-    font-size: 14px;
   }
   .table-hero-actions {
     gap: 12px;
@@ -546,39 +288,9 @@
     width: 24px;
     height: 24px;
   }
-  .table-scene-caption {
-    padding-right: 26px;
-  }
-  .table-caption-content {
-    gap: 6px;
-  }
-  .table-caption-content strong {
-    font-size: 12px;
-  }
-  .table-caption-content > div > span {
-    font-size: 11px;
-  }
-  .table-menu-link {
-    font-size: 12px;
-  }
 }
 @media (prefers-reduced-motion: reduce) {
-  .table-food,
-  .table-rive-canvas {
-    transition: none;
-  }
-}
-
-.table-rive-fallback {
-  position: absolute;
-  inset: 0;
-  opacity: 1;
-  transition: opacity 0.18s;
-}
-.table-rive-fallback.is-hidden {
-  opacity: 0;
-}
-@media (prefers-reduced-motion: reduce) {
+  .table-rive-canvas,
   .table-rive-fallback {
     transition: none;
   }

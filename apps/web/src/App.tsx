@@ -540,8 +540,6 @@ export default function App({ context }: { context: OrderContext }) {
                     table={table}
                     onBrowse={browse}
                     onTour={() => setTour(0)}
-                    onDish={chooseDish}
-                    onMenu={(id) => setRestaurant(restaurantFor(id))}
                   />
                   <section className="discovery section" id="restaurants">
                     <div className="section-heading">
