@@ -1,5 +1,5 @@
 import { useEffect, useState, lazy, Suspense, useRef } from "react";
-import { AnimatePresence, motion, MotionConfig } from "motion/react";
+import { AnimatePresence, motion, MotionConfig, useReducedMotion } from "motion/react";
 import {
   ArrowLeft,
   ArrowRight,
@@ -20,6 +20,7 @@ import {
   Soup,
   Sparkles,
   Ticket,
+  Trash2,
   UtensilsCrossed,
   X,
   Zap,
@@ -37,6 +38,7 @@ import {
   price,
   cartTotal,
   linePrice,
+  lineKey,
   groupCart,
   addLine,
   readStore,
@@ -118,6 +120,8 @@ export default function App({ context }: { context: OrderContext }) {
   const { cart, orders, locale } = store,
     pl = locale === "pl";
   const t = (a: string, b: string) => (pl ? a : b);
+  const reducedMotion = useReducedMotion();
+  const catalogRequested = useRef(false);
   const { launch: flyToBasket, overlay: basketFlight } = useBasketFlight();
   const [tab, setTab] = useState<Tab>(validTab),
     [table, setTable] = useState(context.table);
@@ -150,6 +154,10 @@ export default function App({ context }: { context: OrderContext }) {
     limited: boolean;
     id: number;
   } | null>(null);
+  const dishRoom = dish ? Math.max(0, 20 - (cart.find(line => line.id === lineKey(dish.id, extra, note))?.quantity ?? 0)) : 20;
+  useEffect(() => {
+    if (dish) setQuantity(current => Math.max(1, Math.min(current, dishRoom)));
+  }, [dish, dishRoom]);
   const addedTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const persistedSnapshot = useRef<string | null>(null);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null),
@@ -348,7 +356,7 @@ export default function App({ context }: { context: OrderContext }) {
         .map((m) => m.name + " " + m.nameEn)
         .join(" ")}`
         .toLowerCase()
-        .includes(search.toLowerCase()),
+        .includes(search.trim().toLowerCase()),
   );
   const confirmationReady =
     orders.length > 0 &&
@@ -387,15 +395,22 @@ export default function App({ context }: { context: OrderContext }) {
     { id: "desserts", Icon: IceCreamBowl, label: t("Desery", "Desserts") },
     { id: "drinks", Icon: GlassWater, label: t("Napoje", "Drinks") },
   ];
+  const focusCatalog = () => {
+    if (!catalogRequested.current) return;
+    const catalog = document.getElementById("restaurants");
+    const title = document.getElementById("catalog-title");
+    if (!catalog || !title) return;
+    catalogRequested.current = false;
+    title.focus({ preventScroll: true });
+    catalog.scrollIntoView({ behavior: reducedMotion ? "instant" : "smooth", block: "start" });
+  };
   const browse = () => {
-    navigate("discover");
-    setTimeout(
-      () =>
-        document
-          .getElementById("restaurants")
-          ?.scrollIntoView({ behavior: "smooth", block: "start" }),
-      100,
-    );
+    setSearch("");
+    setCategory("all");
+    setOnlyVeg(false);
+    catalogRequested.current = true;
+    if (tab !== "discover") navigate("discover");
+    else requestAnimationFrame(focusCatalog);
   };
   const openBasket = () => {
     setRestaurant(null);
@@ -479,6 +494,7 @@ export default function App({ context }: { context: OrderContext }) {
               {navItems.map(({ id, Icon, label }) => (
                 <button
                   className={tab === id ? "active" : ""}
+                  aria-current={tab === id ? "page" : undefined}
                   key={id}
                   onClick={() => navigate(id)}
                 >
@@ -537,6 +553,9 @@ export default function App({ context }: { context: OrderContext }) {
           <AnimatePresence mode="wait" initial={false}>
             <motion.div
               key={tab}
+              onAnimationComplete={definition => {
+                if (typeof definition === "object" && "opacity" in definition && definition.opacity === 1 && tab === "discover") focusCatalog();
+              }}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -6 }}
@@ -549,27 +568,14 @@ export default function App({ context }: { context: OrderContext }) {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4 }}
                 >
-                  <CravingHero
-                    locale={locale}
-                    table={table}
-                    onBrowse={browse}
-                    onVendor={(id) => setRestaurant(restaurantFor(id))}
-                    cart={cart}
-                    onAddCombo={(items) => {
-                      setStore(s => ({ ...s, cart: items.reduce((lines, item) => addLine(lines, item.itemId, item.quantity, item.extra, item.note), s.cart) }));
-                      setLastAdded(null);
-                      setCheckout(false);
-                      setCartOpen(true);
-                      if (navigator.vibrate) navigator.vibrate(12);
-                    }}
-                  />
+                  <CravingHero locale={locale} table={table} onBrowse={browse} />
                   <section className="discovery section" id="restaurants">
                     <div className="section-heading">
                       <div>
                         <p className="eyebrow">
                           {t("DOBRE RZECZY SĄ BLISKO", "GOOD THINGS ARE CLOSE")}
                         </p>
-                        <h2>{t("Co dziś jesz?", "What’s your craving?")}</h2>
+                        <h2 id="catalog-title" tabIndex={-1}>{t("Co dziś jesz?", "What’s your craving?")}</h2>
                       </div>
                       <label className="search-field">
                         <Search size={19} />
@@ -817,7 +823,7 @@ export default function App({ context }: { context: OrderContext }) {
                                 add(item, 1, false, "", event.currentTarget)
                               }
                               whileTap={{ scale: 0.88 }}
-                              aria-label={`${t("Dodaj", "Add")} ${item.name}`}
+                              aria-label={`${t("Dodaj", "Add")} ${pl ? item.name : item.nameEn}`}
                             >
                               <AddGlyph
                                 added={lastAdded?.item.id === item.id}
@@ -1025,6 +1031,7 @@ export default function App({ context }: { context: OrderContext }) {
             <button
               key={id}
               className={tab === id ? "active" : ""}
+                  aria-current={tab === id ? "page" : undefined}
               onClick={() => navigate(id)}
             >
               <Icon size={21} />
@@ -1164,13 +1171,13 @@ export default function App({ context }: { context: OrderContext }) {
                       <div className="menu-item-image">
                         <button
                           onClick={() => chooseDish(item)}
-                          aria-label={item.name}
+                          aria-label={pl ? item.name : item.nameEn}
                         >
-                          <FoodImage src={item.image} alt={item.name} />
+                          <FoodImage src={item.image} alt={pl ? item.name : item.nameEn} />
                         </button>
                         <button
                           className="add-button"
-                          aria-label={`${t("Dostosuj", "Customize")} ${item.name}`}
+                          aria-label={`${t("Dostosuj", "Customize")} ${pl ? item.name : item.nameEn}`}
                           onClick={() => chooseDish(item)}
                         >
                           <Plus size={21} />
@@ -1216,9 +1223,9 @@ export default function App({ context }: { context: OrderContext }) {
           </Modal>
         )}
         {dish && (
-          <Modal label={dish.name} onClose={() => setDish(null)}>
+          <Modal label={pl ? dish.name : dish.nameEn} onClose={() => setDish(null)}>
             <div className="dish-modal-image">
-              <FoodImage src={dish.image} alt={dish.name} />
+              <FoodImage src={dish.image} alt={pl ? dish.name : dish.nameEn} />
               <span className="pill cream">
                 {restaurantFor(dish.restaurantId).name}
               </span>
@@ -1258,7 +1265,7 @@ export default function App({ context }: { context: OrderContext }) {
                   </span>
                 ))}
               </div>
-              {dish.restaurantId !== "tecza" && <div className="option-section">
+              {!["drinks", "desserts"].includes(restaurantFor(dish.restaurantId).category) && <div className="option-section">
                 <h3>
                   {t(
                     "Jeszcze trochę przyjemności?",
@@ -1299,6 +1306,9 @@ export default function App({ context }: { context: OrderContext }) {
                   "Allergen information is illustrative. Confirm it with the restaurant for a real order.",
                 )}
               </p>
+              {dishRoom < 20 && <p className="quantity-limit" role="status">{dishRoom === 0
+                ? t("Masz już 20 takich pozycji w koszyku", "Your basket already has 20 of this item")
+                : t(`Możesz dodać jeszcze ${dishRoom} w tej konfiguracji`, `You can add ${dishRoom} more with these options`)}</p>}
               <div className="dish-modal-footer">
                 <div className="stepper">
                   <button
@@ -1311,7 +1321,7 @@ export default function App({ context }: { context: OrderContext }) {
                   <strong>{quantity}</strong>
                   <button
                     aria-label={t("Zwiększ ilość", "Increase quantity")}
-                    disabled={quantity >= 20}
+                    disabled={quantity >= dishRoom}
                     onClick={() => setQuantity(quantity + 1)}
                   >
                     <Plus size={17} />
@@ -1319,15 +1329,16 @@ export default function App({ context }: { context: OrderContext }) {
                 </div>
                 <button
                   className="primary"
+                  disabled={dishRoom === 0}
                   onClick={(event) => {
                     add(dish, quantity, extra, note, event.currentTarget);
                     setDish(null);
                   }}
                 >
-                  {t("Dodaj", "Add to basket")}
-                  <span>
+                  {dishRoom === 0 ? t("Limit w koszyku", "Basket limit reached") : t("Dodaj", "Add to basket")}
+                  {dishRoom > 0 && <span>
                     {price((dish.price + (extra ? 500 : 0)) * quantity, locale)}
-                  </span>
+                  </span>}
                 </button>
               </div>
             </div>
@@ -1335,6 +1346,7 @@ export default function App({ context }: { context: OrderContext }) {
         )}
         {cartOpen && (
           <Modal
+            dismissible={!paying}
             label={
               checkout
                 ? t("Podsumowanie", "Checkout")
@@ -1348,6 +1360,13 @@ export default function App({ context }: { context: OrderContext }) {
               <motion.div
                 key={checkout ? "checkout" : "basket"}
                 className="modal-content basket-content"
+                onAnimationComplete={definition => {
+                  if (typeof definition === "object" && "opacity" in definition && definition.opacity === 1) {
+                    const heading = document.querySelector<HTMLElement>("dialog[open] .basket-content h2");
+                    heading?.closest("dialog")?.scrollTo({ top: 0, behavior: "instant" });
+                    heading?.focus({ preventScroll: true });
+                  }
+                }}
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -16 }}
@@ -1359,7 +1378,7 @@ export default function App({ context }: { context: OrderContext }) {
                     "ONE BASKET · LOTS OF HAPPINESS",
                   )}
                 </div>
-                <h2>
+                <h2 tabIndex={-1}>
                   {checkout
                     ? t("Prawie przy stole", "Almost at the table")
                     : t("Same dobre rzeczy", "All the good stuff")}
@@ -1415,11 +1434,14 @@ export default function App({ context }: { context: OrderContext }) {
                                 alt=""
                               />
                               <div>
-                                <strong>
-                                  {pl
-                                    ? dishFor(line.itemId).name
-                                    : dishFor(line.itemId).nameEn}
-                                </strong>
+                                <div className="basket-line-heading">
+                                  <strong>{pl ? dishFor(line.itemId).name : dishFor(line.itemId).nameEn}</strong>
+                                  <button className="basket-remove" disabled={paying}
+                                    aria-label={`${t("Usuń", "Remove")} ${pl ? dishFor(line.itemId).name : dishFor(line.itemId).nameEn}`}
+                                    onClick={() => { setLastAdded(null); setStore(current => ({ ...current, cart: current.cart.filter(item => item.id !== line.id) })); }}>
+                                    <Trash2 size={16} />
+                                  </button>
+                                </div>
                                 {line.extra && (
                                   <small>
                                     + {t("Dodatkowy sos", "Extra sauce")}
@@ -1434,7 +1456,7 @@ export default function App({ context }: { context: OrderContext }) {
                                   <div className="stepper small">
                                     <button
                                       disabled={paying}
-                                      aria-label={`${t("Zmniejsz", "Decrease")} ${dishFor(line.itemId).name}`}
+                                      aria-label={`${t("Zmniejsz", "Decrease")} ${pl ? dishFor(line.itemId).name : dishFor(line.itemId).nameEn}`}
                                       onClick={() =>
                                         updateQuantity(line.id, -1)
                                       }
@@ -1444,7 +1466,7 @@ export default function App({ context }: { context: OrderContext }) {
                                     <b>{line.quantity}</b>
                                     <button
                                       disabled={paying || line.quantity >= 20}
-                                      aria-label={`${t("Zwiększ", "Increase")} ${dishFor(line.itemId).name}`}
+                                      aria-label={`${t("Zwiększ", "Increase")} ${pl ? dishFor(line.itemId).name : dishFor(line.itemId).nameEn}`}
                                       onClick={() => updateQuantity(line.id, 1)}
                                     >
                                       <Plus size={13} />
@@ -1459,6 +1481,9 @@ export default function App({ context }: { context: OrderContext }) {
                           ))}
                         </section>
                       ))}
+                    {!checkout && <button className="basket-add-kitchen" onClick={() => { setCartOpen(false); browse(); }}>
+                      <Plus size={17} />{t("Dodaj z innej kuchni", "Add from another kitchen")}<ArrowRight size={16} />
+                    </button>}
                     {!checkout &&
                       !cart.some((x) => x.itemId === "bar-lemonade") && (
                         <button
@@ -1483,7 +1508,7 @@ export default function App({ context }: { context: OrderContext }) {
                             </strong>
                             <small>
                               {t("Lemoniada yuzu", "Yuzu lemonade")} ·{" "}
-                              {price(1800, locale)}
+                              {price(dishFor("bar-lemonade").price, locale)}
                             </small>
                           </span>
                           <Plus size={20} />

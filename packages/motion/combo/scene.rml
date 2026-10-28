@@ -1,13 +1,13 @@
 <Rive version="1" kind="fragment">
   <Artboard id="0:2" name="PapuCombo" width="720" height="640" clip="true" styleId="0:3" defaultStateMachineId="0:7" viewModelId="0:800" viewModelInstanceId="0:801">
     <LayoutComponentStyle id="0:3" />
-    <Node id="0:100" name="ATOM selected dish" x="360" y="570" opacity="1">
-      <Image id="0:101" name="burger photograph" assetId="0:5000" x="-8.278099999999995" y="-196.46800000000002" scaleX="1.1037527593818985" scaleY="1.1037527593818985" />
-      <Node name="ATOM contact shadow" y="8" scaleY="0.13">
+    <Node id="0:300" name="Na końcu tęczy contribution" x="720" y="615" scaleX="120" scaleY="120" rotation="0.08" opacity="0">
+      <Image id="0:301" name="gelato photograph" assetId="0:5002" x="-0.008905852417302799" y="-0.5470737913486006" scaleX="0.002544529262086514" scaleY="0.002544529262086514" />
+      <Node name="Contact shadow" y="0.018" scaleY="0.13">
         <Shape>
-          <Ellipse width="415.0" height="415.0" />
+          <Ellipse width="0.83" height="0.83" />
           <Fill>
-            <RadialGradient startX="0" startY="0" endX="207.5" endY="0">
+            <RadialGradient startX="0" startY="0" endX="0.415" endY="0">
               <GradientStop position="0" colorValue="55091F17" />
               <GradientStop position="0.32" colorValue="26091F17" />
               <GradientStop position="1" colorValue="00091F17" />
@@ -16,13 +16,13 @@
         </Shape>
       </Node>
     </Node>
-    <Node id="0:120" name="KAGO selected dish" x="360" y="570" opacity="0">
-      <Image id="0:121" name="ramen photograph" assetId="0:5001" x="-0.9800000000000182" y="-213.63029999999998" scaleX="0.9799554565701559" scaleY="0.9799554565701559" />
-      <Node name="KAGO contact shadow" y="8" scaleY="0.13">
+    <Node id="0:100" name="ATOM contribution" x="360" y="570" scaleX="500" scaleY="500" rotation="0" opacity="1">
+      <Image id="0:101" name="burger photograph" assetId="0:5000" x="-0.016556291390728478" y="-0.39293598233995586" scaleX="0.002207505518763797" scaleY="0.002207505518763797" />
+      <Node name="Contact shadow" y="0.018" scaleY="0.13">
         <Shape>
-          <Ellipse width="392.040955" height="392.040955" />
+          <Ellipse width="0.83" height="0.83" />
           <Fill>
-            <RadialGradient startX="0" startY="0" endX="196.0204775" endY="0">
+            <RadialGradient startX="0" startY="0" endX="0.415" endY="0">
               <GradientStop position="0" colorValue="55091F17" />
               <GradientStop position="0.32" colorValue="26091F17" />
               <GradientStop position="1" colorValue="00091F17" />
@@ -31,118 +31,13 @@
         </Shape>
       </Node>
     </Node>
-    <Node id="0:140" name="Semolino selected dish" x="360" y="570" opacity="0">
-      <Image id="0:141" name="pizza photograph" assetId="0:5002" x="-0.5219000000000165" y="-194.15449999999998" scaleX="1.0438413361169103" scaleY="1.0438413361169103" />
-      <Node name="Semolino contact shadow" y="8" scaleY="0.13">
+    <Node id="0:200" name="The Fry contribution" x="680" y="590" scaleX="220" scaleY="220" rotation="0.075" opacity="0">
+      <Image id="0:201" name="fries photograph" assetId="0:5001" x="0.002066115702479339" y="-0.38016528925619836" scaleX="0.002066115702479339" scaleY="0.002066115702479339" />
+      <Node name="Contact shadow" y="0.018" scaleY="0.13">
         <Shape>
-          <Ellipse width="415.0" height="415.0" />
+          <Ellipse width="0.83" height="0.83" />
           <Fill>
-            <RadialGradient startX="0" startY="0" endX="207.5" endY="0">
-              <GradientStop position="0" colorValue="55091F17" />
-              <GradientStop position="0.32" colorValue="26091F17" />
-              <GradientStop position="1" colorValue="00091F17" />
-            </RadialGradient>
-          </Fill>
-        </Shape>
-      </Node>
-    </Node>
-    <Node id="0:160" name="Curry Leaves selected dish" x="360" y="570" opacity="0">
-      <Image id="0:161" name="curry photograph" assetId="0:5003" x="-0.5285000000000082" y="-202.95979999999997" scaleX="1.0570824524312896" scaleY="1.0570824524312896" />
-      <Node name="Curry Leaves contact shadow" y="8" scaleY="0.13">
-        <Shape>
-          <Ellipse width="415.0" height="415.0" />
-          <Fill>
-            <RadialGradient startX="0" startY="0" endX="207.5" endY="0">
-              <GradientStop position="0" colorValue="55091F17" />
-              <GradientStop position="0.32" colorValue="26091F17" />
-              <GradientStop position="1" colorValue="00091F17" />
-            </RadialGradient>
-          </Fill>
-        </Shape>
-      </Node>
-    </Node>
-    <Node id="0:180" name="Gringo Bar selected dish" x="360" y="570" opacity="0">
-      <Image id="0:181" name="tacos photograph" assetId="0:5004" x="-5.230099999999993" y="-158.99579999999997" scaleX="1.0460251046025104" scaleY="1.0460251046025104" />
-      <Node name="Gringo Bar contact shadow" y="8" scaleY="0.13">
-        <Shape>
-          <Ellipse width="415.0" height="415.0" />
-          <Fill>
-            <RadialGradient startX="0" startY="0" endX="207.5" endY="0">
-              <GradientStop position="0" colorValue="55091F17" />
-              <GradientStop position="0.32" colorValue="26091F17" />
-              <GradientStop position="1" colorValue="00091F17" />
-            </RadialGradient>
-          </Fill>
-        </Shape>
-      </Node>
-    </Node>
-    <Node id="0:200" name="Tuk Tuk selected dish" x="360" y="570" opacity="0">
-      <Image id="0:201" name="noodles photograph" assetId="0:5005" x="-1.0287999999999897" y="-195.4733" scaleX="1.02880658436214" scaleY="1.02880658436214" />
-      <Node name="Tuk Tuk contact shadow" y="8" scaleY="0.13">
-        <Shape>
-          <Ellipse width="415.0" height="415.0" />
-          <Fill>
-            <RadialGradient startX="0" startY="0" endX="207.5" endY="0">
-              <GradientStop position="0" colorValue="55091F17" />
-              <GradientStop position="0.32" colorValue="26091F17" />
-              <GradientStop position="1" colorValue="00091F17" />
-            </RadialGradient>
-          </Fill>
-        </Shape>
-      </Node>
-    </Node>
-    <Node id="0:220" name="BIBIMBAR selected dish" x="360" y="570" opacity="0">
-      <Image id="0:221" name="bowl photograph" assetId="0:5006" x="-0.5446999999999775" y="-229.84750000000003" scaleX="1.0893246187363834" scaleY="1.0893246187363834" />
-      <Node name="BIBIMBAR contact shadow" y="8" scaleY="0.13">
-        <Shape>
-          <Ellipse width="415.0" height="415.0" />
-          <Fill>
-            <RadialGradient startX="0" startY="0" endX="207.5" endY="0">
-              <GradientStop position="0" colorValue="55091F17" />
-              <GradientStop position="0.32" colorValue="26091F17" />
-              <GradientStop position="1" colorValue="00091F17" />
-            </RadialGradient>
-          </Fill>
-        </Shape>
-      </Node>
-    </Node>
-    <Node id="0:240" name="The Fry selected dish" x="360" y="570" opacity="0">
-      <Image id="0:241" name="fries photograph" assetId="0:5007" x="1.0330999999999904" y="-190.0826" scaleX="1.0330578512396693" scaleY="1.0330578512396693" />
-      <Node name="The Fry contact shadow" y="8" scaleY="0.13">
-        <Shape>
-          <Ellipse width="415.0" height="415.0" />
-          <Fill>
-            <RadialGradient startX="0" startY="0" endX="207.5" endY="0">
-              <GradientStop position="0" colorValue="55091F17" />
-              <GradientStop position="0.32" colorValue="26091F17" />
-              <GradientStop position="1" colorValue="00091F17" />
-            </RadialGradient>
-          </Fill>
-        </Shape>
-      </Node>
-    </Node>
-    <Node id="0:260" name="Bar Koszyki selected dish" x="360" y="570" opacity="0">
-      <Image id="0:261" name="lemonade photograph" assetId="0:5008" x="-5.5" y="-211.75" scaleX="0.9166666666666666" scaleY="0.9166666666666666" />
-      <Node name="Bar Koszyki contact shadow" y="8" scaleY="0.13">
-        <Shape>
-          <Ellipse width="185.64336099999997" height="185.64336099999997" />
-          <Fill>
-            <RadialGradient startX="0" startY="0" endX="92.82168049999999" endY="0">
-              <GradientStop position="0" colorValue="55091F17" />
-              <GradientStop position="0.32" colorValue="26091F17" />
-              <GradientStop position="1" colorValue="00091F17" />
-            </RadialGradient>
-          </Fill>
-        </Shape>
-      </Node>
-    </Node>
-    <Node id="0:280" name="Na końcu tęczy selected dish" x="360" y="570" opacity="0">
-      <Image id="0:281" name="gelato photograph" assetId="0:5009" x="-3.573100000000011" y="-219.4896" scaleX="1.0208816705336428" scaleY="1.0208816705336428" />
-      <Node name="Na końcu tęczy contact shadow" y="8" scaleY="0.13">
-        <Shape>
-          <Ellipse width="333.001395" height="333.001395" />
-          <Fill>
-            <RadialGradient startX="0" startY="0" endX="166.5006975" endY="0">
+            <RadialGradient startX="0" startY="0" endX="0.415" endY="0">
               <GradientStop position="0" colorValue="55091F17" />
               <GradientStop position="0.32" colorValue="26091F17" />
               <GradientStop position="1" colorValue="00091F17" />
@@ -152,11 +47,11 @@
       </Node>
     </Node>
     <StateMachine id="0:7" name="PapuCombo">
-      <StateMachineLayer name="ATOM directional motion">
+      <StateMachineLayer name="Three kitchens build one meal">
         <EntryState x="-260" y="0">
-          <StateTransition stateToId="0:1000" duration="0" enableEarlyExit="false" interpolationType="cubic">
+          <StateTransition stateToId="0:1000" duration="0" enableEarlyExit="true" interpolationType="cubic">
             <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="equal">
+            <TransitionViewModelCondition>
               <TransitionPropertyViewModelComparator>
                 <BindablePropertyNumber>
                   <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
@@ -165,187 +60,9 @@
               <TransitionValueNumberComparator value="0" />
             </TransitionViewModelCondition>
           </StateTransition>
-          <StateTransition stateToId="0:1001" duration="0" enableEarlyExit="false" interpolationType="cubic">
+          <StateTransition stateToId="0:1001" duration="0" enableEarlyExit="true" interpolationType="cubic">
             <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="lessThan">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1002" duration="0" enableEarlyExit="false" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-          </StateTransition>
-        </EntryState>
-        <AnyState x="-260" y="-220" />
-        <ExitState x="780" y="-220" />
-        <AnimationState id="0:1000" animationId="0:2000" x="260" y="0">
-          <StateTransition stateToId="0:1003" duration="280" enableEarlyExit="true" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.2" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="notEqual">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-            <TransitionViewModelCondition opValue="greaterThanOrEqual">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1004" duration="280" enableEarlyExit="true" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.2" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="notEqual">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-            <TransitionViewModelCondition opValue="lessThan">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-        </AnimationState>
-        <AnimationState id="0:1001" animationId="0:2001" x="0" y="180">
-          <StateTransition stateToId="0:1002" duration="0" enableEarlyExit="false" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="greaterThanOrEqual">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1000" duration="700" enableEarlyExit="true" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="equal">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-        </AnimationState>
-        <AnimationState id="0:1002" animationId="0:2002" x="520" y="180">
-          <StateTransition stateToId="0:1001" duration="0" enableEarlyExit="false" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="lessThan">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1000" duration="700" enableEarlyExit="true" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="equal">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-        </AnimationState>
-        <AnimationState id="0:1003" animationId="0:2003" reset="true" x="0" y="-180">
-          <StateTransition stateToId="0:1000" duration="700" enableEarlyExit="true" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="equal">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1001" duration="0" enableEarlyExit="false" interpolationType="cubic" enableExitTime="true" exitTimeIsPercetange="true" exitTime="100">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="lessThan">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1002" duration="0" enableEarlyExit="false" interpolationType="cubic" enableExitTime="true" exitTimeIsPercetange="true" exitTime="100">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="greaterThanOrEqual">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-        </AnimationState>
-        <AnimationState id="0:1004" animationId="0:2004" reset="true" x="520" y="-180">
-          <StateTransition stateToId="0:1000" duration="700" enableEarlyExit="true" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="equal">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1001" duration="0" enableEarlyExit="false" interpolationType="cubic" enableExitTime="true" exitTimeIsPercetange="true" exitTime="100">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="lessThan">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1002" duration="0" enableEarlyExit="false" interpolationType="cubic" enableExitTime="true" exitTimeIsPercetange="true" exitTime="100">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="greaterThanOrEqual">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-        </AnimationState>
-      </StateMachineLayer>
-      <StateMachineLayer name="KAGO directional motion">
-        <EntryState x="-260" y="0">
-          <StateTransition stateToId="0:1010" duration="0" enableEarlyExit="false" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="equal">
+            <TransitionViewModelCondition>
               <TransitionPropertyViewModelComparator>
                 <BindablePropertyNumber>
                   <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
@@ -354,187 +71,9 @@
               <TransitionValueNumberComparator value="1" />
             </TransitionViewModelCondition>
           </StateTransition>
-          <StateTransition stateToId="0:1011" duration="0" enableEarlyExit="false" interpolationType="cubic">
+          <StateTransition stateToId="0:1002" duration="0" enableEarlyExit="true" interpolationType="cubic">
             <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="lessThan">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1012" duration="0" enableEarlyExit="false" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-          </StateTransition>
-        </EntryState>
-        <AnyState x="-260" y="-220" />
-        <ExitState x="780" y="-220" />
-        <AnimationState id="0:1010" animationId="0:2010" x="260" y="0">
-          <StateTransition stateToId="0:1013" duration="280" enableEarlyExit="true" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.2" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="notEqual">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="1" />
-            </TransitionViewModelCondition>
-            <TransitionViewModelCondition opValue="greaterThanOrEqual">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1014" duration="280" enableEarlyExit="true" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.2" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="notEqual">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="1" />
-            </TransitionViewModelCondition>
-            <TransitionViewModelCondition opValue="lessThan">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-        </AnimationState>
-        <AnimationState id="0:1011" animationId="0:2011" x="0" y="180">
-          <StateTransition stateToId="0:1012" duration="0" enableEarlyExit="false" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="greaterThanOrEqual">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1010" duration="700" enableEarlyExit="true" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="equal">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="1" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-        </AnimationState>
-        <AnimationState id="0:1012" animationId="0:2012" x="520" y="180">
-          <StateTransition stateToId="0:1011" duration="0" enableEarlyExit="false" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="lessThan">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1010" duration="700" enableEarlyExit="true" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="equal">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="1" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-        </AnimationState>
-        <AnimationState id="0:1013" animationId="0:2013" reset="true" x="0" y="-180">
-          <StateTransition stateToId="0:1010" duration="700" enableEarlyExit="true" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="equal">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="1" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1011" duration="0" enableEarlyExit="false" interpolationType="cubic" enableExitTime="true" exitTimeIsPercetange="true" exitTime="100">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="lessThan">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1012" duration="0" enableEarlyExit="false" interpolationType="cubic" enableExitTime="true" exitTimeIsPercetange="true" exitTime="100">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="greaterThanOrEqual">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-        </AnimationState>
-        <AnimationState id="0:1014" animationId="0:2014" reset="true" x="520" y="-180">
-          <StateTransition stateToId="0:1010" duration="700" enableEarlyExit="true" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="equal">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="1" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1011" duration="0" enableEarlyExit="false" interpolationType="cubic" enableExitTime="true" exitTimeIsPercetange="true" exitTime="100">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="lessThan">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1012" duration="0" enableEarlyExit="false" interpolationType="cubic" enableExitTime="true" exitTimeIsPercetange="true" exitTime="100">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="greaterThanOrEqual">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-        </AnimationState>
-      </StateMachineLayer>
-      <StateMachineLayer name="Semolino directional motion">
-        <EntryState x="-260" y="0">
-          <StateTransition stateToId="0:1020" duration="0" enableEarlyExit="false" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="equal">
+            <TransitionViewModelCondition>
               <TransitionPropertyViewModelComparator>
                 <BindablePropertyNumber>
                   <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
@@ -543,78 +82,24 @@
               <TransitionValueNumberComparator value="2" />
             </TransitionViewModelCondition>
           </StateTransition>
-          <StateTransition stateToId="0:1021" duration="0" enableEarlyExit="false" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="lessThan">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1022" duration="0" enableEarlyExit="false" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-          </StateTransition>
         </EntryState>
-        <AnyState x="-260" y="-220" />
-        <ExitState x="780" y="-220" />
-        <AnimationState id="0:1020" animationId="0:2020" x="260" y="0">
-          <StateTransition stateToId="0:1023" duration="280" enableEarlyExit="true" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.2" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="notEqual">
+        <AnyState x="-260" y="-180" />
+        <ExitState x="780" y="-180" />
+        <AnimationState id="0:1000" animationId="0:2000" x="0" y="0">
+          <StateTransition stateToId="0:1001" duration="750" enableEarlyExit="true" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
+            <TransitionViewModelCondition>
               <TransitionPropertyViewModelComparator>
                 <BindablePropertyNumber>
                   <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
                 </BindablePropertyNumber>
               </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="2" />
-            </TransitionViewModelCondition>
-            <TransitionViewModelCondition opValue="greaterThanOrEqual">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
+              <TransitionValueNumberComparator value="1" />
             </TransitionViewModelCondition>
           </StateTransition>
-          <StateTransition stateToId="0:1024" duration="280" enableEarlyExit="true" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.2" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="notEqual">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="2" />
-            </TransitionViewModelCondition>
-            <TransitionViewModelCondition opValue="lessThan">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-        </AnimationState>
-        <AnimationState id="0:1021" animationId="0:2021" x="0" y="180">
-          <StateTransition stateToId="0:1022" duration="0" enableEarlyExit="false" interpolationType="cubic">
+          <StateTransition stateToId="0:1002" duration="750" enableEarlyExit="true" interpolationType="cubic">
             <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="greaterThanOrEqual">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1020" duration="700" enableEarlyExit="true" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="equal">
+            <TransitionViewModelCondition>
               <TransitionPropertyViewModelComparator>
                 <BindablePropertyNumber>
                   <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
@@ -624,21 +109,21 @@
             </TransitionViewModelCondition>
           </StateTransition>
         </AnimationState>
-        <AnimationState id="0:1022" animationId="0:2022" x="520" y="180">
-          <StateTransition stateToId="0:1021" duration="0" enableEarlyExit="false" interpolationType="cubic">
+        <AnimationState id="0:1001" animationId="0:2001" x="260" y="0">
+          <StateTransition stateToId="0:1000" duration="750" enableEarlyExit="true" interpolationType="cubic">
             <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="lessThan">
+            <TransitionViewModelCondition>
               <TransitionPropertyViewModelComparator>
                 <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
+                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
                 </BindablePropertyNumber>
               </TransitionPropertyViewModelComparator>
               <TransitionValueNumberComparator value="0" />
             </TransitionViewModelCondition>
           </StateTransition>
-          <StateTransition stateToId="0:1020" duration="700" enableEarlyExit="true" interpolationType="cubic">
+          <StateTransition stateToId="0:1002" duration="750" enableEarlyExit="true" interpolationType="cubic">
             <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="equal">
+            <TransitionViewModelCondition>
               <TransitionPropertyViewModelComparator>
                 <BindablePropertyNumber>
                   <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
@@ -648,1402 +133,33 @@
             </TransitionViewModelCondition>
           </StateTransition>
         </AnimationState>
-        <AnimationState id="0:1023" animationId="0:2023" reset="true" x="0" y="-180">
-          <StateTransition stateToId="0:1020" duration="700" enableEarlyExit="true" interpolationType="cubic">
+        <AnimationState id="0:1002" animationId="0:2002" x="520" y="0">
+          <StateTransition stateToId="0:1000" duration="750" enableEarlyExit="true" interpolationType="cubic">
             <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="equal">
+            <TransitionViewModelCondition>
               <TransitionPropertyViewModelComparator>
                 <BindablePropertyNumber>
                   <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
                 </BindablePropertyNumber>
               </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="2" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1021" duration="0" enableEarlyExit="false" interpolationType="cubic" enableExitTime="true" exitTimeIsPercetange="true" exitTime="100">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="lessThan">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
               <TransitionValueNumberComparator value="0" />
             </TransitionViewModelCondition>
           </StateTransition>
-          <StateTransition stateToId="0:1022" duration="0" enableEarlyExit="false" interpolationType="cubic" enableExitTime="true" exitTimeIsPercetange="true" exitTime="100">
+          <StateTransition stateToId="0:1001" duration="750" enableEarlyExit="true" interpolationType="cubic">
             <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="greaterThanOrEqual">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-        </AnimationState>
-        <AnimationState id="0:1024" animationId="0:2024" reset="true" x="520" y="-180">
-          <StateTransition stateToId="0:1020" duration="700" enableEarlyExit="true" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="equal">
+            <TransitionViewModelCondition>
               <TransitionPropertyViewModelComparator>
                 <BindablePropertyNumber>
                   <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
                 </BindablePropertyNumber>
               </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="2" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1021" duration="0" enableEarlyExit="false" interpolationType="cubic" enableExitTime="true" exitTimeIsPercetange="true" exitTime="100">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="lessThan">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1022" duration="0" enableEarlyExit="false" interpolationType="cubic" enableExitTime="true" exitTimeIsPercetange="true" exitTime="100">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="greaterThanOrEqual">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-        </AnimationState>
-      </StateMachineLayer>
-      <StateMachineLayer name="Curry Leaves directional motion">
-        <EntryState x="-260" y="0">
-          <StateTransition stateToId="0:1030" duration="0" enableEarlyExit="false" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="equal">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="3" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1031" duration="0" enableEarlyExit="false" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="lessThan">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1032" duration="0" enableEarlyExit="false" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-          </StateTransition>
-        </EntryState>
-        <AnyState x="-260" y="-220" />
-        <ExitState x="780" y="-220" />
-        <AnimationState id="0:1030" animationId="0:2030" x="260" y="0">
-          <StateTransition stateToId="0:1033" duration="280" enableEarlyExit="true" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.2" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="notEqual">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="3" />
-            </TransitionViewModelCondition>
-            <TransitionViewModelCondition opValue="greaterThanOrEqual">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1034" duration="280" enableEarlyExit="true" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.2" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="notEqual">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="3" />
-            </TransitionViewModelCondition>
-            <TransitionViewModelCondition opValue="lessThan">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-        </AnimationState>
-        <AnimationState id="0:1031" animationId="0:2031" x="0" y="180">
-          <StateTransition stateToId="0:1032" duration="0" enableEarlyExit="false" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="greaterThanOrEqual">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1030" duration="700" enableEarlyExit="true" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="equal">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="3" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-        </AnimationState>
-        <AnimationState id="0:1032" animationId="0:2032" x="520" y="180">
-          <StateTransition stateToId="0:1031" duration="0" enableEarlyExit="false" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="lessThan">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1030" duration="700" enableEarlyExit="true" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="equal">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="3" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-        </AnimationState>
-        <AnimationState id="0:1033" animationId="0:2033" reset="true" x="0" y="-180">
-          <StateTransition stateToId="0:1030" duration="700" enableEarlyExit="true" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="equal">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="3" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1031" duration="0" enableEarlyExit="false" interpolationType="cubic" enableExitTime="true" exitTimeIsPercetange="true" exitTime="100">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="lessThan">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1032" duration="0" enableEarlyExit="false" interpolationType="cubic" enableExitTime="true" exitTimeIsPercetange="true" exitTime="100">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="greaterThanOrEqual">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-        </AnimationState>
-        <AnimationState id="0:1034" animationId="0:2034" reset="true" x="520" y="-180">
-          <StateTransition stateToId="0:1030" duration="700" enableEarlyExit="true" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="equal">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="3" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1031" duration="0" enableEarlyExit="false" interpolationType="cubic" enableExitTime="true" exitTimeIsPercetange="true" exitTime="100">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="lessThan">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1032" duration="0" enableEarlyExit="false" interpolationType="cubic" enableExitTime="true" exitTimeIsPercetange="true" exitTime="100">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="greaterThanOrEqual">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-        </AnimationState>
-      </StateMachineLayer>
-      <StateMachineLayer name="Gringo Bar directional motion">
-        <EntryState x="-260" y="0">
-          <StateTransition stateToId="0:1040" duration="0" enableEarlyExit="false" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="equal">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="4" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1041" duration="0" enableEarlyExit="false" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="lessThan">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1042" duration="0" enableEarlyExit="false" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-          </StateTransition>
-        </EntryState>
-        <AnyState x="-260" y="-220" />
-        <ExitState x="780" y="-220" />
-        <AnimationState id="0:1040" animationId="0:2040" x="260" y="0">
-          <StateTransition stateToId="0:1043" duration="280" enableEarlyExit="true" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.2" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="notEqual">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="4" />
-            </TransitionViewModelCondition>
-            <TransitionViewModelCondition opValue="greaterThanOrEqual">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1044" duration="280" enableEarlyExit="true" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.2" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="notEqual">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="4" />
-            </TransitionViewModelCondition>
-            <TransitionViewModelCondition opValue="lessThan">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-        </AnimationState>
-        <AnimationState id="0:1041" animationId="0:2041" x="0" y="180">
-          <StateTransition stateToId="0:1042" duration="0" enableEarlyExit="false" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="greaterThanOrEqual">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1040" duration="700" enableEarlyExit="true" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="equal">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="4" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-        </AnimationState>
-        <AnimationState id="0:1042" animationId="0:2042" x="520" y="180">
-          <StateTransition stateToId="0:1041" duration="0" enableEarlyExit="false" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="lessThan">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1040" duration="700" enableEarlyExit="true" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="equal">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="4" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-        </AnimationState>
-        <AnimationState id="0:1043" animationId="0:2043" reset="true" x="0" y="-180">
-          <StateTransition stateToId="0:1040" duration="700" enableEarlyExit="true" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="equal">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="4" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1041" duration="0" enableEarlyExit="false" interpolationType="cubic" enableExitTime="true" exitTimeIsPercetange="true" exitTime="100">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="lessThan">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1042" duration="0" enableEarlyExit="false" interpolationType="cubic" enableExitTime="true" exitTimeIsPercetange="true" exitTime="100">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="greaterThanOrEqual">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-        </AnimationState>
-        <AnimationState id="0:1044" animationId="0:2044" reset="true" x="520" y="-180">
-          <StateTransition stateToId="0:1040" duration="700" enableEarlyExit="true" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="equal">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="4" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1041" duration="0" enableEarlyExit="false" interpolationType="cubic" enableExitTime="true" exitTimeIsPercetange="true" exitTime="100">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="lessThan">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1042" duration="0" enableEarlyExit="false" interpolationType="cubic" enableExitTime="true" exitTimeIsPercetange="true" exitTime="100">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="greaterThanOrEqual">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-        </AnimationState>
-      </StateMachineLayer>
-      <StateMachineLayer name="Tuk Tuk directional motion">
-        <EntryState x="-260" y="0">
-          <StateTransition stateToId="0:1050" duration="0" enableEarlyExit="false" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="equal">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="5" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1051" duration="0" enableEarlyExit="false" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="lessThan">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1052" duration="0" enableEarlyExit="false" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-          </StateTransition>
-        </EntryState>
-        <AnyState x="-260" y="-220" />
-        <ExitState x="780" y="-220" />
-        <AnimationState id="0:1050" animationId="0:2050" x="260" y="0">
-          <StateTransition stateToId="0:1053" duration="280" enableEarlyExit="true" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.2" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="notEqual">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="5" />
-            </TransitionViewModelCondition>
-            <TransitionViewModelCondition opValue="greaterThanOrEqual">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1054" duration="280" enableEarlyExit="true" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.2" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="notEqual">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="5" />
-            </TransitionViewModelCondition>
-            <TransitionViewModelCondition opValue="lessThan">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-        </AnimationState>
-        <AnimationState id="0:1051" animationId="0:2051" x="0" y="180">
-          <StateTransition stateToId="0:1052" duration="0" enableEarlyExit="false" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="greaterThanOrEqual">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1050" duration="700" enableEarlyExit="true" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="equal">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="5" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-        </AnimationState>
-        <AnimationState id="0:1052" animationId="0:2052" x="520" y="180">
-          <StateTransition stateToId="0:1051" duration="0" enableEarlyExit="false" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="lessThan">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1050" duration="700" enableEarlyExit="true" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="equal">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="5" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-        </AnimationState>
-        <AnimationState id="0:1053" animationId="0:2053" reset="true" x="0" y="-180">
-          <StateTransition stateToId="0:1050" duration="700" enableEarlyExit="true" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="equal">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="5" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1051" duration="0" enableEarlyExit="false" interpolationType="cubic" enableExitTime="true" exitTimeIsPercetange="true" exitTime="100">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="lessThan">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1052" duration="0" enableEarlyExit="false" interpolationType="cubic" enableExitTime="true" exitTimeIsPercetange="true" exitTime="100">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="greaterThanOrEqual">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-        </AnimationState>
-        <AnimationState id="0:1054" animationId="0:2054" reset="true" x="520" y="-180">
-          <StateTransition stateToId="0:1050" duration="700" enableEarlyExit="true" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="equal">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="5" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1051" duration="0" enableEarlyExit="false" interpolationType="cubic" enableExitTime="true" exitTimeIsPercetange="true" exitTime="100">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="lessThan">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1052" duration="0" enableEarlyExit="false" interpolationType="cubic" enableExitTime="true" exitTimeIsPercetange="true" exitTime="100">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="greaterThanOrEqual">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-        </AnimationState>
-      </StateMachineLayer>
-      <StateMachineLayer name="BIBIMBAR directional motion">
-        <EntryState x="-260" y="0">
-          <StateTransition stateToId="0:1060" duration="0" enableEarlyExit="false" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="equal">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="6" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1061" duration="0" enableEarlyExit="false" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="lessThan">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1062" duration="0" enableEarlyExit="false" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-          </StateTransition>
-        </EntryState>
-        <AnyState x="-260" y="-220" />
-        <ExitState x="780" y="-220" />
-        <AnimationState id="0:1060" animationId="0:2060" x="260" y="0">
-          <StateTransition stateToId="0:1063" duration="280" enableEarlyExit="true" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.2" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="notEqual">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="6" />
-            </TransitionViewModelCondition>
-            <TransitionViewModelCondition opValue="greaterThanOrEqual">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1064" duration="280" enableEarlyExit="true" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.2" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="notEqual">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="6" />
-            </TransitionViewModelCondition>
-            <TransitionViewModelCondition opValue="lessThan">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-        </AnimationState>
-        <AnimationState id="0:1061" animationId="0:2061" x="0" y="180">
-          <StateTransition stateToId="0:1062" duration="0" enableEarlyExit="false" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="greaterThanOrEqual">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1060" duration="700" enableEarlyExit="true" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="equal">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="6" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-        </AnimationState>
-        <AnimationState id="0:1062" animationId="0:2062" x="520" y="180">
-          <StateTransition stateToId="0:1061" duration="0" enableEarlyExit="false" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="lessThan">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1060" duration="700" enableEarlyExit="true" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="equal">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="6" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-        </AnimationState>
-        <AnimationState id="0:1063" animationId="0:2063" reset="true" x="0" y="-180">
-          <StateTransition stateToId="0:1060" duration="700" enableEarlyExit="true" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="equal">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="6" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1061" duration="0" enableEarlyExit="false" interpolationType="cubic" enableExitTime="true" exitTimeIsPercetange="true" exitTime="100">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="lessThan">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1062" duration="0" enableEarlyExit="false" interpolationType="cubic" enableExitTime="true" exitTimeIsPercetange="true" exitTime="100">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="greaterThanOrEqual">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-        </AnimationState>
-        <AnimationState id="0:1064" animationId="0:2064" reset="true" x="520" y="-180">
-          <StateTransition stateToId="0:1060" duration="700" enableEarlyExit="true" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="equal">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="6" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1061" duration="0" enableEarlyExit="false" interpolationType="cubic" enableExitTime="true" exitTimeIsPercetange="true" exitTime="100">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="lessThan">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1062" duration="0" enableEarlyExit="false" interpolationType="cubic" enableExitTime="true" exitTimeIsPercetange="true" exitTime="100">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="greaterThanOrEqual">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-        </AnimationState>
-      </StateMachineLayer>
-      <StateMachineLayer name="The Fry directional motion">
-        <EntryState x="-260" y="0">
-          <StateTransition stateToId="0:1070" duration="0" enableEarlyExit="false" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="equal">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="7" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1071" duration="0" enableEarlyExit="false" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="lessThan">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1072" duration="0" enableEarlyExit="false" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-          </StateTransition>
-        </EntryState>
-        <AnyState x="-260" y="-220" />
-        <ExitState x="780" y="-220" />
-        <AnimationState id="0:1070" animationId="0:2070" x="260" y="0">
-          <StateTransition stateToId="0:1073" duration="280" enableEarlyExit="true" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.2" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="notEqual">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="7" />
-            </TransitionViewModelCondition>
-            <TransitionViewModelCondition opValue="greaterThanOrEqual">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1074" duration="280" enableEarlyExit="true" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.2" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="notEqual">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="7" />
-            </TransitionViewModelCondition>
-            <TransitionViewModelCondition opValue="lessThan">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-        </AnimationState>
-        <AnimationState id="0:1071" animationId="0:2071" x="0" y="180">
-          <StateTransition stateToId="0:1072" duration="0" enableEarlyExit="false" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="greaterThanOrEqual">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1070" duration="700" enableEarlyExit="true" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="equal">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="7" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-        </AnimationState>
-        <AnimationState id="0:1072" animationId="0:2072" x="520" y="180">
-          <StateTransition stateToId="0:1071" duration="0" enableEarlyExit="false" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="lessThan">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1070" duration="700" enableEarlyExit="true" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="equal">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="7" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-        </AnimationState>
-        <AnimationState id="0:1073" animationId="0:2073" reset="true" x="0" y="-180">
-          <StateTransition stateToId="0:1070" duration="700" enableEarlyExit="true" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="equal">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="7" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1071" duration="0" enableEarlyExit="false" interpolationType="cubic" enableExitTime="true" exitTimeIsPercetange="true" exitTime="100">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="lessThan">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1072" duration="0" enableEarlyExit="false" interpolationType="cubic" enableExitTime="true" exitTimeIsPercetange="true" exitTime="100">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="greaterThanOrEqual">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-        </AnimationState>
-        <AnimationState id="0:1074" animationId="0:2074" reset="true" x="520" y="-180">
-          <StateTransition stateToId="0:1070" duration="700" enableEarlyExit="true" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="equal">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="7" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1071" duration="0" enableEarlyExit="false" interpolationType="cubic" enableExitTime="true" exitTimeIsPercetange="true" exitTime="100">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="lessThan">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1072" duration="0" enableEarlyExit="false" interpolationType="cubic" enableExitTime="true" exitTimeIsPercetange="true" exitTime="100">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="greaterThanOrEqual">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-        </AnimationState>
-      </StateMachineLayer>
-      <StateMachineLayer name="Bar Koszyki directional motion">
-        <EntryState x="-260" y="0">
-          <StateTransition stateToId="0:1080" duration="0" enableEarlyExit="false" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="equal">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="8" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1081" duration="0" enableEarlyExit="false" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="lessThan">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1082" duration="0" enableEarlyExit="false" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-          </StateTransition>
-        </EntryState>
-        <AnyState x="-260" y="-220" />
-        <ExitState x="780" y="-220" />
-        <AnimationState id="0:1080" animationId="0:2080" x="260" y="0">
-          <StateTransition stateToId="0:1083" duration="280" enableEarlyExit="true" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.2" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="notEqual">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="8" />
-            </TransitionViewModelCondition>
-            <TransitionViewModelCondition opValue="greaterThanOrEqual">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1084" duration="280" enableEarlyExit="true" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.2" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="notEqual">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="8" />
-            </TransitionViewModelCondition>
-            <TransitionViewModelCondition opValue="lessThan">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-        </AnimationState>
-        <AnimationState id="0:1081" animationId="0:2081" x="0" y="180">
-          <StateTransition stateToId="0:1082" duration="0" enableEarlyExit="false" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="greaterThanOrEqual">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1080" duration="700" enableEarlyExit="true" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="equal">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="8" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-        </AnimationState>
-        <AnimationState id="0:1082" animationId="0:2082" x="520" y="180">
-          <StateTransition stateToId="0:1081" duration="0" enableEarlyExit="false" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="lessThan">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1080" duration="700" enableEarlyExit="true" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="equal">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="8" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-        </AnimationState>
-        <AnimationState id="0:1083" animationId="0:2083" reset="true" x="0" y="-180">
-          <StateTransition stateToId="0:1080" duration="700" enableEarlyExit="true" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="equal">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="8" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1081" duration="0" enableEarlyExit="false" interpolationType="cubic" enableExitTime="true" exitTimeIsPercetange="true" exitTime="100">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="lessThan">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1082" duration="0" enableEarlyExit="false" interpolationType="cubic" enableExitTime="true" exitTimeIsPercetange="true" exitTime="100">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="greaterThanOrEqual">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-        </AnimationState>
-        <AnimationState id="0:1084" animationId="0:2084" reset="true" x="520" y="-180">
-          <StateTransition stateToId="0:1080" duration="700" enableEarlyExit="true" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="equal">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="8" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1081" duration="0" enableEarlyExit="false" interpolationType="cubic" enableExitTime="true" exitTimeIsPercetange="true" exitTime="100">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="lessThan">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1082" duration="0" enableEarlyExit="false" interpolationType="cubic" enableExitTime="true" exitTimeIsPercetange="true" exitTime="100">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="greaterThanOrEqual">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-        </AnimationState>
-      </StateMachineLayer>
-      <StateMachineLayer name="Na końcu tęczy directional motion">
-        <EntryState x="-260" y="0">
-          <StateTransition stateToId="0:1090" duration="0" enableEarlyExit="false" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="equal">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="9" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1091" duration="0" enableEarlyExit="false" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="lessThan">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1092" duration="0" enableEarlyExit="false" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-          </StateTransition>
-        </EntryState>
-        <AnyState x="-260" y="-220" />
-        <ExitState x="780" y="-220" />
-        <AnimationState id="0:1090" animationId="0:2090" x="260" y="0">
-          <StateTransition stateToId="0:1093" duration="280" enableEarlyExit="true" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.2" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="notEqual">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="9" />
-            </TransitionViewModelCondition>
-            <TransitionViewModelCondition opValue="greaterThanOrEqual">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1094" duration="280" enableEarlyExit="true" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.2" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="notEqual">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="9" />
-            </TransitionViewModelCondition>
-            <TransitionViewModelCondition opValue="lessThan">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-        </AnimationState>
-        <AnimationState id="0:1091" animationId="0:2091" x="0" y="180">
-          <StateTransition stateToId="0:1092" duration="0" enableEarlyExit="false" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="greaterThanOrEqual">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1090" duration="700" enableEarlyExit="true" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="equal">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="9" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-        </AnimationState>
-        <AnimationState id="0:1092" animationId="0:2092" x="520" y="180">
-          <StateTransition stateToId="0:1091" duration="0" enableEarlyExit="false" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="lessThan">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1090" duration="700" enableEarlyExit="true" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="equal">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="9" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-        </AnimationState>
-        <AnimationState id="0:1093" animationId="0:2093" reset="true" x="0" y="-180">
-          <StateTransition stateToId="0:1090" duration="700" enableEarlyExit="true" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="equal">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="9" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1091" duration="0" enableEarlyExit="false" interpolationType="cubic" enableExitTime="true" exitTimeIsPercetange="true" exitTime="100">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="lessThan">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1092" duration="0" enableEarlyExit="false" interpolationType="cubic" enableExitTime="true" exitTimeIsPercetange="true" exitTime="100">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="greaterThanOrEqual">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-        </AnimationState>
-        <AnimationState id="0:1094" animationId="0:2094" reset="true" x="520" y="-180">
-          <StateTransition stateToId="0:1090" duration="700" enableEarlyExit="true" interpolationType="cubic">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="equal">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:802" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="9" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1091" duration="0" enableEarlyExit="false" interpolationType="cubic" enableExitTime="true" exitTimeIsPercetange="true" exitTime="100">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="lessThan">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
-            </TransitionViewModelCondition>
-          </StateTransition>
-          <StateTransition stateToId="0:1092" duration="0" enableEarlyExit="false" interpolationType="cubic" enableExitTime="true" exitTimeIsPercetange="true" exitTime="100">
-            <CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1" />
-            <TransitionViewModelCondition opValue="greaterThanOrEqual">
-              <TransitionPropertyViewModelComparator>
-                <BindablePropertyNumber>
-                  <DataBindContext sourcePathIds="0:800-0:803" propertyKey="636" />
-                </BindablePropertyNumber>
-              </TransitionPropertyViewModelComparator>
-              <TransitionValueNumberComparator value="0" />
+              <TransitionValueNumberComparator value="1" />
             </TransitionViewModelCondition>
           </StateTransition>
         </AnimationState>
       </StateMachineLayer>
     </StateMachine>
-    <LinearAnimation id="0:2000" name="ATOM — Centre" fps="60" duration="1" loopValue="oneShot">
+    <LinearAnimation id="0:2000" name="ATOM starts the meal" fps="60" duration="1" loopValue="oneShot">
       <KeyedObject objectId="0:100">
         <KeyedProperty property="x">
           <KeyFrameDouble frame="0" value="360" />
@@ -2056,12 +172,12 @@
       </KeyedObject>
       <KeyedObject objectId="0:100">
         <KeyedProperty property="scaleX">
-          <KeyFrameDouble frame="0" value="1" />
+          <KeyFrameDouble frame="0" value="500" />
         </KeyedProperty>
       </KeyedObject>
       <KeyedObject objectId="0:100">
         <KeyedProperty property="scaleY">
-          <KeyFrameDouble frame="0" value="1" />
+          <KeyFrameDouble frame="0" value="500" />
         </KeyedProperty>
       </KeyedObject>
       <KeyedObject objectId="0:100">
@@ -2074,1592 +190,259 @@
           <KeyFrameDouble frame="0" value="1" />
         </KeyedProperty>
       </KeyedObject>
-    </LinearAnimation>
-    <LinearAnimation id="0:2001" name="ATOM — Left wing" fps="60" duration="1" loopValue="oneShot">
-      <KeyedObject objectId="0:100">
+      <KeyedObject objectId="0:200">
         <KeyedProperty property="x">
-          <KeyFrameDouble frame="0" value="125" />
+          <KeyFrameDouble frame="0" value="680" />
         </KeyedProperty>
       </KeyedObject>
-      <KeyedObject objectId="0:100">
+      <KeyedObject objectId="0:200">
         <KeyedProperty property="y">
           <KeyFrameDouble frame="0" value="590" />
         </KeyedProperty>
       </KeyedObject>
-      <KeyedObject objectId="0:100">
+      <KeyedObject objectId="0:200">
         <KeyedProperty property="scaleX">
-          <KeyFrameDouble frame="0" value="0.86" />
+          <KeyFrameDouble frame="0" value="220" />
         </KeyedProperty>
       </KeyedObject>
-      <KeyedObject objectId="0:100">
+      <KeyedObject objectId="0:200">
         <KeyedProperty property="scaleY">
-          <KeyFrameDouble frame="0" value="0.86" />
+          <KeyFrameDouble frame="0" value="220" />
         </KeyedProperty>
       </KeyedObject>
-      <KeyedObject objectId="0:100">
+      <KeyedObject objectId="0:200">
         <KeyedProperty property="rotation">
-          <KeyFrameDouble frame="0" value="-0.085" />
+          <KeyFrameDouble frame="0" value="0.075" />
         </KeyedProperty>
       </KeyedObject>
-      <KeyedObject objectId="0:100">
+      <KeyedObject objectId="0:200">
+        <KeyedProperty property="opacity">
+          <KeyFrameDouble frame="0" value="0" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:300">
+        <KeyedProperty property="x">
+          <KeyFrameDouble frame="0" value="720" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:300">
+        <KeyedProperty property="y">
+          <KeyFrameDouble frame="0" value="615" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:300">
+        <KeyedProperty property="scaleX">
+          <KeyFrameDouble frame="0" value="120" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:300">
+        <KeyedProperty property="scaleY">
+          <KeyFrameDouble frame="0" value="120" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:300">
+        <KeyedProperty property="rotation">
+          <KeyFrameDouble frame="0" value="0.08" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:300">
         <KeyedProperty property="opacity">
           <KeyFrameDouble frame="0" value="0" />
         </KeyedProperty>
       </KeyedObject>
     </LinearAnimation>
-    <LinearAnimation id="0:2002" name="ATOM — Right wing" fps="60" duration="1" loopValue="oneShot">
+    <LinearAnimation id="0:2001" name="The Fry adds a side" fps="60" duration="1" loopValue="oneShot">
       <KeyedObject objectId="0:100">
         <KeyedProperty property="x">
+          <KeyFrameDouble frame="0" value="255" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:100">
+        <KeyedProperty property="y">
+          <KeyFrameDouble frame="0" value="565" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:100">
+        <KeyedProperty property="scaleX">
+          <KeyFrameDouble frame="0" value="420" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:100">
+        <KeyedProperty property="scaleY">
+          <KeyFrameDouble frame="0" value="420" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:100">
+        <KeyedProperty property="rotation">
+          <KeyFrameDouble frame="0" value="0" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:100">
+        <KeyedProperty property="opacity">
+          <KeyFrameDouble frame="0" value="1" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:200">
+        <KeyedProperty property="x">
+          <KeyFrameDouble frame="0" value="515" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:200">
+        <KeyedProperty property="y">
+          <KeyFrameDouble frame="0" value="515" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:200">
+        <KeyedProperty property="scaleX">
+          <KeyFrameDouble frame="0" value="300" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:200">
+        <KeyedProperty property="scaleY">
+          <KeyFrameDouble frame="0" value="300" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:200">
+        <KeyedProperty property="rotation">
+          <KeyFrameDouble frame="0" value="0" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:200">
+        <KeyedProperty property="opacity">
+          <KeyFrameDouble frame="0" value="1" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:300">
+        <KeyedProperty property="x">
+          <KeyFrameDouble frame="0" value="720" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:300">
+        <KeyedProperty property="y">
+          <KeyFrameDouble frame="0" value="615" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:300">
+        <KeyedProperty property="scaleX">
+          <KeyFrameDouble frame="0" value="120" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:300">
+        <KeyedProperty property="scaleY">
+          <KeyFrameDouble frame="0" value="120" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:300">
+        <KeyedProperty property="rotation">
+          <KeyFrameDouble frame="0" value="0.08" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:300">
+        <KeyedProperty property="opacity">
+          <KeyFrameDouble frame="0" value="0" />
+        </KeyedProperty>
+      </KeyedObject>
+    </LinearAnimation>
+    <LinearAnimation id="0:2002" name="Na końcu tęczy adds dessert" fps="60" duration="1" loopValue="oneShot">
+      <KeyedObject objectId="0:100">
+        <KeyedProperty property="x">
+          <KeyFrameDouble frame="0" value="230" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:100">
+        <KeyedProperty property="y">
+          <KeyFrameDouble frame="0" value="560" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:100">
+        <KeyedProperty property="scaleX">
+          <KeyFrameDouble frame="0" value="380" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:100">
+        <KeyedProperty property="scaleY">
+          <KeyFrameDouble frame="0" value="380" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:100">
+        <KeyedProperty property="rotation">
+          <KeyFrameDouble frame="0" value="0" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:100">
+        <KeyedProperty property="opacity">
+          <KeyFrameDouble frame="0" value="1" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:200">
+        <KeyedProperty property="x">
+          <KeyFrameDouble frame="0" value="505" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:200">
+        <KeyedProperty property="y">
+          <KeyFrameDouble frame="0" value="485" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:200">
+        <KeyedProperty property="scaleX">
+          <KeyFrameDouble frame="0" value="300" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:200">
+        <KeyedProperty property="scaleY">
+          <KeyFrameDouble frame="0" value="300" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:200">
+        <KeyedProperty property="rotation">
+          <KeyFrameDouble frame="0" value="0" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:200">
+        <KeyedProperty property="opacity">
+          <KeyFrameDouble frame="0" value="1" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:300">
+        <KeyedProperty property="x">
+          <KeyFrameDouble frame="0" value="565" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:300">
+        <KeyedProperty property="y">
           <KeyFrameDouble frame="0" value="595" />
         </KeyedProperty>
       </KeyedObject>
-      <KeyedObject objectId="0:100">
-        <KeyedProperty property="y">
-          <KeyFrameDouble frame="0" value="590" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:100">
+      <KeyedObject objectId="0:300">
         <KeyedProperty property="scaleX">
-          <KeyFrameDouble frame="0" value="0.86" />
+          <KeyFrameDouble frame="0" value="180" />
         </KeyedProperty>
       </KeyedObject>
-      <KeyedObject objectId="0:100">
+      <KeyedObject objectId="0:300">
         <KeyedProperty property="scaleY">
-          <KeyFrameDouble frame="0" value="0.86" />
+          <KeyFrameDouble frame="0" value="180" />
         </KeyedProperty>
       </KeyedObject>
-      <KeyedObject objectId="0:100">
-        <KeyedProperty property="rotation">
-          <KeyFrameDouble frame="0" value="0.085" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:100">
-        <KeyedProperty property="opacity">
-          <KeyFrameDouble frame="0" value="0" />
-        </KeyedProperty>
-      </KeyedObject>
-    </LinearAnimation>
-    <LinearAnimation id="0:2003" name="ATOM — Exit left" fps="60" duration="18" loopValue="oneShot">
-      <KeyedObject objectId="0:100">
-        <KeyedProperty property="x">
-          <KeyFrameDouble frame="0" value="125" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:100">
-        <KeyedProperty property="y">
-          <KeyFrameDouble frame="0" value="590" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:100">
-        <KeyedProperty property="scaleX">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:100">
-        <KeyedProperty property="scaleY">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:100">
-        <KeyedProperty property="rotation">
-          <KeyFrameDouble frame="0" value="-0.085" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:100">
-        <KeyedProperty property="opacity">
-          <KeyFrameDouble frame="0" value="0" />
-        </KeyedProperty>
-      </KeyedObject>
-    </LinearAnimation>
-    <LinearAnimation id="0:2004" name="ATOM — Exit right" fps="60" duration="18" loopValue="oneShot">
-      <KeyedObject objectId="0:100">
-        <KeyedProperty property="x">
-          <KeyFrameDouble frame="0" value="595" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:100">
-        <KeyedProperty property="y">
-          <KeyFrameDouble frame="0" value="590" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:100">
-        <KeyedProperty property="scaleX">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:100">
-        <KeyedProperty property="scaleY">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:100">
-        <KeyedProperty property="rotation">
-          <KeyFrameDouble frame="0" value="0.085" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:100">
-        <KeyedProperty property="opacity">
-          <KeyFrameDouble frame="0" value="0" />
-        </KeyedProperty>
-      </KeyedObject>
-    </LinearAnimation>
-    <LinearAnimation id="0:2010" name="KAGO — Centre" fps="60" duration="1" loopValue="oneShot">
-      <KeyedObject objectId="0:120">
-        <KeyedProperty property="x">
-          <KeyFrameDouble frame="0" value="360" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:120">
-        <KeyedProperty property="y">
-          <KeyFrameDouble frame="0" value="570" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:120">
-        <KeyedProperty property="scaleX">
-          <KeyFrameDouble frame="0" value="1" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:120">
-        <KeyedProperty property="scaleY">
-          <KeyFrameDouble frame="0" value="1" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:120">
+      <KeyedObject objectId="0:300">
         <KeyedProperty property="rotation">
           <KeyFrameDouble frame="0" value="0" />
         </KeyedProperty>
       </KeyedObject>
-      <KeyedObject objectId="0:120">
+      <KeyedObject objectId="0:300">
         <KeyedProperty property="opacity">
           <KeyFrameDouble frame="0" value="1" />
-        </KeyedProperty>
-      </KeyedObject>
-    </LinearAnimation>
-    <LinearAnimation id="0:2011" name="KAGO — Left wing" fps="60" duration="1" loopValue="oneShot">
-      <KeyedObject objectId="0:120">
-        <KeyedProperty property="x">
-          <KeyFrameDouble frame="0" value="125" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:120">
-        <KeyedProperty property="y">
-          <KeyFrameDouble frame="0" value="590" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:120">
-        <KeyedProperty property="scaleX">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:120">
-        <KeyedProperty property="scaleY">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:120">
-        <KeyedProperty property="rotation">
-          <KeyFrameDouble frame="0" value="-0.085" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:120">
-        <KeyedProperty property="opacity">
-          <KeyFrameDouble frame="0" value="0" />
-        </KeyedProperty>
-      </KeyedObject>
-    </LinearAnimation>
-    <LinearAnimation id="0:2012" name="KAGO — Right wing" fps="60" duration="1" loopValue="oneShot">
-      <KeyedObject objectId="0:120">
-        <KeyedProperty property="x">
-          <KeyFrameDouble frame="0" value="595" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:120">
-        <KeyedProperty property="y">
-          <KeyFrameDouble frame="0" value="590" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:120">
-        <KeyedProperty property="scaleX">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:120">
-        <KeyedProperty property="scaleY">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:120">
-        <KeyedProperty property="rotation">
-          <KeyFrameDouble frame="0" value="0.085" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:120">
-        <KeyedProperty property="opacity">
-          <KeyFrameDouble frame="0" value="0" />
-        </KeyedProperty>
-      </KeyedObject>
-    </LinearAnimation>
-    <LinearAnimation id="0:2013" name="KAGO — Exit left" fps="60" duration="18" loopValue="oneShot">
-      <KeyedObject objectId="0:120">
-        <KeyedProperty property="x">
-          <KeyFrameDouble frame="0" value="125" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:120">
-        <KeyedProperty property="y">
-          <KeyFrameDouble frame="0" value="590" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:120">
-        <KeyedProperty property="scaleX">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:120">
-        <KeyedProperty property="scaleY">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:120">
-        <KeyedProperty property="rotation">
-          <KeyFrameDouble frame="0" value="-0.085" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:120">
-        <KeyedProperty property="opacity">
-          <KeyFrameDouble frame="0" value="0" />
-        </KeyedProperty>
-      </KeyedObject>
-    </LinearAnimation>
-    <LinearAnimation id="0:2014" name="KAGO — Exit right" fps="60" duration="18" loopValue="oneShot">
-      <KeyedObject objectId="0:120">
-        <KeyedProperty property="x">
-          <KeyFrameDouble frame="0" value="595" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:120">
-        <KeyedProperty property="y">
-          <KeyFrameDouble frame="0" value="590" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:120">
-        <KeyedProperty property="scaleX">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:120">
-        <KeyedProperty property="scaleY">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:120">
-        <KeyedProperty property="rotation">
-          <KeyFrameDouble frame="0" value="0.085" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:120">
-        <KeyedProperty property="opacity">
-          <KeyFrameDouble frame="0" value="0" />
-        </KeyedProperty>
-      </KeyedObject>
-    </LinearAnimation>
-    <LinearAnimation id="0:2020" name="Semolino — Centre" fps="60" duration="1" loopValue="oneShot">
-      <KeyedObject objectId="0:140">
-        <KeyedProperty property="x">
-          <KeyFrameDouble frame="0" value="360" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:140">
-        <KeyedProperty property="y">
-          <KeyFrameDouble frame="0" value="570" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:140">
-        <KeyedProperty property="scaleX">
-          <KeyFrameDouble frame="0" value="1" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:140">
-        <KeyedProperty property="scaleY">
-          <KeyFrameDouble frame="0" value="1" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:140">
-        <KeyedProperty property="rotation">
-          <KeyFrameDouble frame="0" value="0" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:140">
-        <KeyedProperty property="opacity">
-          <KeyFrameDouble frame="0" value="1" />
-        </KeyedProperty>
-      </KeyedObject>
-    </LinearAnimation>
-    <LinearAnimation id="0:2021" name="Semolino — Left wing" fps="60" duration="1" loopValue="oneShot">
-      <KeyedObject objectId="0:140">
-        <KeyedProperty property="x">
-          <KeyFrameDouble frame="0" value="125" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:140">
-        <KeyedProperty property="y">
-          <KeyFrameDouble frame="0" value="590" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:140">
-        <KeyedProperty property="scaleX">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:140">
-        <KeyedProperty property="scaleY">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:140">
-        <KeyedProperty property="rotation">
-          <KeyFrameDouble frame="0" value="-0.085" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:140">
-        <KeyedProperty property="opacity">
-          <KeyFrameDouble frame="0" value="0" />
-        </KeyedProperty>
-      </KeyedObject>
-    </LinearAnimation>
-    <LinearAnimation id="0:2022" name="Semolino — Right wing" fps="60" duration="1" loopValue="oneShot">
-      <KeyedObject objectId="0:140">
-        <KeyedProperty property="x">
-          <KeyFrameDouble frame="0" value="595" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:140">
-        <KeyedProperty property="y">
-          <KeyFrameDouble frame="0" value="590" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:140">
-        <KeyedProperty property="scaleX">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:140">
-        <KeyedProperty property="scaleY">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:140">
-        <KeyedProperty property="rotation">
-          <KeyFrameDouble frame="0" value="0.085" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:140">
-        <KeyedProperty property="opacity">
-          <KeyFrameDouble frame="0" value="0" />
-        </KeyedProperty>
-      </KeyedObject>
-    </LinearAnimation>
-    <LinearAnimation id="0:2023" name="Semolino — Exit left" fps="60" duration="18" loopValue="oneShot">
-      <KeyedObject objectId="0:140">
-        <KeyedProperty property="x">
-          <KeyFrameDouble frame="0" value="125" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:140">
-        <KeyedProperty property="y">
-          <KeyFrameDouble frame="0" value="590" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:140">
-        <KeyedProperty property="scaleX">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:140">
-        <KeyedProperty property="scaleY">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:140">
-        <KeyedProperty property="rotation">
-          <KeyFrameDouble frame="0" value="-0.085" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:140">
-        <KeyedProperty property="opacity">
-          <KeyFrameDouble frame="0" value="0" />
-        </KeyedProperty>
-      </KeyedObject>
-    </LinearAnimation>
-    <LinearAnimation id="0:2024" name="Semolino — Exit right" fps="60" duration="18" loopValue="oneShot">
-      <KeyedObject objectId="0:140">
-        <KeyedProperty property="x">
-          <KeyFrameDouble frame="0" value="595" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:140">
-        <KeyedProperty property="y">
-          <KeyFrameDouble frame="0" value="590" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:140">
-        <KeyedProperty property="scaleX">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:140">
-        <KeyedProperty property="scaleY">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:140">
-        <KeyedProperty property="rotation">
-          <KeyFrameDouble frame="0" value="0.085" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:140">
-        <KeyedProperty property="opacity">
-          <KeyFrameDouble frame="0" value="0" />
-        </KeyedProperty>
-      </KeyedObject>
-    </LinearAnimation>
-    <LinearAnimation id="0:2030" name="Curry Leaves — Centre" fps="60" duration="1" loopValue="oneShot">
-      <KeyedObject objectId="0:160">
-        <KeyedProperty property="x">
-          <KeyFrameDouble frame="0" value="360" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:160">
-        <KeyedProperty property="y">
-          <KeyFrameDouble frame="0" value="570" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:160">
-        <KeyedProperty property="scaleX">
-          <KeyFrameDouble frame="0" value="1" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:160">
-        <KeyedProperty property="scaleY">
-          <KeyFrameDouble frame="0" value="1" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:160">
-        <KeyedProperty property="rotation">
-          <KeyFrameDouble frame="0" value="0" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:160">
-        <KeyedProperty property="opacity">
-          <KeyFrameDouble frame="0" value="1" />
-        </KeyedProperty>
-      </KeyedObject>
-    </LinearAnimation>
-    <LinearAnimation id="0:2031" name="Curry Leaves — Left wing" fps="60" duration="1" loopValue="oneShot">
-      <KeyedObject objectId="0:160">
-        <KeyedProperty property="x">
-          <KeyFrameDouble frame="0" value="125" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:160">
-        <KeyedProperty property="y">
-          <KeyFrameDouble frame="0" value="590" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:160">
-        <KeyedProperty property="scaleX">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:160">
-        <KeyedProperty property="scaleY">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:160">
-        <KeyedProperty property="rotation">
-          <KeyFrameDouble frame="0" value="-0.085" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:160">
-        <KeyedProperty property="opacity">
-          <KeyFrameDouble frame="0" value="0" />
-        </KeyedProperty>
-      </KeyedObject>
-    </LinearAnimation>
-    <LinearAnimation id="0:2032" name="Curry Leaves — Right wing" fps="60" duration="1" loopValue="oneShot">
-      <KeyedObject objectId="0:160">
-        <KeyedProperty property="x">
-          <KeyFrameDouble frame="0" value="595" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:160">
-        <KeyedProperty property="y">
-          <KeyFrameDouble frame="0" value="590" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:160">
-        <KeyedProperty property="scaleX">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:160">
-        <KeyedProperty property="scaleY">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:160">
-        <KeyedProperty property="rotation">
-          <KeyFrameDouble frame="0" value="0.085" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:160">
-        <KeyedProperty property="opacity">
-          <KeyFrameDouble frame="0" value="0" />
-        </KeyedProperty>
-      </KeyedObject>
-    </LinearAnimation>
-    <LinearAnimation id="0:2033" name="Curry Leaves — Exit left" fps="60" duration="18" loopValue="oneShot">
-      <KeyedObject objectId="0:160">
-        <KeyedProperty property="x">
-          <KeyFrameDouble frame="0" value="125" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:160">
-        <KeyedProperty property="y">
-          <KeyFrameDouble frame="0" value="590" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:160">
-        <KeyedProperty property="scaleX">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:160">
-        <KeyedProperty property="scaleY">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:160">
-        <KeyedProperty property="rotation">
-          <KeyFrameDouble frame="0" value="-0.085" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:160">
-        <KeyedProperty property="opacity">
-          <KeyFrameDouble frame="0" value="0" />
-        </KeyedProperty>
-      </KeyedObject>
-    </LinearAnimation>
-    <LinearAnimation id="0:2034" name="Curry Leaves — Exit right" fps="60" duration="18" loopValue="oneShot">
-      <KeyedObject objectId="0:160">
-        <KeyedProperty property="x">
-          <KeyFrameDouble frame="0" value="595" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:160">
-        <KeyedProperty property="y">
-          <KeyFrameDouble frame="0" value="590" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:160">
-        <KeyedProperty property="scaleX">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:160">
-        <KeyedProperty property="scaleY">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:160">
-        <KeyedProperty property="rotation">
-          <KeyFrameDouble frame="0" value="0.085" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:160">
-        <KeyedProperty property="opacity">
-          <KeyFrameDouble frame="0" value="0" />
-        </KeyedProperty>
-      </KeyedObject>
-    </LinearAnimation>
-    <LinearAnimation id="0:2040" name="Gringo Bar — Centre" fps="60" duration="1" loopValue="oneShot">
-      <KeyedObject objectId="0:180">
-        <KeyedProperty property="x">
-          <KeyFrameDouble frame="0" value="360" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:180">
-        <KeyedProperty property="y">
-          <KeyFrameDouble frame="0" value="570" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:180">
-        <KeyedProperty property="scaleX">
-          <KeyFrameDouble frame="0" value="1" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:180">
-        <KeyedProperty property="scaleY">
-          <KeyFrameDouble frame="0" value="1" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:180">
-        <KeyedProperty property="rotation">
-          <KeyFrameDouble frame="0" value="0" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:180">
-        <KeyedProperty property="opacity">
-          <KeyFrameDouble frame="0" value="1" />
-        </KeyedProperty>
-      </KeyedObject>
-    </LinearAnimation>
-    <LinearAnimation id="0:2041" name="Gringo Bar — Left wing" fps="60" duration="1" loopValue="oneShot">
-      <KeyedObject objectId="0:180">
-        <KeyedProperty property="x">
-          <KeyFrameDouble frame="0" value="125" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:180">
-        <KeyedProperty property="y">
-          <KeyFrameDouble frame="0" value="590" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:180">
-        <KeyedProperty property="scaleX">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:180">
-        <KeyedProperty property="scaleY">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:180">
-        <KeyedProperty property="rotation">
-          <KeyFrameDouble frame="0" value="-0.085" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:180">
-        <KeyedProperty property="opacity">
-          <KeyFrameDouble frame="0" value="0" />
-        </KeyedProperty>
-      </KeyedObject>
-    </LinearAnimation>
-    <LinearAnimation id="0:2042" name="Gringo Bar — Right wing" fps="60" duration="1" loopValue="oneShot">
-      <KeyedObject objectId="0:180">
-        <KeyedProperty property="x">
-          <KeyFrameDouble frame="0" value="595" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:180">
-        <KeyedProperty property="y">
-          <KeyFrameDouble frame="0" value="590" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:180">
-        <KeyedProperty property="scaleX">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:180">
-        <KeyedProperty property="scaleY">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:180">
-        <KeyedProperty property="rotation">
-          <KeyFrameDouble frame="0" value="0.085" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:180">
-        <KeyedProperty property="opacity">
-          <KeyFrameDouble frame="0" value="0" />
-        </KeyedProperty>
-      </KeyedObject>
-    </LinearAnimation>
-    <LinearAnimation id="0:2043" name="Gringo Bar — Exit left" fps="60" duration="18" loopValue="oneShot">
-      <KeyedObject objectId="0:180">
-        <KeyedProperty property="x">
-          <KeyFrameDouble frame="0" value="125" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:180">
-        <KeyedProperty property="y">
-          <KeyFrameDouble frame="0" value="590" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:180">
-        <KeyedProperty property="scaleX">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:180">
-        <KeyedProperty property="scaleY">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:180">
-        <KeyedProperty property="rotation">
-          <KeyFrameDouble frame="0" value="-0.085" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:180">
-        <KeyedProperty property="opacity">
-          <KeyFrameDouble frame="0" value="0" />
-        </KeyedProperty>
-      </KeyedObject>
-    </LinearAnimation>
-    <LinearAnimation id="0:2044" name="Gringo Bar — Exit right" fps="60" duration="18" loopValue="oneShot">
-      <KeyedObject objectId="0:180">
-        <KeyedProperty property="x">
-          <KeyFrameDouble frame="0" value="595" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:180">
-        <KeyedProperty property="y">
-          <KeyFrameDouble frame="0" value="590" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:180">
-        <KeyedProperty property="scaleX">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:180">
-        <KeyedProperty property="scaleY">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:180">
-        <KeyedProperty property="rotation">
-          <KeyFrameDouble frame="0" value="0.085" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:180">
-        <KeyedProperty property="opacity">
-          <KeyFrameDouble frame="0" value="0" />
-        </KeyedProperty>
-      </KeyedObject>
-    </LinearAnimation>
-    <LinearAnimation id="0:2050" name="Tuk Tuk — Centre" fps="60" duration="1" loopValue="oneShot">
-      <KeyedObject objectId="0:200">
-        <KeyedProperty property="x">
-          <KeyFrameDouble frame="0" value="360" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:200">
-        <KeyedProperty property="y">
-          <KeyFrameDouble frame="0" value="570" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:200">
-        <KeyedProperty property="scaleX">
-          <KeyFrameDouble frame="0" value="1" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:200">
-        <KeyedProperty property="scaleY">
-          <KeyFrameDouble frame="0" value="1" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:200">
-        <KeyedProperty property="rotation">
-          <KeyFrameDouble frame="0" value="0" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:200">
-        <KeyedProperty property="opacity">
-          <KeyFrameDouble frame="0" value="1" />
-        </KeyedProperty>
-      </KeyedObject>
-    </LinearAnimation>
-    <LinearAnimation id="0:2051" name="Tuk Tuk — Left wing" fps="60" duration="1" loopValue="oneShot">
-      <KeyedObject objectId="0:200">
-        <KeyedProperty property="x">
-          <KeyFrameDouble frame="0" value="125" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:200">
-        <KeyedProperty property="y">
-          <KeyFrameDouble frame="0" value="590" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:200">
-        <KeyedProperty property="scaleX">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:200">
-        <KeyedProperty property="scaleY">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:200">
-        <KeyedProperty property="rotation">
-          <KeyFrameDouble frame="0" value="-0.085" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:200">
-        <KeyedProperty property="opacity">
-          <KeyFrameDouble frame="0" value="0" />
-        </KeyedProperty>
-      </KeyedObject>
-    </LinearAnimation>
-    <LinearAnimation id="0:2052" name="Tuk Tuk — Right wing" fps="60" duration="1" loopValue="oneShot">
-      <KeyedObject objectId="0:200">
-        <KeyedProperty property="x">
-          <KeyFrameDouble frame="0" value="595" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:200">
-        <KeyedProperty property="y">
-          <KeyFrameDouble frame="0" value="590" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:200">
-        <KeyedProperty property="scaleX">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:200">
-        <KeyedProperty property="scaleY">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:200">
-        <KeyedProperty property="rotation">
-          <KeyFrameDouble frame="0" value="0.085" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:200">
-        <KeyedProperty property="opacity">
-          <KeyFrameDouble frame="0" value="0" />
-        </KeyedProperty>
-      </KeyedObject>
-    </LinearAnimation>
-    <LinearAnimation id="0:2053" name="Tuk Tuk — Exit left" fps="60" duration="18" loopValue="oneShot">
-      <KeyedObject objectId="0:200">
-        <KeyedProperty property="x">
-          <KeyFrameDouble frame="0" value="125" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:200">
-        <KeyedProperty property="y">
-          <KeyFrameDouble frame="0" value="590" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:200">
-        <KeyedProperty property="scaleX">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:200">
-        <KeyedProperty property="scaleY">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:200">
-        <KeyedProperty property="rotation">
-          <KeyFrameDouble frame="0" value="-0.085" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:200">
-        <KeyedProperty property="opacity">
-          <KeyFrameDouble frame="0" value="0" />
-        </KeyedProperty>
-      </KeyedObject>
-    </LinearAnimation>
-    <LinearAnimation id="0:2054" name="Tuk Tuk — Exit right" fps="60" duration="18" loopValue="oneShot">
-      <KeyedObject objectId="0:200">
-        <KeyedProperty property="x">
-          <KeyFrameDouble frame="0" value="595" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:200">
-        <KeyedProperty property="y">
-          <KeyFrameDouble frame="0" value="590" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:200">
-        <KeyedProperty property="scaleX">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:200">
-        <KeyedProperty property="scaleY">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:200">
-        <KeyedProperty property="rotation">
-          <KeyFrameDouble frame="0" value="0.085" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:200">
-        <KeyedProperty property="opacity">
-          <KeyFrameDouble frame="0" value="0" />
-        </KeyedProperty>
-      </KeyedObject>
-    </LinearAnimation>
-    <LinearAnimation id="0:2060" name="BIBIMBAR — Centre" fps="60" duration="1" loopValue="oneShot">
-      <KeyedObject objectId="0:220">
-        <KeyedProperty property="x">
-          <KeyFrameDouble frame="0" value="360" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:220">
-        <KeyedProperty property="y">
-          <KeyFrameDouble frame="0" value="570" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:220">
-        <KeyedProperty property="scaleX">
-          <KeyFrameDouble frame="0" value="1" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:220">
-        <KeyedProperty property="scaleY">
-          <KeyFrameDouble frame="0" value="1" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:220">
-        <KeyedProperty property="rotation">
-          <KeyFrameDouble frame="0" value="0" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:220">
-        <KeyedProperty property="opacity">
-          <KeyFrameDouble frame="0" value="1" />
-        </KeyedProperty>
-      </KeyedObject>
-    </LinearAnimation>
-    <LinearAnimation id="0:2061" name="BIBIMBAR — Left wing" fps="60" duration="1" loopValue="oneShot">
-      <KeyedObject objectId="0:220">
-        <KeyedProperty property="x">
-          <KeyFrameDouble frame="0" value="125" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:220">
-        <KeyedProperty property="y">
-          <KeyFrameDouble frame="0" value="590" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:220">
-        <KeyedProperty property="scaleX">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:220">
-        <KeyedProperty property="scaleY">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:220">
-        <KeyedProperty property="rotation">
-          <KeyFrameDouble frame="0" value="-0.085" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:220">
-        <KeyedProperty property="opacity">
-          <KeyFrameDouble frame="0" value="0" />
-        </KeyedProperty>
-      </KeyedObject>
-    </LinearAnimation>
-    <LinearAnimation id="0:2062" name="BIBIMBAR — Right wing" fps="60" duration="1" loopValue="oneShot">
-      <KeyedObject objectId="0:220">
-        <KeyedProperty property="x">
-          <KeyFrameDouble frame="0" value="595" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:220">
-        <KeyedProperty property="y">
-          <KeyFrameDouble frame="0" value="590" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:220">
-        <KeyedProperty property="scaleX">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:220">
-        <KeyedProperty property="scaleY">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:220">
-        <KeyedProperty property="rotation">
-          <KeyFrameDouble frame="0" value="0.085" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:220">
-        <KeyedProperty property="opacity">
-          <KeyFrameDouble frame="0" value="0" />
-        </KeyedProperty>
-      </KeyedObject>
-    </LinearAnimation>
-    <LinearAnimation id="0:2063" name="BIBIMBAR — Exit left" fps="60" duration="18" loopValue="oneShot">
-      <KeyedObject objectId="0:220">
-        <KeyedProperty property="x">
-          <KeyFrameDouble frame="0" value="125" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:220">
-        <KeyedProperty property="y">
-          <KeyFrameDouble frame="0" value="590" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:220">
-        <KeyedProperty property="scaleX">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:220">
-        <KeyedProperty property="scaleY">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:220">
-        <KeyedProperty property="rotation">
-          <KeyFrameDouble frame="0" value="-0.085" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:220">
-        <KeyedProperty property="opacity">
-          <KeyFrameDouble frame="0" value="0" />
-        </KeyedProperty>
-      </KeyedObject>
-    </LinearAnimation>
-    <LinearAnimation id="0:2064" name="BIBIMBAR — Exit right" fps="60" duration="18" loopValue="oneShot">
-      <KeyedObject objectId="0:220">
-        <KeyedProperty property="x">
-          <KeyFrameDouble frame="0" value="595" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:220">
-        <KeyedProperty property="y">
-          <KeyFrameDouble frame="0" value="590" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:220">
-        <KeyedProperty property="scaleX">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:220">
-        <KeyedProperty property="scaleY">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:220">
-        <KeyedProperty property="rotation">
-          <KeyFrameDouble frame="0" value="0.085" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:220">
-        <KeyedProperty property="opacity">
-          <KeyFrameDouble frame="0" value="0" />
-        </KeyedProperty>
-      </KeyedObject>
-    </LinearAnimation>
-    <LinearAnimation id="0:2070" name="The Fry — Centre" fps="60" duration="1" loopValue="oneShot">
-      <KeyedObject objectId="0:240">
-        <KeyedProperty property="x">
-          <KeyFrameDouble frame="0" value="360" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:240">
-        <KeyedProperty property="y">
-          <KeyFrameDouble frame="0" value="570" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:240">
-        <KeyedProperty property="scaleX">
-          <KeyFrameDouble frame="0" value="1" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:240">
-        <KeyedProperty property="scaleY">
-          <KeyFrameDouble frame="0" value="1" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:240">
-        <KeyedProperty property="rotation">
-          <KeyFrameDouble frame="0" value="0" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:240">
-        <KeyedProperty property="opacity">
-          <KeyFrameDouble frame="0" value="1" />
-        </KeyedProperty>
-      </KeyedObject>
-    </LinearAnimation>
-    <LinearAnimation id="0:2071" name="The Fry — Left wing" fps="60" duration="1" loopValue="oneShot">
-      <KeyedObject objectId="0:240">
-        <KeyedProperty property="x">
-          <KeyFrameDouble frame="0" value="125" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:240">
-        <KeyedProperty property="y">
-          <KeyFrameDouble frame="0" value="590" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:240">
-        <KeyedProperty property="scaleX">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:240">
-        <KeyedProperty property="scaleY">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:240">
-        <KeyedProperty property="rotation">
-          <KeyFrameDouble frame="0" value="-0.085" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:240">
-        <KeyedProperty property="opacity">
-          <KeyFrameDouble frame="0" value="0" />
-        </KeyedProperty>
-      </KeyedObject>
-    </LinearAnimation>
-    <LinearAnimation id="0:2072" name="The Fry — Right wing" fps="60" duration="1" loopValue="oneShot">
-      <KeyedObject objectId="0:240">
-        <KeyedProperty property="x">
-          <KeyFrameDouble frame="0" value="595" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:240">
-        <KeyedProperty property="y">
-          <KeyFrameDouble frame="0" value="590" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:240">
-        <KeyedProperty property="scaleX">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:240">
-        <KeyedProperty property="scaleY">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:240">
-        <KeyedProperty property="rotation">
-          <KeyFrameDouble frame="0" value="0.085" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:240">
-        <KeyedProperty property="opacity">
-          <KeyFrameDouble frame="0" value="0" />
-        </KeyedProperty>
-      </KeyedObject>
-    </LinearAnimation>
-    <LinearAnimation id="0:2073" name="The Fry — Exit left" fps="60" duration="18" loopValue="oneShot">
-      <KeyedObject objectId="0:240">
-        <KeyedProperty property="x">
-          <KeyFrameDouble frame="0" value="125" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:240">
-        <KeyedProperty property="y">
-          <KeyFrameDouble frame="0" value="590" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:240">
-        <KeyedProperty property="scaleX">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:240">
-        <KeyedProperty property="scaleY">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:240">
-        <KeyedProperty property="rotation">
-          <KeyFrameDouble frame="0" value="-0.085" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:240">
-        <KeyedProperty property="opacity">
-          <KeyFrameDouble frame="0" value="0" />
-        </KeyedProperty>
-      </KeyedObject>
-    </LinearAnimation>
-    <LinearAnimation id="0:2074" name="The Fry — Exit right" fps="60" duration="18" loopValue="oneShot">
-      <KeyedObject objectId="0:240">
-        <KeyedProperty property="x">
-          <KeyFrameDouble frame="0" value="595" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:240">
-        <KeyedProperty property="y">
-          <KeyFrameDouble frame="0" value="590" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:240">
-        <KeyedProperty property="scaleX">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:240">
-        <KeyedProperty property="scaleY">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:240">
-        <KeyedProperty property="rotation">
-          <KeyFrameDouble frame="0" value="0.085" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:240">
-        <KeyedProperty property="opacity">
-          <KeyFrameDouble frame="0" value="0" />
-        </KeyedProperty>
-      </KeyedObject>
-    </LinearAnimation>
-    <LinearAnimation id="0:2080" name="Bar Koszyki — Centre" fps="60" duration="1" loopValue="oneShot">
-      <KeyedObject objectId="0:260">
-        <KeyedProperty property="x">
-          <KeyFrameDouble frame="0" value="360" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:260">
-        <KeyedProperty property="y">
-          <KeyFrameDouble frame="0" value="570" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:260">
-        <KeyedProperty property="scaleX">
-          <KeyFrameDouble frame="0" value="1" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:260">
-        <KeyedProperty property="scaleY">
-          <KeyFrameDouble frame="0" value="1" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:260">
-        <KeyedProperty property="rotation">
-          <KeyFrameDouble frame="0" value="0" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:260">
-        <KeyedProperty property="opacity">
-          <KeyFrameDouble frame="0" value="1" />
-        </KeyedProperty>
-      </KeyedObject>
-    </LinearAnimation>
-    <LinearAnimation id="0:2081" name="Bar Koszyki — Left wing" fps="60" duration="1" loopValue="oneShot">
-      <KeyedObject objectId="0:260">
-        <KeyedProperty property="x">
-          <KeyFrameDouble frame="0" value="125" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:260">
-        <KeyedProperty property="y">
-          <KeyFrameDouble frame="0" value="590" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:260">
-        <KeyedProperty property="scaleX">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:260">
-        <KeyedProperty property="scaleY">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:260">
-        <KeyedProperty property="rotation">
-          <KeyFrameDouble frame="0" value="-0.085" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:260">
-        <KeyedProperty property="opacity">
-          <KeyFrameDouble frame="0" value="0" />
-        </KeyedProperty>
-      </KeyedObject>
-    </LinearAnimation>
-    <LinearAnimation id="0:2082" name="Bar Koszyki — Right wing" fps="60" duration="1" loopValue="oneShot">
-      <KeyedObject objectId="0:260">
-        <KeyedProperty property="x">
-          <KeyFrameDouble frame="0" value="595" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:260">
-        <KeyedProperty property="y">
-          <KeyFrameDouble frame="0" value="590" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:260">
-        <KeyedProperty property="scaleX">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:260">
-        <KeyedProperty property="scaleY">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:260">
-        <KeyedProperty property="rotation">
-          <KeyFrameDouble frame="0" value="0.085" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:260">
-        <KeyedProperty property="opacity">
-          <KeyFrameDouble frame="0" value="0" />
-        </KeyedProperty>
-      </KeyedObject>
-    </LinearAnimation>
-    <LinearAnimation id="0:2083" name="Bar Koszyki — Exit left" fps="60" duration="18" loopValue="oneShot">
-      <KeyedObject objectId="0:260">
-        <KeyedProperty property="x">
-          <KeyFrameDouble frame="0" value="125" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:260">
-        <KeyedProperty property="y">
-          <KeyFrameDouble frame="0" value="590" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:260">
-        <KeyedProperty property="scaleX">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:260">
-        <KeyedProperty property="scaleY">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:260">
-        <KeyedProperty property="rotation">
-          <KeyFrameDouble frame="0" value="-0.085" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:260">
-        <KeyedProperty property="opacity">
-          <KeyFrameDouble frame="0" value="0" />
-        </KeyedProperty>
-      </KeyedObject>
-    </LinearAnimation>
-    <LinearAnimation id="0:2084" name="Bar Koszyki — Exit right" fps="60" duration="18" loopValue="oneShot">
-      <KeyedObject objectId="0:260">
-        <KeyedProperty property="x">
-          <KeyFrameDouble frame="0" value="595" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:260">
-        <KeyedProperty property="y">
-          <KeyFrameDouble frame="0" value="590" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:260">
-        <KeyedProperty property="scaleX">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:260">
-        <KeyedProperty property="scaleY">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:260">
-        <KeyedProperty property="rotation">
-          <KeyFrameDouble frame="0" value="0.085" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:260">
-        <KeyedProperty property="opacity">
-          <KeyFrameDouble frame="0" value="0" />
-        </KeyedProperty>
-      </KeyedObject>
-    </LinearAnimation>
-    <LinearAnimation id="0:2090" name="Na końcu tęczy — Centre" fps="60" duration="1" loopValue="oneShot">
-      <KeyedObject objectId="0:280">
-        <KeyedProperty property="x">
-          <KeyFrameDouble frame="0" value="360" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:280">
-        <KeyedProperty property="y">
-          <KeyFrameDouble frame="0" value="570" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:280">
-        <KeyedProperty property="scaleX">
-          <KeyFrameDouble frame="0" value="1" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:280">
-        <KeyedProperty property="scaleY">
-          <KeyFrameDouble frame="0" value="1" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:280">
-        <KeyedProperty property="rotation">
-          <KeyFrameDouble frame="0" value="0" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:280">
-        <KeyedProperty property="opacity">
-          <KeyFrameDouble frame="0" value="1" />
-        </KeyedProperty>
-      </KeyedObject>
-    </LinearAnimation>
-    <LinearAnimation id="0:2091" name="Na końcu tęczy — Left wing" fps="60" duration="1" loopValue="oneShot">
-      <KeyedObject objectId="0:280">
-        <KeyedProperty property="x">
-          <KeyFrameDouble frame="0" value="125" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:280">
-        <KeyedProperty property="y">
-          <KeyFrameDouble frame="0" value="590" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:280">
-        <KeyedProperty property="scaleX">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:280">
-        <KeyedProperty property="scaleY">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:280">
-        <KeyedProperty property="rotation">
-          <KeyFrameDouble frame="0" value="-0.085" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:280">
-        <KeyedProperty property="opacity">
-          <KeyFrameDouble frame="0" value="0" />
-        </KeyedProperty>
-      </KeyedObject>
-    </LinearAnimation>
-    <LinearAnimation id="0:2092" name="Na końcu tęczy — Right wing" fps="60" duration="1" loopValue="oneShot">
-      <KeyedObject objectId="0:280">
-        <KeyedProperty property="x">
-          <KeyFrameDouble frame="0" value="595" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:280">
-        <KeyedProperty property="y">
-          <KeyFrameDouble frame="0" value="590" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:280">
-        <KeyedProperty property="scaleX">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:280">
-        <KeyedProperty property="scaleY">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:280">
-        <KeyedProperty property="rotation">
-          <KeyFrameDouble frame="0" value="0.085" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:280">
-        <KeyedProperty property="opacity">
-          <KeyFrameDouble frame="0" value="0" />
-        </KeyedProperty>
-      </KeyedObject>
-    </LinearAnimation>
-    <LinearAnimation id="0:2093" name="Na końcu tęczy — Exit left" fps="60" duration="18" loopValue="oneShot">
-      <KeyedObject objectId="0:280">
-        <KeyedProperty property="x">
-          <KeyFrameDouble frame="0" value="125" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:280">
-        <KeyedProperty property="y">
-          <KeyFrameDouble frame="0" value="590" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:280">
-        <KeyedProperty property="scaleX">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:280">
-        <KeyedProperty property="scaleY">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:280">
-        <KeyedProperty property="rotation">
-          <KeyFrameDouble frame="0" value="-0.085" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:280">
-        <KeyedProperty property="opacity">
-          <KeyFrameDouble frame="0" value="0" />
-        </KeyedProperty>
-      </KeyedObject>
-    </LinearAnimation>
-    <LinearAnimation id="0:2094" name="Na końcu tęczy — Exit right" fps="60" duration="18" loopValue="oneShot">
-      <KeyedObject objectId="0:280">
-        <KeyedProperty property="x">
-          <KeyFrameDouble frame="0" value="595" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:280">
-        <KeyedProperty property="y">
-          <KeyFrameDouble frame="0" value="590" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:280">
-        <KeyedProperty property="scaleX">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:280">
-        <KeyedProperty property="scaleY">
-          <KeyFrameDouble frame="0" value="0.86" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:280">
-        <KeyedProperty property="rotation">
-          <KeyFrameDouble frame="0" value="0.085" />
-        </KeyedProperty>
-      </KeyedObject>
-      <KeyedObject objectId="0:280">
-        <KeyedProperty property="opacity">
-          <KeyFrameDouble frame="0" value="0" />
         </KeyedProperty>
       </KeyedObject>
     </LinearAnimation>
   </Artboard>
   <ViewModel id="0:800" name="PapuComboModel" defaultInstanceId="0:801">
     <ViewModelPropertyNumber id="0:802" name="stage" />
-    <ViewModelPropertyNumber id="0:803" name="direction" />
     <ViewModelInstance id="0:801" name="Default" exports="true">
       <ViewModelInstanceNumber viewModelPropertyId="0:802" propertyValue="0" />
-      <ViewModelInstanceNumber viewModelPropertyId="0:803" propertyValue="1" />
     </ViewModelInstance>
   </ViewModel>
   <ImageAsset id="0:5000" name="ATOM dish" file="burger.webp" />
-  <ImageAsset id="0:5001" name="KAGO dish" file="ramen.webp" />
-  <ImageAsset id="0:5002" name="Semolino dish" file="pizza.webp" />
-  <ImageAsset id="0:5003" name="Curry Leaves dish" file="curry.webp" />
-  <ImageAsset id="0:5004" name="Gringo Bar dish" file="tacos.webp" />
-  <ImageAsset id="0:5005" name="Tuk Tuk dish" file="noodles.webp" />
-  <ImageAsset id="0:5006" name="BIBIMBAR dish" file="bowl.webp" />
-  <ImageAsset id="0:5007" name="The Fry dish" file="fries.webp" />
-  <ImageAsset id="0:5008" name="Bar Koszyki dish" file="lemonade.webp" />
-  <ImageAsset id="0:5009" name="Na końcu tęczy dish" file="gelato.webp" />
+  <ImageAsset id="0:5001" name="The Fry dish" file="fries.webp" />
+  <ImageAsset id="0:5002" name="Na końcu tęczy dish" file="gelato.webp" />
 </Rive>

@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct SheetClose: View {
+  @EnvironmentObject var store: PapuStore
   @Environment(\.dismiss) var dismiss
   var action: (() -> Void)? = nil
   var body: some View {
@@ -10,7 +11,7 @@ struct SheetClose: View {
       Image(systemName: "xmark").font(.system(size: 13, weight: .semibold)).frame(
         width: 44, height: 44
       ).background(.ultraThinMaterial, in: Circle())
-    }.tint(Papu.ink).accessibilityLabel("Close").padding(17)
+    }.tint(Papu.ink).accessibilityLabel(store.text("Zamknij", "Close")).padding(17)
   }
 }
 struct RestaurantView: View {
@@ -112,6 +113,7 @@ struct RestaurantView: View {
   }
 }
 struct DishView: View {
+  @Environment(\.accessibilityReduceMotion) private var reduceMotion
   @EnvironmentObject var store: PapuStore
   @Environment(\.dismiss) private var dismiss
   let dish: Dish
@@ -121,7 +123,15 @@ struct DishView: View {
   @State private var added = false
   @State private var addedItem: CartAddition?
   @State private var showLocalBasket = false
-  private var total: Int { (dish.price + (extra ? 500 : 0)) * quantity }
+  private var lineID: String {
+    "\(dish.id)|\(extra)|\(String(note.trimmingCharacters(in: .whitespacesAndNewlines).prefix(180)))"
+  }
+  private var remainingCapacity: Int { max(0, 20 - (store.cart.first { $0.id == lineID }?.quantity ?? 0)) }
+  private var selectedQuantity: Int { min(quantity, remainingCapacity) }
+  private var total: Int { (dish.price + (extra ? 500 : 0)) * selectedQuantity }
+  private var supportsSauce: Bool {
+    !["drinks", "desserts"].contains(store.catalog.restaurants.first { $0.id == dish.restaurantId }?.category ?? "")
+  }
   var body: some View {
     ScrollView {
       VStack(alignment: .leading, spacing: 0) {
@@ -137,6 +147,7 @@ struct DishView: View {
             .foregroundStyle(Papu.muted)
           FlowTags(tags: (dish.vegetarian ? ["Vege"] : []) + dish.allergens)
           Divider().overlay(Papu.line)
+          if supportsSauce {
           Text(store.text("Jeszcze trochę przyjemności?", "A little extra happiness?")).font(
             Papu.display(23))
           Toggle(isOn: $extra) {
@@ -147,6 +158,7 @@ struct DishView: View {
             }
           }.tint(Papu.green).padding(14).background(
             Papu.sage.opacity(0.6), in: RoundedRectangle(cornerRadius: 14))
+          }
           VStack(alignment: .leading, spacing: 10) {
             HStack {
               Text(store.text("Coś dla kuchni?", "A note for the kitchen?"))
@@ -154,7 +166,7 @@ struct DishView: View {
               Text(store.text("opcjonalnie", "optional")).foregroundStyle(Papu.muted)
             }.font(Papu.body(13))
             TextField(
-              store.text("Np. bez cebuli…", "For example, no onions…"), text: $note, axis: .vertical
+              store.text("Twoja prośba do kuchni…", "Your request for the kitchen…"), text: $note, axis: .vertical
             ).lineLimit(2...4).font(Papu.body(15)).padding(14).background(
               Color(hex: "FFFDF5"), in: RoundedRectangle(cornerRadius: 14)
             ).overlay(RoundedRectangle(cornerRadius: 14).stroke(Papu.line, lineWidth: 1)).onChange(
@@ -173,8 +185,8 @@ struct DishView: View {
     }
     .safeAreaInset(edge: .bottom, spacing: 0) {
       VStack(spacing: 12) {
-        if added, let addedItem {
-          CartAdditionCard(addition: addedItem)
+        if added || remainingCapacity == 0 {
+          CartAdditionCard(addition: addedItem ?? CartAddition(item: dish, quantity: 0))
           HStack(spacing: 10) {
             Button { dismiss() } label: {
               Text(store.text("Wybieram dalej", "Keep exploring")).font(Papu.body(14).weight(.semibold))
@@ -190,20 +202,26 @@ struct DishView: View {
             }.buttonStyle(PressStyle())
           }
         } else {
+          if remainingCapacity < 20 {
+            Text(store.text("Możesz dodać jeszcze ", "You can add ") + String(remainingCapacity)
+              + store.text(" · limit 20 sztuk", " more · limit 20 items"))
+              .font(Papu.body(12)).foregroundStyle(Papu.muted)
+          }
           HStack(spacing: 12) {
             HStack(spacing: 0) {
-              Button { quantity = max(1, quantity - 1) } label: {
+              Button { quantity = max(1, selectedQuantity - 1); added = false } label: {
                 Image(systemName: "minus").frame(width: 44, height: 48)
               }.disabled(quantity <= 1).accessibilityLabel(store.text("Zmniejsz ilość", "Decrease quantity"))
-              Text(verbatim: String(quantity)).font(Papu.body(16).bold()).monospacedDigit()
-              Button { quantity = min(20, quantity + 1) } label: {
+              Text(verbatim: String(selectedQuantity)).font(Papu.body(16).bold()).monospacedDigit()
+              Button { quantity = min(remainingCapacity, selectedQuantity + 1); added = false } label: {
                 Image(systemName: "plus").frame(width: 44, height: 48)
-              }.disabled(quantity >= 20).accessibilityLabel(store.text("Zwiększ ilość", "Increase quantity"))
+              }.disabled(selectedQuantity >= remainingCapacity).accessibilityLabel(store.text("Zwiększ ilość", "Increase quantity"))
             }.padding(.horizontal, 3).frame(minHeight: 52).background(Papu.sage, in: Capsule())
             Button {
-              store.add(dish, quantity: quantity, extra: extra, note: note)
+              guard selectedQuantity > 0 else { return }
+              store.add(dish, quantity: selectedQuantity, extra: extra, note: note)
               addedItem = store.lastAddition
-              withAnimation(.spring(response: 0.35, dampingFraction: 0.86)) { added = true }
+              withAnimation(reduceMotion ? nil : .spring(response: 0.35, dampingFraction: 0.86)) { added = true }
             } label: {
               HStack(spacing: 6) {
                 Image(systemName: added ? "checkmark" : "plus")
@@ -220,9 +238,15 @@ struct DishView: View {
     .sheet(isPresented: $showLocalBasket) {
       BasketView().environmentObject(store).presentationDetents([.large]).presentationCornerRadius(30)
     }
-    .onChange(of: quantity) { _, _ in added = false }
-    .onChange(of: extra) { _, _ in added = false }
-    .onChange(of: note) { _, _ in added = false }
+    .onChange(of: remainingCapacity) { previous, capacity in
+      quantity = min(quantity, max(1, capacity))
+      if capacity > previous { added = false; addedItem = nil }
+    }
+    .onChange(of: lineID) { _, _ in
+      added = false
+      addedItem = nil
+      quantity = min(quantity, max(1, remainingCapacity))
+    }
   }
 }
 struct FlowTags: View {
@@ -282,7 +306,7 @@ struct BasketView: View {
                     "Add something delicious from any restaurant.")
                 ).font(Papu.body(15)).foregroundStyle(Papu.muted)
                 PrimaryButton(title: store.text("Znajdź swój smak", "Find your flavour")) {
-                  store.selectedTab = 0
+                  store.browseCatalog()
                   dismiss()
                 }
               }.frame(maxWidth: .infinity).padding(.vertical, 40)
@@ -306,8 +330,16 @@ struct BasketView: View {
                         FoodPhoto(name: line.item.image).frame(width: 66, height: 72).clipped()
                           .clipShape(RoundedRectangle(cornerRadius: 12))
                         VStack(alignment: .leading, spacing: 6) {
-                          Text(store.text(line.item.name, line.item.nameEn)).font(
-                            Papu.body(15).weight(.semibold))
+                          HStack(alignment: .top, spacing: 4) {
+                            Text(store.text(line.item.name, line.item.nameEn)).font(Papu.body(15).weight(.semibold))
+                              .frame(maxWidth: .infinity, alignment: .leading)
+                            Button {
+                              store.lastAddition = nil
+                              store.change(line, by: -line.quantity)
+                            } label: {
+                              Image(systemName: "trash").font(.system(size: 14)).frame(width: 44, height: 44)
+                            }.tint(Papu.muted).accessibilityLabel(store.text("Usuń ", "Remove ") + store.text(line.item.name, line.item.nameEn))
+                          }
                           if line.extra {
                             Text(store.text("+ Dodatkowy sos", "+ Extra sauce")).font(Papu.body(12))
                               .foregroundStyle(Papu.muted)
@@ -318,12 +350,13 @@ struct BasketView: View {
                           HStack {
                             HStack(spacing: 4) {
                               Button {
+                                store.lastAddition = nil
                                 store.change(line, by: -1)
                               } label: {
                                 Image(systemName: "minus").font(.system(size: 11)).frame(
                                   width: 44, height: 44)
                               }.accessibilityLabel(
-                                store.text("Zmniejsz ", "Decrease ") + line.item.name)
+                                store.text("Zmniejsz ", "Decrease ") + store.text(line.item.name, line.item.nameEn))
                               Text(verbatim: String(line.quantity)).font(Papu.body(13).bold())
                               Button {
                                 store.change(line, by: 1)
@@ -331,7 +364,7 @@ struct BasketView: View {
                                 Image(systemName: "plus").font(.system(size: 11)).frame(
                                   width: 44, height: 44)
                               }.disabled(line.quantity >= 20).accessibilityLabel(
-                                store.text("Zwiększ ", "Increase ") + line.item.name)
+                                store.text("Zwiększ ", "Increase ") + store.text(line.item.name, line.item.nameEn))
                             }.background(Papu.sage, in: Capsule())
                             Spacer()
                             Text(money(line.total, english: store.english)).font(
@@ -358,19 +391,30 @@ struct BasketView: View {
                   }
                 }.padding(18).papuCard()
               }
-              if !checkout && !store.cart.contains(where: { $0.itemId == "bar-lemonade" }) {
+              if !checkout {
                 Button {
-                  store.add(store.catalog.items.first { $0.id == "bar-lemonade" }!)
+                  store.browseCatalog()
+                  dismiss()
+                } label: {
+                  Label(store.text("Dodaj z innej kuchni", "Add from another kitchen"), systemImage: "plus")
+                    .font(Papu.body(14).weight(.semibold)).frame(maxWidth: .infinity, minHeight: 48)
+                    .background(Papu.sage, in: Capsule())
+                }.buttonStyle(PressStyle())
+              }
+              if !checkout, !store.cart.contains(where: { $0.itemId == "bar-lemonade" }),
+                let lemonade = store.catalog.items.first(where: { $0.id == "bar-lemonade" }) {
+                Button {
+                  store.add(lemonade)
                 } label: {
                   HStack(spacing: 11) {
-                    FoodPhoto(name: "lemonade.jpg").frame(width: 45, height: 49).clipped()
+                    FoodPhoto(name: lemonade.image).frame(width: 45, height: 49).clipped()
                       .clipShape(RoundedRectangle(cornerRadius: 8))
                     VStack(alignment: .leading, spacing: 4) {
                       Text(
                         store.text(
                           "A do tego coś orzeźwiającego?", "Something refreshing with that?")
                       ).font(Papu.body(13).bold())
-                      Text(store.text("Lemoniada yuzu · 18 zł", "Yuzu lemonade · PLN 18")).font(
+                      Text(store.text(lemonade.name, lemonade.nameEn) + " · " + money(lemonade.price, english: store.english)).font(
                         Papu.body(12)
                       ).foregroundStyle(Papu.muted)
                     }
@@ -465,7 +509,7 @@ struct BasketView: View {
                   withAnimation(.smooth(duration: 0.3)) { checkout = false }
                 } label: {
                   Label(store.text("Wróć do koszyka", "Back to basket"), systemImage: "arrow.left")
-                    .font(Papu.body(13)).frame(maxWidth: .infinity)
+                    .font(Papu.body(13)).frame(maxWidth: .infinity, minHeight: 44)
                 }.disabled(paying)
               }
               Text(

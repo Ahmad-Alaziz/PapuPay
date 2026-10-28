@@ -6,7 +6,7 @@ Source: [Hala Koszyki restaurant directory](https://koszyki.com/uslugi/restaurac
 
 The demo includes ATOM Burgers (08), KAGO (16), Semolino (11 / combined 11–12 footprint), Curry Leaves (33), Gringo Bar (30), TUK TUK (09), Bibimbar (15), The Fry (07), Bar Koszyki (28), and Na końcu tęczy (20). The official SVG geometry supplies the hall footprint and unit positions. The table marker, route and walking guidance are illustrative, not indoor positioning or an accessibility route certification.
 
-No restaurant has supplied a transactional menu to this demo. Dish names/descriptions, prices, modifiers, allergens, photos and timing are example content, disclosed in both apps. Existing catalog photographs are illustrative Unsplash images; exact sources are recorded in `docs/research/demo-photos.json`. The current vendor carousel uses generated category photography; eight images were generated for the current iterations and two reuse earlier brand-source cutouts, as detailed below. The ice-cream catalog item also uses generated artwork. Official hall imagery is identified separately in `official-assets.json`.
+No restaurant has supplied a transactional menu to this demo. Dish names/descriptions, prices, modifiers, allergens, photos and timing are example content, disclosed in both apps. Existing catalog photographs are illustrative Unsplash images; exact sources are recorded in `docs/research/demo-photos.json`. The current Rive meal illustration reuses three generated food cutouts, while its decorative windows reuse all ten existing vendor images. No new bitmap generation was needed for the 28 October refinement. The seven additional window images and their earlier provenance are documented below. The ice-cream catalog item also uses generated artwork. Official hall imagery is identified separately in `official-assets.json`.
 
 ## Brand assets
 
@@ -21,11 +21,11 @@ Original generation output names: `exec-f91b8941-0237-4c6d-b950-c517fae57e0a.png
 
 QR-like seeds in the logo are decorative. Only QR images generated in `docs/testing` encode actual test URLs.
 
-## Three-vendor combo assets — 25 October 2026
+## Current meal illustration — assets generated 25 October, reused 28 October 2026
 
-The secondary combo review pairs independently verified vendor offerings: [ATOM smash burgers, unit 8](https://koszyki.com/services/soul-food/), [The Fry Belgian fries, unit 7](https://koszyki.com/services/the-fry/), and [Na końcu tęczy ice cream, unit 20](https://koszyki.com/services/na-koncu-teczy/). The ice-cream maker describes [seasonally changing flavors](https://www.nakoncuteczy.pl/nasza-oferta). No exact flavor availability, two-scoop portion or price is represented as a verified current offer.
+The cumulative meal illustration combines independently verified vendor offerings: [ATOM smash burgers, unit 8](https://koszyki.com/services/soul-food/), [The Fry Belgian fries, unit 7](https://koszyki.com/services/the-fry/), and [Na końcu tęczy ice cream, unit 20](https://koszyki.com/services/na-koncu-teczy/). The ice-cream maker describes [seasonally changing flavors](https://www.nakoncuteczy.pl/nasza-oferta). No exact flavor availability, two-scoop portion or price is represented as a verified current offer.
 
-All three images were newly generated for this pass using imagegen. Shared prompt intent: isolated food on transparency, an approximately 18° elevated three-quarter camera angle and 70 mm lens look, warm-neutral light from upper left with right fill, realistic advertising photography, small contact shadow, no people, branding or text. Subject descriptions were:
+All three images were generated on 25 October using imagegen, then reused unchanged for the current build/hold/reset composition. The loop reuses the existing stage-2-to-0 Rive transition; it requires no new bitmap generation. Shared prompt intent: isolated food on transparency, an approximately 18° elevated three-quarter camera angle and 70 mm lens look, warm-neutral light from upper left with right fill, realistic advertising photography, small contact shadow, no people, branding or text. Subject descriptions were:
 
 - **Burger:** brioche, two thin crisp beef patties, cheddar, house sauce and a few pickles on a square of greaseproof paper.
 - **Fries:** thick golden Belgian fries with salt in an ivory paper boat, without sauce or herb garnish.
@@ -33,13 +33,15 @@ All three images were newly generated for this pass using imagegen. Shared promp
 
 These descriptions guided illustrative artwork; the visual toppings, container, portions and flavors are not official menu claims. Original outputs in this chat's `~/.codex/generated_images/01a16fda-8f79-72f2-9f49-0d750ee6ae1a/` directory are `exec-70c1684c-ea0e-4198-bf69-725dcba9227e.png`, `exec-bedd393c-71fa-4186-ba98-acaf75b171ea.png`, and `exec-04a3c126-4de8-4056-98d8-3f943ce1423c.png`, respectively.
 
-The portable 512 px derivatives live in `packages/motion/combo/{burger,fries,gelato}.png`. `combo-{burger,fries,gelato}.webp` derivatives remain in the three-item review; `carousel-*` derivatives participate in the current banner. Earlier three-food stage screenshots are historical evidence, not the current carousel fallback.
+The portable 512 px derivatives live in `packages/motion/combo/{burger,fries,gelato}.png`, with corresponding WebP files embedded in the runtime. The web banner uses the existing `carousel-{burger,fries,gelato}.webp` filename family for its transparent stills and decorative windows; the filename is historical and does not imply selectable carousel behavior. The current `papu-meal.riv` is **163,181 bytes**, embeds these three images and exposes only `PapuComboModel.stage` (0–2).
 
-## Ten-vendor carousel assets — 25 October 2026
+`fallback-layout.json` records a complete `stages[].foods[]` composition for each step. Loading, failure and Reduced Motion draw all foods for that stage, preserving transparency. `meal-stage-*.png` and `meal-*-arriving.png` are Rive-rendered verification artifacts. See [the meal source README](../packages/motion/combo/README.md) for the authoring and runtime contract.
 
-The carousel expands to ATOM, KAGO, Semolino, Curry Leaves, Gringo Bar, TUK TUK, Bibimbar, The Fry, Bar Koszyki and Na końcu tęczy. Each selected kitchen has one large representative dish. Vendor identities and cuisine categories come from the [official directory](https://koszyki.com/uslugi/restauracje/) and linked pages; the generated images are illustrative rather than exact, vendor-supplied product photographs.
+## Ten-vendor window assets — generated 25 October, reused 28 October 2026
 
-The burger, fries and ice-cream pictures above are reused. Ramen and pizza reuse the generated masters `packages/brand/table-ramen-master.png` and `packages/brand/table-pizza-master.png`. Five further pictures were newly generated with a shared prompt intent: isolated transparent photorealistic food, approximately 22° elevated front three-quarter view, 70 mm lens look, soft warm-neutral upper-left light, and no branding, text or people. Subjects match the existing demo menu:
+The current decorative window tour retains ATOM, KAGO, Semolino, Curry Leaves, Gringo Bar, TUK TUK, Bibimbar, The Fry, Bar Koszyki and Na końcu tęczy. These ten pictures were originally prepared for a selectable carousel; they now appear in noninteractive windows coordinated with the meal’s build, hold and reset. Vendor selection remains in the catalog. Vendor identities and cuisine categories come from the [official directory](https://koszyki.com/uslugi/restauracje/) and linked pages; the generated images are illustrative rather than exact, vendor-supplied product photographs.
+
+The windows reuse the burger, fries and ice-cream pictures above. Ramen and pizza reuse the generated masters `packages/brand/table-ramen-master.png` and `packages/brand/table-pizza-master.png`. Five additional pictures were generated for that exploration with a shared prompt intent: isolated transparent photorealistic food, approximately 22° elevated front three-quarter view, 70 mm lens look, soft warm-neutral upper-left light, and no branding, text or people. Subjects match the existing demo menu:
 
 | Subject / vendor | Original generated output |
 | --- | --- |
@@ -49,9 +51,7 @@ The burger, fries and ice-cream pictures above are reused. Ramen and pizza reuse
 | Korean rice/tofu bowl / Bibimbar | `exec-344dea8d-f649-4a21-9889-4cf11294fa3f.png` |
 | Lemonade / Bar Koszyki | `exec-6a409267-d3c0-49d2-b98f-a19d15824006.png` |
 
-Original outputs share the generated-images directory recorded above. All ten portable PNG derivatives and their encoded WebP counterparts live in `packages/motion/combo`. The runtime embeds ten WebP images and measures **652,300 bytes**. Web UI uses `carousel-{burger,ramen,pizza,curry,tacos,noodles,bowl,fries,lemonade,gelato}.webp`; native uses the corresponding assets.
-
-The current fallback places the transparent source image using `fallback-layout.json`, matching the settled Rive pose without covering the window carousel. CLI-rendered stage screenshots are verification artifacts. See [the carousel source README](../packages/motion/combo/README.md) for runtime properties, image normalization, authoring and validation.
+Original outputs share the generated-images directory recorded above. The seven additional window derivatives are restored as web `carousel-{ramen,pizza,curry,tacos,noodles,bowl,lemonade}.webp` files and corresponding native image assets. They are host-rendered scenery; they are not embedded in the current **163,181-byte** three-food Rive runtime. The historical selectable-carousel runtime embedded all ten images and measured 652,300 bytes; that runtime is no longer shipped. Historical release screenshots and QA remain evidence of the earlier design.
 
 ## Typography licenses
 

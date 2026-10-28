@@ -77,6 +77,7 @@ struct SavedState: Codable {
   @Published var selectedTab = 0
   @Published var mapRestaurant = "atom"
   @Published var completedCheckoutID = UUID()
+  @Published var catalogRequestID = UUID()
   @Published var showBasket = false
   @Published var toast: String?
   var now = Date.now
@@ -251,6 +252,12 @@ struct SavedState: Codable {
         "Notifications are off. Follow your order here.")
     }
     refreshOrderStages()
+  }
+  func browseCatalog() {
+    showBasket = false
+    selectedTab = 0
+    lastAddition = nil
+    catalogRequestID = UUID()
   }
   func finishCheckoutPresentation() {
     showBasket = false

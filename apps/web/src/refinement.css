@@ -2086,3 +2086,15 @@ h3 {
     display: none;
   }
 }
+
+/* Keep the basket pill and its touch targets in the same layout box. */
+.basket-item-bottom .stepper.small { height: 44px; flex-shrink: 0; }
+.quantity-limit { margin: 14px 0 8px; color: var(--muted); font-size: 12px; line-height: 1.5; }
+#catalog-title:focus-visible { outline-offset: 6px; border-radius: 4px; }
+
+.basket-line-heading { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.basket-line-heading > strong { flex: 1; min-width: 0; }
+.basket-remove { display: grid; place-items: center; width: 44px; height: 44px; flex-shrink: 0; color: var(--muted); border-radius: 50%; }
+.basket-remove:hover { background: #173c2b0a; color: var(--ink); }
+.basket-add-kitchen { display: flex; align-items: center; gap: 9px; width: 100%; min-height: 48px; padding: 10px 14px; margin: 8px 0 16px; background: #e9efdf; color: var(--ink); border-radius: 14px; font-size: 13px; font-weight: 700; text-align: left; }
+.basket-add-kitchen > svg:last-child { margin-left: auto; flex-shrink: 0; }

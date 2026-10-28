@@ -257,6 +257,7 @@ struct HallMapView: View {
       }
     }
     .onChange(of: store.completedCheckoutID) { _, _ in selectedRestaurant = nil }
+    .onChange(of: store.catalogRequestID) { _, _ in selectedRestaurant = nil }
     .sheet(item: $selectedRestaurant) {
       RestaurantView(restaurant: $0).environmentObject(store).presentationDetents([.large])
         .presentationCornerRadius(30)

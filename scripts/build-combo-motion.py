@@ -1,7 +1,7 @@
-"""Author PapuPay's photographic, directional Rive vendor carousel.
+"""Author the illustrative PapuPay meal-building scene (no vendor selector).
 
-No runtime scripts. The host owns accessible windows, locale, autoplay and swipe.
-The exported view model exposes `stage` (0..9) and `direction` (-1 or +1).
+The host advances stage 0 -> 1 -> 2. Every earlier dish remains on the same
+artboard as the next kitchen contributes its part of the meal. No runtime scripts.
 """
 from pathlib import Path
 import json
@@ -14,21 +14,18 @@ import zlib
 ROOT = Path(__file__).resolve().parents[1]
 PROJECT = ROOT / 'packages/motion/combo'
 PROJECT.mkdir(parents=True, exist_ok=True)
-FOODS = [
-    ('atom', 'burger', 'ATOM'),
-    ('kago', 'ramen', 'KAGO'),
-    ('semolino', 'pizza', 'Semolino'),
-    ('curry', 'curry', 'Curry Leaves'),
-    ('gringo', 'tacos', 'Gringo Bar'),
-    ('tuktuk', 'noodles', 'Tuk Tuk'),
-    ('bibimbar', 'bowl', 'BIBIMBAR'),
-    ('fry', 'fries', 'The Fry'),
-    ('bar', 'lemonade', 'Bar Koszyki'),
-    ('tecza', 'gelato', 'Na końcu tęczy'),
-]
-missing = [file for _, file, _ in FOODS if not (PROJECT / f'{file}.png').is_file()]
+FOODS = [('atom','burger','ATOM'),('fry','fries','The Fry'),('tecza','gelato','Na końcu tęczy')]
+missing = [file for _,file,_ in FOODS if not (PROJECT/f'{file}.png').is_file()]
 if missing:
-    raise FileNotFoundError(f'Required carousel photographs are missing: {missing}')
+    raise FileNotFoundError(f'Required meal photographs are missing: {missing}')
+# (ground x, ground y, visible width, rotation, opacity). The burger never fades.
+POSES = [
+    [(360,570,500,0,1), (680,590,220,.075,0), (720,615,120,.08,0)],
+    [(255,565,420,0,1), (515,515,300,0,1), (720,615,120,.08,0)],
+    [(230,560,380,0,1), (505,485,300,0,1), (565,595,180,0,1)],
+]
+# Back-to-front for host fallback drawing; Rive uses the reverse order.
+DRAW_ORDER = [1,0,2]
 
 
 def png_bbox(path):
@@ -82,127 +79,93 @@ def png_bbox(path):
 
 
 encoder = shutil.which('cwebp') or '/opt/homebrew/bin/cwebp'
-layout = []
-for index, (vendor, file, name) in enumerate(FOODS):
-    source = PROJECT / f'{file}.png'
-    w, h, (left, top, right, bottom) = png_bbox(source)
-    scale = min(500/(right-left), 440/(bottom-top))
-    x = 360 + (w/2 - (left+right)/2)*scale
-    y = 570 + (h/2 - bottom)*scale
-    layout.append({
-        'stage': index, 'vendorId': vendor, 'file': file,
-        'sourceWidth': w, 'sourceHeight': h,
-        'alphaBounds': [left, top, right, bottom],
-        'imageWidth': round(w*scale,4), 'imageHeight': round(h*scale,4),
-        'centerX': round(x,4), 'centerY': round(y,4),
-        'visibleWidth': round((right-left)*scale,4),
-        'visibleHeight': round((bottom-top)*scale,4),
-        'sourceScale': scale,
-    })
-    subprocess.run([encoder, '-quiet', '-q', '86', '-alpha_q', '92', str(source),
-                    '-o', str(PROJECT/f'{file}.webp')], check=True)
+sources = []
+for index,(vendor,file,name) in enumerate(FOODS):
+    path = PROJECT/f'{file}.png'
+    width,height,bounds = png_bbox(path)
+    sources.append((width,height,bounds))
+    subprocess.run([encoder,'-quiet','-q','86','-alpha_q','92',str(path),'-o',str(PROJECT/f'{file}.webp')],check=True)
 
-parts = []
+parts=[]
 def emit(text): parts.append(text)
-def condition(value, prop=802, op='equal'):
-    return (f'<TransitionViewModelCondition opValue="{op}">'
-            '<TransitionPropertyViewModelComparator><BindablePropertyNumber>'
-            f'<DataBindContext sourcePathIds="0:800-0:{prop}" propertyKey="636"/>'
+def condition(value):
+    return ('<TransitionViewModelCondition><TransitionPropertyViewModelComparator><BindablePropertyNumber>'
+            '<DataBindContext sourcePathIds="0:800-0:802" propertyKey="636"/>'
             '</BindablePropertyNumber></TransitionPropertyViewModelComparator>'
-            f'<TransitionValueNumberComparator value="{value}"/>'
-            '</TransitionViewModelCondition>')
-def transition(target, conditions='', duration=0, early=False, curve=(.22,.8,.2,1), gate=False):
-    gate_attributes = 'enableExitTime="true" exitTimeIsPercetange="true" exitTime="100"' if gate else ''
-    return (f'<StateTransition stateToId="0:{target}" duration="{duration}" '
-            f'enableEarlyExit="{str(early).lower()}" interpolationType="cubic" {gate_attributes}>'
-            f'<CubicEaseInterpolator x1="{curve[0]}" y1="{curve[1]}" x2="{curve[2]}" y2="{curve[3]}"/>'
-            + conditions + '</StateTransition>')
-def key(node, prop, value):
+            f'<TransitionValueNumberComparator value="{value}"/></TransitionViewModelCondition>')
+def transition(target,stage,duration=750):
+    return (f'<StateTransition stateToId="0:{target}" duration="{duration}" enableEarlyExit="true" interpolationType="cubic">'
+            '<CubicEaseInterpolator x1="0.22" y1="0.8" x2="0.2" y2="1"/>'
+            +condition(stage)+'</StateTransition>')
+def key(node,prop,value):
     return (f'<KeyedObject objectId="0:{node}"><KeyedProperty property="{prop}">'
-            f'<KeyFrameDouble frame="0" value="{value}"/>'
-            '</KeyedProperty></KeyedObject>')
+            f'<KeyFrameDouble frame="0" value="{value}"/></KeyedProperty></KeyedObject>')
 
-emit('<Rive version="1" kind="fragment">')
-emit('<Artboard id="0:2" name="PapuCombo" width="720" height="640" clip="true" '
-     'styleId="0:3" defaultStateMachineId="0:7" viewModelId="0:800" '
-     'viewModelInstanceId="0:801"><LayoutComponentStyle id="0:3"/>')
-for index, (_, file, name) in enumerate(FOODS):
-    node = 100+index*20
-    item = layout[index]
-    # Rotation pivots around the food's contact point, not its visual centre.
-    emit(f'<Node id="0:{node}" name="{name} selected dish" x="360" y="570" opacity="{int(index==0)}">')
-    emit(f'<Image id="0:{node+1}" name="{file} photograph" assetId="0:{5000+index}" '
-         f'x="{item["centerX"]-360}" y="{item["centerY"]-570}" '
-         f'scaleX="{item["sourceScale"]}" scaleY="{item["sourceScale"]}"/>')
-    emit(f'<Node name="{name} contact shadow" y="8" scaleY="0.13">'
-         f'<Shape><Ellipse width="{item["visibleWidth"]*.83}" height="{item["visibleWidth"]*.83}"/>'
-         f'<Fill><RadialGradient startX="0" startY="0" endX="{item["visibleWidth"]*.415}" endY="0">'
-         '<GradientStop position="0" colorValue="55091F17"/>'
-         '<GradientStop position="0.32" colorValue="26091F17"/>'
-         '<GradientStop position="1" colorValue="00091F17"/>'
-         '</RadialGradient></Fill></Shape></Node></Node>')
+emit('<Rive version="1" kind="fragment"><Artboard id="0:2" name="PapuCombo" width="720" height="640" clip="true" '
+     'styleId="0:3" defaultStateMachineId="0:7" viewModelId="0:800" viewModelInstanceId="0:801">'
+     '<LayoutComponentStyle id="0:3"/>')
+for index in reversed(DRAW_ORDER):
+    vendor,file,name = FOODS[index]
+    node = 100+index*100
+    width,height,(left,top,right,bottom) = sources[index]
+    # Normalize each asset to 1 unit of visible width. Parent scale then equals
+    # its authored visible width; the pivot stays at the food's contact point.
+    normal = 1/(right-left)
+    child_x = (width/2-(left+right)/2)*normal
+    child_y = (height/2-bottom)*normal
+    x,y,size,rotation,opacity = POSES[0][index]
+    emit(f'<Node id="0:{node}" name="{name} contribution" x="{x}" y="{y}" scaleX="{size}" scaleY="{size}" rotation="{rotation}" opacity="{opacity}">')
+    emit(f'<Image id="0:{node+1}" name="{file} photograph" assetId="0:{5000+index}" x="{child_x}" y="{child_y}" scaleX="{normal}" scaleY="{normal}"/>')
+    emit('<Node name="Contact shadow" y="0.018" scaleY="0.13"><Shape><Ellipse width="0.83" height="0.83"/>'
+         '<Fill><RadialGradient startX="0" startY="0" endX="0.415" endY="0">'
+         '<GradientStop position="0" colorValue="55091F17"/><GradientStop position="0.32" colorValue="26091F17"/>'
+         '<GradientStop position="1" colorValue="00091F17"/></RadialGradient></Fill></Shape></Node></Node>')
 
-emit('<StateMachine id="0:7" name="PapuCombo">')
-for index, (_, _, name) in enumerate(FOODS):
-    base = 1000+index*10
-    active, left, right, exit_left, exit_right = base, base+1, base+2, base+3, base+4
-    selected = condition(index)
-    deselected = condition(index,op='notEqual')
-    forward = condition(0,prop=803,op='greaterThanOrEqual')
-    backward = condition(0,prop=803,op='lessThan')
-    emit(f'<StateMachineLayer name="{name} directional motion">'
-         '<EntryState x="-260" y="0">'+transition(active,selected)+transition(left,backward)+transition(right)+
-         '</EntryState><AnyState x="-260" y="-220"/><ExitState x="780" y="-220"/>')
-    emit(f'<AnimationState id="0:{active}" animationId="0:{2000+index*10}" x="260" y="0">'
-         +transition(exit_left,deselected+forward,280,True,(.2,.8,.2,1))
-         +transition(exit_right,deselected+backward,280,True,(.2,.8,.2,1))+'</AnimationState>')
-    # Direction preparation is invisible. It waits for an outgoing blend to
-    # finish, but a reselection is allowed to reverse the blend immediately.
-    emit(f'<AnimationState id="0:{left}" animationId="0:{2001+index*10}" x="0" y="180">'
-         +transition(right,forward,0,False)
-         +transition(active,selected,700,True)+'</AnimationState>')
-    emit(f'<AnimationState id="0:{right}" animationId="0:{2002+index*10}" x="520" y="180">'
-         +transition(left,backward,0,False)
-         +transition(active,selected,700,True)+'</AnimationState>')
-    # Dedicated exits retain the 280ms outgoing blend before resetting the
-    # invisible preparation pose. A reselected dish can reverse immediately.
-    for state, animation, graph_x in [(exit_left,2003+index*10,0),(exit_right,2004+index*10,520)]:
-        emit(f'<AnimationState id="0:{state}" animationId="0:{animation}" reset="true" x="{graph_x}" y="-180">'
-             +transition(active,selected,700,True)
-             +transition(left,backward,gate=True)
-             +transition(right,forward,gate=True)+'</AnimationState>')
-    emit('</StateMachineLayer>')
-emit('</StateMachine>')
-for index, (_, _, name) in enumerate(FOODS):
-    node = 100+index*20
-    for pose, (title,x,y,scale,rotation,opacity) in enumerate([
-        ('Centre',360,570,1,0,1),
-        ('Left wing',125,590,.86,-.085,0),
-        ('Right wing',595,590,.86,.085,0),
-        ('Exit left',125,590,.86,-.085,0),
-        ('Exit right',595,590,.86,.085,0),
-    ]):
-        emit(f'<LinearAnimation id="0:{2000+index*10+pose}" name="{name} — {title}" fps="60" duration="{18 if pose >= 3 else 1}" loopValue="oneShot">')
-        for prop,value in [('x',x),('y',y),('scaleX',scale),('scaleY',scale),('rotation',rotation),('opacity',opacity)]:
-            emit(key(node,prop,value))
-        emit('</LinearAnimation>')
-emit('</Artboard>')
-emit('<ViewModel id="0:800" name="PapuComboModel" defaultInstanceId="0:801">'
-     '<ViewModelPropertyNumber id="0:802" name="stage"/>'
-     '<ViewModelPropertyNumber id="0:803" name="direction"/>'
-     '<ViewModelInstance id="0:801" name="Default" exports="true">'
-     '<ViewModelInstanceNumber viewModelPropertyId="0:802" propertyValue="0"/>'
-     '<ViewModelInstanceNumber viewModelPropertyId="0:803" propertyValue="1"/>'
-     '</ViewModelInstance></ViewModel>')
-for index, (_,file,name) in enumerate(FOODS):
+emit('<StateMachine id="0:7" name="PapuCombo"><StateMachineLayer name="Three kitchens build one meal">'
+     '<EntryState x="-260" y="0">'+''.join(transition(1000+i,i,0) for i in range(3))+
+     '</EntryState><AnyState x="-260" y="-180"/><ExitState x="780" y="-180"/>')
+for stage in range(3):
+    emit(f'<AnimationState id="0:{1000+stage}" animationId="0:{2000+stage}" x="{stage*260}" y="0">')
+    for target in range(3):
+        if target!=stage: emit(transition(1000+target,target))
+    emit('</AnimationState>')
+emit('</StateMachineLayer></StateMachine>')
+for stage,title in enumerate(['ATOM starts the meal','The Fry adds a side','Na końcu tęczy adds dessert']):
+    emit(f'<LinearAnimation id="0:{2000+stage}" name="{title}" fps="60" duration="1" loopValue="oneShot">')
+    for index,(x,y,size,rotation,opacity) in enumerate(POSES[stage]):
+        for prop,value in [('x',x),('y',y),('scaleX',size),('scaleY',size),('rotation',rotation),('opacity',opacity)]:
+            emit(key(100+index*100,prop,value))
+    emit('</LinearAnimation>')
+emit('</Artboard><ViewModel id="0:800" name="PapuComboModel" defaultInstanceId="0:801">'
+     '<ViewModelPropertyNumber id="0:802" name="stage"/><ViewModelInstance id="0:801" name="Default" exports="true">'
+     '<ViewModelInstanceNumber viewModelPropertyId="0:802" propertyValue="0"/></ViewModelInstance></ViewModel>')
+for index,(_,file,name) in enumerate(FOODS):
     emit(f'<ImageAsset id="0:{5000+index}" name="{name} dish" file="{file}.webp"/>')
 emit('</Rive>')
-root = ET.fromstring('\n'.join(parts))
-ET.indent(root, space='  ')
+root=ET.fromstring('\n'.join(parts))
+ET.indent(root,space='  ')
 (PROJECT/'scene.rml').write_text(ET.tostring(root,encoding='unicode')+'\n')
 (PROJECT/'rive.yaml').write_text('name: combo\nlogs:\n  file: build/rive.log\n  problems: build/problems.log\n')
+
+stages=[]
+for stage,poses in enumerate(POSES):
+    foods=[]
+    for index in DRAW_ORDER:
+        x,y,size,rotation,opacity=poses[index]
+        if not opacity: continue
+        vendor,file,name=FOODS[index]
+        width,height,(left,top,right,bottom)=sources[index]
+        scale=size/(right-left)
+        foods.append({
+            'vendorId':vendor,'file':file,
+            'imageWidth':round(width*scale,4),'imageHeight':round(height*scale,4),
+            'centerX':round(x+(width/2-(left+right)/2)*scale,4),
+            'centerY':round(y+(height/2-bottom)*scale,4),
+            'visibleWidth':size,'visibleHeight':round((bottom-top)*scale,4),
+        })
+    stages.append({'stage':stage,'foods':foods})
 (PROJECT/'fallback-layout.json').write_text(json.dumps({
-    'width':720,'height':640,'stageCount':10,'background':'transparent',
-    'entranceMs':700,'exitMs':280,'foods':layout,
+    'width':720,'height':640,'stageCount':3,'background':'transparent','transitionMs':750,
+    'stages':stages,
 },indent=2)+'\n')
-print('Authored 10-kitchen PapuCombo with directional movement and embedded WebP photographs')
+print('Authored cumulative PapuCombo: burger, then fries, then dessert; 3 stages; 750ms reversible reflow')

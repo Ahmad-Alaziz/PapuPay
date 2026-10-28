@@ -1,65 +1,65 @@
-# PapuCombo — the Koszyki vendor carousel
+# PapuCombo — three kitchens, one meal
 
-A custom photographic Rive foreground for PapuPay's vendor carousel. One generously sized dish takes centre stage while the host app moves the kitchen windows around it. The kitchen identities are real Koszyki vendors; the food pictures are generated demo illustrations, not official vendor product photography.
+An illustrative Rive banner showing PapuPay's central idea: a main dish from ATOM, a side from The Fry, and dessert from Na końcu tęczy become one meal. Earlier food stays visible as the next kitchen contributes. The host's kitchen windows are decorative storytelling, not a vendor selector or an ordering control.
+
+These are real Koszyki kitchen identities. The food pictures are generated demo illustrations, not official vendor product photography.
 
 ## Runtime contract
 
 | Property | Value |
 | --- | --- |
 | Artboard | `PapuCombo` |
-| Artboard size | 720 × 640 |
 | State machine | `PapuCombo` |
 | View model | `PapuComboModel` |
-| Number property `stage` | Selected vendor, `0` through `9` |
-| Number property `direction` | `1`: next, incoming dish from right; `-1`: previous, incoming dish from left |
+| Artboard size | 720 × 640 |
+| Number property | `stage` |
+| Stage 0 | ATOM burger |
+| Stage 1 | Burger + The Fry fries |
+| Stage 2 | Burger + fries + Na końcu tęczy gelato |
 | Background | Transparent |
-| Arrival | 700 ms, cubic `(0.22, 0.8, 0.2, 1)` |
-| Departure | 280 ms, cubic `(0.2, 0.8, 0.2, 1)` |
+| Transition | 750 ms, cubic `(0.22, 0.8, 0.2, 1)` |
 
-Set `direction` before `stage`. The host owns accessible vendor windows, localization, drag handling, autoplay and the menu action. Rive owns the dish's directional translation, scale, small ground-pivot rotation, opacity and contact shadow. At rest there is one dish; there is no idle loop, audio or runtime script.
+There is no direction property. Set `stage` to 0, 1, or 2. The host coordinates a repeating meal story with all ten decorative kitchen windows. Rive moves and scales the composition, holds the completed meal, and then returns to the single burger for the next cycle. The burger remains visible throughout; fries stay visible when dessert is added. On reset, fries and gelato move out and fade together while the same burger enlarges and recenters. The Rive foreground has no internal idle loop, audio, pointer listener or runtime script, and its playback pauses after each transition.
 
-| Stage | Vendor ID | Kitchen | Source picture |
+After an initial 2.4-second hold, the host repeats window targets `[3, 6, 0]`. All ten windows remain on the decorative track; the target numbers describe its movement rather than vendor-selection controls. Each forward window move uses a 2.1-second spring with 0.1 bounce. The return to target 0 takes 2.6 seconds.
+
+| Story step | Window target | Foreground change after movement starts | Next movement starts |
 | --- | --- | --- | --- |
-| 0 | `atom` | ATOM | `burger.png` |
-| 1 | `kago` | KAGO | `ramen.png` |
-| 2 | `semolino` | Semolino | `pizza.png` |
-| 3 | `curry` | Curry Leaves | `curry.png` |
-| 4 | `gringo` | Gringo Bar | `tacos.png` |
-| 5 | `tuktuk` | Tuk Tuk | `noodles.png` |
-| 6 | `bibimbar` | BIBIMBAR | `bowl.png` |
-| 7 | `fry` | The Fry | `fries.png` |
-| 8 | `bar` | Bar Koszyki | `lemonade.png` |
-| 9 | `tecza` | Na końcu tęczy | `gelato.png` |
+| Add The Fry fries | 3 | Set `stage` to 1 at 1.35 s | After 3.9 s: 2.1 s movement + 1.8 s hold |
+| Add Na końcu tęczy dessert | 6 | Set `stage` to 2 at 1.35 s | After 5.9 s: 2.1 s movement + 3.8 s completed-meal hold |
+| Return to ATOM burger | 0 | Set `stage` to 0 at 1.6 s | After 4.4 s: 2.6 s movement + 1.8 s burger hold |
 
-The host can keep an unbounded carousel position and reduce it modulo 10 for `stage`. The introductory route `0 → -1 → 2 → 0` therefore sends stages `0 → 9 → 2 → 0`, with directions `-1`, `1`, `-1`. The host may sweep through several windows while Rive introduces only the destination dish. Stop autoplay on user interaction and when out of view.
+The foreground's existing 750 ms transitions provide the additions and reset. Resetting both the windows and the food makes the next loop a complete story again. The host provides only one catalog CTA; there are no replay, pause/resume, ordering or vendor-selection controls in the banner, and the illustration never adds anything to the real basket. Pause the motion when out of view. Reduced Motion displays the complete stage-2 composition immediately without autoplaying the story.
 
-## Placement and reduced motion
+## Composition and fallback
 
-The foreground artboard occupies the host's 720 × 640 composition directly. Its transparent background lets native/DOM kitchen windows remain visible behind the food. Each picture is normalized by its visible alpha bounds to fit within **500 × 440** artboard units, centered at x = 360 with its contact point at y = 570. Taller drinks remain narrower rather than stretching.
+The foreground occupies the host's 720 × 640 stage. The initial burger has a visible width of 500 units. It remains prominent at 420 units when fries arrive and at 380 units when dessert joins. Fries sit slightly behind the burger so they do not cover its face; gelato occupies the foreground on the right. The final three dishes form one readable composition.
 
-`fallback-layout.json` provides exact image width, height and center coordinates for each transparent source image. Multiply those values by the host stage width divided by 720. Use this same geometry for Reduced Motion, initial loading and runtime failure; the static food then matches the settled Rive frame. Do not use an opaque screenshot as the production fallback, because it would hide the kitchen windows.
+`fallback-layout.json` contains `stages`, each with a complete `foods` array. Draw **every food** in the selected stage, in the supplied back-to-front order. Each item includes `file`, `imageWidth`, `imageHeight`, `centerX` and `centerY`. Multiply all dimensions and positions by the host stage width divided by 720. Use the transparent source cutout matching `file`; do not use an opaque screenshot, which would obscure the decorative windows.
 
-The CLI's `carousel-stage-*.png` and transition captures include the CLI preview background. They are verification evidence only.
+The same composition is used for Reduced Motion, initial loading and runtime failure. These fallbacks must not briefly show one dish while Rive is already on the completed meal.
 
-## Authoring and output
+## Source and build
 
-- `scene.rml` is the editable Rive scene.
-- The ten 512 px PNG files are source photographs.
-- The corresponding WebP files are the embedded runtime assets, encoded with `cwebp -q 86 -alpha_q 92`.
-- `build/combo.riv` is the runtime output. Apps can ship it as `papu-carousel.riv` while retaining the artboard and view-model names above.
-- `../../../scripts/build-combo-motion.py` reproduces the scene, image encoding and fallback metrics using Python's standard library plus `cwebp`.
+- `scene.rml`: editable Rive scene.
+- `burger.png`, `fries.png`, `gelato.png`: the three 512 px photographic sources.
+- The corresponding WebP files: embedded runtime assets encoded with `cwebp -q 86 -alpha_q 92`.
+- `../../../scripts/build-combo-motion.py`: reproducible scene, encoding and fallback-geometry authoring using Python's standard library plus `cwebp`.
+- `build/combo.riv`: CLI runtime output, shipped in both apps as `papu-meal.riv`.
+- `meal-stage-*.png`, `meal-*-arriving.png` and `meal-reset-*.png`: actual Rive rendering evidence. The CLI's dark preview background is not in the runtime artboard.
 
 ```sh
 python3 scripts/build-combo-motion.py
 rive packages/motion/combo --verify
 rive inspect packages/motion/combo --summary
 rive packages/motion/combo --once
-rive packages/motion/combo --screenshot=packages/motion/combo/carousel-stage-0.png --data=stage=0 --advance=60
-rive packages/motion/combo --screenshot=packages/motion/combo/carousel-backward-mid.png --advance=60 --data=direction=-1 --data=stage=9 --advance=12
+cp packages/motion/combo/build/combo.riv packages/motion/combo/build/papu-meal.riv
+rive packages/motion/combo --screenshot=packages/motion/combo/meal-stage-2.png --data=stage=2 --advance=60
+rive packages/motion/combo --screenshot=packages/motion/combo/meal-fries-arriving.png --advance=60 --data=stage=1 --advance=12
 ```
 
-## Validation
+## Verification
 
-Verified with the installed Rive CLI on 25 October 2026: zero errors/warnings, ten embedded WebP images, ten independent dish layers, fifty pose timelines, 1,993 artboard objects. Runtime output is **652,300 bytes**.
+Validated on 28 October 2026 with the installed Rive CLI: zero errors/warnings, three embedded WebP photographs, one state-machine layer, three pose timelines and 223 artboard objects. The runtime is **163,181 bytes** and contains no script bytecode.
 
-All ten selected dishes and early/intermediate directional frames were rendered and visually inspected. A dedicated 300 ms exit gate allows the complete outgoing blend to finish before its invisible preparation pose resets. A real `0 → 9 → 2 → 0` round trip returns pixel-identically to the initial frame; reversing `0 → 9` after eight frames and selecting `0` also settles pixel-identically. Every active picture stays within the artboard. The `.riv` has no script bytecode and needs no script signing for the web runtime.
+All three complete compositions and both intermediate addition frames were visually inspected. Forward playback (`0 → 1 → 2`), reverse playback (`2 → 1`), replay (`2 → 0 → 1 → 2`) and rapid interruption (`0 → 1 → 2 → 0 → 1`, eight frames between changes) each settle pixel-identically to their reference frames. The cumulative forward sequence keeps the earlier food visible while adding the next item. The actual `2 → 0` reset was also inspected at 6 and 18 frames: a single burger smoothly enlarges and recenters while fries and gelato move out and fade together. Its settled frame matches stage 0.
