@@ -29,7 +29,7 @@ After an initial 2.4-second hold, the host repeats window targets `[3, 6, 0]`. A
 | Add Na końcu tęczy dessert | 6 | Set `stage` to 2 at 1.35 s | After 5.9 s: 2.1 s movement + 3.8 s completed-meal hold |
 | Return to ATOM burger | 0 | Set `stage` to 0 at 1.6 s | After 4.4 s: 2.6 s movement + 1.8 s burger hold |
 
-The foreground's existing 750 ms transitions provide the additions and reset. Resetting both the windows and the food makes the next loop a complete story again. The host provides only one catalog CTA; there are no replay, pause/resume, ordering or vendor-selection controls in the banner, and the illustration never adds anything to the real basket. Pause the motion when out of view. Reduced Motion displays the complete stage-2 composition immediately without autoplaying the story.
+The foreground's existing 750 ms transitions provide the additions and reset. Resetting both the windows and the food makes the next loop a complete story again. The host provides one catalog CTA and a pause/resume control for the illustration. There are no vendor-selection, menu, cart or combo-review controls in the banner, and the illustration never adds anything to the real basket. Pause/resume cancels pending food and window timers; motion also pauses when out of view or in the background. Reduced Motion displays the complete stage-2 composition immediately without autoplaying the story.
 
 ## Composition and fallback
 
