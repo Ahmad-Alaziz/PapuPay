@@ -12,6 +12,7 @@
 		01D096A1E4AD2B443243DD64 /* menu-bowl-cutout.webp in Resources */ = {isa = PBXBuildFile; fileRef = 2C989A18708A36783DCA0175 /* menu-bowl-cutout.webp */; };
 		CF8C614DC0DD4C4581D70DDB /* matylda-cutout.webp in Resources */ = {isa = PBXBuildFile; fileRef = A98C2228CAD24AC9975CC782 /* matylda-cutout.webp */; };
 		02EF509B29A0483AAC3E129C /* matylda-drip.webp in Resources */ = {isa = PBXBuildFile; fileRef = 962F261ADC5B40559C2CD25F /* matylda-drip.webp */; };
+		4D937C4D7832365AFD846B6A /* matylda-puddle.webp in Resources */ = {isa = PBXBuildFile; fileRef = E1128F46EE3AFCF9C24920EB /* matylda-puddle.webp */; };
 		022CDD321B83AACE1E4FB00F /* sweeto-actions.riv in Resources */ = {isa = PBXBuildFile; fileRef = 35D15E627A3A41EF0460D56D /* sweeto-actions.riv */; };
 		0297A729855EEAEAF6292192 /* PapuDisplay-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 16B43A0BB8BAB8974A9564EC /* PapuDisplay-Bold.ttf */; };
 		038EAE46AC1FA549B1A695E6 /* motion-loyalty.webp in Resources */ = {isa = PBXBuildFile; fileRef = 2E88864D23CF289E22594D7A /* motion-loyalty.webp */; };
@@ -77,6 +78,7 @@
 		96EC05F447847A1A8A944117 /* menu-bowl-cutout.webp in Resources */ = {isa = PBXBuildFile; fileRef = 2C989A18708A36783DCA0175 /* menu-bowl-cutout.webp */; };
 		AFF8B1DADA4D41189889F3A8 /* matylda-cutout.webp in Resources */ = {isa = PBXBuildFile; fileRef = A98C2228CAD24AC9975CC782 /* matylda-cutout.webp */; };
 		D1901A493CF14DC59A2390F7 /* matylda-drip.webp in Resources */ = {isa = PBXBuildFile; fileRef = 962F261ADC5B40559C2CD25F /* matylda-drip.webp */; };
+		0594076522F0E58DCAC1BCA9 /* matylda-puddle.webp in Resources */ = {isa = PBXBuildFile; fileRef = E1128F46EE3AFCF9C24920EB /* matylda-puddle.webp */; };
 		97F04213C35F570E6AE9B6D1 /* PapuLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A15ED1F0C4559E2C6FF00D /* PapuLiveActivity.swift */; };
 		998B980C4DB9B9A1BDC85E62 /* SVGShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2335CCC8F5AA7021817EC1CD /* SVGShape.swift */; };
 		9B71011E210C790FC7867387 /* motion-forest-wifi.webp in Resources */ = {isa = PBXBuildFile; fileRef = 9D0791CAE22449E52E1C493B /* motion-forest-wifi.webp */; };
@@ -190,6 +192,7 @@
 		2C989A18708A36783DCA0175 /* menu-bowl-cutout.webp */ = {isa = PBXFileReference; includeInIndex = 1; name = "menu-bowl-cutout.webp"; path = "../../web/public/assets/sweeto/menu-bowl-cutout.webp"; sourceTree = "<group>"; };
 		A98C2228CAD24AC9975CC782 /* matylda-cutout.webp */ = {isa = PBXFileReference; includeInIndex = 1; name = "matylda-cutout.webp"; path = "../../web/public/assets/sweeto/matylda-cutout.webp"; sourceTree = "<group>"; };
 		962F261ADC5B40559C2CD25F /* matylda-drip.webp */ = {isa = PBXFileReference; includeInIndex = 1; name = "matylda-drip.webp"; path = "../../web/public/assets/sweeto/matylda-drip.webp"; sourceTree = "<group>"; };
+		E1128F46EE3AFCF9C24920EB /* matylda-puddle.webp */ = {isa = PBXFileReference; includeInIndex = 1; name = "matylda-puddle.webp"; path = "../../web/public/assets/sweeto/matylda-puddle.webp"; sourceTree = "<group>"; };
 		2E88864D23CF289E22594D7A /* motion-loyalty.webp */ = {isa = PBXFileReference; includeInIndex = 1; name = "motion-loyalty.webp"; path = "../../web/public/assets/sweeto/motion-loyalty.webp"; sourceTree = "<group>"; };
 		30C639E0D4A7615BC9B63DF1 /* PapuOrderAttributes.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PapuOrderAttributes.swift; sourceTree = "<group>"; };
 		34F61109CB7127EC3293E6E9 /* menu.pdf */ = {isa = PBXFileReference; includeInIndex = 1; name = menu.pdf; path = ../../web/public/assets/sweeto/menu.pdf; sourceTree = "<group>"; };
@@ -307,6 +310,7 @@
 				2C989A18708A36783DCA0175 /* menu-bowl-cutout.webp */,
 				A98C2228CAD24AC9975CC782 /* matylda-cutout.webp */,
 				962F261ADC5B40559C2CD25F /* matylda-drip.webp */,
+				E1128F46EE3AFCF9C24920EB /* matylda-puddle.webp */,
 				34F61109CB7127EC3293E6E9 /* menu.pdf */,
 				35D15E627A3A41EF0460D56D /* sweeto-actions.riv */,
 				D48998EA883B7C77FBDC07CC /* motion-berry-loyalty.webp */,
@@ -525,6 +529,7 @@
 				96EC05F447847A1A8A944117 /* menu-bowl-cutout.webp in Resources */,
 				AFF8B1DADA4D41189889F3A8 /* matylda-cutout.webp in Resources */,
 				D1901A493CF14DC59A2390F7 /* matylda-drip.webp in Resources */,
+				0594076522F0E58DCAC1BCA9 /* matylda-puddle.webp in Resources */,
 				378C00C4BBD26C7E6E7C0AA0 /* menu.pdf in Resources */,
 				87FDC05D989AB5DEFEBF5C93 /* sweeto-actions.riv in Resources */,
 				C9DC87B621F270991364E8C3 /* motion-berry-loyalty.webp in Resources */,
@@ -577,6 +582,7 @@
 				01D096A1E4AD2B443243DD64 /* menu-bowl-cutout.webp in Resources */,
 				CF8C614DC0DD4C4581D70DDB /* matylda-cutout.webp in Resources */,
 				02EF509B29A0483AAC3E129C /* matylda-drip.webp in Resources */,
+				4D937C4D7832365AFD846B6A /* matylda-puddle.webp in Resources */,
 				74DDADD46356C829028F61A8 /* menu.pdf in Resources */,
 				022CDD321B83AACE1E4FB00F /* sweeto-actions.riv in Resources */,
 				30D91398711BBFB6BDF00CCC /* motion-berry-loyalty.webp in Resources */,

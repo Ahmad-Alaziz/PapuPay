@@ -120,9 +120,16 @@ struct VenueGuestWiFi: Decodable {
 struct VenueGuestPhotoDrip: Decodable, Sendable {
   let x: Double
   let color: String
+  /// Photo row that sits flush with the card's bottom edge.
+  var y: Double? = nil
+  /// Fraction of the fitted photo occupied by its sauce outlet.
+  var width: Double? = nil
 
   var isValid: Bool {
-    (0...1).contains(x) && color.range(of: #"^#[0-9a-fA-F]{6}$"#, options: .regularExpression) != nil
+    (0.1...0.9).contains(x)
+      && color.range(of: #"^#[0-9a-fA-F]{6}$"#, options: .regularExpression) != nil
+      && (y.map { (0.8...1).contains($0) } ?? true)
+      && (width.map { (0.01...0.20).contains($0) } ?? true)
   }
 }
 
