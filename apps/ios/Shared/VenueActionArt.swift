@@ -14,7 +14,7 @@ import class RiveRuntime.Worker
 }
 
 struct VenueActionArt: View {
-  enum Kind: String {
+  enum Kind: String, Hashable {
     case menu, loyalty, review, wifi
 
     var artboard: String { "Sweeto" + rawValue.capitalized }
@@ -39,6 +39,7 @@ struct VenueActionArt: View {
   let theme: String
   var animated = false
   var replay = 0
+  var onPlaybackFinished: (() -> Void)?
   @Environment(\.accessibilityReduceMotion) private var reduceMotion
   @Environment(\.scenePhase) private var scenePhase
   @State private var rive: Rive?
@@ -50,6 +51,10 @@ struct VenueActionArt: View {
     return UIImage(contentsOfFile: path)
   }
   private var shouldPlay: Bool { animated && !reduceMotion && scenePhase == .active }
+
+  @MainActor static func prepare() async {
+    _ = try? await VenueMotionSource.file.value
+  }
 
   var body: some View {
     Group {
@@ -74,10 +79,17 @@ struct VenueActionArt: View {
         let player = try await Rive(file: file, artboard: artboard, stateMachine: machine, dataBind: .instance(model))
         guard !Task.isCancelled else { return }
         rive = player
-        try await Task.sleep(for: .milliseconds(kind.duration))
+        // Count the one-shot only after its player is ready, not while the
+        // shared Rive file is still loading on the first mobile visit.
+        try await Task.sleep(for: .milliseconds(kind.duration + 100))
+        guard !Task.isCancelled else { return }
         rive = nil
+        onPlaybackFinished?()
       } catch {
-        if !Task.isCancelled { rive = nil }
+        if !Task.isCancelled {
+          rive = nil
+          onPlaybackFinished?()
+        }
       }
     }
   }

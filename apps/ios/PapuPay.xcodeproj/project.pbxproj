@@ -10,13 +10,12 @@
 		016EAADDA2DF0D7C82AA26C7 /* papu-meal.riv in Resources */ = {isa = PBXBuildFile; fileRef = 606753F93CDEF9AFBF0B0091 /* papu-meal.riv */; };
 		01CDA9B1FB55F7CC2C07747E /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14CB9281289725057B62DE76 /* Models.swift */; };
 		01D096A1E4AD2B443243DD64 /* menu-bowl-cutout.webp in Resources */ = {isa = PBXBuildFile; fileRef = 2C989A18708A36783DCA0175 /* menu-bowl-cutout.webp */; };
-		CF8C614DC0DD4C4581D70DDB /* matylda-cutout.webp in Resources */ = {isa = PBXBuildFile; fileRef = A98C2228CAD24AC9975CC782 /* matylda-cutout.webp */; };
-		02EF509B29A0483AAC3E129C /* matylda-drip.webp in Resources */ = {isa = PBXBuildFile; fileRef = 962F261ADC5B40559C2CD25F /* matylda-drip.webp */; };
-		4D937C4D7832365AFD846B6A /* matylda-puddle.webp in Resources */ = {isa = PBXBuildFile; fileRef = E1128F46EE3AFCF9C24920EB /* matylda-puddle.webp */; };
 		022CDD321B83AACE1E4FB00F /* sweeto-actions.riv in Resources */ = {isa = PBXBuildFile; fileRef = 35D15E627A3A41EF0460D56D /* sweeto-actions.riv */; };
 		0297A729855EEAEAF6292192 /* PapuDisplay-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 16B43A0BB8BAB8974A9564EC /* PapuDisplay-Bold.ttf */; };
+		02EF509B29A0483AAC3E129C /* matylda-drip.webp in Resources */ = {isa = PBXBuildFile; fileRef = 962F261ADC5B40559C2CD25F /* matylda-drip.webp */; };
 		038EAE46AC1FA549B1A695E6 /* motion-loyalty.webp in Resources */ = {isa = PBXBuildFile; fileRef = 2E88864D23CF289E22594D7A /* motion-loyalty.webp */; };
 		057EF0ECFAF654241A696551 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E60C428FF699112A4CBF166 /* Foundation.framework */; };
+		0594076522F0E58DCAC1BCA9 /* matylda-puddle.webp in Resources */ = {isa = PBXBuildFile; fileRef = E1128F46EE3AFCF9C24920EB /* matylda-puddle.webp */; };
 		085230A00AB33225F1C5EDFA /* DemoViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = A59F5DF442F47CAE80BAFDBE /* DemoViews.swift */; };
 		0906CD23B23AD6287314B14A /* ReadyNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91E1669E7CC7546A701055E2 /* ReadyNotifications.swift */; };
 		09AA0FF74937BD79BE8A32A8 /* SweetoGuestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63390011FF59228B105A4193 /* SweetoGuestView.swift */; };
@@ -39,20 +38,25 @@
 		378F9F43EA33D962FCE0D9BA /* DemoViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = A59F5DF442F47CAE80BAFDBE /* DemoViews.swift */; };
 		3791098D5D49CB4270A1C26D /* VenueGuestAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965A7B80324BDD2407633BBC /* VenueGuestAPI.swift */; };
 		3CD081DDDE59959DB7644B67 /* VenueGuestAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965A7B80324BDD2407633BBC /* VenueGuestAPI.swift */; };
+		3DDF41B8AFA0311A3D46C2AC /* VenueDemoLoyalty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D6C98A8672EDD170451BF98 /* VenueDemoLoyalty.swift */; };
 		3E28A55202A1460D589D1830 /* motion-review.webp in Resources */ = {isa = PBXBuildFile; fileRef = 7357D2AC16CDDC64B28E5032 /* motion-review.webp */; };
 		3EF2E938BF827E5587EA3605 /* motion-menu.webp in Resources */ = {isa = PBXBuildFile; fileRef = 94D874F63421012C684C4BF4 /* motion-menu.webp */; };
 		45CBF12677143A0355887390 /* motion-menu.webp in Resources */ = {isa = PBXBuildFile; fileRef = 94D874F63421012C684C4BF4 /* motion-menu.webp */; };
 		46EE23EFC9DFA41788443BA1 /* BricolageGrotesque-OFL.txt in Resources */ = {isa = PBXBuildFile; fileRef = 1199DA0A15BF22BC7ADE9FD9 /* BricolageGrotesque-OFL.txt */; };
+		4795507C66320E3A77B8283A /* GuestDemo.plist in Resources */ = {isa = PBXBuildFile; fileRef = E6BAC3F135B9CFFC0AFF9A7D /* GuestDemo.plist */; };
 		489A2EEFAE4AD17C4BFDC0BC /* logo-blue.png in Resources */ = {isa = PBXBuildFile; fileRef = 7E5CFA5B92682E0316D97A4D /* logo-blue.png */; };
 		48C6121993845474C755194F /* VenueActionArt.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAB9D1B38378FBC896A54B5E /* VenueActionArt.swift */; };
 		49AA4FEE570139EFF7B8F874 /* VenueActionArt.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAB9D1B38378FBC896A54B5E /* VenueActionArt.swift */; };
+		4D937C4D7832365AFD846B6A /* matylda-puddle.webp in Resources */ = {isa = PBXBuildFile; fileRef = E1128F46EE3AFCF9C24920EB /* matylda-puddle.webp */; };
 		5304377B0D48B3C1934F752B /* DesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41BC1D8A2960AD74829A099D /* DesignSystem.swift */; };
 		5534B579C5A40612A67C97FE /* SVGShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2335CCC8F5AA7021817EC1CD /* SVGShape.swift */; };
+		55AEBA7BEAF2480A15A1D26A /* VenueGuestDemo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A5D5E85ED825A43C528933F /* VenueGuestDemo.swift */; };
 		592EBCAE7194ECAF245F0AC8 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 4ECB59D22BDB25179611651A /* PrivacyInfo.xcprivacy */; };
 		5C06BD31039550FE2D4D58B1 /* PapuPayLiveActivity.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = ADB04B4A1AC172DC2442BADD /* PapuPayLiveActivity.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		5C1CE880DB7E2830739EDD6B /* HallMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FCFC140795CB60042142185 /* HallMapView.swift */; };
 		5CEA9B42C348BD5E3544A16C /* PapuDisplay-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1923093ED27203A4DEE1D539 /* PapuDisplay-ExtraBold.ttf */; };
 		5DA28E74D3E94FF4154DC096 /* PapuPayApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FBDA1DE0A6E4F2EA1C26D62 /* PapuPayApp.swift */; };
+		5F9B2B3CD078556C8510D468 /* VenueGuestDemo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A5D5E85ED825A43C528933F /* VenueGuestDemo.swift */; };
 		5FB6D973BC09768EBB865787 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5E107D9D428A16E4A433929 /* RootView.swift */; };
 		60DAFDB25CE25C20E2B02C3A /* motion-wifi.webp in Resources */ = {isa = PBXBuildFile; fileRef = 1E3FAE0C621176087C9AE42B /* motion-wifi.webp */; };
 		62245E577FBEFE03B7C8FAC1 /* BricolageGrotesque-OFL.txt in Resources */ = {isa = PBXBuildFile; fileRef = 1199DA0A15BF22BC7ADE9FD9 /* BricolageGrotesque-OFL.txt */; };
@@ -76,17 +80,16 @@
 		87FDC05D989AB5DEFEBF5C93 /* sweeto-actions.riv in Resources */ = {isa = PBXBuildFile; fileRef = 35D15E627A3A41EF0460D56D /* sweeto-actions.riv */; };
 		8A97741214F4C1ED9D0DEEF4 /* PapuDisplay-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1923093ED27203A4DEE1D539 /* PapuDisplay-ExtraBold.ttf */; };
 		96EC05F447847A1A8A944117 /* menu-bowl-cutout.webp in Resources */ = {isa = PBXBuildFile; fileRef = 2C989A18708A36783DCA0175 /* menu-bowl-cutout.webp */; };
-		AFF8B1DADA4D41189889F3A8 /* matylda-cutout.webp in Resources */ = {isa = PBXBuildFile; fileRef = A98C2228CAD24AC9975CC782 /* matylda-cutout.webp */; };
-		D1901A493CF14DC59A2390F7 /* matylda-drip.webp in Resources */ = {isa = PBXBuildFile; fileRef = 962F261ADC5B40559C2CD25F /* matylda-drip.webp */; };
-		0594076522F0E58DCAC1BCA9 /* matylda-puddle.webp in Resources */ = {isa = PBXBuildFile; fileRef = E1128F46EE3AFCF9C24920EB /* matylda-puddle.webp */; };
 		97F04213C35F570E6AE9B6D1 /* PapuLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A15ED1F0C4559E2C6FF00D /* PapuLiveActivity.swift */; };
 		998B980C4DB9B9A1BDC85E62 /* SVGShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2335CCC8F5AA7021817EC1CD /* SVGShape.swift */; };
 		9B71011E210C790FC7867387 /* motion-forest-wifi.webp in Resources */ = {isa = PBXBuildFile; fileRef = 9D0791CAE22449E52E1C493B /* motion-forest-wifi.webp */; };
 		9F667D61326ACD138A0F95C0 /* map.json in Resources */ = {isa = PBXBuildFile; fileRef = FC803E08E0B3961B2847796C /* map.json */; };
 		A9A7AF7DAAAA9BA1C32D5DDD /* motion-review.webp in Resources */ = {isa = PBXBuildFile; fileRef = 7357D2AC16CDDC64B28E5032 /* motion-review.webp */; };
 		AFF5507BBD3081F1DEE9288D /* map.json in Resources */ = {isa = PBXBuildFile; fileRef = FC803E08E0B3961B2847796C /* map.json */; };
+		AFF8B1DADA4D41189889F3A8 /* matylda-cutout.webp in Resources */ = {isa = PBXBuildFile; fileRef = A98C2228CAD24AC9975CC782 /* matylda-cutout.webp */; };
 		B0DDA8BB3E8F1EBA586C4840 /* HallMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FCFC140795CB60042142185 /* HallMapView.swift */; };
 		B3DFAE64CB15EB1E0C584144 /* Manrope.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5DE40BF747DC125CDFD5D249 /* Manrope.ttf */; };
+		B635131E80BAFD07732EF67A /* GuestDemo.plist in Resources */ = {isa = PBXBuildFile; fileRef = E6BAC3F135B9CFFC0AFF9A7D /* GuestDemo.plist */; };
 		B78B118125B9B3651C738E4B /* PapuOrderAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C639E0D4A7615BC9B63DF1 /* PapuOrderAttributes.swift */; };
 		BA13AAF84B188CE30A01F093 /* PapuOrderAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C639E0D4A7615BC9B63DF1 /* PapuOrderAttributes.swift */; };
 		BB9C52A389B6C843AC12795B /* Manrope-OFL.txt in Resources */ = {isa = PBXBuildFile; fileRef = 3FA9764DA6D361DF8EDCE629 /* Manrope-OFL.txt */; };
@@ -96,11 +99,14 @@
 		C722CFAF8ACC08D30DD36881 /* SweetoGuestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63390011FF59228B105A4193 /* SweetoGuestView.swift */; };
 		C9DC87B621F270991364E8C3 /* motion-berry-loyalty.webp in Resources */ = {isa = PBXBuildFile; fileRef = D48998EA883B7C77FBDC07CC /* motion-berry-loyalty.webp */; };
 		CA901E2F56FCCE9660A59FF0 /* motion-forest-menu.webp in Resources */ = {isa = PBXBuildFile; fileRef = 35D048932889DC3547009519 /* motion-forest-menu.webp */; };
+		CB6ADAA6115797FB2D4DE16E /* VenueDemoLoyalty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D6C98A8672EDD170451BF98 /* VenueDemoLoyalty.swift */; };
 		CC2A00A718013F3BF4653588 /* PapuOrderAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C639E0D4A7615BC9B63DF1 /* PapuOrderAttributes.swift */; };
 		CC865A483655034CA255BEBE /* OrdersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD526D0CB6D51A18F35C1410 /* OrdersView.swift */; };
 		CD5D61DDC1E30B14CC4E0024 /* motion-berry-review.webp in Resources */ = {isa = PBXBuildFile; fileRef = C51148ACDD6ED0E29208E98D /* motion-berry-review.webp */; };
+		CF8C614DC0DD4C4581D70DDB /* matylda-cutout.webp in Resources */ = {isa = PBXBuildFile; fileRef = A98C2228CAD24AC9975CC782 /* matylda-cutout.webp */; };
 		CFFE461B3C1280C0A25ED020 /* RiveRuntime in Frameworks */ = {isa = PBXBuildFile; productRef = 28484FC1F1BE1E1A785FEE0B /* RiveRuntime */; };
 		D099E0415157003F0CBC65D6 /* motion-berry-wifi.webp in Resources */ = {isa = PBXBuildFile; fileRef = 0AABF36DDEC3D5642529213B /* motion-berry-wifi.webp */; };
+		D1901A493CF14DC59A2390F7 /* matylda-drip.webp in Resources */ = {isa = PBXBuildFile; fileRef = 962F261ADC5B40559C2CD25F /* matylda-drip.webp */; };
 		D1F8E5B423C65265C98DCC17 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E60C428FF699112A4CBF166 /* Foundation.framework */; };
 		D25D1510B11E9F621C8EEEFF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 75426612CB49286B977B2D0E /* Assets.xcassets */; };
 		D2C26A6FF401484E033A1599 /* MenuViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75C6AFC413F0A81F2A8319E /* MenuViews.swift */; };
@@ -190,9 +196,6 @@
 		1FBDA1DE0A6E4F2EA1C26D62 /* PapuPayApp.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PapuPayApp.swift; sourceTree = "<group>"; };
 		2335CCC8F5AA7021817EC1CD /* SVGShape.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SVGShape.swift; sourceTree = "<group>"; };
 		2C989A18708A36783DCA0175 /* menu-bowl-cutout.webp */ = {isa = PBXFileReference; includeInIndex = 1; name = "menu-bowl-cutout.webp"; path = "../../web/public/assets/sweeto/menu-bowl-cutout.webp"; sourceTree = "<group>"; };
-		A98C2228CAD24AC9975CC782 /* matylda-cutout.webp */ = {isa = PBXFileReference; includeInIndex = 1; name = "matylda-cutout.webp"; path = "../../web/public/assets/sweeto/matylda-cutout.webp"; sourceTree = "<group>"; };
-		962F261ADC5B40559C2CD25F /* matylda-drip.webp */ = {isa = PBXFileReference; includeInIndex = 1; name = "matylda-drip.webp"; path = "../../web/public/assets/sweeto/matylda-drip.webp"; sourceTree = "<group>"; };
-		E1128F46EE3AFCF9C24920EB /* matylda-puddle.webp */ = {isa = PBXFileReference; includeInIndex = 1; name = "matylda-puddle.webp"; path = "../../web/public/assets/sweeto/matylda-puddle.webp"; sourceTree = "<group>"; };
 		2E88864D23CF289E22594D7A /* motion-loyalty.webp */ = {isa = PBXFileReference; includeInIndex = 1; name = "motion-loyalty.webp"; path = "../../web/public/assets/sweeto/motion-loyalty.webp"; sourceTree = "<group>"; };
 		30C639E0D4A7615BC9B63DF1 /* PapuOrderAttributes.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PapuOrderAttributes.swift; sourceTree = "<group>"; };
 		34F61109CB7127EC3293E6E9 /* menu.pdf */ = {isa = PBXFileReference; includeInIndex = 1; name = menu.pdf; path = ../../web/public/assets/sweeto/menu.pdf; sourceTree = "<group>"; };
@@ -204,6 +207,7 @@
 		4ECB59D22BDB25179611651A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		5762DB5F845056F4A58486F3 /* Invocation.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Invocation.swift; sourceTree = "<group>"; };
 		5951EF52430E120291089005 /* PapuPay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PapuPay.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		5A5D5E85ED825A43C528933F /* VenueGuestDemo.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VenueGuestDemo.swift; sourceTree = "<group>"; };
 		5BC6D0BFE08302E237328241 /* VenueGuestFeatures.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VenueGuestFeatures.swift; sourceTree = "<group>"; };
 		5DE40BF747DC125CDFD5D249 /* Manrope.ttf */ = {isa = PBXFileReference; includeInIndex = 1; name = Manrope.ttf; path = ../../../packages/brand/fonts/Manrope.ttf; sourceTree = "<group>"; };
 		606753F93CDEF9AFBF0B0091 /* papu-meal.riv */ = {isa = PBXFileReference; includeInIndex = 1; path = "papu-meal.riv"; sourceTree = "<group>"; };
@@ -213,13 +217,16 @@
 		75426612CB49286B977B2D0E /* Assets.xcassets */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7E5CFA5B92682E0316D97A4D /* logo-blue.png */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.png; name = "logo-blue.png"; path = "../../web/public/assets/sweeto/logo-blue.png"; sourceTree = "<group>"; };
 		7FCFC140795CB60042142185 /* HallMapView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HallMapView.swift; sourceTree = "<group>"; };
+		8D6C98A8672EDD170451BF98 /* VenueDemoLoyalty.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VenueDemoLoyalty.swift; sourceTree = "<group>"; };
 		8E60C428FF699112A4CBF166 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		91E1669E7CC7546A701055E2 /* ReadyNotifications.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ReadyNotifications.swift; sourceTree = "<group>"; };
 		94D874F63421012C684C4BF4 /* motion-menu.webp */ = {isa = PBXFileReference; includeInIndex = 1; name = "motion-menu.webp"; path = "../../web/public/assets/sweeto/motion-menu.webp"; sourceTree = "<group>"; };
+		962F261ADC5B40559C2CD25F /* matylda-drip.webp */ = {isa = PBXFileReference; includeInIndex = 1; name = "matylda-drip.webp"; path = "../../web/public/assets/sweeto/matylda-drip.webp"; sourceTree = "<group>"; };
 		965A7B80324BDD2407633BBC /* VenueGuestAPI.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VenueGuestAPI.swift; sourceTree = "<group>"; };
 		9D0791CAE22449E52E1C493B /* motion-forest-wifi.webp */ = {isa = PBXFileReference; includeInIndex = 1; name = "motion-forest-wifi.webp"; path = "../../web/public/assets/sweeto/motion-forest-wifi.webp"; sourceTree = "<group>"; };
 		A478408F97FA9F54703B8832 /* PapuPayClip.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PapuPayClip.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A59F5DF442F47CAE80BAFDBE /* DemoViews.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DemoViews.swift; sourceTree = "<group>"; };
+		A98C2228CAD24AC9975CC782 /* matylda-cutout.webp */ = {isa = PBXFileReference; includeInIndex = 1; name = "matylda-cutout.webp"; path = "../../web/public/assets/sweeto/matylda-cutout.webp"; sourceTree = "<group>"; };
 		ACE9C6222BAE6E5F67DD7255 /* PapuPoster.ttf */ = {isa = PBXFileReference; includeInIndex = 1; path = PapuPoster.ttf; sourceTree = "<group>"; };
 		ADB04B4A1AC172DC2442BADD /* PapuPayLiveActivity.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = PapuPayLiveActivity.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		BAB9D1B38378FBC896A54B5E /* VenueActionArt.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VenueActionArt.swift; sourceTree = "<group>"; };
@@ -229,6 +236,8 @@
 		D5E107D9D428A16E4A433929 /* RootView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		DD526D0CB6D51A18F35C1410 /* OrdersView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = OrdersView.swift; sourceTree = "<group>"; };
 		E10CAB3083E6A47A42521717 /* catalog.json */ = {isa = PBXFileReference; includeInIndex = 1; path = catalog.json; sourceTree = "<group>"; };
+		E1128F46EE3AFCF9C24920EB /* matylda-puddle.webp */ = {isa = PBXFileReference; includeInIndex = 1; name = "matylda-puddle.webp"; path = "../../web/public/assets/sweeto/matylda-puddle.webp"; sourceTree = "<group>"; };
+		E6BAC3F135B9CFFC0AFF9A7D /* GuestDemo.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = GuestDemo.plist; sourceTree = "<group>"; };
 		EC8BA3A0ED97D70A81957741 /* motion-berry-menu.webp */ = {isa = PBXFileReference; includeInIndex = 1; name = "motion-berry-menu.webp"; path = "../../web/public/assets/sweeto/motion-berry-menu.webp"; sourceTree = "<group>"; };
 		F3F2E78C03AF37DBC6E7435C /* PapuPayClipLiveActivity.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = PapuPayClipLiveActivity.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		F75C6AFC413F0A81F2A8319E /* MenuViews.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MenuViews.swift; sourceTree = "<group>"; };
@@ -329,6 +338,7 @@
 				4743BBF685605D1CA6A57BFC /* BricolageGrotesque.ttf */,
 				3FA9764DA6D361DF8EDCE629 /* Manrope-OFL.txt */,
 				1199DA0A15BF22BC7ADE9FD9 /* BricolageGrotesque-OFL.txt */,
+				E6BAC3F135B9CFFC0AFF9A7D /* GuestDemo.plist */,
 			);
 			name = Resources;
 			path = Resources;
@@ -352,6 +362,8 @@
 				BAB9D1B38378FBC896A54B5E /* VenueActionArt.swift */,
 				965A7B80324BDD2407633BBC /* VenueGuestAPI.swift */,
 				5BC6D0BFE08302E237328241 /* VenueGuestFeatures.swift */,
+				5A5D5E85ED825A43C528933F /* VenueGuestDemo.swift */,
+				8D6C98A8672EDD170451BF98 /* VenueDemoLoyalty.swift */,
 			);
 			name = Shared;
 			path = Shared;
@@ -548,6 +560,7 @@
 				E6E8E35C5B6AE31915C4CC41 /* BricolageGrotesque.ttf in Resources */,
 				BC9CCBF93AB7FACF57C1DED2 /* Manrope-OFL.txt in Resources */,
 				62245E577FBEFE03B7C8FAC1 /* BricolageGrotesque-OFL.txt in Resources */,
+				4795507C66320E3A77B8283A /* GuestDemo.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -601,6 +614,7 @@
 				E502D9DF3E9117B961661BDD /* BricolageGrotesque.ttf in Resources */,
 				BB9C52A389B6C843AC12795B /* Manrope-OFL.txt in Resources */,
 				46EE23EFC9DFA41788443BA1 /* BricolageGrotesque-OFL.txt in Resources */,
+				B635131E80BAFD07732EF67A /* GuestDemo.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -636,6 +650,8 @@
 				3791098D5D49CB4270A1C26D /* VenueGuestAPI.swift in Sources */,
 				2B5866FF25925DF505F5916A /* VenueGuestFeatures.swift in Sources */,
 				5DA28E74D3E94FF4154DC096 /* PapuPayApp.swift in Sources */,
+				55AEBA7BEAF2480A15A1D26A /* VenueGuestDemo.swift in Sources */,
+				CB6ADAA6115797FB2D4DE16E /* VenueDemoLoyalty.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -659,6 +675,8 @@
 				3CD081DDDE59959DB7644B67 /* VenueGuestAPI.swift in Sources */,
 				214898CBA9F39CE8DFD0832B /* VenueGuestFeatures.swift in Sources */,
 				6B9A90A8C6C89F7B59FB2507 /* PapuPayApp.swift in Sources */,
+				5F9B2B3CD078556C8510D468 /* VenueGuestDemo.swift in Sources */,
+				3DDF41B8AFA0311A3D46C2AC /* VenueDemoLoyalty.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

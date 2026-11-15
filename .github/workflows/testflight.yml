@@ -32,12 +32,18 @@ jobs:
         run: |
           swiftc apps/ios/Shared/Invocation.swift scripts/test-invocation.swift -o "$RUNNER_TEMP/invocation-tests"
           "$RUNNER_TEMP/invocation-tests"
+      - name: Verify private demo resource handling
+        run: |
+          python3 scripts/ci/test-guest-demo.py
+          swiftc apps/ios/Shared/VenueDemoLoyalty.swift scripts/test-demo-loyalty.swift -o "$RUNNER_TEMP/demo-loyalty-tests"
+          "$RUNNER_TEMP/demo-loyalty-tests"
       - name: Sign, archive and upload to App Store Connect
         env:
           APP_STORE_CONNECT_KEY_IDENTIFIER: ${{ secrets.APP_STORE_CONNECT_KEY_IDENTIFIER }}
           APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
           APP_STORE_CONNECT_PRIVATE_KEY: ${{ secrets.APP_STORE_CONNECT_PRIVATE_KEY }}
           CERTIFICATE_PRIVATE_KEY: ${{ secrets.CERTIFICATE_PRIVATE_KEY }}
+          PAPUPAY_GUEST_DEMO_BASE64: ${{ secrets.PAPUPAY_GUEST_DEMO_BASE64 }}
         run: bash scripts/ci/upload-testflight.sh
       - name: Keep non-secret packaging reports
         if: always()

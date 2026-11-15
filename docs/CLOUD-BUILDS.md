@@ -2,6 +2,10 @@
 
 PapuPay can be built, signed and uploaded entirely on GitHub-hosted macOS runners. Local Xcode stays signed out. No signing certificate is installed on the managed development Mac.
 
+## Offline Sweeto demo — prepared 15 November 2026
+
+The next native TestFlight revision adds an offline loyalty demonstration, pre-signed Apple Wallet test cards and supplied test Wi-Fi details, so the missing venue API no longer prevents a walkthrough. The protected environment secret `PAPUPAY_GUEST_DEMO_BASE64` supplies the private resource during the signing step; source control retains a disabled placeholder. See the [demo walkthrough and build controls](NATIVE-DEMO.md). This section describes prepared source and validation, not a confirmed new TestFlight publication.
+
 ## Verified signed upload — 28 October 2026
 
 Version **1.0 (10.1)** was signed, exported and uploaded successfully by [GitHub Actions run 40699740687](https://github.com/Ahmad-Alaziz/PapuPay/actions/runs/40699740687), [job 122855989947](https://github.com/Ahmad-Alaziz/PapuPay/actions/runs/40699740687/job/122855989947), from commit `2e48b255a792b77cdbed3106219133f754693754`. **Apple finished processing 10.1, and the existing PapuPay Demo internal group reports Testing.** All four embedded bundle identifiers and versions passed packaging checks; 20 compiled invocation checks passed.

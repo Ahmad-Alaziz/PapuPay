@@ -1,5 +1,6 @@
 import SwiftUI
 import UIKit
+import NetworkExtension
 
 enum SweetoLanguage: String, CaseIterable {
   case pl, en, ru
@@ -77,7 +78,9 @@ struct SweetoGuestView: View {
   @State private var wifiFailed = false
   @State private var wifiDetails: VenueGuestWiFi?
   @State private var activeHomeArt: VenueActionArt.Kind?
-  @State private var animatedHomeVenue: String?
+  @State private var visibleHomeArt = Set<VenueActionArt.Kind>()
+  @State private var homeArtReplay = 0
+  @State private var lowPowerMode = ProcessInfo.processInfo.isLowPowerModeEnabled
   @State private var menuVisible = false
 #if !PAPUPAY_APP_CLIP
   @AppStorage("papupay-native-resumed-clip-on-launch") private var resumedClipOnLaunch = false
@@ -91,7 +94,7 @@ struct SweetoGuestView: View {
   private var venueName: String { config?.name ?? (isSweeto ? "Sweeto" : "PapuPay") }
   private var address: String { config?.address ?? (isSweeto ? "Puławska 246/8, Warszawa" : "") }
   private var homeMotionKey: String? {
-    !reduceMotion && path.isEmpty && (config != nil || isSweeto) ? link.slug : nil
+    !reduceMotion && !lowPowerMode && scenePhase == .active && path.isEmpty && (config != nil || isSweeto) ? link.slug : nil
   }
   private var maps: URL? {
     link.googleMapsURL(config?.mapUrl) ?? (isSweeto ? URL(string: "https://www.google.com/maps?cid=12629433022150019195") : nil)
@@ -108,10 +111,14 @@ struct SweetoGuestView: View {
     NavigationStack(path: $path) {
       home
         .navigationBarTitleDisplayMode(.inline)
+        .toolbarBackground(palette.paper, for: .navigationBar)
+        .toolbarBackground(.visible, for: .navigationBar)
         .toolbar { header }
         .navigationDestination(for: VenueGuestScreen.self) { screen in
           destination(screen)
             .navigationBarTitleDisplayMode(.inline)
+            .toolbarBackground(palette.paper, for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
             .toolbar { header }
         }
     }
@@ -123,6 +130,9 @@ struct SweetoGuestView: View {
       if let url = activity.webpageURL { follow(url) }
     }
     .task(id: link) { await load() }
+    .onReceive(NotificationCenter.default.publisher(for: .NSProcessInfoPowerStateDidChange)) { _ in
+      lowPowerMode = ProcessInfo.processInfo.isLowPowerModeEnabled
+    }
     .alert(t("Sprawdź kod", "Check your QR code", "Проверьте QR-код"), isPresented: $badLink) {
       Button("OK", role: .cancel) {}
     } message: {
@@ -146,20 +156,8 @@ struct SweetoGuestView: View {
 
   @ToolbarContentBuilder private var header: some ToolbarContent {
     ToolbarItem(placement: .principal) {
-      if !path.isEmpty {
-        Text(venueName).font(.headline).foregroundStyle(palette.ink)
-      }
+      venueLogo
     }
-#if !PAPUPAY_APP_CLIP
-    ToolbarItem(placement: .topBarLeading) {
-      if path.isEmpty {
-        Button { showVenues = true } label: {
-          Image(systemName: "building.2").frame(minWidth: 44, minHeight: 44)
-        }
-        .accessibilityLabel(t("Lokale", "Venues", "Заведения"))
-      }
-    }
-#endif
     ToolbarItem(placement: .topBarTrailing) {
       Menu {
         Picker(t("Język", "Language", "Язык"), selection: $language) {
@@ -178,8 +176,6 @@ struct SweetoGuestView: View {
     ScrollView {
       VStack(alignment: .leading, spacing: 12) {
         if config != nil || isSweeto {
-          venueLogo
-            .padding(.bottom, 6)
           NavigationLink(value: VenueGuestScreen.menu) { menuCard }
             .accessibilityLabel(t("Menu", "Menu", "Меню"))
             .overlayPreferenceValue(MenuPhotoFrame.self) { anchor in
@@ -242,18 +238,46 @@ struct SweetoGuestView: View {
     .task(id: homeMotionKey) { await animateHomeArt() }
   }
 
-  private func animateHomeArt() async {
+  @MainActor private func animateHomeArt() async {
     activeHomeArt = nil
-    guard let venue = homeMotionKey, venue != animatedHomeVenue else { return }
+    guard homeMotionKey != nil else { return }
     do {
-      try await Task.sleep(for: .milliseconds(160))
-      animatedHomeVenue = venue
-      for art: VenueActionArt.Kind in [.menu, .loyalty, .review] {
-        activeHomeArt = art
-        try await Task.sleep(for: .milliseconds(art.duration + 110))
+      await VenueActionArt.prepare()
+      try Task.checkCancellation()
+      try await Task.sleep(for: .milliseconds(900))
+      let sequence: [VenueActionArt.Kind] = [.loyalty, .review, .menu, .wifi]
+      let rests = [12, 15, 13, 16]
+      var index = 0
+      while !Task.isCancelled {
+        if let art = (0..<sequence.count).map({ sequence[(index + $0) % sequence.count] }).first(where: visibleHomeArt.contains) {
+          activeHomeArt = art
+          homeArtReplay += 1
+          // Completion comes from the ready Rive player. A slow first load
+          // can no longer consume the illustration's entire playback window.
+          while activeHomeArt != nil {
+            try await Task.sleep(for: .milliseconds(100))
+          }
+          index = (sequence.firstIndex(of: art)! + 1) % sequence.count
+          try await Task.sleep(for: .seconds(rests[index]))
+        } else {
+          try await Task.sleep(for: .seconds(1))
+        }
       }
+    } catch {
       activeHomeArt = nil
-    } catch {}
+    }
+  }
+
+  private func setArtVisibility(_ art: VenueActionArt.Kind, visible: Bool) {
+    if visible { visibleHomeArt.insert(art) }
+    else {
+      visibleHomeArt.remove(art)
+      if activeHomeArt == art { activeHomeArt = nil }
+    }
+  }
+
+  private func finishHomeArt(_ art: VenueActionArt.Kind) {
+    if activeHomeArt == art { activeHomeArt = nil }
   }
 
   private var venueLogo: some View {
@@ -261,9 +285,9 @@ struct SweetoGuestView: View {
       url: link.imageURL(config?.logoUrl),
       bundled: isSweeto ? "logo-blue.png" : nil
     ) {
-      Text(venueName).font(palette.display(.largeTitle))
+      Text(venueName).font(palette.display(.headline)).lineLimit(1).minimumScaleFactor(0.7)
     }
-    .frame(maxWidth: 155, minHeight: 31, maxHeight: 50, alignment: .leading)
+    .frame(width: 142, height: 32)
     .accessibilityLabel(venueName)
     .accessibilityAddTraits(.isHeader)
   }
@@ -325,8 +349,11 @@ struct SweetoGuestView: View {
         .font(.footnote.weight(.medium))
         .fixedSize(horizontal: false, vertical: true)
       HStack(spacing: 6) {
-        VenueActionArt(kind: .menu, theme: palette.motionTheme, animated: activeHomeArt == .menu)
+        VenueActionArt(kind: .menu, theme: palette.motionTheme, animated: activeHomeArt == .menu, replay: homeArtReplay) {
+          finishHomeArt(.menu)
+        }
           .frame(width: 44, height: 44)
+          .modifier(HomeArtVisibility { setArtVisibility(.menu, visible: $0) })
         Text(t("Otwórz", "Open", "Открыть"))
           .font(.footnote.weight(.semibold))
         homeArrow()
@@ -383,7 +410,7 @@ struct SweetoGuestView: View {
   }
 
   private var shouldAnimateMenuDrip: Bool {
-    !reduceMotion && scenePhase == .active && path.isEmpty && menuVisible
+    !reduceMotion && !lowPowerMode && scenePhase == .active && path.isEmpty && menuVisible
   }
 
   private func reviewOption(outbound: Bool) -> some View {
@@ -413,8 +440,11 @@ struct SweetoGuestView: View {
     .multilineTextAlignment(.leading)
     .frame(maxWidth: .infinity, alignment: .leading)
 
-    let illustration = VenueActionArt(kind: art, theme: palette.motionTheme, animated: activeHomeArt == art)
+    let illustration = VenueActionArt(kind: art, theme: palette.motionTheme, animated: activeHomeArt == art, replay: homeArtReplay) {
+      finishHomeArt(art)
+    }
       .frame(width: 102, height: 102)
+      .modifier(HomeArtVisibility { setArtVisibility(art, visible: $0) })
       .padding(isLoyalty ? 6 : 0)
       .background(isLoyalty ? palette.line : Color.clear, in: .rect(cornerRadius: 15))
       .rotationEffect(isLoyalty ? .degrees(5) : .zero)
@@ -448,12 +478,14 @@ struct SweetoGuestView: View {
 
   private var wifiButton: some View {
     Button {
-      if config?.wifi != nil { Task { await connectWiFi() } }
-      else { path = [.wifi] }
+      path = [.wifi]
     } label: {
       HStack(spacing: 10) {
-        VenueActionArt(kind: .wifi, theme: palette.motionTheme)
+        VenueActionArt(kind: .wifi, theme: palette.motionTheme, animated: activeHomeArt == .wifi, replay: homeArtReplay) {
+          finishHomeArt(.wifi)
+        }
           .frame(width: 42, height: 42)
+          .modifier(HomeArtVisibility { setArtVisibility(.wifi, visible: $0) })
         Text(wifiBusy
           ? t("Łączenie…", "Connecting…", "Подключение…")
           : t("Połącz z Wi-Fi", "Connect to Wi-Fi", "Подключиться к Wi-Fi"))
@@ -475,6 +507,12 @@ struct SweetoGuestView: View {
         HStack(spacing: 9) { addressLine; poweredBy }
         VStack(spacing: 7) { addressLine; poweredBy }
       }
+#if !PAPUPAY_APP_CLIP
+      Button(t("Zmień lokal", "Change venue", "Сменить заведение")) { showVenues = true }
+        .font(.caption)
+        .frame(minHeight: 44)
+        .foregroundStyle(palette.muted)
+#endif
     }
     .frame(maxWidth: .infinity)
     .padding(.vertical, 8)
@@ -537,7 +575,11 @@ struct SweetoGuestView: View {
       .foregroundStyle(palette.ink)
       .background(palette.paper.ignoresSafeArea())
     case .wifi:
-      VenueWiFiHelp(details: wifiDetails ?? config?.wifi, failed: wifiFailed, language: language, palette: palette) {
+      VenueWiFiHelp(
+        details: wifiDetails ?? config?.wifi ?? VenueGuestDemo.configuration(for: link)?.wifi,
+        failed: wifiFailed, language: language, palette: palette, busy: wifiBusy,
+        isDemo: VenueGuestDemo.configuration(for: link) != nil
+      ) {
         Task { await connectWiFi() }
       }
     }
@@ -604,18 +646,44 @@ struct SweetoGuestView: View {
     wifiBusy = true
     defer { wifiBusy = false }
     do {
-      guard let details = try await api.wifi() else { throw VenueWiFiJoinError.unavailable }
+      let available: VenueGuestWiFi?
+      if let demoWiFi = VenueGuestDemo.configuration(for: current)?.wifi {
+        available = demoWiFi
+      } else {
+        available = try await api.wifi()
+      }
+      guard let details = available else { throw VenueWiFiJoinError.unavailable }
       guard current == link else { return }
       wifiDetails = details
       try await VenueWiFiJoin.apply(details)
       guard current == link else { return }
       wifiAccepted = true
       wifiFailed = false
+    } catch let error as NSError where error.domain == NEHotspotConfigurationErrorDomain &&
+      error.code == NEHotspotConfigurationError.userDenied.rawValue {
+      guard current == link else { return }
+      wifiFailed = false
     } catch {
       guard current == link else { return }
       wifiFailed = true
       if path.last != .wifi { path.append(.wifi) }
     }
+  }
+}
+
+private struct HomeArtVisibility: ViewModifier {
+  let update: (Bool) -> Void
+
+  func body(content: Content) -> some View {
+    content.onGeometryChange(for: Bool.self) { proxy in
+      guard let bounds = proxy.bounds(of: .scrollView) else { return false }
+      let frame = proxy.frame(in: .scrollView)
+      // bounds(of:) is expressed in this icon's local coordinates, while
+      // frame(in:) uses the scroll view's coordinates. Compare like spaces.
+      let viewport = CGRect(origin: .zero, size: bounds.size)
+      let overlap = frame.intersection(viewport)
+      return !overlap.isNull && overlap.height >= frame.height * 0.5
+    } action: { update($0) }
   }
 }
 

@@ -20,8 +20,17 @@ export APP_STORE_CONNECT_PROFILES_DIRECTORY="$signing_dir/profiles"
 keychain_path="$signing_dir/papupay.keychain-db"
 keychain_password="$(openssl rand -hex 32)"
 echo "::add-mask::$keychain_password"
+demo_resource="apps/ios/Resources/GuestDemo.plist"
+if [[ -f "$demo_resource" ]]; then
+  cp "$demo_resource" "$signing_dir/GuestDemo.original.plist"
+fi
 
 cleanup() {
+  if [[ -f "$signing_dir/GuestDemo.original.plist" ]]; then
+    cp "$signing_dir/GuestDemo.original.plist" "$demo_resource"
+  else
+    rm -f "$demo_resource"
+  fi
   security delete-keychain "$keychain_path" >/dev/null 2>&1 || true
   if [[ -f "$signing_dir/installed-profiles.txt" ]]; then
     while IFS= read -r profile; do rm -f "$profile"; done < "$signing_dir/installed-profiles.txt"
@@ -29,6 +38,11 @@ cleanup() {
   rm -rf "$signing_dir"
 }
 trap cleanup EXIT
+
+# Only this protected TestFlight workflow injects private demo data. The
+# committed resource remains disabled and no private values enter build logs.
+python3 scripts/ci/prepare-guest-demo.py "$demo_resource"
+unset PAPUPAY_GUEST_DEMO_BASE64
 
 keychain initialize --path "$keychain_path" --password "$keychain_password"
 # Reuse one dedicated private key across runs; do not create a new Apple certificate per build.
@@ -87,5 +101,5 @@ Apple has received the build. Processing can take a few minutes.
 
 [Open TestFlight](https://appstoreconnect.apple.com/apps/6826778125/testflight/ios)
 
-Add App Clip invocations for `https://papupay.com/go/koszyki/24` and `/go/koszyki/37`, then assign the build to internal testers. This workflow does not submit a public App Store release.
+Use the Sweeto App Clip invocations `/go/sweeto/table`, `/go/sweeto/menu` and `/go/sweeto/counter` on `https://papupay.com`, then assign the build to internal testers. This workflow does not submit a public App Store release.
 SUMMARY
