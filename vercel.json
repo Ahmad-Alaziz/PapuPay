@@ -1,9 +1,9 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "framework": "vite",
+  "framework": null,
   "installCommand": "npm ci",
   "buildCommand": "npm run build",
-  "outputDirectory": "apps/web/dist",
+  "outputDirectory": "apps/landing/out",
   "rewrites": [
     {
       "source": "/en",
@@ -12,18 +12,6 @@
     {
       "source": "/pl",
       "destination": "/pl.html"
-    },
-    {
-      "source": "/app",
-      "destination": "/app.html"
-    },
-    {
-      "source": "/go/:path*",
-      "destination": "/clip.html"
-    },
-    {
-      "source": "/clip",
-      "destination": "/clip.html"
     }
   ],
   "redirects": [
@@ -81,19 +69,6 @@
     }
   ],
   "headers": [
-    {
-      "source": "/.well-known/apple-app-site-association",
-      "headers": [
-        {
-          "key": "Content-Type",
-          "value": "application/json"
-        },
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=3600"
-        }
-      ]
-    },
     {
       "source": "/:lang(en|pl)/opengraph-image",
       "headers": [

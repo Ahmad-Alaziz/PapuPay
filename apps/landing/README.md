@@ -4,7 +4,7 @@ Marketing site for PapuPay, one platform for restaurants, bars and cafés: digit
 
 Built with Next.js 16 (App Router, static export), TypeScript, Tailwind CSS v4, shadcn/ui and Motion. English and Polish are served from `/en` and `/pl`.
 
-It is deployed as part of the PapuPay repository: `next build` writes static HTML to `out/`, which the root build merges into the web app's output (see [Deploying](#deploying)).
+It is deployed as part of the PapuPay repository: `next build` writes static HTML to `out/`, which Vercel serves (see [Deploying](#deploying)).
 
 ## Getting started
 
@@ -12,10 +12,10 @@ From the repository root (npm workspaces):
 
 ```bash
 npm ci
-npm run dev:landing          # http://localhost:3000/en
+npm run dev                  # http://localhost:4173
 ```
 
-On papupay.com, `/` redirects to `/en` or `/pl` using the `NEXT_LOCALE` cookie first (set by the language switcher), then the browser's `Accept-Language` header, and falls back to English. These redirects live in the root `vercel.json`, so open `/en` or `/pl` directly in development.
+On papupay.com, `/` redirects to `/en` or `/pl` using the `NEXT_LOCALE` cookie first (set by the language switcher), then the browser's `Accept-Language` header, and falls back to English. These redirects live in the root `vercel.json`; `next.config.ts` reads them so `next dev` behaves the same.
 
 ### Scripts
 
@@ -93,7 +93,7 @@ Edit `src/content/pricing.ts`. Every value marked `PLACEHOLDER` (names, prices, 
 
 The landing ships with the existing `papupay` Vercel project (see `docs/DEPLOYMENT.md`):
 
-1. The root `npm run build` builds the Vite demo, then this app, then runs `scripts/merge-landing.mjs`, which copies `out/` into `apps/web/dist`. It stops if a landing file would overwrite a demo file.
+1. The root `npm run build` exports this app to `out/`, which `vercel.json` sets as the output directory.
 2. The root `vercel.json` redirects `/` to a locale, rewrites `/en` and `/pl` to their HTML files, and serves the Open Graph images as PNG.
 3. Under **Settings → Environment Variables**, add `MAILJET_API_KEY`, `MAILJET_SECRET_KEY`, `MAILJET_SENDER_EMAIL` and `CONTACT_RECIPIENTS` for Production (and Preview if you want the form to work there). Canonical and Open Graph URLs use the production domain unless `NEXT_PUBLIC_SITE_URL` is set.
 4. In Mailjet, validate the sender address or domain, and set up SPF and DKIM for the domain so messages aren't marked as spam.

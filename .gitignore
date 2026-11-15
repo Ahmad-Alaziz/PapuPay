@@ -1,25 +1,9 @@
 node_modules/
-dist/
 .DS_Store
 .env*
 !.env.example
-DerivedData/
-*.xcuserstate
-xcuserdata/
-playwright-report/
-test-results/
 .openai/local/
 
 *.tsbuildinfo
 
 .vercel/
-
-# Cloud builds and Apple signing material
-build/
-*.p8
-*.p12
-*.mobileprovision
-*.keychain-db
-*.xcarchive/
-*.ipa
-__pycache__/
