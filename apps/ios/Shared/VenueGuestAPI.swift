@@ -117,6 +117,15 @@ struct VenueGuestWiFi: Decodable {
   let password: String?
 }
 
+struct VenueGuestPhotoDrip: Decodable, Sendable {
+  let x: Double
+  let color: String
+
+  var isValid: Bool {
+    (0...1).contains(x) && color.range(of: #"^#[0-9a-fA-F]{6}$"#, options: .regularExpression) != nil
+  }
+}
+
 struct VenueGuestConfig: Decodable {
   let id: String?
   let name: String?
@@ -124,12 +133,17 @@ struct VenueGuestConfig: Decodable {
   let logoUrl: String?
   let photoUrl: String?
   let photoMotion: String?
+  let photoDrip: VenueGuestPhotoDrip?
   let menuFallback: String?
   let theme: VenueGuestTheme?
   let reviewUrl: URL?
   let mapUrl: URL?
   let menuPdf: [String: String?]?
   let wifi: VenueGuestWiFi?
+
+  var animatesMenuSauce: Bool {
+    photoMotion == "sauce-drip" || photoMotion == "chocolate-drip"
+  }
 }
 
 struct VenueLoyaltyCard: Decodable, Equatable {

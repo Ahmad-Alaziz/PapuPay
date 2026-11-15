@@ -23,7 +23,7 @@ resources = project.main_group.new_group('Resources', 'Resources')
 resource_refs = Dir.glob(File.join(ios, 'Resources/*')).reject { |p| p.end_with?('.txt') }.map { |p| resources.new_file(File.basename(p)) }
 sweeto_assets = File.join(root, 'apps/web/public/assets/sweeto')
 motion_posters = Dir.glob(File.join(sweeto_assets, 'motion-*.webp')).map { |path| File.basename(path) }
-resource_refs += (%w[logo-blue.png menu-bowl-cutout.webp matylda-cutout.webp menu.pdf sweeto-actions.riv] + motion_posters).map do |name|
+resource_refs += (%w[logo-blue.png menu-bowl-cutout.webp matylda-cutout.webp matylda-drip.webp menu.pdf sweeto-actions.riv] + motion_posters).map do |name|
   resources.new_file("../../web/public/assets/sweeto/#{name}")
 end
 %w[Manrope.ttf BricolageGrotesque.ttf Manrope-OFL.txt BricolageGrotesque-OFL.txt].each do |name|

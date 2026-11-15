@@ -182,11 +182,19 @@ struct SweetoGuestView: View {
             .padding(.bottom, 6)
           NavigationLink(value: VenueGuestScreen.menu) { menuCard }
             .accessibilityLabel(t("Menu", "Menu", "Меню"))
-            .overlay {
-              if chocolateMotionEnabled && menuVisible {
-                MenuChocolateDrip(accessibilityLayout: dynamicTypeSize.isAccessibilitySize)
-                  .allowsHitTesting(false)
-                  .accessibilityHidden(true)
+            .overlayPreferenceValue(MenuPhotoFrame.self) { anchor in
+              if let anchor, let drip = menuDrip, shouldAnimateMenuDrip {
+                GeometryReader { card in
+                  let photo = card[anchor]
+                  MenuLiquidDrip(
+                    color: Color(hex: drip.color),
+                    source: CGPoint(x: photo.minX + photo.width * drip.x, y: photo.maxY - 1),
+                    landingY: card.size.height + 40
+                  )
+                  .frame(width: card.size.width, height: card.size.height + 44)
+                }
+                .allowsHitTesting(false)
+                .accessibilityHidden(true)
               }
             }
             .onGeometryChange(for: Bool.self) { proxy in
@@ -266,13 +274,17 @@ struct SweetoGuestView: View {
           menuCopy
           menuPhoto.frame(width: 152, height: 152).frame(maxWidth: .infinity, alignment: .trailing)
         }
-        .padding(16)
+        .padding(.horizontal, 16)
+        .padding(.top, 16)
+        .padding(.bottom, menuDrip == nil ? 16 : 0)
       } else {
         GeometryReader { geometry in
           let photoWidth = min(168, geometry.size.width * 0.46)
           HStack(spacing: 8) {
             menuCopy.frame(maxWidth: .infinity, alignment: .leading)
-            menuPhoto.frame(width: photoWidth, height: 156)
+            menuPhoto
+              .frame(width: photoWidth, height: 156)
+              .frame(height: geometry.size.height, alignment: menuDrip == nil ? .center : .bottom)
           }
           .padding(.leading, 16)
           .padding(.trailing, 8)
@@ -321,7 +333,8 @@ struct SweetoGuestView: View {
     VenueImage(
       url: bundledMenuPhoto == nil ? link.imageURL(config?.photoUrl) : nil,
       bundled: bundledMenuPhoto,
-      alignment: .center
+      alignment: menuDrip == nil ? .center : .bottom,
+      reportsPhotoFrame: menuDrip != nil
     ) {
       VenueActionArt(kind: .menu, theme: palette.motionTheme)
         .padding(12)
@@ -334,7 +347,7 @@ struct SweetoGuestView: View {
           .fill(Color(hex: "583628").opacity(0.23))
           .frame(width: 116, height: 20)
           .blur(radius: 9)
-          .offset(x: 12, y: -9)
+          .offset(x: 12, y: menuDrip == nil ? -9 : 1)
       }
     }
   }
@@ -342,16 +355,24 @@ struct SweetoGuestView: View {
   private var bundledMenuPhoto: String? {
     guard isSweeto else { return nil }
     switch config?.photoUrl {
-    case nil, "/assets/sweeto/matylda-cutout.webp": return "matylda-cutout.webp"
+    case nil, "/assets/sweeto/matylda-drip.webp": return "matylda-drip.webp"
+    case "/assets/sweeto/matylda-cutout.webp":
+      return config?.animatesMenuSauce == true && config?.photoDrip == nil
+        ? "matylda-drip.webp" : "matylda-cutout.webp"
     case "/assets/sweeto/menu-scene-v2.webp", "/assets/sweeto/menu-bowl-cutout.webp": return "menu-bowl-cutout.webp"
     default: return nil
     }
   }
 
-  private var chocolateMotionEnabled: Bool {
-    let isConfigured = config?.photoMotion == "chocolate-drip" && (bundledMenuPhoto != nil || link.imageURL(config?.photoUrl) != nil)
-    let isBundledDefault = config == nil && isSweeto
-    return !reduceMotion && scenePhase == .active && path.isEmpty && (isConfigured || isBundledDefault)
+  private var menuDrip: VenueGuestPhotoDrip? {
+    guard config?.animatesMenuSauce == true || (config == nil && isSweeto) else { return nil }
+    if let drip = config?.photoDrip, drip.isValid { return drip }
+    guard bundledMenuPhoto == "matylda-drip.webp" else { return nil }
+    return VenueGuestPhotoDrip(x: 0.536, color: "#631f00")
+  }
+
+  private var shouldAnimateMenuDrip: Bool {
+    !reduceMotion && scenePhase == .active && path.isEmpty && menuVisible
   }
 
   private func reviewOption(outbound: Bool) -> some View {
@@ -587,82 +608,96 @@ struct SweetoGuestView: View {
   }
 }
 
-private struct MenuChocolateDrip: View {
-  let accessibilityLayout: Bool
+private struct MenuPhotoFrame: PreferenceKey {
+  static let defaultValue: Anchor<CGRect>? = nil
+
+  static func reduce(value: inout Anchor<CGRect>?, nextValue: () -> Anchor<CGRect>?) {
+    value = nextValue() ?? value
+  }
+}
+
+private struct MenuLiquidDrip: View {
+  let color: Color
+  let source: CGPoint
+  let landingY: CGFloat
 
   @State private var startedAt = Date()
-  private let cycle = 5.2
-  private let bodyColor = Color(hex: "673822")
-  private let highlight = Color(hex: "A66236")
-  private let shadow = Color(hex: "44251A")
+  private let cycle = 6.4
 
   var body: some View {
-    GeometryReader { card in
-      TimelineView(.animation(minimumInterval: 1.0 / 30)) { timeline in
-        Canvas { context, _ in
-          let elapsed = max(0, timeline.date.timeIntervalSince(startedAt))
-          let phase = elapsed.truncatingRemainder(dividingBy: cycle) / cycle
-          let photoWidth = accessibilityLayout ? 152 : min(168, card.size.width * 0.46)
-          let trailing = accessibilityLayout ? 16.0 : 8.0
-          let imageSide = min(photoWidth, 156)
-          let imageCenterY = accessibilityLayout ? card.size.height - 16 - imageSide / 2 : card.size.height / 2
-          let x = card.size.width - trailing - photoWidth / 2 + 0.04 * imageSide
-          let source = imageCenterY + 0.41 * imageSide
-          let landing = card.size.height + 44
-
-          switch phase {
-          case 0.50..<0.60:
-            let stretch = (phase - 0.50) / 0.10
-            let width = 4 + 3 * stretch
-            let length = 5 + 14 * stretch
-            context.fill(
-              drip(at: CGPoint(x: x, y: source + length / 2), width: width, height: length),
-              with: .color(bodyColor.opacity(min(1, stretch * 4)))
-            )
-          case 0.60..<0.73:
-            let fall = (phase - 0.60) / 0.13
-            let y = source + 9 + (landing - source - 15) * fall * fall
-            context.fill(drip(at: CGPoint(x: x, y: y), width: 7, height: 18), with: .color(bodyColor))
-            context.fill(
-              Path(ellipseIn: CGRect(x: x - 1.5, y: y + 1, width: 2, height: 4)),
-              with: .color(highlight.opacity(0.8))
-            )
-          case 0.73..<0.85:
-            let settle = (phase - 0.73) / 0.12
-            let width = 9 + 15 * (1 - pow(1 - settle, 3))
-            let height = 6 - 3 * settle
-            let opacity = pow(1 - settle, 1.45)
-            context.fill(
-              Path(ellipseIn: CGRect(x: x - width / 2, y: landing - height, width: width, height: height)),
-              with: .color(shadow.opacity(opacity * 0.72))
-            )
-          default:
-            break
-          }
-        }
-        .frame(width: card.size.width, height: card.size.height + 48)
+    TimelineView(.animation(minimumInterval: 1.0 / 30)) { timeline in
+      Canvas { context, _ in
+        let elapsed = max(0, timeline.date.timeIntervalSince(startedAt))
+        let phase = elapsed.truncatingRemainder(dividingBy: cycle) / cycle
+        draw(phase, in: context)
       }
     }
   }
 
-  private func drip(at center: CGPoint, width: CGFloat, height: CGFloat) -> Path {
-    let top = center.y - height / 2
-    let bottom = center.y + height / 2
-    let side = width / 2
+  private func draw(_ phase: Double, in context: GraphicsContext) {
+    switch phase {
+    case 0.20..<0.46:
+      let growth = smooth((phase - 0.20) / 0.26)
+      let length = 13 * growth
+      drawDrop(in: context, top: source.y, length: length, width: 7.6 * growth, neck: 3.4)
+    case 0.46..<0.50:
+      let pinch = (phase - 0.46) / 0.04
+      drawDrop(
+        in: context, top: source.y, length: 13 + 5 * pinch * pinch,
+        width: 7.6 - 0.5 * pinch, neck: 3.4 * (1 - pinch)
+      )
+    case 0.50..<0.61:
+      let fall = (phase - 0.50) / 0.11
+      let bottom = source.y + 18 + (landingY - source.y - 18) * fall * fall
+      let length = 14 + 2 * fall
+      drawDrop(in: context, top: bottom - length, length: length, width: 7.1 - 0.7 * fall, neck: 0)
+      let retract = max(0, 1 - fall * 4)
+      let tail = CGRect(x: source.x - 0.9, y: source.y - 1, width: 1.8, height: 5 * retract)
+      context.fill(Path(ellipseIn: tail), with: .color(color.opacity(retract)))
+    case 0.61..<0.68:
+      let impact = (phase - 0.61) / 0.07
+      let flatten = 1 - pow(1 - impact, 3)
+      let width = 6.4 + 14 * flatten
+      let height = 16 - 13 * flatten
+      let pool = CGRect(x: source.x - width / 2, y: landingY - height, width: width, height: height)
+      context.fill(Path(ellipseIn: pool), with: .color(color.opacity(1 - smooth(impact))))
+    default:
+      break
+    }
+
+    if (0.625..<0.76).contains(phase) {
+      let ripple = (phase - 0.625) / 0.135
+      let width = 6 + 29 * ripple
+      let pool = CGRect(x: source.x - width / 2, y: landingY - 3, width: width, height: 5)
+      context.stroke(Path(ellipseIn: pool), with: .color(color.opacity(0.28 * (1 - ripple))), lineWidth: 1)
+    }
+  }
+
+  private func drawDrop(in context: GraphicsContext, top: CGFloat, length: CGFloat, width: CGFloat, neck: CGFloat) {
+    guard length > 0, width > 0 else { return }
+    let x = source.x
+    let center = top + length * 0.62
+    let bottom = top + length
     var shape = Path()
-    shape.move(to: CGPoint(x: center.x, y: top))
+    shape.move(to: CGPoint(x: x - neck / 2, y: top))
     shape.addCurve(
-      to: CGPoint(x: center.x, y: bottom),
-      control1: CGPoint(x: center.x - 1, y: center.y),
-      control2: CGPoint(x: center.x - side * 2, y: bottom)
+      to: CGPoint(x: x, y: bottom),
+      control1: CGPoint(x: x - neck / 2, y: center),
+      control2: CGPoint(x: x - width, y: bottom - length * 0.16)
     )
     shape.addCurve(
-      to: CGPoint(x: center.x, y: top),
-      control1: CGPoint(x: center.x + side * 2, y: bottom),
-      control2: CGPoint(x: center.x + 1, y: center.y)
+      to: CGPoint(x: x + neck / 2, y: top),
+      control1: CGPoint(x: x + width, y: bottom - length * 0.16),
+      control2: CGPoint(x: x + neck / 2, y: center)
     )
     shape.closeSubpath()
-    return shape
+    context.fill(shape, with: .color(color))
+    let glint = CGRect(x: x - width * 0.13, y: top + length * 0.65, width: width * 0.20, height: length * 0.13)
+    context.fill(Path(ellipseIn: glint), with: .color(.white.opacity(0.25)))
+  }
+
+  private func smooth(_ progress: Double) -> Double {
+    progress * progress * (3 - 2 * progress)
   }
 }
 
@@ -670,6 +705,7 @@ private struct VenueImage<Fallback: View>: View {
   let url: URL?
   let bundled: String?
   var alignment: Alignment = .leading
+  var reportsPhotoFrame = false
   @ViewBuilder let fallback: () -> Fallback
 
   var body: some View {
@@ -698,7 +734,9 @@ private struct VenueImage<Fallback: View>: View {
   }
 
   private func rendered(_ image: Image) -> some View {
-    image.resizable().scaledToFit().accessibilityHidden(true)
+    image.resizable().scaledToFit()
+      .anchorPreference(key: MenuPhotoFrame.self, value: .bounds) { reportsPhotoFrame ? $0 : nil }
+      .accessibilityHidden(true)
   }
 }
 
