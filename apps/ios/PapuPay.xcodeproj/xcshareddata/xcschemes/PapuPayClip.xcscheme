@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "D449EDAC922CC654A8A07242"
+               BlueprintIdentifier = "0BBFA3915960A089274D8460"
                BuildableName = "PapuPayClip.app"
                BlueprintName = "PapuPayClip"
                ReferencedContainer = "container:PapuPay.xcodeproj">
@@ -30,7 +30,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "D449EDAC922CC654A8A07242"
+            BlueprintIdentifier = "0BBFA3915960A089274D8460"
             BuildableName = "PapuPayClip.app"
             BlueprintName = "PapuPayClip"
             ReferencedContainer = "container:PapuPay.xcodeproj">
@@ -53,7 +53,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "D449EDAC922CC654A8A07242"
+            BlueprintIdentifier = "0BBFA3915960A089274D8460"
             BuildableName = "PapuPayClip.app"
             BlueprintName = "PapuPayClip"
             ReferencedContainer = "container:PapuPay.xcodeproj">
@@ -62,7 +62,7 @@
       <EnvironmentVariables>
          <EnvironmentVariable
             key = "_XCAppClipURL"
-            value = "https://papupay.com/go/koszyki/24"
+            value = "https://papupay.com/go/sweeto/table"
             isEnabled = "YES">
          </EnvironmentVariable>
       </EnvironmentVariables>
@@ -77,7 +77,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "D449EDAC922CC654A8A07242"
+            BlueprintIdentifier = "0BBFA3915960A089274D8460"
             BuildableName = "PapuPayClip.app"
             BlueprintName = "PapuPayClip"
             ReferencedContainer = "container:PapuPay.xcodeproj">

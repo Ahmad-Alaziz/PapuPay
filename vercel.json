@@ -45,5 +45,6 @@
         }
       ]
     }
-  ]
+  ],
+  "ignoreCommand": "case \"$(git log -1 --format=%B)\" in *\"[testflight-only]\"*) exit 0;; *) exit 1;; esac"
 }

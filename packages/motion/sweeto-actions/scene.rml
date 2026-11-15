@@ -1,0 +1,2064 @@
+<Rive version="1" kind="fragment">
+  <Artboard id="0:100" name="SweetoMenu" width="128" height="128" x="0" styleId="0:101" defaultStateMachineId="0:102" viewModelId="0:900" viewModelInstanceId="0:901">
+    <LayoutComponentStyle id="0:101" />
+    <Node name="Open restaurant menu" x="63" y="68" id="0:110">
+      <Node name="Turning sheet with a paper fold" rotation="0" opacity="0" id="0:111">
+        <Shape name="Printed course heading" x="16" y="-21" rotation="-0.05">
+          <Rectangle width="15" height="3.8" originX="0.5" originY="0.5" cornerRadiusTL="1.9" />
+          <Fill>
+            <SolidColor colorValue="FF1765A8">
+              <DataBindContext sourcePathIds="0:900-0:911" propertyKey="37" />
+            </SolidColor>
+          </Fill>
+        </Shape>
+        <Shape name="Course divider">
+          <PointsPath isClosed="false">
+            <StraightVertex x="8" y="-16" />
+            <StraightVertex x="35" y="-18" />
+          </PointsPath>
+          <Stroke thickness="1.25" cap="round" join="round">
+            <SolidColor colorValue="FF9AC5E8">
+              <DataBindContext sourcePathIds="0:900-0:913" propertyKey="37" />
+            </SolidColor>
+          </Stroke>
+        </Shape>
+        <Shape name="Dish name" x="15" y="-11" rotation="-0.06">
+          <Rectangle width="13" height="2.45" originX="0.5" originY="0.5" cornerRadiusTL="1.2" />
+          <Fill>
+            <SolidColor colorValue="FF1765A8">
+              <DataBindContext sourcePathIds="0:900-0:911" propertyKey="37" />
+            </SolidColor>
+          </Fill>
+        </Shape>
+        <Shape name="Right aligned price" x="33" y="-12" rotation="-0.06">
+          <Rectangle width="5.5" height="2.65" originX="0.5" originY="0.5" cornerRadiusTL="1.2" />
+          <Fill>
+            <SolidColor colorValue="FF1765A8">
+              <DataBindContext sourcePathIds="0:900-0:911" propertyKey="37" />
+            </SolidColor>
+          </Fill>
+        </Shape>
+        <Shape name="Dish name" x="15" y="-5" rotation="-0.06">
+          <Rectangle width="13" height="2.45" originX="0.5" originY="0.5" cornerRadiusTL="1.2" />
+          <Fill>
+            <SolidColor colorValue="FF1765A8">
+              <DataBindContext sourcePathIds="0:900-0:911" propertyKey="37" />
+            </SolidColor>
+          </Fill>
+        </Shape>
+        <Shape name="Right aligned price" x="33" y="-6" rotation="-0.06">
+          <Rectangle width="5.5" height="2.65" originX="0.5" originY="0.5" cornerRadiusTL="1.2" />
+          <Fill>
+            <SolidColor colorValue="FF1765A8">
+              <DataBindContext sourcePathIds="0:900-0:911" propertyKey="37" />
+            </SolidColor>
+          </Fill>
+        </Shape>
+        <Shape name="Printed course heading" x="16" y="4" rotation="-0.05">
+          <Rectangle width="15" height="3.8" originX="0.5" originY="0.5" cornerRadiusTL="1.9" />
+          <Fill>
+            <SolidColor colorValue="FF1765A8">
+              <DataBindContext sourcePathIds="0:900-0:911" propertyKey="37" />
+            </SolidColor>
+          </Fill>
+        </Shape>
+        <Shape name="Course divider">
+          <PointsPath isClosed="false">
+            <StraightVertex x="8" y="9" />
+            <StraightVertex x="35" y="7" />
+          </PointsPath>
+          <Stroke thickness="1.25" cap="round" join="round">
+            <SolidColor colorValue="FF9AC5E8">
+              <DataBindContext sourcePathIds="0:900-0:913" propertyKey="37" />
+            </SolidColor>
+          </Stroke>
+        </Shape>
+        <Shape name="Dish name" x="15" y="14" rotation="-0.06">
+          <Rectangle width="13" height="2.45" originX="0.5" originY="0.5" cornerRadiusTL="1.2" />
+          <Fill>
+            <SolidColor colorValue="FF1765A8">
+              <DataBindContext sourcePathIds="0:900-0:911" propertyKey="37" />
+            </SolidColor>
+          </Fill>
+        </Shape>
+        <Shape name="Right aligned price" x="33" y="13" rotation="-0.06">
+          <Rectangle width="5.5" height="2.65" originX="0.5" originY="0.5" cornerRadiusTL="1.2" />
+          <Fill>
+            <SolidColor colorValue="FF1765A8">
+              <DataBindContext sourcePathIds="0:900-0:911" propertyKey="37" />
+            </SolidColor>
+          </Fill>
+        </Shape>
+        <Shape name="Dish name" x="15" y="20" rotation="-0.06">
+          <Rectangle width="13" height="2.45" originX="0.5" originY="0.5" cornerRadiusTL="1.2" />
+          <Fill>
+            <SolidColor colorValue="FF1765A8">
+              <DataBindContext sourcePathIds="0:900-0:911" propertyKey="37" />
+            </SolidColor>
+          </Fill>
+        </Shape>
+        <Shape name="Right aligned price" x="33" y="19" rotation="-0.06">
+          <Rectangle width="5.5" height="2.65" originX="0.5" originY="0.5" cornerRadiusTL="1.2" />
+          <Fill>
+            <SolidColor colorValue="FF1765A8">
+              <DataBindContext sourcePathIds="0:900-0:911" propertyKey="37" />
+            </SolidColor>
+          </Fill>
+        </Shape>
+        <Shape name="Edge struck by light">
+          <PointsPath isClosed="true">
+            <StraightVertex x="36" y="-29" />
+            <StraightVertex x="43" y="-30" />
+            <StraightVertex x="43" y="28" />
+            <StraightVertex x="36" y="27" />
+          </PointsPath>
+          <Fill>
+            <SolidColor colorValue="FFFFD29C">
+              <DataBindContext sourcePathIds="0:900-0:919" propertyKey="37" />
+            </SolidColor>
+          </Fill>
+        </Shape>
+        <Shape name="Turning paper">
+          <PointsPath isClosed="true">
+            <StraightVertex x="0" y="-27" />
+            <CubicDetachedVertex x="22" y="-35" inRotation="2.976444" inDistance="12.165525" outRotation="0" outDistance="8" />
+            <CubicDetachedVertex x="43" y="-30" inRotation="-2.158799" inDistance="3.605551" outRotation="1.570796" outDistance="2" />
+            <StraightVertex x="43" y="28" />
+            <CubicDetachedVertex x="23" y="26" inRotation="-0.110657" inDistance="9.055385" outRotation="3.141593" outDistance="9" />
+            <StraightVertex x="0" y="35" />
+          </PointsPath>
+          <Fill>
+            <SolidColor colorValue="FFFFFDF5">
+              <DataBindContext sourcePathIds="0:900-0:915" propertyKey="37" />
+            </SolidColor>
+          </Fill>
+          <Stroke thickness="2.55" cap="round" join="round">
+            <SolidColor colorValue="FF0C477B">
+              <DataBindContext sourcePathIds="0:900-0:910" propertyKey="37" />
+            </SolidColor>
+          </Stroke>
+        </Shape>
+      </Node>
+      <Node name="Right ruled menu page" rotation="-0.03" id="0:112">
+        <Shape name="Printed course heading" x="16" y="-21" rotation="-0.05">
+          <Rectangle width="15" height="3.8" originX="0.5" originY="0.5" cornerRadiusTL="1.9" />
+          <Fill>
+            <SolidColor colorValue="FF0C477B">
+              <DataBindContext sourcePathIds="0:900-0:910" propertyKey="37" />
+            </SolidColor>
+          </Fill>
+        </Shape>
+        <Shape name="Course divider">
+          <PointsPath isClosed="false">
+            <StraightVertex x="8" y="-16" />
+            <StraightVertex x="35" y="-18" />
+          </PointsPath>
+          <Stroke thickness="1.25" cap="round" join="round">
+            <SolidColor colorValue="FF9AC5E8">
+              <DataBindContext sourcePathIds="0:900-0:913" propertyKey="37" />
+            </SolidColor>
+          </Stroke>
+        </Shape>
+        <Shape name="Dish name" x="15" y="-11" rotation="-0.06">
+          <Rectangle width="13" height="2.45" originX="0.5" originY="0.5" cornerRadiusTL="1.2" />
+          <Fill>
+            <SolidColor colorValue="FF1765A8">
+              <DataBindContext sourcePathIds="0:900-0:911" propertyKey="37" />
+            </SolidColor>
+          </Fill>
+        </Shape>
+        <Shape name="Right aligned price" x="33" y="-12" rotation="-0.06">
+          <Rectangle width="5.5" height="2.65" originX="0.5" originY="0.5" cornerRadiusTL="1.2" />
+          <Fill>
+            <SolidColor colorValue="FF0C477B">
+              <DataBindContext sourcePathIds="0:900-0:910" propertyKey="37" />
+            </SolidColor>
+          </Fill>
+        </Shape>
+        <Shape name="Dish name" x="15" y="-5" rotation="-0.06">
+          <Rectangle width="13" height="2.45" originX="0.5" originY="0.5" cornerRadiusTL="1.2" />
+          <Fill>
+            <SolidColor colorValue="FF1765A8">
+              <DataBindContext sourcePathIds="0:900-0:911" propertyKey="37" />
+            </SolidColor>
+          </Fill>
+        </Shape>
+        <Shape name="Right aligned price" x="33" y="-6" rotation="-0.06">
+          <Rectangle width="5.5" height="2.65" originX="0.5" originY="0.5" cornerRadiusTL="1.2" />
+          <Fill>
+            <SolidColor colorValue="FF0C477B">
+              <DataBindContext sourcePathIds="0:900-0:910" propertyKey="37" />
+            </SolidColor>
+          </Fill>
+        </Shape>
+        <Shape name="Printed course heading" x="16" y="4" rotation="-0.05">
+          <Rectangle width="15" height="3.8" originX="0.5" originY="0.5" cornerRadiusTL="1.9" />
+          <Fill>
+            <SolidColor colorValue="FF0C477B">
+              <DataBindContext sourcePathIds="0:900-0:910" propertyKey="37" />
+            </SolidColor>
+          </Fill>
+        </Shape>
+        <Shape name="Course divider">
+          <PointsPath isClosed="false">
+            <StraightVertex x="8" y="9" />
+            <StraightVertex x="35" y="7" />
+          </PointsPath>
+          <Stroke thickness="1.25" cap="round" join="round">
+            <SolidColor colorValue="FF9AC5E8">
+              <DataBindContext sourcePathIds="0:900-0:913" propertyKey="37" />
+            </SolidColor>
+          </Stroke>
+        </Shape>
+        <Shape name="Dish name" x="15" y="14" rotation="-0.06">
+          <Rectangle width="13" height="2.45" originX="0.5" originY="0.5" cornerRadiusTL="1.2" />
+          <Fill>
+            <SolidColor colorValue="FF1765A8">
+              <DataBindContext sourcePathIds="0:900-0:911" propertyKey="37" />
+            </SolidColor>
+          </Fill>
+        </Shape>
+        <Shape name="Right aligned price" x="33" y="13" rotation="-0.06">
+          <Rectangle width="5.5" height="2.65" originX="0.5" originY="0.5" cornerRadiusTL="1.2" />
+          <Fill>
+            <SolidColor colorValue="FF0C477B">
+              <DataBindContext sourcePathIds="0:900-0:910" propertyKey="37" />
+            </SolidColor>
+          </Fill>
+        </Shape>
+        <Shape name="Dish name" x="15" y="20" rotation="-0.06">
+          <Rectangle width="13" height="2.45" originX="0.5" originY="0.5" cornerRadiusTL="1.2" />
+          <Fill>
+            <SolidColor colorValue="FF1765A8">
+              <DataBindContext sourcePathIds="0:900-0:911" propertyKey="37" />
+            </SolidColor>
+          </Fill>
+        </Shape>
+        <Shape name="Right aligned price" x="33" y="19" rotation="-0.06">
+          <Rectangle width="5.5" height="2.65" originX="0.5" originY="0.5" cornerRadiusTL="1.2" />
+          <Fill>
+            <SolidColor colorValue="FF0C477B">
+              <DataBindContext sourcePathIds="0:900-0:910" propertyKey="37" />
+            </SolidColor>
+          </Fill>
+        </Shape>
+        <Shape name="Center gutter tone">
+          <PointsPath isClosed="true">
+            <StraightVertex x="0" y="-27" />
+            <StraightVertex x="6" y="-29" />
+            <StraightVertex x="6" y="32" />
+            <StraightVertex x="0" y="35" />
+          </PointsPath>
+          <Fill>
+            <SolidColor colorValue="FFFFD29C">
+              <DataBindContext sourcePathIds="0:900-0:919" propertyKey="37" />
+            </SolidColor>
+          </Fill>
+        </Shape>
+        <Shape name="Right cream paper">
+          <PointsPath isClosed="true">
+            <StraightVertex x="0" y="-27" />
+            <CubicDetachedVertex x="22" y="-35" inRotation="2.976444" inDistance="12.165525" outRotation="0" outDistance="8" />
+            <CubicDetachedVertex x="43" y="-30" inRotation="-2.158799" inDistance="3.605551" outRotation="1.570796" outDistance="2" />
+            <StraightVertex x="43" y="28" />
+            <CubicDetachedVertex x="23" y="26" inRotation="-0.110657" inDistance="9.055385" outRotation="3.141593" outDistance="9" />
+            <StraightVertex x="0" y="35" />
+          </PointsPath>
+          <Fill>
+            <SolidColor colorValue="FFFFF8E9">
+              <DataBindContext sourcePathIds="0:900-0:914" propertyKey="37" />
+            </SolidColor>
+          </Fill>
+          <Stroke thickness="2.55" cap="round" join="round">
+            <SolidColor colorValue="FF0C477B">
+              <DataBindContext sourcePathIds="0:900-0:910" propertyKey="37" />
+            </SolidColor>
+          </Stroke>
+        </Shape>
+      </Node>
+      <Node name="Left ruled menu page" rotation="0.02" id="0:113">
+        <Shape name="Printed course heading" x="-27" y="-21" rotation="0.05">
+          <Rectangle width="15" height="3.8" originX="0.5" originY="0.5" cornerRadiusTL="1.9" />
+          <Fill>
+            <SolidColor colorValue="FF0C477B">
+              <DataBindContext sourcePathIds="0:900-0:910" propertyKey="37" />
+            </SolidColor>
+          </Fill>
+        </Shape>
+        <Shape name="Course divider">
+          <PointsPath isClosed="false">
+            <StraightVertex x="-8" y="-16" />
+            <StraightVertex x="-35" y="-18" />
+          </PointsPath>
+          <Stroke thickness="1.25" cap="round" join="round">
+            <SolidColor colorValue="FF9AC5E8">
+              <DataBindContext sourcePathIds="0:900-0:913" propertyKey="37" />
+            </SolidColor>
+          </Stroke>
+        </Shape>
+        <Shape name="Dish name" x="-27" y="-11" rotation="0.06">
+          <Rectangle width="13" height="2.45" originX="0.5" originY="0.5" cornerRadiusTL="1.2" />
+          <Fill>
+            <SolidColor colorValue="FF1765A8">
+              <DataBindContext sourcePathIds="0:900-0:911" propertyKey="37" />
+            </SolidColor>
+          </Fill>
+        </Shape>
+        <Shape name="Right aligned price" x="-12" y="-12" rotation="0.06">
+          <Rectangle width="5.5" height="2.65" originX="0.5" originY="0.5" cornerRadiusTL="1.2" />
+          <Fill>
+            <SolidColor colorValue="FF0C477B">
+              <DataBindContext sourcePathIds="0:900-0:910" propertyKey="37" />
+            </SolidColor>
+          </Fill>
+        </Shape>
+        <Shape name="Dish name" x="-27" y="-5" rotation="0.06">
+          <Rectangle width="13" height="2.45" originX="0.5" originY="0.5" cornerRadiusTL="1.2" />
+          <Fill>
+            <SolidColor colorValue="FF1765A8">
+              <DataBindContext sourcePathIds="0:900-0:911" propertyKey="37" />
+            </SolidColor>
+          </Fill>
+        </Shape>
+        <Shape name="Right aligned price" x="-12" y="-6" rotation="0.06">
+          <Rectangle width="5.5" height="2.65" originX="0.5" originY="0.5" cornerRadiusTL="1.2" />
+          <Fill>
+            <SolidColor colorValue="FF0C477B">
+              <DataBindContext sourcePathIds="0:900-0:910" propertyKey="37" />
+            </SolidColor>
+          </Fill>
+        </Shape>
+        <Shape name="Printed course heading" x="-27" y="4" rotation="0.05">
+          <Rectangle width="15" height="3.8" originX="0.5" originY="0.5" cornerRadiusTL="1.9" />
+          <Fill>
+            <SolidColor colorValue="FF0C477B">
+              <DataBindContext sourcePathIds="0:900-0:910" propertyKey="37" />
+            </SolidColor>
+          </Fill>
+        </Shape>
+        <Shape name="Course divider">
+          <PointsPath isClosed="false">
+            <StraightVertex x="-8" y="9" />
+            <StraightVertex x="-35" y="7" />
+          </PointsPath>
+          <Stroke thickness="1.25" cap="round" join="round">
+            <SolidColor colorValue="FF9AC5E8">
+              <DataBindContext sourcePathIds="0:900-0:913" propertyKey="37" />
+            </SolidColor>
+          </Stroke>
+        </Shape>
+        <Shape name="Dish name" x="-27" y="14" rotation="0.06">
+          <Rectangle width="13" height="2.45" originX="0.5" originY="0.5" cornerRadiusTL="1.2" />
+          <Fill>
+            <SolidColor colorValue="FF1765A8">
+              <DataBindContext sourcePathIds="0:900-0:911" propertyKey="37" />
+            </SolidColor>
+          </Fill>
+        </Shape>
+        <Shape name="Right aligned price" x="-12" y="13" rotation="0.06">
+          <Rectangle width="5.5" height="2.65" originX="0.5" originY="0.5" cornerRadiusTL="1.2" />
+          <Fill>
+            <SolidColor colorValue="FF0C477B">
+              <DataBindContext sourcePathIds="0:900-0:910" propertyKey="37" />
+            </SolidColor>
+          </Fill>
+        </Shape>
+        <Shape name="Dish name" x="-27" y="20" rotation="0.06">
+          <Rectangle width="13" height="2.45" originX="0.5" originY="0.5" cornerRadiusTL="1.2" />
+          <Fill>
+            <SolidColor colorValue="FF1765A8">
+              <DataBindContext sourcePathIds="0:900-0:911" propertyKey="37" />
+            </SolidColor>
+          </Fill>
+        </Shape>
+        <Shape name="Right aligned price" x="-12" y="19" rotation="0.06">
+          <Rectangle width="5.5" height="2.65" originX="0.5" originY="0.5" cornerRadiusTL="1.2" />
+          <Fill>
+            <SolidColor colorValue="FF0C477B">
+              <DataBindContext sourcePathIds="0:900-0:910" propertyKey="37" />
+            </SolidColor>
+          </Fill>
+        </Shape>
+        <Shape name="Center gutter tone">
+          <PointsPath isClosed="true">
+            <StraightVertex x="0" y="-27" />
+            <StraightVertex x="-6" y="-29" />
+            <StraightVertex x="-6" y="32" />
+            <StraightVertex x="0" y="35" />
+          </PointsPath>
+          <Fill>
+            <SolidColor colorValue="FFFFD29C">
+              <DataBindContext sourcePathIds="0:900-0:919" propertyKey="37" />
+            </SolidColor>
+          </Fill>
+        </Shape>
+        <Shape name="Left printed paper">
+          <PointsPath isClosed="true">
+            <StraightVertex x="0" y="-27" />
+            <CubicDetachedVertex x="-22" y="-35" inRotation="0.165149" inDistance="12.165525" outRotation="3.141593" outDistance="8" />
+            <CubicDetachedVertex x="-43" y="-30" inRotation="-0.982794" inDistance="3.605551" outRotation="1.570796" outDistance="2" />
+            <StraightVertex x="-43" y="28" />
+            <CubicDetachedVertex x="-23" y="26" inRotation="-3.030935" inDistance="9.055385" outRotation="0" outDistance="9" />
+            <StraightVertex x="0" y="35" />
+          </PointsPath>
+          <Fill>
+            <SolidColor colorValue="FFDCEBF8">
+              <DataBindContext sourcePathIds="0:900-0:912" propertyKey="37" />
+            </SolidColor>
+          </Fill>
+          <Stroke thickness="2.55" cap="round" join="round">
+            <SolidColor colorValue="FF0C477B">
+              <DataBindContext sourcePathIds="0:900-0:910" propertyKey="37" />
+            </SolidColor>
+          </Stroke>
+        </Shape>
+      </Node>
+      <Node name="Indexed edges" x="44" y="-10" id="0:114">
+        <Shape name="Top menu section tab">
+          <PointsPath isClosed="true">
+            <StraightVertex x="0" y="-10" />
+            <StraightVertex x="7" y="-9" />
+            <StraightVertex x="9" y="-7" />
+            <StraightVertex x="9" y="-2" />
+            <StraightVertex x="0" y="-3" />
+          </PointsPath>
+          <Fill>
+            <SolidColor colorValue="FFDF6939">
+              <DataBindContext sourcePathIds="0:900-0:916" propertyKey="37" />
+            </SolidColor>
+          </Fill>
+        </Shape>
+        <Shape name="Lower menu section tab">
+          <PointsPath isClosed="true">
+            <StraightVertex x="0" y="6" />
+            <StraightVertex x="6" y="7" />
+            <StraightVertex x="8" y="9" />
+            <StraightVertex x="8" y="14" />
+            <StraightVertex x="0" y="13" />
+          </PointsPath>
+          <Fill>
+            <SolidColor colorValue="FF1765A8">
+              <DataBindContext sourcePathIds="0:900-0:911" propertyKey="37" />
+            </SolidColor>
+          </Fill>
+        </Shape>
+      </Node>
+      <Shape name="Thick stitched blue cover">
+        <PointsPath isClosed="true">
+          <StraightVertex x="0" y="-23" />
+          <StraightVertex x="22" y="-34" />
+          <StraightVertex x="47" y="-34" />
+          <StraightVertex x="48" y="33" />
+          <StraightVertex x="22" y="30" />
+          <StraightVertex x="0" y="40" />
+          <StraightVertex x="-22" y="30" />
+          <StraightVertex x="-48" y="33" />
+          <StraightVertex x="-47" y="-34" />
+          <StraightVertex x="-22" y="-34" />
+        </PointsPath>
+        <Fill>
+          <SolidColor colorValue="FF0C477B">
+            <DataBindContext sourcePathIds="0:900-0:910" propertyKey="37" />
+          </SolidColor>
+        </Fill>
+      </Shape>
+    </Node>
+    <Node name="Weight under the menu" x="62" y="108" opacity="0.45" id="0:115">
+      <Shape name="Contact shade" x="0" y="0">
+        <Ellipse width="102" height="12" originX="0.5" originY="0.5" />
+        <Fill>
+          <SolidColor colorValue="440C477B">
+            <DataBindContext sourcePathIds="0:900-0:920" propertyKey="37" />
+          </SolidColor>
+        </Fill>
+      </Shape>
+    </Node>
+    <StateMachine id="0:102" name="Gesture">
+      <StateMachineLayer name="Action and settle">
+        <EntryState x="0" y="0">
+          <StateTransition stateToId="0:104" />
+        </EntryState>
+        <AnimationState id="0:104" x="210" y="0" animationId="0:103" />
+      </StateMachineLayer>
+    </StateMachine>
+    <LinearAnimation name="Turn the restaurant menu" id="0:103" fps="60" duration="43" loopValue="oneShot">
+      <KeyedObject objectId="0:110">
+        <KeyedProperty property="y">
+          <KeyFrameDouble frame="0" value="68" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="5" value="71" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="14" value="62" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="26" value="65" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="40" value="68" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+        <KeyedProperty property="rotation">
+          <KeyFrameDouble frame="0" value="0" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="6" value="0.07" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="18" value="-0.083" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="29" value="-0.018" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="40" value="0" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:111">
+        <KeyedProperty property="opacity">
+          <KeyFrameDouble frame="0" value="0" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="3" value="0" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="7" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="33" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="39" value="0" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+        <KeyedProperty property="scaleX">
+          <KeyFrameDouble frame="0" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="6" value="0.9" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="14" value="0.41" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="20" value="0.045" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="24" value="-0.36" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="30" value="-0.9" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="37" value="-1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+        <KeyedProperty property="rotation">
+          <KeyFrameDouble frame="0" value="0" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="8" value="-0.13" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="19" value="-0.17" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="27" value="0.05" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="37" value="0" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:112">
+        <KeyedProperty property="rotation">
+          <KeyFrameDouble frame="0" value="-0.03" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="9" value="-0.16" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="19" value="-0.07" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="39" value="-0.03" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:113">
+        <KeyedProperty property="rotation">
+          <KeyFrameDouble frame="0" value="0.02" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="13" value="0.02" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="25" value="0.1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="34" value="-0.018" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="40" value="0.02" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+        <KeyedProperty property="scaleX">
+          <KeyFrameDouble frame="0" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="24" value="0.92" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="39" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:114">
+        <KeyedProperty property="x">
+          <KeyFrameDouble frame="0" value="44" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="9" value="42" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="19" value="46" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="39" value="44" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+        <KeyedProperty property="rotation">
+          <KeyFrameDouble frame="0" value="0" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="10" value="-0.1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="22" value="0.04" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="38" value="0" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:115">
+        <KeyedProperty property="opacity">
+          <KeyFrameDouble frame="0" value="0.45" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="16" value="0.25" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="39" value="0.45" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+        <KeyedProperty property="scaleX">
+          <KeyFrameDouble frame="0" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="16" value="1.1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="39" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+      </KeyedObject>
+    </LinearAnimation>
+  </Artboard>
+  <Artboard id="0:200" name="SweetoLoyalty" width="128" height="128" x="152" styleId="0:201" defaultStateMachineId="0:202" viewModelId="0:900" viewModelInstanceId="0:901">
+    <LayoutComponentStyle id="0:201" />
+    <Node name="Rubber stamp" x="91" y="45" rotation="-0.17" id="0:211">
+      <Shape name="Wood handle side">
+        <PointsPath isClosed="true">
+          <StraightVertex x="0" y="-22" />
+          <StraightVertex x="10" y="-20" />
+          <StraightVertex x="13" y="-14" />
+          <StraightVertex x="7" y="-3" />
+          <StraightVertex x="7" y="9" />
+          <StraightVertex x="-4" y="9" />
+          <StraightVertex x="-2" y="-6" />
+          <StraightVertex x="-5" y="-11" />
+        </PointsPath>
+        <Fill>
+          <SolidColor colorValue="FFFFD29C">
+            <DataBindContext sourcePathIds="0:900-0:919" propertyKey="37" />
+          </SolidColor>
+        </Fill>
+      </Shape>
+      <Shape name="Printed solid handle">
+        <PointsPath isClosed="true">
+          <CubicDetachedVertex x="-5" y="-22" inRotation="3.141593" inDistance="6" outRotation="-0.321751" outDistance="6.324555" />
+          <CubicDetachedVertex x="9" y="-19" inRotation="-2.601173" inDistance="5.830952" outRotation="0.785398" outDistance="5.656854" />
+          <CubicDetachedVertex x="8" y="-8" inRotation="-1.030377" inDistance="5.830952" outRotation="2.55359" outDistance="3.605551" />
+          <StraightVertex x="5" y="4" />
+          <StraightVertex x="10" y="7" />
+          <StraightVertex x="-10" y="7" />
+          <StraightVertex x="-6" y="4" />
+          <StraightVertex x="-5" y="-7" />
+          <CubicDetachedVertex x="-11" y="-15" inRotation="1.107149" inDistance="4.472136" outRotation="-1.768192" outDistance="5.09902" />
+        </PointsPath>
+        <Fill>
+          <SolidColor colorValue="FFF2AB6E">
+            <DataBindContext sourcePathIds="0:900-0:918" propertyKey="37" />
+          </SolidColor>
+        </Fill>
+        <Stroke thickness="2.3" cap="round" join="round">
+          <SolidColor colorValue="FF0C477B">
+            <DataBindContext sourcePathIds="0:900-0:910" propertyKey="37" />
+          </SolidColor>
+        </Stroke>
+      </Shape>
+      <Node name="Stamp compresses at the rubber foot" x="0" y="11" id="0:212">
+        <Shape name="Rubber layer" x="0" y="4">
+          <Rectangle width="31" height="9" originX="0.5" originY="0.5" cornerRadiusTL="4" />
+          <Fill>
+            <SolidColor colorValue="FF0C477B">
+              <DataBindContext sourcePathIds="0:900-0:910" propertyKey="37" />
+            </SolidColor>
+          </Fill>
+        </Shape>
+        <Shape name="Wood base" x="0" y="0">
+          <Rectangle width="34" height="13" originX="0.5" originY="0.5" cornerRadiusTL="4" />
+          <Fill>
+            <SolidColor colorValue="FF1765A8">
+              <DataBindContext sourcePathIds="0:900-0:911" propertyKey="37" />
+            </SolidColor>
+          </Fill>
+          <Stroke thickness="2.1" cap="round" join="round">
+            <SolidColor colorValue="FF0C477B">
+              <DataBindContext sourcePathIds="0:900-0:910" propertyKey="37" />
+            </SolidColor>
+          </Stroke>
+        </Shape>
+        <Shape name="Rubber shadow edge" x="0" y="4">
+          <Rectangle width="26" height="3.2" originX="0.5" originY="0.5" cornerRadiusTL="1.6" />
+          <Fill>
+            <SolidColor colorValue="FFDCEBF8">
+              <DataBindContext sourcePathIds="0:900-0:912" propertyKey="37" />
+            </SolidColor>
+          </Fill>
+        </Shape>
+      </Node>
+    </Node>
+    <Node name="Loyalty ticket" x="57" y="84" rotation="-0.105" id="0:210">
+      <Node name="Hinged right stub" x="17" y="0" id="0:213">
+        <Node name="Printed dessert seal" x="11" y="1" id="0:214">
+          <Shape name="Loyalty stamp insignia" x="0" y="0">
+            <PointsPath isClosed="true">
+              <StraightVertex x="0" y="-6" />
+              <StraightVertex x="1.44" y="-1.38" />
+              <StraightVertex x="6" y="0" />
+              <StraightVertex x="1.44" y="1.38" />
+              <StraightVertex x="0" y="6" />
+              <StraightVertex x="-1.32" y="1.38" />
+              <StraightVertex x="-6" y="0" />
+              <StraightVertex x="-1.32" y="-1.38" />
+            </PointsPath>
+            <Fill>
+              <SolidColor colorValue="FFFFF8E9">
+                <DataBindContext sourcePathIds="0:900-0:914" propertyKey="37" />
+              </SolidColor>
+            </Fill>
+          </Shape>
+          <Shape name="Ring round the impression" x="0" y="0">
+            <Ellipse width="15" height="15" originX="0.5" originY="0.5" />
+            <Fill>
+              <SolidColor colorValue="FFDF6939">
+                <DataBindContext sourcePathIds="0:900-0:916" propertyKey="37" />
+              </SolidColor>
+            </Fill>
+          </Shape>
+          <Shape name="Wet ink edge" x="0" y="0">
+            <Ellipse width="21" height="21" originX="0.5" originY="0.5" />
+            <Stroke thickness="1.45" cap="round" join="round">
+              <SolidColor colorValue="FFB7552D">
+                <DataBindContext sourcePathIds="0:900-0:917" propertyKey="37" />
+              </SolidColor>
+            </Stroke>
+          </Shape>
+        </Node>
+        <Shape name="Perforation" x="1" y="-13">
+          <Ellipse width="1.7" height="1.7" originX="0.5" originY="0.5" />
+          <Fill>
+            <SolidColor colorValue="FF1765A8">
+              <DataBindContext sourcePathIds="0:900-0:911" propertyKey="37" />
+            </SolidColor>
+          </Fill>
+        </Shape>
+        <Shape name="Perforation" x="1" y="-6.5">
+          <Ellipse width="1.7" height="1.7" originX="0.5" originY="0.5" />
+          <Fill>
+            <SolidColor colorValue="FF1765A8">
+              <DataBindContext sourcePathIds="0:900-0:911" propertyKey="37" />
+            </SolidColor>
+          </Fill>
+        </Shape>
+        <Shape name="Perforation" x="1" y="0">
+          <Ellipse width="1.7" height="1.7" originX="0.5" originY="0.5" />
+          <Fill>
+            <SolidColor colorValue="FF1765A8">
+              <DataBindContext sourcePathIds="0:900-0:911" propertyKey="37" />
+            </SolidColor>
+          </Fill>
+        </Shape>
+        <Shape name="Perforation" x="1" y="6.5">
+          <Ellipse width="1.7" height="1.7" originX="0.5" originY="0.5" />
+          <Fill>
+            <SolidColor colorValue="FF1765A8">
+              <DataBindContext sourcePathIds="0:900-0:911" propertyKey="37" />
+            </SolidColor>
+          </Fill>
+        </Shape>
+        <Shape name="Perforation" x="1" y="13">
+          <Ellipse width="1.7" height="1.7" originX="0.5" originY="0.5" />
+          <Fill>
+            <SolidColor colorValue="FF1765A8">
+              <DataBindContext sourcePathIds="0:900-0:911" propertyKey="37" />
+            </SolidColor>
+          </Fill>
+        </Shape>
+        <Shape name="Warm folded paper stub">
+          <PointsPath isClosed="true">
+            <StraightVertex x="0" y="-21" />
+            <StraightVertex x="21" y="-21" />
+            <StraightVertex x="26" y="-16" />
+            <StraightVertex x="25" y="-7" />
+            <CubicDetachedVertex x="21" y="0" inRotation="-1.570796" inDistance="4" outRotation="1.405648" outDistance="6.082763" />
+            <StraightVertex x="25" y="8" />
+            <StraightVertex x="25" y="19" />
+            <StraightVertex x="23" y="21" />
+            <StraightVertex x="0" y="21" />
+          </PointsPath>
+          <Fill>
+            <SolidColor colorValue="FFFFD29C">
+              <DataBindContext sourcePathIds="0:900-0:919" propertyKey="37" />
+            </SolidColor>
+          </Fill>
+          <Stroke thickness="2.55" cap="round" join="round">
+            <SolidColor colorValue="FF0C477B">
+              <DataBindContext sourcePathIds="0:900-0:910" propertyKey="37" />
+            </SolidColor>
+          </Stroke>
+        </Shape>
+      </Node>
+      <Node name="Printed part of the loyalty pass">
+        <Shape name="Loyalty imprint" x="-20" y="-9">
+          <Rectangle width="28" height="4.7" originX="0.5" originY="0.5" cornerRadiusTL="2.35" />
+          <Fill>
+            <SolidColor colorValue="FFFFF8E9">
+              <DataBindContext sourcePathIds="0:900-0:914" propertyKey="37" />
+            </SolidColor>
+          </Fill>
+        </Shape>
+        <Shape name="Loyalty imprint" x="-22" y="-2">
+          <Rectangle width="22" height="2.1" originX="0.5" originY="0.5" cornerRadiusTL="1.05" />
+          <Fill>
+            <SolidColor colorValue="FF9AC5E8">
+              <DataBindContext sourcePathIds="0:900-0:913" propertyKey="37" />
+            </SolidColor>
+          </Fill>
+        </Shape>
+        <Shape name="Stamp well" x="-28" y="8">
+          <Ellipse width="9.5" height="9.5" originX="0.5" originY="0.5" />
+          <Stroke thickness="1.55" cap="round" join="round">
+            <SolidColor colorValue="FFDCEBF8">
+              <DataBindContext sourcePathIds="0:900-0:912" propertyKey="37" />
+            </SolidColor>
+          </Stroke>
+        </Shape>
+        <Shape name="Stamp well" x="-14" y="8">
+          <Ellipse width="9.5" height="9.5" originX="0.5" originY="0.5" />
+          <Stroke thickness="1.55" cap="round" join="round">
+            <SolidColor colorValue="FFDCEBF8">
+              <DataBindContext sourcePathIds="0:900-0:912" propertyKey="37" />
+            </SolidColor>
+          </Stroke>
+        </Shape>
+        <Shape name="Stamp well" x="0" y="8">
+          <Ellipse width="9.5" height="9.5" originX="0.5" originY="0.5" />
+          <Stroke thickness="1.55" cap="round" join="round">
+            <SolidColor colorValue="FFDCEBF8">
+              <DataBindContext sourcePathIds="0:900-0:912" propertyKey="37" />
+            </SolidColor>
+          </Stroke>
+        </Shape>
+        <Shape name="Blue card stock">
+          <PointsPath isClosed="true">
+            <StraightVertex x="-41" y="-17" />
+            <StraightVertex x="-37" y="-21" />
+            <StraightVertex x="18" y="-21" />
+            <StraightVertex x="18" y="21" />
+            <StraightVertex x="-37" y="21" />
+            <StraightVertex x="-41" y="17" />
+            <StraightVertex x="-41" y="9" />
+            <CubicDetachedVertex x="-37" y="0" inRotation="1.892547" inDistance="6.324555" outRotation="-1.951303" outDistance="5.385165" />
+            <StraightVertex x="-41" y="-9" />
+          </PointsPath>
+          <Fill>
+            <SolidColor colorValue="FF1765A8">
+              <DataBindContext sourcePathIds="0:900-0:911" propertyKey="37" />
+            </SolidColor>
+          </Fill>
+          <Stroke thickness="2.55" cap="round" join="round">
+            <SolidColor colorValue="FF0C477B">
+              <DataBindContext sourcePathIds="0:900-0:910" propertyKey="37" />
+            </SolidColor>
+          </Stroke>
+        </Shape>
+      </Node>
+    </Node>
+    <Node name="Ink ring passing around the contact point" x="89" y="81" opacity="0" id="0:215">
+      <Shape name="Expanding ink line" x="0" y="0">
+        <Ellipse width="37" height="13" originX="0.5" originY="0.5" />
+        <Stroke thickness="2.1" cap="round" join="round">
+          <SolidColor colorValue="FFDF6939">
+            <DataBindContext sourcePathIds="0:900-0:916" propertyKey="37" />
+          </SolidColor>
+        </Stroke>
+      </Shape>
+      <Shape name="Ink fleck" x="-16" y="-5">
+        <Ellipse width="2.8" height="2.8" originX="0.5" originY="0.5" />
+        <Fill>
+          <SolidColor colorValue="FFDF6939">
+            <DataBindContext sourcePathIds="0:900-0:916" propertyKey="37" />
+          </SolidColor>
+        </Fill>
+      </Shape>
+      <Shape name="Ink fleck" x="14" y="-6">
+        <Ellipse width="2.8" height="2.8" originX="0.5" originY="0.5" />
+        <Fill>
+          <SolidColor colorValue="FFDF6939">
+            <DataBindContext sourcePathIds="0:900-0:916" propertyKey="37" />
+          </SolidColor>
+        </Fill>
+      </Shape>
+      <Shape name="Ink fleck" x="19" y="2">
+        <Ellipse width="2.8" height="2.8" originX="0.5" originY="0.5" />
+        <Fill>
+          <SolidColor colorValue="FFDF6939">
+            <DataBindContext sourcePathIds="0:900-0:916" propertyKey="37" />
+          </SolidColor>
+        </Fill>
+      </Shape>
+      <Shape name="Ink fleck" x="-21" y="6">
+        <Ellipse width="2.8" height="2.8" originX="0.5" originY="0.5" />
+        <Fill>
+          <SolidColor colorValue="FFDF6939">
+            <DataBindContext sourcePathIds="0:900-0:916" propertyKey="37" />
+          </SolidColor>
+        </Fill>
+      </Shape>
+    </Node>
+    <Node name="Ticket contact shadow" x="60" y="106" opacity="0.48" id="0:216">
+      <Shape name="Under the paper" x="0" y="0">
+        <Ellipse width="92" height="13" originX="0.5" originY="0.5" />
+        <Fill>
+          <SolidColor colorValue="440C477B">
+            <DataBindContext sourcePathIds="0:900-0:920" propertyKey="37" />
+          </SolidColor>
+        </Fill>
+      </Shape>
+    </Node>
+    <StateMachine id="0:202" name="Gesture">
+      <StateMachineLayer name="Action and settle">
+        <EntryState x="0" y="0">
+          <StateTransition stateToId="0:204" />
+        </EntryState>
+        <AnimationState id="0:204" x="210" y="0" animationId="0:203" />
+      </StateMachineLayer>
+    </StateMachine>
+    <LinearAnimation name="Press the loyalty seal" id="0:203" fps="60" duration="50" loopValue="oneShot">
+      <KeyedObject objectId="0:210">
+        <KeyedProperty property="y">
+          <KeyFrameDouble frame="0" value="84" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="8" value="78" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="17" value="80" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="25" value="86" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="43" value="84" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+        <KeyedProperty property="rotation">
+          <KeyFrameDouble frame="0" value="-0.105" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="9" value="-0.22" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="19" value="-0.07" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="26" value="-0.02" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="46" value="-0.105" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:211">
+        <KeyedProperty property="y">
+          <KeyFrameDouble frame="0" value="45" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="8" value="38" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="14" value="31" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="22" value="57" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="25" value="61" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="32" value="43" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="44" value="45" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+        <KeyedProperty property="x">
+          <KeyFrameDouble frame="0" value="91" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="14" value="89" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="24" value="87" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="44" value="91" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+        <KeyedProperty property="rotation">
+          <KeyFrameDouble frame="0" value="-0.17" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="12" value="-0.27" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="22" value="0" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="28" value="0.03" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="46" value="-0.17" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:212">
+        <KeyedProperty property="scaleY">
+          <KeyFrameDouble frame="0" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="22" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="25" value="0.69" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="32" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+        <KeyedProperty property="scaleX">
+          <KeyFrameDouble frame="0" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="23" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="26" value="1.13" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="33" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:213">
+        <KeyedProperty property="scaleX">
+          <KeyFrameDouble frame="0" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="7" value="0.41" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="13" value="0.71" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="21" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="27" value="1.04" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="42" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+        <KeyedProperty property="rotation">
+          <KeyFrameDouble frame="0" value="0" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="7" value="-0.13" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="20" value="0.06" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="38" value="0" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:214">
+        <KeyedProperty property="scaleX">
+          <KeyFrameDouble frame="0" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="16" value="0.85" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="23" value="0.95" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="28" value="1.14" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="42" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+        <KeyedProperty property="scaleY">
+          <KeyFrameDouble frame="0" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="16" value="0.85" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="23" value="0.95" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="28" value="1.14" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="42" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+        <KeyedProperty property="opacity">
+          <KeyFrameDouble frame="0" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="9" value="0.23" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="20" value="0.17" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="25" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:215">
+        <KeyedProperty property="opacity">
+          <KeyFrameDouble frame="0" value="0" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="24" value="0" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="27" value="0.9" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="39" value="0" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+        <KeyedProperty property="scaleX">
+          <KeyFrameDouble frame="0" value="0.52" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="24" value="0.52" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="39" value="1.29" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+        <KeyedProperty property="scaleY">
+          <KeyFrameDouble frame="0" value="0.52" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="24" value="0.52" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="39" value="1.29" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:216">
+        <KeyedProperty property="opacity">
+          <KeyFrameDouble frame="0" value="0.48" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="11" value="0.25" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="25" value="0.56" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="46" value="0.48" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+        <KeyedProperty property="scaleX">
+          <KeyFrameDouble frame="0" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="11" value="1.12" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="44" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+      </KeyedObject>
+    </LinearAnimation>
+  </Artboard>
+  <Artboard id="0:300" name="SweetoReview" width="128" height="128" x="304" styleId="0:301" defaultStateMachineId="0:302" viewModelId="0:900" viewModelInstanceId="0:901">
+    <LayoutComponentStyle id="0:301" />
+    <Node name="Cream writing bubble" x="55" y="59" rotation="-0.065" id="0:310">
+      <Node name="Writing sweeps across the paper" x="-19" y="-11" id="0:311">
+        <Shape name="Printed line" x="19" y="0">
+          <Rectangle width="38" height="3.7" originX="0.5" originY="0.5" cornerRadiusTL="1.6" />
+          <Fill>
+            <SolidColor colorValue="FF1765A8">
+              <DataBindContext sourcePathIds="0:900-0:911" propertyKey="37" />
+            </SolidColor>
+          </Fill>
+        </Shape>
+      </Node>
+      <Node name="Writing sweeps across the paper" x="-19" y="-1" id="0:312">
+        <Shape name="Printed line" x="15.5" y="0">
+          <Rectangle width="31" height="3.1" originX="0.5" originY="0.5" cornerRadiusTL="1.6" />
+          <Fill>
+            <SolidColor colorValue="FF1765A8">
+              <DataBindContext sourcePathIds="0:900-0:911" propertyKey="37" />
+            </SolidColor>
+          </Fill>
+        </Shape>
+      </Node>
+      <Node name="Writing sweeps across the paper" x="-19" y="9" id="0:313">
+        <Shape name="Printed line" x="11" y="0">
+          <Rectangle width="22" height="3.1" originX="0.5" originY="0.5" cornerRadiusTL="1.6" />
+          <Fill>
+            <SolidColor colorValue="FFB7552D">
+              <DataBindContext sourcePathIds="0:900-0:917" propertyKey="37" />
+            </SolidColor>
+          </Fill>
+        </Shape>
+      </Node>
+      <Node name="Pencil and paper crease" x="21" y="-15" id="0:317">
+        <Shape name="Small folded corner">
+          <PointsPath isClosed="true">
+            <StraightVertex x="0" y="-10" />
+            <StraightVertex x="11" y="-8" />
+            <StraightVertex x="11" y="1" />
+          </PointsPath>
+          <Fill>
+            <SolidColor colorValue="FFFFD29C">
+              <DataBindContext sourcePathIds="0:900-0:919" propertyKey="37" />
+            </SolidColor>
+          </Fill>
+        </Shape>
+        <Shape name="Paper fold rule">
+          <PointsPath isClosed="false">
+            <StraightVertex x="0" y="-9" />
+            <StraightVertex x="4" y="-2" />
+            <StraightVertex x="10" y="-1" />
+          </PointsPath>
+          <Stroke thickness="1.8" cap="round" join="round">
+            <SolidColor colorValue="FFDF6939">
+              <DataBindContext sourcePathIds="0:900-0:916" propertyKey="37" />
+            </SolidColor>
+          </Stroke>
+        </Shape>
+      </Node>
+      <Shape name="Paper conversation">
+        <PointsPath isClosed="true">
+          <CubicDetachedVertex x="-23" y="-28" inRotation="3.141593" inDistance="11" outRotation="0" outDistance="10" />
+          <CubicDetachedVertex x="24" y="-28" inRotation="3.141593" inDistance="13" outRotation="0" outDistance="9" />
+          <CubicDetachedVertex x="34" y="-16" inRotation="-1.570796" inDistance="7" outRotation="1.570796" outDistance="12" />
+          <CubicDetachedVertex x="34" y="12" inRotation="-1.570796" inDistance="8" outRotation="1.570796" outDistance="9" />
+          <CubicDetachedVertex x="23" y="23" inRotation="0" inDistance="9" outRotation="3.141593" outDistance="11" />
+          <StraightVertex x="-8" y="23" />
+          <StraightVertex x="-24" y="35" />
+          <StraightVertex x="-23" y="23" />
+          <CubicDetachedVertex x="-34" y="12" inRotation="1.471128" inDistance="10.049876" outRotation="-1.570796" outDistance="10" />
+          <CubicDetachedVertex x="-34" y="-16" inRotation="1.570796" inDistance="6" outRotation="-1.570796" outDistance="8" />
+        </PointsPath>
+        <Fill>
+          <SolidColor colorValue="FFFFF8E9">
+            <DataBindContext sourcePathIds="0:900-0:914" propertyKey="37" />
+          </SolidColor>
+        </Fill>
+        <Stroke thickness="2.55" cap="round" join="round">
+          <SolidColor colorValue="FF0C477B">
+            <DataBindContext sourcePathIds="0:900-0:910" propertyKey="37" />
+          </SolidColor>
+        </Stroke>
+      </Shape>
+    </Node>
+    <Node name="Blue reply bubble" x="78" y="77" rotation="0.036" id="0:314">
+      <Node name="A drawn check in the reply" x="13" y="2" id="0:315">
+        <Shape name="Check starts">
+          <PointsPath isClosed="false">
+            <StraightVertex x="0" y="0" />
+            <StraightVertex x="4" y="4" />
+            <StraightVertex x="13" y="-6" />
+          </PointsPath>
+          <Stroke thickness="3.75" cap="round" join="round">
+            <SolidColor colorValue="FFFFFDF5">
+              <DataBindContext sourcePathIds="0:900-0:915" propertyKey="37" />
+            </SolidColor>
+          </Stroke>
+        </Shape>
+      </Node>
+      <Node name="Pale reply accent">
+        <Shape name="Short type line" x="2" y="11">
+          <Rectangle width="15" height="2" originX="0.5" originY="0.5" cornerRadiusTL="1" />
+          <Fill>
+            <SolidColor colorValue="FF9AC5E8">
+              <DataBindContext sourcePathIds="0:900-0:913" propertyKey="37" />
+            </SolidColor>
+          </Fill>
+        </Shape>
+      </Node>
+      <Shape name="Blue conversational reply">
+        <PointsPath isClosed="true">
+          <CubicDetachedVertex x="-16" y="-23" inRotation="3.141593" inDistance="12" outRotation="0" outDistance="10" />
+          <CubicDetachedVertex x="25" y="-23" inRotation="3.141593" inDistance="8" outRotation="0" outDistance="3" />
+          <CubicDetachedVertex x="34" y="-12" inRotation="-1.570796" inDistance="6" outRotation="1.570796" outDistance="8" />
+          <CubicDetachedVertex x="34" y="15" inRotation="-1.570796" inDistance="9" outRotation="1.570796" outDistance="8" />
+          <StraightVertex x="28" y="23" />
+          <StraightVertex x="29" y="34" />
+          <StraightVertex x="15" y="24" />
+          <CubicDetachedVertex x="-16" y="24" inRotation="0" inDistance="12" outRotation="3.141593" outDistance="10" />
+          <CubicDetachedVertex x="-28" y="12" inRotation="1.352127" inDistance="9.219544" outRotation="-1.570796" outDistance="7" />
+          <CubicDetachedVertex x="-28" y="-12" inRotation="1.570796" inDistance="7" outRotation="-1.570796" outDistance="8" />
+        </PointsPath>
+        <Fill>
+          <SolidColor colorValue="FF1765A8">
+            <DataBindContext sourcePathIds="0:900-0:911" propertyKey="37" />
+          </SolidColor>
+        </Fill>
+        <Stroke thickness="2.55" cap="round" join="round">
+          <SolidColor colorValue="FF0C477B">
+            <DataBindContext sourcePathIds="0:900-0:910" propertyKey="37" />
+          </SolidColor>
+        </Stroke>
+      </Shape>
+    </Node>
+    <Node name="Speech card resting shadow" x="65" y="106" opacity="0.39" id="0:316">
+      <Shape name="Contact shadow" x="0" y="0">
+        <Ellipse width="84" height="12" originX="0.5" originY="0.5" />
+        <Fill>
+          <SolidColor colorValue="440C477B">
+            <DataBindContext sourcePathIds="0:900-0:920" propertyKey="37" />
+          </SolidColor>
+        </Fill>
+      </Shape>
+    </Node>
+    <StateMachine id="0:302" name="Gesture">
+      <StateMachineLayer name="Action and settle">
+        <EntryState x="0" y="0">
+          <StateTransition stateToId="0:304" />
+        </EntryState>
+        <AnimationState id="0:304" x="210" y="0" animationId="0:303" />
+      </StateMachineLayer>
+    </StateMachine>
+    <LinearAnimation name="Write a little note" id="0:303" fps="60" duration="47" loopValue="oneShot">
+      <KeyedObject objectId="0:310">
+        <KeyedProperty property="scaleX">
+          <KeyFrameDouble frame="0" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="6" value="0.89" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="19" value="1.042" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="42" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+        <KeyedProperty property="scaleY">
+          <KeyFrameDouble frame="0" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="6" value="0.9" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="19" value="1.029" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="42" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+        <KeyedProperty property="rotation">
+          <KeyFrameDouble frame="0" value="-0.065" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="7" value="-0.093" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="18" value="-0.03" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="43" value="-0.065" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+        <KeyedProperty property="y">
+          <KeyFrameDouble frame="0" value="59" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="6" value="61" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="19" value="53" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="47" value="59" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:311">
+        <KeyedProperty property="scaleX">
+          <KeyFrameDouble frame="0" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="4" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="10" value="0.025" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="23" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+        <KeyedProperty property="opacity">
+          <KeyFrameDouble frame="0" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="8" value="0.4" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="20" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:312">
+        <KeyedProperty property="scaleX">
+          <KeyFrameDouble frame="0" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="6" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="12" value="0.025" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="26" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+        <KeyedProperty property="opacity">
+          <KeyFrameDouble frame="0" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="10" value="0.4" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="23" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:313">
+        <KeyedProperty property="scaleX">
+          <KeyFrameDouble frame="0" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="8" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="14" value="0.025" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="29" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+        <KeyedProperty property="opacity">
+          <KeyFrameDouble frame="0" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="12" value="0.4" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="26" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:314">
+        <KeyedProperty property="y">
+          <KeyFrameDouble frame="0" value="77" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="7" value="77" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="22" value="72" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="39" value="77" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+        <KeyedProperty property="x">
+          <KeyFrameDouble frame="0" value="78" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="9" value="78" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="22" value="85" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="42" value="78" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+        <KeyedProperty property="rotation">
+          <KeyFrameDouble frame="0" value="0.036" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="8" value="0.036" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="21" value="0.12" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="42" value="0.036" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:315">
+        <KeyedProperty property="opacity">
+          <KeyFrameDouble frame="0" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="12" value="0" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="25" value="0" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="34" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+        <KeyedProperty property="scaleX">
+          <KeyFrameDouble frame="0" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="25" value="0.05" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="35" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+        <KeyedProperty property="scaleY">
+          <KeyFrameDouble frame="0" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="25" value="0.35" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="35" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:316">
+        <KeyedProperty property="opacity">
+          <KeyFrameDouble frame="0" value="0.39" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="20" value="0.17" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="46" value="0.39" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+        <KeyedProperty property="scaleX">
+          <KeyFrameDouble frame="0" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="20" value="1.11" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="44" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:317">
+        <KeyedProperty property="y">
+          <KeyFrameDouble frame="0" value="-15" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="15" value="-18" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="36" value="-15" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+        <KeyedProperty property="rotation">
+          <KeyFrameDouble frame="0" value="0" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="11" value="0.1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="37" value="0" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+      </KeyedObject>
+    </LinearAnimation>
+  </Artboard>
+  <Artboard id="0:400" name="SweetoWifi" width="128" height="128" x="456" styleId="0:401" defaultStateMachineId="0:402" viewModelId="0:900" viewModelInstanceId="0:901">
+    <LayoutComponentStyle id="0:401" />
+    <Node name="Guest network tabletop card" x="63" y="70" rotation="-0.08" id="0:410">
+      <Node name="Signal ribbon" x="0" y="-19" id="0:411">
+        <Shape name="Signal curve">
+          <PointsPath isClosed="false">
+            <StraightVertex x="-20.5" y="5" />
+            <CubicDetachedVertex x="0" y="-4" inRotation="3.141593" inDistance="7.79" outRotation="0" outDistance="7.38" />
+            <StraightVertex x="20.5" y="5" />
+          </PointsPath>
+          <Stroke thickness="3.8" cap="round" join="round">
+            <SolidColor colorValue="FFFFFDF5">
+              <DataBindContext sourcePathIds="0:900-0:915" propertyKey="37" />
+            </SolidColor>
+          </Stroke>
+        </Shape>
+      </Node>
+      <Node name="Signal ribbon" x="0" y="-9" id="0:412">
+        <Shape name="Signal curve">
+          <PointsPath isClosed="false">
+            <StraightVertex x="-15" y="5" />
+            <CubicDetachedVertex x="0" y="-4" inRotation="3.141593" inDistance="5.7" outRotation="0" outDistance="5.4" />
+            <StraightVertex x="15" y="5" />
+          </PointsPath>
+          <Stroke thickness="3.8" cap="round" join="round">
+            <SolidColor colorValue="FFFFFDF5">
+              <DataBindContext sourcePathIds="0:900-0:915" propertyKey="37" />
+            </SolidColor>
+          </Stroke>
+        </Shape>
+      </Node>
+      <Node name="Signal ribbon" x="0" y="1" id="0:413">
+        <Shape name="Signal curve">
+          <PointsPath isClosed="false">
+            <StraightVertex x="-8.5" y="5" />
+            <CubicDetachedVertex x="0" y="-4" inRotation="3.141593" inDistance="3.23" outRotation="0" outDistance="3.06" />
+            <StraightVertex x="8.5" y="5" />
+          </PointsPath>
+          <Stroke thickness="3.8" cap="round" join="round">
+            <SolidColor colorValue="FFFFFDF5">
+              <DataBindContext sourcePathIds="0:900-0:915" propertyKey="37" />
+            </SolidColor>
+          </Stroke>
+        </Shape>
+      </Node>
+      <Node name="Signal point" x="0" y="13" id="0:414">
+        <Shape name="Network point" x="0" y="0">
+          <Ellipse width="6.3" height="6.3" originX="0.5" originY="0.5" />
+          <Fill>
+            <SolidColor colorValue="FFFFD29C">
+              <DataBindContext sourcePathIds="0:900-0:919" propertyKey="37" />
+            </SolidColor>
+          </Fill>
+        </Shape>
+      </Node>
+      <Shape name="Desk sign" x="0" y="0">
+        <Rectangle width="69" height="66" originX="0.5" originY="0.5" cornerRadiusTL="12" />
+        <Fill>
+          <SolidColor colorValue="FF1765A8">
+            <DataBindContext sourcePathIds="0:900-0:911" propertyKey="37" />
+          </SolidColor>
+        </Fill>
+        <Stroke thickness="2.7" cap="round" join="round">
+          <SolidColor colorValue="FF0C477B">
+            <DataBindContext sourcePathIds="0:900-0:910" propertyKey="37" />
+          </SolidColor>
+        </Stroke>
+      </Shape>
+    </Node>
+    <Node name="Cream table card folded foot" x="64" y="95" id="0:415">
+      <Shape name="Fold side">
+        <PointsPath isClosed="true">
+          <StraightVertex x="34" y="-23" />
+          <StraightVertex x="48" y="11" />
+          <StraightVertex x="31" y="11" />
+        </PointsPath>
+        <Fill>
+          <SolidColor colorValue="FFFFD29C">
+            <DataBindContext sourcePathIds="0:900-0:919" propertyKey="37" />
+          </SolidColor>
+        </Fill>
+      </Shape>
+      <Shape name="Paper support">
+        <PointsPath isClosed="true">
+          <StraightVertex x="-31" y="-23" />
+          <StraightVertex x="34" y="-23" />
+          <StraightVertex x="48" y="11" />
+          <StraightVertex x="-35" y="11" />
+        </PointsPath>
+        <Fill>
+          <SolidColor colorValue="FFFFF8E9">
+            <DataBindContext sourcePathIds="0:900-0:914" propertyKey="37" />
+          </SolidColor>
+        </Fill>
+        <Stroke thickness="2.6" cap="round" join="round">
+          <SolidColor colorValue="FF0C477B">
+            <DataBindContext sourcePathIds="0:900-0:910" propertyKey="37" />
+          </SolidColor>
+        </Stroke>
+      </Shape>
+    </Node>
+    <Node name="Contact shadow" x="65" y="107" opacity="0.4" id="0:416">
+      <Shape name="Shallow contact" x="0" y="0">
+        <Ellipse width="93" height="10" originX="0.5" originY="0.5" />
+        <Fill>
+          <SolidColor colorValue="440C477B">
+            <DataBindContext sourcePathIds="0:900-0:920" propertyKey="37" />
+          </SolidColor>
+        </Fill>
+      </Shape>
+    </Node>
+    <StateMachine id="0:402" name="Gesture">
+      <StateMachineLayer name="Action and settle">
+        <EntryState x="0" y="0">
+          <StateTransition stateToId="0:404" />
+        </EntryState>
+        <AnimationState id="0:404" x="210" y="0" animationId="0:403" />
+      </StateMachineLayer>
+    </StateMachine>
+    <LinearAnimation name="Show guest Wi-Fi" id="0:403" fps="60" duration="43" loopValue="oneShot">
+      <KeyedObject objectId="0:410">
+        <KeyedProperty property="y">
+          <KeyFrameDouble frame="0" value="70" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="5" value="72" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="15" value="60" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="25" value="65" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="41" value="70" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+        <KeyedProperty property="rotation">
+          <KeyFrameDouble frame="0" value="-0.08" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="6" value="-0.15" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="22" value="-0.027" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="41" value="-0.08" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+        <KeyedProperty property="scaleY">
+          <KeyFrameDouble frame="0" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="7" value="0.93" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="16" value="1.04" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="42" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:411">
+        <KeyedProperty property="scaleX">
+          <KeyFrameDouble frame="0" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="6" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="10" value="0.27" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="22" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+        <KeyedProperty property="opacity">
+          <KeyFrameDouble frame="0" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="9" value="0.5" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="22" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:412">
+        <KeyedProperty property="scaleX">
+          <KeyFrameDouble frame="0" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="9" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="13" value="0.27" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="25" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+        <KeyedProperty property="opacity">
+          <KeyFrameDouble frame="0" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="12" value="0.5" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="25" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:413">
+        <KeyedProperty property="scaleX">
+          <KeyFrameDouble frame="0" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="12" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="16" value="0.27" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="28" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+        <KeyedProperty property="opacity">
+          <KeyFrameDouble frame="0" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="15" value="0.5" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="28" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:414">
+        <KeyedProperty property="scaleX">
+          <KeyFrameDouble frame="0" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="10" value="0.62" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="22" value="1.25" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="39" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+        <KeyedProperty property="scaleY">
+          <KeyFrameDouble frame="0" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="10" value="0.62" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="22" value="1.25" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="39" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:415">
+        <KeyedProperty property="scaleX">
+          <KeyFrameDouble frame="0" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="13" value="0.91" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="41" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+        <KeyedProperty property="rotation">
+          <KeyFrameDouble frame="0" value="0" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="16" value="0.07" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="41" value="0" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:416">
+        <KeyedProperty property="opacity">
+          <KeyFrameDouble frame="0" value="0.4" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="16" value="0.19" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="42" value="0.4" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+        <KeyedProperty property="scaleX">
+          <KeyFrameDouble frame="0" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="17" value="1.13" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="42" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.22" y1="0.78" x2="0.24" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+      </KeyedObject>
+    </LinearAnimation>
+  </Artboard>
+  <ViewModel id="0:900" name="VenuePalette" defaultInstanceId="0:901">
+    <ViewModelPropertyColor id="0:910" name="ink" />
+    <ViewModelPropertyColor id="0:911" name="primary" />
+    <ViewModelPropertyColor id="0:912" name="skyPaper" />
+    <ViewModelPropertyColor id="0:913" name="blueHighlight" />
+    <ViewModelPropertyColor id="0:914" name="paper" />
+    <ViewModelPropertyColor id="0:915" name="cream" />
+    <ViewModelPropertyColor id="0:916" name="accent" />
+    <ViewModelPropertyColor id="0:917" name="accentDark" />
+    <ViewModelPropertyColor id="0:918" name="accentMid" />
+    <ViewModelPropertyColor id="0:919" name="accentLight" />
+    <ViewModelPropertyColor id="0:920" name="shadow" />
+    <ViewModelInstance id="0:901" exports="true" name="sweeto">
+      <ViewModelInstanceColor viewModelPropertyId="0:910" propertyValue="FF0C477B" />
+      <ViewModelInstanceColor viewModelPropertyId="0:911" propertyValue="FF1765A8" />
+      <ViewModelInstanceColor viewModelPropertyId="0:912" propertyValue="FFDCEBF8" />
+      <ViewModelInstanceColor viewModelPropertyId="0:913" propertyValue="FF9AC5E8" />
+      <ViewModelInstanceColor viewModelPropertyId="0:914" propertyValue="FFFFF8E9" />
+      <ViewModelInstanceColor viewModelPropertyId="0:915" propertyValue="FFFFFDF5" />
+      <ViewModelInstanceColor viewModelPropertyId="0:916" propertyValue="FFDF6939" />
+      <ViewModelInstanceColor viewModelPropertyId="0:917" propertyValue="FFB7552D" />
+      <ViewModelInstanceColor viewModelPropertyId="0:918" propertyValue="FFF2AB6E" />
+      <ViewModelInstanceColor viewModelPropertyId="0:919" propertyValue="FFFFD29C" />
+      <ViewModelInstanceColor viewModelPropertyId="0:920" propertyValue="440C477B" />
+    </ViewModelInstance>
+    <ViewModelInstance id="0:902" exports="true" name="berry">
+      <ViewModelInstanceColor viewModelPropertyId="0:910" propertyValue="FF64344E" />
+      <ViewModelInstanceColor viewModelPropertyId="0:911" propertyValue="FF98546D" />
+      <ViewModelInstanceColor viewModelPropertyId="0:912" propertyValue="FFF1DDE7" />
+      <ViewModelInstanceColor viewModelPropertyId="0:913" propertyValue="FFD8AABF" />
+      <ViewModelInstanceColor viewModelPropertyId="0:914" propertyValue="FFFFF8EE" />
+      <ViewModelInstanceColor viewModelPropertyId="0:915" propertyValue="FFFFFCF7" />
+      <ViewModelInstanceColor viewModelPropertyId="0:916" propertyValue="FFB65E5A" />
+      <ViewModelInstanceColor viewModelPropertyId="0:917" propertyValue="FF884F55" />
+      <ViewModelInstanceColor viewModelPropertyId="0:918" propertyValue="FFE9A9A5" />
+      <ViewModelInstanceColor viewModelPropertyId="0:919" propertyValue="FFFBD3CC" />
+      <ViewModelInstanceColor viewModelPropertyId="0:920" propertyValue="4464344E" />
+    </ViewModelInstance>
+    <ViewModelInstance id="0:903" exports="true" name="forest">
+      <ViewModelInstanceColor viewModelPropertyId="0:910" propertyValue="FF173C2B" />
+      <ViewModelInstanceColor viewModelPropertyId="0:911" propertyValue="FF3D735A" />
+      <ViewModelInstanceColor viewModelPropertyId="0:912" propertyValue="FFE2EDE4" />
+      <ViewModelInstanceColor viewModelPropertyId="0:913" propertyValue="FFA2C6AD" />
+      <ViewModelInstanceColor viewModelPropertyId="0:914" propertyValue="FFFFF8E9" />
+      <ViewModelInstanceColor viewModelPropertyId="0:915" propertyValue="FFFFFDF5" />
+      <ViewModelInstanceColor viewModelPropertyId="0:916" propertyValue="FFBC602F" />
+      <ViewModelInstanceColor viewModelPropertyId="0:917" propertyValue="FF8A512D" />
+      <ViewModelInstanceColor viewModelPropertyId="0:918" propertyValue="FFE9AA6A" />
+      <ViewModelInstanceColor viewModelPropertyId="0:919" propertyValue="FFF3CE9B" />
+      <ViewModelInstanceColor viewModelPropertyId="0:920" propertyValue="44173C2B" />
+    </ViewModelInstance>
+  </ViewModel>
+</Rive>

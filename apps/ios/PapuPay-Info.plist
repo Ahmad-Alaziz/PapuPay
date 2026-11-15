@@ -31,11 +31,15 @@
 	<false/>
 	<key>NSSupportsLiveActivities</key>
 	<true/>
+	<key>PapuPayWebOrigin</key>
+	<string>$(PAPUPAY_WEB_ORIGIN)</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>PapuDisplay-Bold.ttf</string>
 		<string>PapuDisplay-ExtraBold.ttf</string>
 		<string>PapuPoster.ttf</string>
+		<string>Manrope.ttf</string>
+		<string>BricolageGrotesque.ttf</string>
 	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>

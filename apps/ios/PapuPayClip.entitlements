@@ -6,6 +6,8 @@
 	<array>
 		<string>appclips:papupay.com</string>
 	</array>
+	<key>com.apple.developer.networking.HotspotConfiguration</key>
+	<true/>
 	<key>com.apple.developer.on-demand-install-capable</key>
 	<true/>
 	<key>com.apple.developer.parent-application-identifiers</key>

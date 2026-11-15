@@ -21,6 +21,14 @@ widget_group = project.main_group.new_group('LiveActivity', 'LiveActivity')
 widget_ref = widget_group.new_file('PapuLiveActivity.swift')
 resources = project.main_group.new_group('Resources', 'Resources')
 resource_refs = Dir.glob(File.join(ios, 'Resources/*')).reject { |p| p.end_with?('.txt') }.map { |p| resources.new_file(File.basename(p)) }
+sweeto_assets = File.join(root, 'apps/web/public/assets/sweeto')
+motion_posters = Dir.glob(File.join(sweeto_assets, 'motion-*.webp')).map { |path| File.basename(path) }
+resource_refs += (%w[logo-blue.png menu-bowl-cutout.webp matylda-cutout.webp menu.pdf sweeto-actions.riv] + motion_posters).map do |name|
+  resources.new_file("../../web/public/assets/sweeto/#{name}")
+end
+%w[Manrope.ttf BricolageGrotesque.ttf Manrope-OFL.txt BricolageGrotesque-OFL.txt].each do |name|
+  resource_refs << resources.new_file("../../../packages/brand/fonts/#{name}")
+end
 app = project.new_target(:application, 'PapuPay', :ios, '17.0')
 clip = project.new_target(:application_on_demand_install_capable, 'PapuPayClip', :ios, '17.0')
 widget = project.new_target(:app_extension, 'PapuPayLiveActivity', :ios, '17.0')
@@ -64,14 +72,16 @@ ids.each do |target,bundle|
     info['UIApplicationSceneManifest'] = {'UIApplicationSupportsMultipleScenes'=>false}
     info['UISupportedInterfaceOrientations'] = ['UIInterfaceOrientationPortrait']
     info['UIRequiredDeviceCapabilities'] = ['arm64']
-    info['UIAppFonts'] = ['PapuDisplay-Bold.ttf','PapuDisplay-ExtraBold.ttf','PapuPoster.ttf']
+    info['UIAppFonts'] = ['PapuDisplay-Bold.ttf','PapuDisplay-ExtraBold.ttf','PapuPoster.ttf','Manrope.ttf','BricolageGrotesque.ttf']
     info['ITSAppUsesNonExemptEncryption'] = false
+    info['PapuPayWebOrigin'] = '$(PAPUPAY_WEB_ORIGIN)'
     info['CFBundleURLTypes'] = [{'CFBundleURLName'=>'com.papupay.app','CFBundleURLSchemes'=>['papupay']}] if target==app
     info['NSAppClip'] = {'NSAppClipRequestEphemeralUserNotification'=>true,'NSAppClipRequestLocationConfirmation'=>false} if target==clip
   end
   Xcodeproj::Plist.write_to_path(info,File.join(ios,info_path))
   entitlements = {}
   entitlements['com.apple.developer.associated-domains'] = ['appclips:papupay.com'] if [app,clip].include?(target)
+  entitlements['com.apple.developer.networking.HotspotConfiguration'] = true if [app,clip].include?(target)
   entitlements['com.apple.developer.associated-domains'] << 'applinks:papupay.com' if target==app
   entitlements['com.apple.developer.associated-appclip-app-identifiers'] = ['$(AppIdentifierPrefix)'+ids[clip]] if target==app
   if target==clip
@@ -94,6 +104,10 @@ ids.each do |target,bundle|
       'SKIP_INSTALL'=>target==app ? 'NO' : 'YES'
     })
     config.build_settings['APPLICATION_EXTENSION_API_ONLY'] = 'YES' if extension
+    if target == clip
+      config.build_settings['SWIFT_ACTIVE_COMPILATION_CONDITIONS'] ||= ['$(inherited)']
+      config.build_settings['SWIFT_ACTIVE_COMPILATION_CONDITIONS'] = Array(config.build_settings['SWIFT_ACTIVE_COMPILATION_CONDITIONS']) + ['PAPUPAY_APP_CLIP']
+    end
     if config.name == 'Release'
       config.build_settings['SWIFT_OPTIMIZATION_LEVEL'] = '-O'
       config.build_settings['DEAD_CODE_STRIPPING'] = 'YES'
@@ -122,7 +136,7 @@ project.save
   scheme.archive_action.build_configuration = 'Release'
   if target==clip
     vars=REXML::Element.new('EnvironmentVariables')
-    vars.add_element('EnvironmentVariable',{'key'=>'_XCAppClipURL','value'=>'https://papupay.com/go/koszyki/24','isEnabled'=>'YES'})
+    vars.add_element('EnvironmentVariable',{'key'=>'_XCAppClipURL','value'=>'https://papupay.com/go/sweeto/table','isEnabled'=>'YES'})
     scheme.launch_action.xml_element.add_element(vars)
   end
   scheme.save_as(project_path,target.name,true)
