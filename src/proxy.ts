@@ -42,6 +42,7 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  // Skip API routes, Next.js internals and any path with a file extension.
-  matcher: ["/((?!api|_next/static|_next/image|.*\\..*).*)"],
+  // Skip API routes, Next.js internals, any path with a file extension, and the
+  // App Clip venue links (/go/*, /v/*), which must not get a language prefix.
+  matcher: ["/((?!api|go/|v/|_next/static|_next/image|.*\\..*).*)"],
 };

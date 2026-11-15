@@ -27,6 +27,16 @@ This is a standard Next.js deployment. `src/proxy.ts` sends `/` to `/en` or `/pl
 
 `www.papupay.com` redirects permanently to the same path on `papupay.com`.
 
+## App Clip
+
+`public/.well-known/apple-app-site-association` associates `papupay.com` with the App Clip (`5W4JVD497D.com.papupay.app.Clip`) and opens `/go/*` and `/v/*` links in the installed full app. `next.config.ts` serves it as `application/json`. The proxy leaves `/go/*` and `/v/*` without a language prefix, because they are the links printed on venue NFC tags and QR codes. Until the guest web version exists, those paths return the 404 page in a browser.
+
+Sweeto's images, menu PDF and Rive file are served from `/assets/sweeto/` and also bundled into the iOS app.
+
+## Skipped deploys
+
+`ignoreCommand` in `vercel.json` skips a deployment when the latest commit changes nothing outside `apps/ios`, `packages`, `scripts`, `.github` and `docs`.
+
 ## DNS
 
 Namecheap BasicDNS remains authoritative. Only the original website parking/redirect records were changed:

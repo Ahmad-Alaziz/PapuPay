@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fail an archive before upload if its App Clip/extension packaging is incomplete."""
+"""Fail an archive before upload if its app or App Clip packaging is incomplete."""
 import json
 import plistlib
 import sys
@@ -12,8 +12,6 @@ clip = app / 'AppClips/PapuPayClip.app'
 bundles = {
     app: 'com.papupay.app',
     clip: 'com.papupay.app.Clip',
-    app / 'PlugIns/PapuPayLiveActivity.appex': 'com.papupay.app.LiveActivity',
-    clip / 'PlugIns/PapuPayClipLiveActivity.appex': 'com.papupay.app.Clip.LiveActivity',
 }
 report = []
 for bundle, identifier in bundles.items():
@@ -23,9 +21,8 @@ for bundle, identifier in bundles.items():
     assert info['CFBundleVersion'] == expected_version, f'Wrong build number: {bundle}'
     assert info['CFBundleShortVersionString'] == '1.0', f'Wrong marketing version: {bundle}'
     assert (bundle / info['CFBundleExecutable']).is_file(), f'Missing executable: {bundle}'
-    if bundle in (app, clip):
-        assert (bundle / 'PrivacyInfo.xcprivacy').is_file(), f'Missing privacy manifest: {bundle}'
-        assert (bundle / 'Frameworks/RiveRuntime.framework/RiveRuntime').is_file(), f'Missing Rive runtime: {bundle}'
+    assert (bundle / 'PrivacyInfo.xcprivacy').is_file(), f'Missing privacy manifest: {bundle}'
+    assert (bundle / 'Frameworks/RiveRuntime.framework/RiveRuntime').is_file(), f'Missing Rive runtime: {bundle}'
     if bundle == clip:
         assert 'NSAppClip' in info, 'Missing App Clip declaration'
         assert 'CFBundleURLTypes' not in info, 'App Clips cannot register custom URL schemes'

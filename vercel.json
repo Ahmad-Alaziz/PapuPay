@@ -17,5 +17,5 @@
       "permanent": true
     }
   ],
-  "ignoreCommand": "case \"$(git log -1 --format=%B)\" in *\"[testflight-only]\"*) exit 0;; *) exit 1;; esac"
+  "ignoreCommand": "git diff --quiet HEAD^ HEAD -- . ':(exclude)apps/ios' ':(exclude)packages' ':(exclude)scripts' ':(exclude).github' ':(exclude)docs'"
 }
