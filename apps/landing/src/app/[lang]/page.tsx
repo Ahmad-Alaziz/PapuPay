@@ -4,7 +4,6 @@ import { Problem } from "@/components/sections/problem";
 import { Features } from "@/components/sections/features";
 import { HowItWorks } from "@/components/sections/how-it-works";
 import { Benefits } from "@/components/sections/benefits";
-import { DemoSection } from "@/components/demo/demo-section";
 import { Pricing } from "@/components/sections/pricing";
 import { Faq } from "@/components/sections/faq";
 import { Contact } from "@/components/sections/contact";
@@ -25,7 +24,6 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
       <Features features={dict.features} />
       <HowItWorks how={dict.how} />
       <Benefits benefits={dict.benefits} />
-      <DemoSection demo={dict.demo} />
       <Pricing locale={lang} pricing={dict.pricing} />
       <Faq faq={dict.faq} />
       <Contact locale={lang} contact={dict.contact} />

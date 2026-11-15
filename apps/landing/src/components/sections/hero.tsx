@@ -41,13 +41,13 @@ export function Hero({ hero, mockup }: Props) {
           </p>
           <div className="mt-9 flex animate-fade-up flex-col gap-3 sm:flex-row" style={{ animationDelay: "460ms" }}>
             <Button asChild size="xl">
-              <a href={`#${sectionIds.demo}`}>
+              <a href={`#${sectionIds.contact}`}>
                 {hero.primaryCta}
                 <ArrowRight data-icon="inline-end" aria-hidden="true" />
               </a>
             </Button>
             <Button asChild size="xl" variant="outline">
-              <a href={`#${sectionIds.contact}`}>{hero.secondaryCta}</a>
+              <a href={`#${sectionIds.how}`}>{hero.secondaryCta}</a>
             </Button>
           </div>
           <ul

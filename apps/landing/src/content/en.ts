@@ -34,8 +34,8 @@ export const en = {
     title: ["Menus.", "Reviews.", "Regulars."],
     subtitle:
       "PapuPay is one sticker on your tables and one dashboard behind it. Guests open your digital menu, leave a Google review in seconds and collect loyalty stamps, all from a single tap or scan.",
-    primaryCta: "See the demo",
-    secondaryCta: "Contact us",
+    primaryCta: "Contact us",
+    secondaryCta: "How it works",
     highlights: ["Digital menu with dashboard", "Google review link", "Loyalty cards"],
   },
 
@@ -216,18 +216,6 @@ export const en = {
       ],
     },
     footnote: "* Example figures for illustration.",
-  },
-
-  demo: {
-    eyebrow: "Demo",
-    title: "See PapuPay through your guests' eyes.",
-    body: "Tap through a venue page: open the menu, leave a review and collect a loyalty stamp.",
-    button: "Try the demo",
-    dialogTitle: "The interactive demo is coming soon",
-    dialogBody:
-      "We're putting the finishing touches on it. In the meantime, get in touch and we'll gladly show you PapuPay live and talk through how it would work in your venue.",
-    dialogCta: "Contact us",
-    dialogClose: "Close",
   },
 
   pricing: {

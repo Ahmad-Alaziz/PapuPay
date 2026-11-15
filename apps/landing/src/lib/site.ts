@@ -16,7 +16,6 @@ export const sectionIds = {
   features: "features",
   how: "how-it-works",
   benefits: "benefits",
-  demo: "demo",
   pricing: "pricing",
   faq: "faq",
   contact: "contact",

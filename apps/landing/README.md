@@ -4,7 +4,7 @@ Marketing site for PapuPay, one platform for restaurants, bars and cafés: digit
 
 Built with Next.js 16 (App Router, static export), TypeScript, Tailwind CSS v4, shadcn/ui and Motion. English and Polish are served from `/en` and `/pl`.
 
-It is deployed as part of the PapuPay repository: `next build` writes static HTML to `out/`, which the root build merges into the web demo's output (see [Deploying](#deploying)).
+It is deployed as part of the PapuPay repository: `next build` writes static HTML to `out/`, which the root build merges into the web app's output (see [Deploying](#deploying)).
 
 ## Getting started
 
@@ -57,7 +57,6 @@ src/
     stats.ts           Benefit figures and chart data. Example values marked PLACEHOLDER.
   components/
     sections/          One component per page section
-    demo/              Isolated demo section and "coming soon" dialog
     contact/           Contact form (client component)
     illustrations/     Hero visual, phone and feature mockups, animated step
                        illustrations (steps/), page background shapes
@@ -80,10 +79,6 @@ To add a language, add its code to `locales` in `src/i18n/config.ts`, create `sr
 ### Pricing
 
 Edit `src/content/pricing.ts`. Every value marked `PLACEHOLDER` (names, prices, currency, period, features) is a stand-in. Set `price: null` to hide the price on a tier. The third tier ("Not sure? Ask us") links to `#contact`.
-
-### Replacing the demo
-
-`src/components/demo/demo-section.tsx` is self-contained. Swap `<DemoDialog />` for the real demo (an embed, a link or a new dialog). Nothing else on the page depends on it.
 
 ## Contact form
 

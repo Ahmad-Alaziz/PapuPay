@@ -35,8 +35,8 @@ export const pl: Dictionary = {
     title: ["Menu.", "Opinie.", "Stali goście."],
     subtitle:
       "PapuPay to jedna naklejka na Twoich stolikach i jeden panel za nią. Goście otwierają cyfrowe menu, w kilka sekund wystawiają opinię w Google i zbierają pieczątki lojalnościowe, a wszystko jednym dotknięciem lub skanem.",
-    primaryCta: "Zobacz demo",
-    secondaryCta: "Skontaktuj się",
+    primaryCta: "Skontaktuj się",
+    secondaryCta: "Jak to działa",
     highlights: ["Cyfrowe menu z panelem", "Link do opinii Google", "Karty lojalnościowe"],
   },
 
@@ -217,18 +217,6 @@ export const pl: Dictionary = {
       ],
     },
     footnote: "* Przykładowe dane poglądowe.",
-  },
-
-  demo: {
-    eyebrow: "Demo",
-    title: "Zobacz PapuPay oczami swoich gości.",
-    body: "Przejdź przez stronę lokalu: otwórz menu, wystaw opinię i zbierz pieczątkę.",
-    button: "Wypróbuj demo",
-    dialogTitle: "Interaktywne demo już wkrótce",
-    dialogBody:
-      "Dopracowujemy ostatnie szczegóły. W międzyczasie napisz do nas, a chętnie pokażemy PapuPay na żywo i omówimy, jak sprawdzi się w Twoim lokalu.",
-    dialogCta: "Skontaktuj się",
-    dialogClose: "Zamknij",
   },
 
   pricing: {
