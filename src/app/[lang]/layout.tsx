@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { notFound } from "next/navigation";
+import { Manrope, Outfit } from "next/font/google";
 import { MotionProvider } from "@/components/motion/motion-provider";
 import { PapayaMarkSymbol } from "@/components/brand/logo";
 import { SiteHeader } from "@/components/layout/site-header";
@@ -7,8 +8,20 @@ import { SiteFooter } from "@/components/layout/site-footer";
 import { hasLocale, locales, ogLocales } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
 import { siteConfig } from "@/lib/site";
-import { manrope, outfit } from "../fonts";
 import "../globals.css";
+
+const outfit = Outfit({
+  variable: "--font-outfit",
+  subsets: ["latin", "latin-ext"],
+  weight: ["600", "700", "800"],
+  display: "swap",
+});
+
+const manrope = Manrope({
+  variable: "--font-manrope",
+  subsets: ["latin", "latin-ext"],
+  display: "swap",
+});
 
 export function generateStaticParams() {
   return locales.map((lang) => ({ lang }));
@@ -29,7 +42,6 @@ export async function generateMetadata({ params }: LayoutProps<"/[lang]">): Prom
     title: meta.title,
     description: meta.description,
     applicationName: siteConfig.name,
-    manifest: "/site.webmanifest",
     alternates: {
       canonical: `/${lang}`,
       languages: {

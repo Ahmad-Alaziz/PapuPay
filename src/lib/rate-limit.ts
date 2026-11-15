@@ -1,3 +1,5 @@
+import "server-only";
+
 type Options = {
   /** Maximum number of requests allowed per window. */
   limit: number;

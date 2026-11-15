@@ -1,4 +1,4 @@
-/** Field limits shared by the contact form and the /api/contact handler (server/contact.ts). */
+/** Field limits shared by the contact form and the /api/contact route. */
 export const contactLimits = {
   name: 200,
   email: 254,

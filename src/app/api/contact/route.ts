@@ -1,13 +1,9 @@
-/**
- * POST /api/contact. The site is a static export, so this runs as a Vercel Function
- * (`api/contact.ts` at the repository root) rather than a Next.js route handler.
- * Imports stay relative: the function is compiled outside the Next.js build.
- */
+import { NextResponse, type NextRequest } from "next/server";
 import { z } from "zod";
-import { locales } from "../src/i18n/config";
-import { contactLimits, honeypotField, type ContactResponse } from "../src/lib/contact";
-import { sendContactEmail } from "./mailjet";
-import { createRateLimiter } from "./rate-limit";
+import { locales } from "@/i18n/config";
+import { contactLimits, honeypotField, type ContactResponse } from "@/lib/contact";
+import { sendContactEmail } from "@/lib/mailjet";
+import { createRateLimiter } from "@/lib/rate-limit";
 
 const MAX_BODY_BYTES = 16 * 1024;
 
@@ -25,10 +21,10 @@ const contactSchema = z.object({
 });
 
 function reply(body: ContactResponse, status: number, headers?: HeadersInit) {
-  return Response.json(body, { status, headers });
+  return NextResponse.json(body, { status, headers });
 }
 
-function clientIp(request: Request): string {
+function clientIp(request: NextRequest): string {
   return (
     request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
     request.headers.get("x-real-ip") ||
@@ -36,7 +32,7 @@ function clientIp(request: Request): string {
   );
 }
 
-export async function handleContact(request: Request): Promise<Response> {
+export async function POST(request: NextRequest) {
   const { allowed, retryAfterSeconds } = rateLimit(clientIp(request));
   if (!allowed) {
     return reply({ ok: false, error: "rate_limited" }, 429, { "Retry-After": String(retryAfterSeconds) });

@@ -1,3 +1,5 @@
+import "server-only";
+
 const MAILJET_SEND_URL = "https://api.mailjet.com/v3.1/send";
 
 type ContactEmail = {
