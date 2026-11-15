@@ -444,10 +444,10 @@ struct SweetoGuestView: View {
       finishHomeArt(art)
     }
       .frame(width: 102, height: 102)
-      .modifier(HomeArtVisibility { setArtVisibility(art, visible: $0) })
       .padding(isLoyalty ? 6 : 0)
       .background(isLoyalty ? palette.line : Color.clear, in: .rect(cornerRadius: 15))
       .rotationEffect(isLoyalty ? .degrees(5) : .zero)
+      .modifier(HomeArtVisibility { setArtVisibility(art, visible: $0) })
 
     return Group {
       if dynamicTypeSize.isAccessibilitySize {
