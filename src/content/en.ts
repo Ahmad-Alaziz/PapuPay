@@ -18,7 +18,6 @@ export const en = {
     footer: "Footer",
     links: {
       features: "Features",
-      how: "How it works",
       benefits: "Benefits",
       pricing: "Pricing",
       faq: "FAQ",
@@ -30,12 +29,11 @@ export const en = {
   },
 
   hero: {
-    eyebrow: "For restaurants, bars and cafés",
-    title: ["Menus.", "Reviews.", "Regulars."],
+    title: ["Menus.", "Reviews.", "Loyalty cards."],
     subtitle:
       "PapuPay is one sticker on your tables and one dashboard behind it. Guests open your digital menu, leave a Google review in seconds and collect loyalty stamps, all from a single tap or scan.",
     primaryCta: "Contact us",
-    secondaryCta: "How it works",
+    secondaryCta: "See the features",
     highlights: ["Digital menu with dashboard", "Google review link", "Loyalty cards"],
   },
 
@@ -89,9 +87,10 @@ export const en = {
     menu: {
       tag: "Digital menu",
       title: "A menu you can change in seconds.",
-      body: "Edit dishes, prices and photos from your dashboard and every table sees the update straight away. No reprinting, no crossed-out prices.",
+      body: "Build your menu in the dashboard, or simply upload the PDF you already have. Either way every table sees the update straight away. No reprinting, no crossed-out prices.",
       points: [
-        "Easy admin dashboard for your whole team",
+        "Customise dishes, prices and photos in an easy dashboard",
+        "Or just upload your menu as a PDF",
         "Changes go live instantly on every table",
         "QR code stickers for your tables included",
       ],
@@ -147,28 +146,10 @@ export const en = {
     },
   },
 
-  how: {
-    eyebrow: "How it works",
-    title: "Up and running in four steps.",
-    intro: "Nothing to wire up, and nothing for your guests to set up.",
-    steps: [
-      {
-        title: "Set up your venue",
-        body: "Add your menu, your Google review link and your rewards in the dashboard.",
-      },
-      {
-        title: "Place the stickers",
-        body: "Put the QR stickers on your tables and the NFC tag by the counter.",
-      },
-      {
-        title: "Guests tap or scan",
-        body: "One tap or scan opens your menu, a review in seconds or their loyalty card.",
-      },
-      {
-        title: "Regulars come back",
-        body: "Stamps add up with every visit until a reward unlocks, and guests have a reason to return.",
-      },
-    ],
+  enroll: {
+    title: "Ready to enroll with us?",
+    body: "Tell us about your venue and we'll get you set up.",
+    cta: "Contact us",
   },
 
   benefits: {
@@ -235,7 +216,7 @@ export const en = {
       },
       {
         q: "Can I update the menu myself?",
-        a: "Yes. The dashboard is made for owners and staff. Change dishes, prices and photos, and the update is live on every table immediately.",
+        a: "Yes. The dashboard is made for owners and staff. Change dishes, prices and photos, or upload a new PDF of your menu, and the update is live on every table immediately.",
       },
       {
         q: "How does the Google review link work?",

@@ -14,7 +14,6 @@ export const siteConfig = {
 export const sectionIds = {
   problem: "problem",
   features: "features",
-  how: "how-it-works",
   benefits: "benefits",
   pricing: "pricing",
   faq: "faq",

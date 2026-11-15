@@ -2,7 +2,6 @@
 
 import * as m from "motion/react-m";
 import { Nfc, Stamp } from "lucide-react";
-import { PapayaMark } from "@/components/brand/logo";
 import { PhoneMockup } from "@/components/illustrations/phone-mockup";
 import { QrPattern } from "@/components/illustrations/qr-pattern";
 import type { Dictionary } from "@/i18n/dictionaries";
@@ -55,12 +54,9 @@ export function HeroVisual({ copy }: { copy: Dictionary["mockup"] }) {
         className="absolute -bottom-6 left-0 sm:-left-16"
       >
         <div className="grid size-32 place-items-center rounded-full border-[5px] border-cream bg-leaf p-3.5 text-center text-cream shadow-xl sm:size-36">
-          <span className="flex items-center gap-1">
-            <PapayaMark className="size-4" />
-            <span className="font-heading text-[11px] font-extrabold tracking-tight">papupay</span>
-          </span>
+          <span className="font-heading text-[12px] font-extrabold tracking-tight">papupay</span>
           <span className="flex items-center gap-1.5">
-            <span className="block w-11 rounded-md bg-cream p-1">
+            <span className="block w-11 rounded-[3px] bg-cream p-1">
               <QrPattern className="w-full" />
             </span>
             <Nfc className="size-7 text-lime" />

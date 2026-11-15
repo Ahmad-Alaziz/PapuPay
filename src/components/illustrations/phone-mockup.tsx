@@ -1,4 +1,4 @@
-import { BookOpen, ChevronRight, Star } from "lucide-react";
+import { BookOpen, Check, ChevronRight, Star } from "lucide-react";
 import { PapayaMark } from "@/components/brand/logo";
 import { cn } from "@/lib/utils";
 import type { Dictionary } from "@/i18n/dictionaries";
@@ -28,7 +28,7 @@ export function PhoneFrame({ className, children }: { className?: string; childr
   );
 }
 
-/** Row of loyalty stamps; filled ones show the papaya mark. */
+/** Row of loyalty stamps; filled ones show a check. */
 export function StampRow({ filled, total, className }: { filled: number; total: number; className?: string }) {
   return (
     <span className={cn("grid grid-cols-5 gap-1.5", className)}>
@@ -40,7 +40,7 @@ export function StampRow({ filled, total, className }: { filled: number; total: 
             index < filled ? "bg-cream" : "border border-dashed border-cream/50",
           )}
         >
-          {index < filled ? <PapayaMark className="size-[70%]" /> : null}
+          {index < filled ? <Check className="size-[62%] text-leaf" strokeWidth={3.5} /> : null}
         </span>
       ))}
     </span>
@@ -55,7 +55,7 @@ export function PhoneMockup({ copy, className }: Props) {
         <div className="px-4 pt-4 pb-4">
           <div className="flex items-center gap-2.5">
             <span className="grid size-10 place-items-center rounded-full bg-papaya font-heading text-sm font-extrabold">
-              CP
+              MK
             </span>
             <span className="min-w-0">
               <span className="block font-heading text-[15px] leading-tight font-bold">{copy.venue}</span>

@@ -19,7 +19,6 @@ export const pl: Dictionary = {
     footer: "Stopka",
     links: {
       features: "Funkcje",
-      how: "Jak to działa",
       benefits: "Korzyści",
       pricing: "Cennik",
       faq: "FAQ",
@@ -31,12 +30,11 @@ export const pl: Dictionary = {
   },
 
   hero: {
-    eyebrow: "Dla restauracji, barów i kawiarni",
-    title: ["Menu.", "Opinie.", "Stali goście."],
+    title: ["Menu.", "Opinie.", "Karty lojalnościowe."],
     subtitle:
       "PapuPay to jedna naklejka na Twoich stolikach i jeden panel za nią. Goście otwierają cyfrowe menu, w kilka sekund wystawiają opinię w Google i zbierają pieczątki lojalnościowe, a wszystko jednym dotknięciem lub skanem.",
     primaryCta: "Skontaktuj się",
-    secondaryCta: "Jak to działa",
+    secondaryCta: "Zobacz funkcje",
     highlights: ["Cyfrowe menu z panelem", "Link do opinii Google", "Karty lojalnościowe"],
   },
 
@@ -90,9 +88,10 @@ export const pl: Dictionary = {
     menu: {
       tag: "Cyfrowe menu",
       title: "Menu, które zmienisz w kilka sekund.",
-      body: "Edytuj dania, ceny i zdjęcia w panelu, a każdy stolik od razu widzi zmianę. Bez dodruku i bez skreślonych cen.",
+      body: "Ułóż menu w panelu albo po prostu wgraj PDF, który już masz. Tak czy inaczej każdy stolik od razu widzi zmianę. Bez dodruku i bez skreślonych cen.",
       points: [
-        "Prosty panel dla całego zespołu",
+        "Dania, ceny i zdjęcia dopasujesz w prostym panelu",
+        "Albo po prostu wgraj menu jako PDF",
         "Zmiany od razu widoczne na każdym stoliku",
         "Naklejki z kodem QR na stoliki w zestawie",
       ],
@@ -148,28 +147,10 @@ export const pl: Dictionary = {
     },
   },
 
-  how: {
-    eyebrow: "Jak to działa",
-    title: "Gotowe w czterech krokach.",
-    intro: "Bez okablowania i bez konfiguracji po stronie gości.",
-    steps: [
-      {
-        title: "Skonfiguruj lokal",
-        body: "Dodaj menu, link do opinii Google i nagrody w panelu.",
-      },
-      {
-        title: "Przyklej naklejki",
-        body: "Naklejki QR na stoliki, a tag NFC przy ladzie.",
-      },
-      {
-        title: "Goście dotykają lub skanują",
-        body: "Jedno dotknięcie lub skan otwiera menu, opinię w kilka sekund albo kartę lojalnościową.",
-      },
-      {
-        title: "Stali goście wracają",
-        body: "Pieczątki rosną z każdą wizytą, aż odblokuje się nagroda, a goście mają powód, by wrócić.",
-      },
-    ],
+  enroll: {
+    title: "Chcesz do nas dołączyć?",
+    body: "Opowiedz nam o swoim lokalu, a pomożemy Ci wszystko uruchomić.",
+    cta: "Skontaktuj się z nami",
   },
 
   benefits: {
@@ -236,7 +217,7 @@ export const pl: Dictionary = {
       },
       {
         q: "Czy mogę sam aktualizować menu?",
-        a: "Tak. Panel jest stworzony dla właścicieli i obsługi. Zmieniasz dania, ceny i zdjęcia, a zmiana od razu jest widoczna na każdym stoliku.",
+        a: "Tak. Panel jest stworzony dla właścicieli i obsługi. Zmieniasz dania, ceny i zdjęcia albo wgrywasz nowy PDF z menu, a zmiana od razu jest widoczna na każdym stoliku.",
       },
       {
         q: "Jak działa link do opinii Google?",

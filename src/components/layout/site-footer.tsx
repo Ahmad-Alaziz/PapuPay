@@ -15,7 +15,6 @@ type Props = {
 export function SiteFooter({ locale, nav, footer }: Props) {
   const links = [
     { href: `#${sectionIds.features}`, label: nav.links.features },
-    { href: `#${sectionIds.how}`, label: nav.links.how },
     { href: `#${sectionIds.benefits}`, label: nav.links.benefits },
     { href: `#${sectionIds.pricing}`, label: nav.links.pricing },
     { href: `#${sectionIds.faq}`, label: nav.links.faq },

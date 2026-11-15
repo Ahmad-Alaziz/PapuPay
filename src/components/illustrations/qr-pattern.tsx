@@ -23,8 +23,8 @@ const modulesPath = modules.map(([x, y]) => `M${x + 0.1} ${y + 0.1}h0.8v0.8h-0.8
 function Finder({ x, y }: { x: number; y: number }) {
   return (
     <>
-      <rect x={x + 0.5} y={y + 0.5} width={6} height={6} rx={1.2} fill="none" stroke="currentColor" strokeWidth={1} />
-      <rect x={x + 2} y={y + 2} width={3} height={3} rx={0.6} fill="currentColor" />
+      <rect x={x + 0.5} y={y + 0.5} width={6} height={6} rx={0.3} fill="none" stroke="currentColor" strokeWidth={1} />
+      <rect x={x + 2} y={y + 2} width={3} height={3} rx={0.15} fill="currentColor" />
     </>
   );
 }

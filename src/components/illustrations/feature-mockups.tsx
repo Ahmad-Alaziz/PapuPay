@@ -2,7 +2,7 @@
 
 import { AnimatePresence } from "motion/react";
 import * as m from "motion/react-m";
-import { Check, Nfc, Star } from "lucide-react";
+import { Check, Coffee, Nfc, Star } from "lucide-react";
 import { PapayaMark } from "@/components/brand/logo";
 import { PhoneFrame, StampRow } from "@/components/illustrations/phone-mockup";
 import { usePhaseLoop } from "@/components/motion/use-phase-loop";
@@ -122,8 +122,8 @@ export function ReviewMockup({ copy }: { copy: Features["reviews"]["mock"] }) {
     <div ref={ref} aria-hidden="true" className="mx-auto w-60 sm:w-64">
       <PhoneFrame>
         <div className="relative flex min-h-[22rem] flex-col items-center px-5 pt-8 pb-6 text-center">
-          <span className="grid size-14 place-items-center rounded-full bg-papaya font-heading font-extrabold text-leaf">
-            CP
+          <span className="grid size-14 place-items-center rounded-full bg-papaya text-leaf">
+            <Coffee className="size-6" strokeWidth={2.4} />
           </span>
           <p className="mt-4 font-heading text-lg leading-tight font-bold text-leaf">{copy.question}</p>
           <div className="mt-5 flex gap-1.5">

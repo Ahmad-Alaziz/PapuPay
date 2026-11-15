@@ -1,6 +1,6 @@
 import { ArrowRight, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Container, Eyebrow } from "@/components/section";
+import { Container } from "@/components/section";
 import { HeroVisual } from "@/components/illustrations/hero-visual";
 import { sectionIds } from "@/lib/site";
 import { cn } from "@/lib/utils";
@@ -18,10 +18,9 @@ export function Hero({ hero, mockup }: Props) {
     <section aria-labelledby="hero-title" className="relative pt-8 pb-12 sm:pt-14 sm:pb-16">
       <Container className="grid items-center gap-14 lg:grid-cols-12 lg:gap-8">
         <div className="lg:col-span-7">
-          <Eyebrow className="animate-fade-up">{hero.eyebrow}</Eyebrow>
           <h1
             id="hero-title"
-            className="mt-6 text-[3.2rem] leading-[0.95] font-extrabold tracking-[-0.035em] sm:text-7xl lg:text-[5.5rem]"
+            className="text-[3.2rem] leading-[0.95] font-extrabold tracking-[-0.035em] sm:text-7xl lg:text-[5.5rem]"
           >
             {hero.title.map((line, index) => (
               <span
@@ -47,7 +46,7 @@ export function Hero({ hero, mockup }: Props) {
               </a>
             </Button>
             <Button asChild size="xl" variant="outline">
-              <a href={`#${sectionIds.how}`}>{hero.secondaryCta}</a>
+              <a href={`#${sectionIds.features}`}>{hero.secondaryCta}</a>
             </Button>
           </div>
           <ul

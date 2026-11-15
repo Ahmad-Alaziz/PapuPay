@@ -2,7 +2,6 @@ import { BookOpen, Layers, Repeat, Stamp, Star, Wallet, type LucideIcon } from "
 import { Container, Eyebrow } from "@/components/section";
 import { Reveal, Stagger, StaggerItem } from "@/components/motion/reveal";
 import { AreaChart, CountUp, FeatureToggles, ProgressRing, RisingBars } from "@/components/charts/charts";
-import { PapayaMark } from "@/components/brand/logo";
 import { benefitStats, type Stat } from "@/content/stats";
 import { sectionIds } from "@/lib/site";
 import { cn } from "@/lib/utils";
@@ -131,7 +130,6 @@ export function Benefits({ benefits }: { benefits: Dictionary["benefits"] }) {
               ))}
             </h2>
             <p className="mt-5 max-w-sm text-lg text-muted-foreground">{benefits.intro}</p>
-            <PapayaMark className="mt-5 size-10 animate-bob" />
           </StaggerItem>
         </Stagger>
 

@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { Hero } from "@/components/sections/hero";
 import { Problem } from "@/components/sections/problem";
 import { Features } from "@/components/sections/features";
-import { HowItWorks } from "@/components/sections/how-it-works";
+import { Enroll } from "@/components/sections/enroll";
 import { Benefits } from "@/components/sections/benefits";
 import { Pricing } from "@/components/sections/pricing";
 import { Faq } from "@/components/sections/faq";
@@ -22,7 +22,7 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
       <Hero hero={dict.hero} mockup={dict.mockup} />
       <Problem problem={dict.problem} />
       <Features features={dict.features} />
-      <HowItWorks how={dict.how} />
+      <Enroll enroll={dict.enroll} />
       <Benefits benefits={dict.benefits} />
       <Pricing locale={lang} pricing={dict.pricing} />
       <Faq faq={dict.faq} />
