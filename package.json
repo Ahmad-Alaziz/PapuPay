@@ -3,11 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "workspaces": [
-    "apps/web"
+    "apps/web",
+    "apps/landing"
   ],
   "scripts": {
     "dev": "npm run dev -w apps/web",
-    "build": "npm run build -w apps/web",
+    "dev:landing": "npm run dev -w apps/landing",
+    "build": "npm run build -w apps/web && npm run build -w apps/landing && node scripts/merge-landing.mjs",
     "test": "npm run test -w apps/web",
     "ios:generate": "ruby scripts/generate-ios.rb",
     "check:clip": "python3 scripts/check-clip-size.py"

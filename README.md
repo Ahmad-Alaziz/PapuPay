@@ -4,6 +4,10 @@
 
 PapuPay is a new repository and implementation. Qrista was reviewed for its ordering journey; its source and integrations were not copied into this app.
 
+## Landing page
+
+`apps/landing` is the marketing site at [papupay.com](https://papupay.com/) (`/en`, `/pl`): digital menus, Google review links and loyalty cards for restaurants, bars and cafés. It is a Next.js static export merged into the web build, with its contact form served by the `api/contact` Vercel Function. Run it with `npm run dev:landing`; see [its README](apps/landing/README.md).
+
 ## Run the web app
 
 Requires Node 22 or newer.
@@ -52,6 +56,7 @@ Internal TestFlight builds are distributed to the PapuPay Demo group through Git
 
 | Path | Purpose |
 | --- | --- |
+| `apps/landing` | Marketing landing page (Next.js static export) |
 | `apps/web` | React browser app |
 | `apps/ios` | Xcode project, shared SwiftUI, app, Clip and widgets |
 | `packages/catalog` | Restaurant/menu data and hall map |
@@ -59,7 +64,8 @@ Internal TestFlight builds are distributed to the PapuPay Demo group through Git
 | `packages/motion/combo` | Three-stage Rive meal illustration, reusable food cutouts, cumulative fallback geometry and runtime contract |
 | `packages/motion/table` | Archived shared-table motion exploration |
 | `packages/brand` | Master artwork and licensed font sources |
-| `scripts` | Font preparation, Rive authoring, Xcode generation and size check |
+| `api` | Vercel Functions (landing contact form) |
+| `scripts` | Font preparation, Rive authoring, Xcode generation, size check and landing merge |
 | `docs` | Design decisions, test instructions, research and evidence |
 
 ```sh
@@ -76,4 +82,4 @@ See [design and accessibility review](docs/DESIGN.md), [motion authorship](docs/
 
 ## Domain and table QR links
 
-[Coming soon](https://papupay.com/) · [Web app](https://papupay.com/app) · [Koszyki table 24](https://papupay.com/go/koszyki/24). See [domain, QR and App Clip architecture](docs/DOMAIN-AND-QR.md).
+[Landing page](https://papupay.com/) · [Web app](https://papupay.com/app) · [Koszyki table 24](https://papupay.com/go/koszyki/24). See [domain, QR and App Clip architecture](docs/DOMAIN-AND-QR.md).
