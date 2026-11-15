@@ -1,0 +1,200 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@theme inline {
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
+
+  --color-papaya: var(--papaya);
+  --color-papaya-ink: var(--papaya-ink);
+  --color-leaf: var(--leaf);
+  --color-leaf-soft: var(--leaf-soft);
+  --color-cream: var(--cream);
+  --color-peach: var(--peach);
+  --color-lime: var(--lime);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-bob: float 3.2s ease-in-out infinite;
+  --animate-drift: drift 14s ease-in-out infinite;
+  --animate-ping-soft: ping-soft 2.2s cubic-bezier(0, 0, 0.2, 1) infinite;
+  --animate-fade-up: fade-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  /* Like fade-up but always visible, so the hero headline counts as painted immediately (LCP). */
+  --animate-rise: rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  @keyframes drift {
+    0%,
+    100% {
+      transform: translate(0, 0) rotate(0deg);
+    }
+    50% {
+      transform: translate(6px, -14px) rotate(4deg);
+    }
+  }
+
+  @keyframes ping-soft {
+    0% {
+      transform: scale(1);
+      opacity: 0.7;
+    }
+    80%,
+    100% {
+      transform: scale(2.2);
+      opacity: 0;
+    }
+  }
+
+  @keyframes rise {
+    from {
+      transform: translateY(14px);
+    }
+    to {
+      transform: none;
+    }
+  }
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+
+:root {
+  color-scheme: light;
+
+  /* Brand palette (design/Screenshot 11-35-06) */
+  --papaya: #ff762f;
+  /* Darker papaya for text on light backgrounds (meets WCAG AA) */
+  --papaya-ink: #b4460e;
+  --leaf: #173d2b;
+  --leaf-soft: #24573f;
+  --cream: #fff5e7;
+  --peach: #ffe6cc;
+  --lime: #d9ee9b;
+
+  --background: var(--cream);
+  --foreground: var(--leaf);
+  --card: #fffbf5;
+  --card-foreground: var(--leaf);
+  --popover: #fffbf5;
+  --popover-foreground: var(--leaf);
+  --primary: var(--papaya);
+  --primary-foreground: var(--leaf);
+  --secondary: var(--lime);
+  --secondary-foreground: var(--leaf);
+  --muted: #fbead4;
+  --muted-foreground: #46594e;
+  --accent: var(--peach);
+  --accent-foreground: var(--leaf);
+  --destructive: #b42318;
+  --border: #efd6b8;
+  --input: #e5c9a7;
+  --ring: var(--leaf);
+  --radius: 1rem;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans;
+    scroll-padding-top: 5.5rem;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-heading;
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+  :focus-visible {
+    outline: 3px solid var(--leaf);
+    outline-offset: 3px;
+  }
+  ::selection {
+    background: var(--lime);
+    color: var(--leaf);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  @supports (animation-timeline: scroll()) {
+    .bg-parallax {
+      animation: bg-parallax linear both;
+      animation-timeline: scroll(root);
+    }
+  }
+}
+
+@keyframes bg-parallax {
+  to {
+    translate: 0 calc(var(--speed) * -1px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

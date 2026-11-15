@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "0BBFA3915960A089274D8460"
+               BlueprintIdentifier = "492C9ADC428B882B8BEE58E5"
                BuildableName = "PapuPayClip.app"
                BlueprintName = "PapuPayClip"
                ReferencedContainer = "container:PapuPay.xcodeproj">
@@ -30,7 +30,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "0BBFA3915960A089274D8460"
+            BlueprintIdentifier = "492C9ADC428B882B8BEE58E5"
             BuildableName = "PapuPayClip.app"
             BlueprintName = "PapuPayClip"
             ReferencedContainer = "container:PapuPay.xcodeproj">
@@ -53,7 +53,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "0BBFA3915960A089274D8460"
+            BlueprintIdentifier = "492C9ADC428B882B8BEE58E5"
             BuildableName = "PapuPayClip.app"
             BlueprintName = "PapuPayClip"
             ReferencedContainer = "container:PapuPay.xcodeproj">
@@ -77,7 +77,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "0BBFA3915960A089274D8460"
+            BlueprintIdentifier = "492C9ADC428B882B8BEE58E5"
             BuildableName = "PapuPayClip.app"
             BlueprintName = "PapuPayClip"
             ReferencedContainer = "container:PapuPay.xcodeproj">

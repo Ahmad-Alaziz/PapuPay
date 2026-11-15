@@ -47,7 +47,7 @@ unset PAPUPAY_GUEST_DEMO_BASE64
 keychain initialize --path "$keychain_path" --password "$keychain_password"
 # Reuse one dedicated private key across runs; do not create a new Apple certificate per build.
 # Exact identifiers prevent this workflow from touching unrelated apps on the team.
-for bundle in com.papupay.app com.papupay.app.Clip com.papupay.app.LiveActivity com.papupay.app.Clip.LiveActivity; do
+for bundle in com.papupay.app com.papupay.app.Clip; do
   app-store-connect fetch-signing-files "$bundle" --type IOS_APP_STORE \
     --strict-match-identifier --create \
     --certificates-dir "$signing_dir/certificates" --profiles-dir "$signing_dir/profiles"

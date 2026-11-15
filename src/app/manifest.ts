@@ -1,0 +1,17 @@
+import type { MetadataRoute } from "next";
+
+export default function manifest(): MetadataRoute.Manifest {
+  return {
+    name: "PapuPay",
+    short_name: "PapuPay",
+    description: "Digital menus, Google reviews and loyalty cards for restaurants, bars and cafés.",
+    start_url: "/",
+    display: "standalone",
+    background_color: "#fff5e7",
+    theme_color: "#fff5e7",
+    icons: [
+      { src: "/icon-192.png", sizes: "192x192", type: "image/png" },
+      { src: "/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+  };
+}

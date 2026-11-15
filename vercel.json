@@ -1,23 +1,9 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "framework": "vite",
+  "framework": "nextjs",
   "installCommand": "npm ci",
   "buildCommand": "npm run build",
-  "outputDirectory": "apps/web/dist",
-  "rewrites": [
-    {
-      "source": "/app",
-      "destination": "/app.html"
-    },
-    {
-      "source": "/go/:path*",
-      "destination": "/clip.html"
-    },
-    {
-      "source": "/clip",
-      "destination": "/clip.html"
-    }
-  ],
+  "outputDirectory": ".next",
   "redirects": [
     {
       "source": "/:path*",
@@ -31,20 +17,5 @@
       "permanent": true
     }
   ],
-  "headers": [
-    {
-      "source": "/.well-known/apple-app-site-association",
-      "headers": [
-        {
-          "key": "Content-Type",
-          "value": "application/json"
-        },
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=3600"
-        }
-      ]
-    }
-  ],
-  "ignoreCommand": "case \"$(git log -1 --format=%B)\" in *\"[testflight-only]\"*) exit 0;; *) exit 1;; esac"
+  "ignoreCommand": "git diff --quiet HEAD^ HEAD -- . ':(exclude)apps/ios' ':(exclude)packages' ':(exclude)scripts' ':(exclude).github' ':(exclude)docs'"
 }
