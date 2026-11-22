@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "typecheck": "next typegen && tsc --noEmit"
+    "typecheck": "next typegen && tsc --noEmit",
+    "test:routes": "node --test scripts/test-web-routes.mjs"
   },
   "dependencies": {
     "class-variance-authority": "^0.7.1",

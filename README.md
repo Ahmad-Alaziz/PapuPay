@@ -25,6 +25,7 @@ Visiting `/` redirects to `/en` or `/pl`. The choice uses the `NEXT_LOCALE` cook
 | `npm run start`     | Serve the production build      |
 | `npm run lint`      | ESLint                          |
 | `npm run typecheck` | Type-check                      |
+| `npm run test:routes` | Smoke-test a running server  |
 
 ## Environment variables
 
@@ -72,7 +73,7 @@ scripts/               iOS project generation, font preparation, CI and test hel
 
 ## The App Clip and native app
 
-Guests tap a venue's NFC tag or scan its QR code. The link (`https://papupay.com/go/<venue>/<screen>` or `/v/<venue>`) opens the PapuPay App Clip on iPhone, which shows the venue's menu, Google review link, loyalty card and Wi-Fi. Sweeto is the first venue. Venue settings will come from the admin dashboard through the API on this domain; until then the Sweeto content ships with the app. The guest web version for Android and other browsers will be served from the same `/go` and `/v` paths of this Next.js app; those paths are excluded from the language redirect.
+The [full app link](https://papupay.com/app) opens Sweeto in the installed iPhone app and serves the Sweeto guest page in a browser. Sweeto's `/go/sweeto/table`, `/go/sweeto/menu` and `/go/sweeto/counter` links keep their QR and NFC destinations. The browser pages provide the bundled menu and Google review link. The loyalty and Wi-Fi walkthrough runs in the internal TestFlight build. See the [native demo](docs/NATIVE-DEMO.md) and [deployment checks](docs/DEPLOYMENT.md).
 
 The iOS project lives in `apps/ios`. Regenerate it with `ruby scripts/generate-ios.rb` (needs the `xcodeproj` gem) after adding or removing Swift files or resources. Builds, signing and TestFlight run on GitHub Actions: see [docs/CLOUD-BUILDS.md](docs/CLOUD-BUILDS.md) and [docs/NATIVE-DEMO.md](docs/NATIVE-DEMO.md).
 

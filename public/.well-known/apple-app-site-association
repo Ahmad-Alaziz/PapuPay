@@ -12,6 +12,10 @@
         ],
         "components": [
           {
+            "/": "/app",
+            "comment": "Opens the installed full app at the default venue."
+          },
+          {
             "/": "/go/*",
             "comment": "Venue tag and QR links open the installed full app."
           },

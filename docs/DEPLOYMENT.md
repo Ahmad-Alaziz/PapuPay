@@ -29,9 +29,13 @@ This is a standard Next.js deployment. `src/proxy.ts` sends `/` to `/en` or `/pl
 
 ## App Clip
 
-`public/.well-known/apple-app-site-association` associates `papupay.com` with the App Clip (`5W4JVD497D.com.papupay.app.Clip`) and opens `/go/*` and `/v/*` links in the installed full app. `next.config.ts` serves it as `application/json`. The proxy leaves `/go/*` and `/v/*` without a language prefix, because they are the links printed on venue NFC tags and QR codes. Until the guest web version exists, those paths return the 404 page in a browser.
+`public/.well-known/apple-app-site-association` associates `papupay.com` with the App Clip (`5W4JVD497D.com.papupay.app.Clip`) and lists `/app`, `/go/*` and `/v/*` for the installed full app. `next.config.ts` serves it as `application/json`. These URLs bypass the marketing locale redirect.
+
+`/app` is the full app link. The Sweeto table, menu and counter links keep their original URLs and show a browser page with the bundled menu PDF and Google review link. The venue pages include Smart App Banner metadata for the App Clip. Public invocation requires a released App Store experience. The [offline loyalty walkthrough](NATIVE-DEMO.md) uses the internal TestFlight build.
 
 Sweeto's images, menu PDF and Rive file are served from `/assets/sweeto/` and also bundled into the iOS app.
+
+Run `npm run test:routes` against a running local build. Set `PAPUPAY_BASE_URL=https://papupay.com` to run the same checks against production.
 
 ## Skipped deploys
 

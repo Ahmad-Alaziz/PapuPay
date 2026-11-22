@@ -15,7 +15,7 @@ export type PricingTier = {
   featured?: boolean;
   name: Localized<string>;
   description: Localized<string>;
-  /** `null` hides the price (used by the "Not sure? Ask us" tier). */
+  /** `null` hides the price until a public amount is set. */
   price: {
     amount: string;
     currency: string;
@@ -36,11 +36,7 @@ export const pricingTiers: PricingTier[] = [
       en: "A digital menu and more Google reviews, from one sticker.", // PLACEHOLDER
       pl: "Cyfrowe menu i więcej opinii Google z jednej naklejki.", // PLACEHOLDER
     },
-    price: {
-      amount: "XXX", // PLACEHOLDER
-      currency: "PLN", // PLACEHOLDER
-      period: { en: "/ month", pl: "/ mies." }, // PLACEHOLDER
-    },
+    price: null,
     features: {
       // PLACEHOLDER
       en: [
@@ -67,11 +63,7 @@ export const pricingTiers: PricingTier[] = [
       en: "Menus, reviews and a loyalty programme that brings regulars back.", // PLACEHOLDER
       pl: "Menu, opinie i program lojalnościowy, dzięki któremu goście wracają.", // PLACEHOLDER
     },
-    price: {
-      amount: "XXX", // PLACEHOLDER
-      currency: "PLN", // PLACEHOLDER
-      period: { en: "/ month", pl: "/ mies." }, // PLACEHOLDER
-    },
+    price: null,
     features: {
       // PLACEHOLDER
       en: [

@@ -25,7 +25,7 @@ export function Pricing({ locale, pricing }: Props) {
       />
       <Stagger className="mt-14 grid items-stretch gap-5 lg:grid-cols-3">
         {pricingTiers.map((tier) => {
-          const askUs = tier.price === null;
+          const askUs = tier.id === "ask-us";
           return (
             <StaggerItem
               key={tier.id}
