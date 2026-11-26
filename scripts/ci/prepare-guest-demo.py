@@ -11,7 +11,7 @@ import plistlib
 import sys
 import zipfile
 
-from guest_demo_wallet import refresh_passes
+from guest_demo_wallet import MAX_PASS_BYTES, refresh_passes
 
 
 def decode_configuration(encoded):
@@ -53,7 +53,7 @@ def decode_configuration(encoded):
         if not isinstance(passes, list) or len(passes) != 7:
             raise ValueError("Bundled demo Wallet passes must cover all seven stamp states.")
         for wallet in passes:
-            if not isinstance(wallet, bytes) or len(wallet) > 50 * 1024:
+            if not isinstance(wallet, bytes) or len(wallet) > MAX_PASS_BYTES:
                 raise ValueError("Bundled demo Wallet pass is invalid or too large.")
             try:
                 with zipfile.ZipFile(io.BytesIO(wallet)) as archive:

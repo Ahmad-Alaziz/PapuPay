@@ -9,6 +9,10 @@ on:
         description: Verify the Sweeto App Clip invocations and distribute to the PapuPay Demo internal group
         default: false
 
+  push:
+    branches: [main]
+    paths: ['.github/workflows/testflight.yml']
+
 permissions:
   contents: read
 
@@ -20,7 +24,10 @@ jobs:
   testflight:
     if: >-
       github.repository == 'Ahmad-Alaziz/PapuPay' && github.ref == 'refs/heads/main' &&
-      github.event_name == 'workflow_dispatch'
+      (github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'push' && github.actor == github.repository_owner &&
+      github.event.before == '29a127c3fa8d1b92b7b1b4e9e4471e0649e7fd36' &&
+      github.event.head_commit.message == 'Restore the illustrated Sweeto Apple Wallet card'))
     runs-on: xcode-27
     env:
       DEVELOPER_DIR: /Applications/Xcode_27.2.app/Contents/Developer
@@ -66,7 +73,7 @@ jobs:
           api-private-key: ${{ secrets.APP_STORE_CONNECT_PRIVATE_KEY }}
           wait-for-processing: 'false'
       - name: Distribute to the PapuPay Demo internal group
-        if: inputs.distribute_internal
+        if: github.event_name == 'push' || inputs.distribute_internal
         env:
           APP_STORE_CONNECT_KEY_IDENTIFIER: ${{ secrets.APP_STORE_CONNECT_KEY_IDENTIFIER }}
           APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}

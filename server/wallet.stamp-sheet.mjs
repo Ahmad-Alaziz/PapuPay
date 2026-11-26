@@ -38,10 +38,10 @@ function pngChunk(type, data) {
 
 // Our indexed template puts its palette immediately after IHDR. Recolour only
 // the occupied seals. Every balance preserves the identical compressed raster.
-export function inkSweetoArtwork(template, stamps) {
+export function inkSweetoStrip(template, stamps) {
   const result = Buffer.from(template);
   const chunk = 33;
-  if (result.toString("ascii", chunk + 4, chunk + 8) !== "PLTE") throw Error("Missing Sweeto artwork palette");
+  if (result.toString("ascii", chunk + 4, chunk + 8) !== "PLTE") throw Error("Missing Sweeto strip palette");
   const end = chunk + 8 + result.readUInt32BE(chunk);
   const palette = result.subarray(chunk + 8, end);
   const { firstSlot, earnedColours } = sweetoInk;

@@ -7,17 +7,16 @@ import { join } from "node:path";
 import { promisify } from "node:util";
 import { deflateRawSync } from "node:zlib";
 import { createApnsSender } from "./wallet-apns.mjs";
-import { inkSweetoArtwork, renderStampSheet } from "./wallet.stamp-sheet.mjs";
+import { inkSweetoStrip, renderStampSheet } from "./wallet.stamp-sheet.mjs";
 
 const run = promisify(execFile);
 const artworkFiles = ["icon", "logo", "strip"].flatMap((slot) => (
   ["", "@2x", "@3x"].map((scale) => `${slot}${scale}.png`)
 ));
-const posterArtwork = ["artwork", "primaryLogo"].flatMap(name => ["", "@2x", "@3x"].map(scale => `${name}${scale}.png`));
 const demoArtworkFiles = artworkFiles.filter((name) => !name.endsWith("@3x.png"));
 const walletPalettes = {
   classic: { paper: "#fff9ee", body: "#102e24", label: "#ff9b66" },
-  sweeto: { paper: "#143a2d", body: "#fff5e5", label: "#74401d" },
+  sweeto: { paper: "#fff6e6", body: "#102e24", label: "#ff7a38" },
 };
 const supportUrl = "https://papupay.com/#contact";
 // Apple publishes WWDR G4 as the Wallet Pass Type ID issuing CA.
@@ -146,9 +145,9 @@ export function storePassDocument(brand, card, { passTypeId, teamId, origin }, p
   const stampBalance = { key: "stamps", label: "Stamp balance", value: `${card.stamps} / ${card.goal}` };
   const notifyBalance = isSweeto && liveUpdates;
   const firstField = isSweeto
-    ? { key: "checkout", label: "At checkout", value: "Show this code" }
+    ? { key: "checkout", label: "At checkout", value: "Show QR code" }
     : { key: "venue", label: "Collect at", value: brand.name };
-  const pass = {
+  return {
     formatVersion: 1,
     passTypeIdentifier: passTypeId,
     teamIdentifier: teamId,
@@ -195,14 +194,6 @@ export function storePassDocument(brand, card, { passTypeId, teamId, origin }, p
       ],
     },
   };
-  if (isSweeto && card.goal === 6) {
-    pass.posterGeneric = {
-      headerFields: pass.storeCard.headerFields,
-      primaryFields: [next],
-      backFields: pass.storeCard.backFields,
-    };
-  }
-  return pass;
 }
 
 const translations = {
@@ -235,7 +226,7 @@ const translations = {
     "Add this pass again after collecting a stamp or claiming a reward to update it.": "Dodaj kartę ponownie po zebraniu pieczątki lub odebraniu nagrody, aby ją zaktualizować.",
     "Open your browser card for the latest progress or download an updated pass.": "Sprawdź aktualną liczbę pieczątek w przeglądarce lub pobierz kartę ponownie.",
     "At checkout": "Przy kasie",
-    "Show this code": "Pokaż ten kod",
+    "Show QR code": "Pokaż kod QR",
     "Show this QR code to collect stamps or redeem your reward.": "Pokaż ten kod QR, aby zebrać pieczątki lub odebrać nagrodę.",
     "Browser card": "Karta w przeglądarce",
     "Restore your card": "Odzyskaj kartę",
@@ -271,7 +262,7 @@ const translations = {
     "Add this pass again after collecting a stamp or claiming a reward to update it.": "Добавьте карту снова после получения отметки или награды, чтобы обновить её.",
     "Open your browser card for the latest progress or download an updated pass.": "Проверьте актуальные отметки в браузере или скачайте обновлённую карту.",
     "At checkout": "На кассе",
-    "Show this code": "Покажите код",
+    "Show QR code": "Покажите QR-код",
     "Show this QR code to collect stamps or redeem your reward.": "Покажите этот QR-код, чтобы получить отметки или забрать награду.",
     "Browser card": "Карта в браузере",
     "Restore your card": "Восстановить карту",
@@ -296,14 +287,12 @@ function stampCount(count, language = "en") {
 export async function buildStorePassFiles(brand, card, config, profile = {}) {
   const pass = storePassDocument(brand, card, config, profile);
   const isSweeto = brand.id === "sweeto";
-  const names = [...(profile.offlineDemo ? demoArtworkFiles : artworkFiles)];
-  if (pass.posterGeneric) names.push(...posterArtwork.filter(name => !profile.offlineDemo || !name.endsWith("@3x.png")));
-  const images = await Promise.all(names.map(async (name) => {
-    if (name.startsWith("artwork") || (name.startsWith("strip") && isSweeto && card.goal === 6)) {
-      const template = await readFile(new URL(`./wallet-assets/sweeto-${name}`, import.meta.url));
-      return [name, inkSweetoArtwork(template, card.stamps)];
-    }
+  const images = await Promise.all((profile.offlineDemo ? demoArtworkFiles : artworkFiles).map(async (name) => {
     if (name.startsWith("strip")) {
+      if (isSweeto && card.goal === 6) {
+        const template = await readFile(new URL(`./wallet-assets/sweeto-${name}`, import.meta.url));
+        return [name, inkSweetoStrip(template, card.stamps)];
+      }
       const scale = Number(name.match(/@(\d)x/)?.[1] ?? 1);
       return [name, renderStampSheet(card, scale, isSweeto ? "sweeto" : "classic")];
     }
