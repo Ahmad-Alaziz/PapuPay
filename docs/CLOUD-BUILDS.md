@@ -16,6 +16,8 @@ The dedicated App Manager team API key and distribution key are stored in the fo
 
 ## Workflows
 
+Both archive jobs run on GitHub’s `xcode-27` image with Xcode 27.2. Before export, the archive check verifies the iOS device SDK on both the containing app and the embedded App Clip. The deployment target remains iOS 17. [Apple submission requirements](https://developer.apple.com/app-store/submitting/)
+
 - **iOS archive checks** runs on native changes to `main`, pull requests, or manual dispatch. It runs the guest demo resource and loyalty checks, archives the app and App Clip without signing, checks bundle IDs/build numbers/embedded products/privacy manifests, and applies the 15 MB raw App Clip size gate.
 - **Upload PapuPay to TestFlight** is manually dispatched from `main` only. It uses the `apple-signing` environment, fetches profiles for exactly the two PapuPay identifiers (`com.papupay.app` and `com.papupay.app.Clip`), reuses a dedicated distribution private key, archives, validates packaging and size, exports, and uploads. It does not submit public App Store releases or external beta review.
 

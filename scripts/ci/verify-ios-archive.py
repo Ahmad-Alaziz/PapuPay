@@ -2,6 +2,7 @@
 """Fail an archive before upload if its app or App Clip packaging is incomplete."""
 import json
 import plistlib
+import re
 import sys
 from pathlib import Path
 
@@ -17,6 +18,9 @@ report = []
 for bundle, identifier in bundles.items():
     with (bundle / 'Info.plist').open('rb') as f:
         info = plistlib.load(f)
+    sdk = info.get('DTSDKName', '')
+    version = re.fullmatch(r'iphoneos(\d+)(?:\.\d+)*', sdk)
+    assert version and int(version[1]) >= 27, f'{identifier} requires the iOS 27 SDK or later; found {sdk!r}'
     launch = info.get('UILaunchScreen', {})
     assert launch.get('UIImageName') == 'PapuPayLaunchLockup', f'Missing launch mark: {bundle}'
     assert launch.get('UIColorName') == 'GuestLaunchPaper', f'Missing launch paper: {bundle}'
@@ -32,5 +36,5 @@ for bundle, identifier in bundles.items():
     if bundle == clip:
         assert 'NSAppClip' in info, 'Missing App Clip declaration'
         assert 'CFBundleURLTypes' not in info, 'App Clips cannot register custom URL schemes'
-    report.append({'bundle': identifier, 'version': info['CFBundleShortVersionString'], 'build': info['CFBundleVersion']})
+    report.append({'bundle': identifier, 'version': info['CFBundleShortVersionString'], 'build': info['CFBundleVersion'], 'sdk': sdk})
 print(json.dumps({'archive': archive.name, 'bundles': report, 'passed': True}, indent=2))
