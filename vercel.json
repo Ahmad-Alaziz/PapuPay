@@ -2,7 +2,7 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "nextjs",
   "installCommand": "npm ci",
-  "buildCommand": "npm run build",
+  "buildCommand": "node scripts/prepare-vercel-assets.mjs && npm run build",
   "outputDirectory": ".next",
   "redirects": [
     {
@@ -17,5 +17,5 @@
       "permanent": true
     }
   ],
-  "ignoreCommand": "git diff --quiet HEAD^ HEAD -- . ':(exclude)apps/ios' ':(exclude)packages/brand' ':(exclude)scripts' ':(exclude).github' ':(exclude)docs'"
+  "ignoreCommand": "git diff --quiet HEAD^ HEAD -- . ':(exclude)apps/ios' ':(exclude)packages/brand' ':(exclude)scripts' ':(exclude).github' ':(exclude)docs' && git diff --quiet HEAD^ HEAD -- 'apps/ios/Resources/Assets.xcassets/GoogleWalletBadge*.imageset' scripts/prepare-vercel-assets.mjs scripts/embed-launch-brand.mjs"
 }

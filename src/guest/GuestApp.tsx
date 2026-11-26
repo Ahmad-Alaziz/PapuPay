@@ -20,7 +20,6 @@ import {
   MapPin,
   ChevronDown,
   BookOpen,
-  ClipboardList,
   type LucideIcon,
   Badge,
   Star,
@@ -127,7 +126,7 @@ function Sheet({
         trigger.focus({ preventScroll: true });
       } else if (guestRoute(location.pathname).view === "home") {
         const homeAction = document.querySelector<HTMLElement>(
-          `.papu-home-action[data-destination="${view}"]`,
+          `.papu-home-actions [data-destination="${view}"]`,
         );
         (
           homeAction ??
@@ -199,17 +198,24 @@ function GoogleMark() {
     </svg>
   );
 }
-function VenueMark({ id, name }: { id: string; name: string }) {
-  return id === "sweeto" ? (
+function VenueMark({ venue, onPhoto = false }: { venue: VenueStatus; onPhoto?: boolean }) {
+  const [unavailable, setUnavailable] = useState<string>();
+  const logo = onPhoto ? venue.logoWhiteUrl || venue.logoUrl : venue.logoUrl;
+  const fallbackLogo = onPhoto ? sweeto.logoWhiteUrl : sweeto.logoUrl;
+  const defaultIdentity = venue.id === sweeto.id && logo === fallbackLogo;
+  return logo && unavailable !== logo &&
+    (!defaultIdentity || venue.name.toLowerCase() === "sweeto") ? (
     <img
       className="sweeto-venue-mark"
-      src="/assets/sweeto/logo-white.png"
-      alt={name}
+      data-custom-logo={!defaultIdentity || undefined}
+      src={logo}
+      alt={venue.name}
       width="398"
       height="63"
+      onError={() => setUnavailable(logo)}
     />
   ) : (
-    <span className="sweeto-venue-wordmark">{name}</span>
+    <span className="sweeto-venue-wordmark">{venue.name}</span>
   );
 }
 
@@ -324,7 +330,7 @@ export default function GuestApp() {
     reviews: t.review,
     missing: t.missing,
     restore: t.card,
-    wallet: language === "pl" ? "Portfel Apple" : "Apple Wallet",
+    wallet: language === "pl" ? "Portfel" : language === "ru" ? "Кошелёк" : "Wallet",
     test:
       language === "pl"
         ? "Test karty"
@@ -335,12 +341,18 @@ export default function GuestApp() {
   const screenTitle = titles[view];
   const reviewUrl = venue.reviewUrl;
   const isSweeto = id === "sweeto";
-  const photo = isSweeto ? "/assets/sweeto/matylda-table.webp" : venue.photoUrl;
+  const defaultSweetoCover = isSweeto && (!venue.photoUrl || venue.photoUrl === sweeto.photoUrl);
+  const featuredPhoto = "/assets/guest-menu-cover.webp";
+  const photo = defaultSweetoCover ? featuredPhoto : venue.photoUrl;
+  const defaultSweetoLogo = isSweeto && venue.logoUrl === sweeto.logoUrl &&
+    venue.name.toLowerCase() === "sweeto";
   const parentView: View | undefined = history.state?.sweetoParentView;
   const path = (next: Exclude<View, "missing">) => {
     const base = guestPath(next, id);
-    if (!new URLSearchParams(location.search).has("lang")) return base;
-    return `${base}?lang=${language}`;
+    const params = new URLSearchParams();
+    if (new URLSearchParams(location.search).has("lang")) params.set("lang", language);
+    const query = params.toString();
+    return query ? `${base}?${query}` : base;
   };
   useEffect(() => {
     const controller = new AbortController();
@@ -472,6 +484,29 @@ export default function GuestApp() {
         )}
       </main>
     );
+  const utilities = (
+    <>
+      <HomeAction
+        icon={WifiIcon}
+        label={t.homeWifi}
+        destination="wifi"
+        detail={!isSweeto && venueLoaded && !venue.wifi ? t.homeWifiAtCounter : undefined}
+        href={path("wifi")}
+        onClick={(event) => route(event, "wifi")}
+      />
+      <HomeAction
+        icon={Star}
+        label={reviewUrl ? t.reviewAction : t.review}
+        destination="reviews"
+        href={reviewUrl || path("reviews")}
+        external={Boolean(reviewUrl)}
+        onClick={(event) =>
+          reviewUrl ? reviewClick(apiBase) : route(event, "reviews")
+        }
+      />
+    </>
+  );
+
   return (
     <VenueContext.Provider value={{ venue, apiBase, navigate }}>
       <MotionConfig reducedMotion="user" transition={{ duration: 0.3, ease }}>
@@ -482,19 +517,20 @@ export default function GuestApp() {
               href={path("home")}
               onClick={(event) => route(event, "home")}
             >
-              <VenueMark id={id} name={venue.name} />
+              <VenueMark venue={venue} onPhoto />
             </a>
             <VenueLanguage language={language} onChange={changeLanguage} />
           </header>
           <main className="papu-home">
-            <section className="papu-cover" aria-labelledby="guest-welcome">
+            <section className="papu-cover" aria-labelledby="guest-welcome" data-custom-cover={!defaultSweetoCover || undefined}>
               {photo && (
                 <img
                   className="papu-cover-photo"
+                  key={photo}
                   src={photo}
                   alt=""
-                  width={isSweeto ? 1170 : 1296}
-                  height={isSweeto ? 1170 : 864}
+                  width={isSweeto ? 1200 : 1296}
+                  height={isSweeto ? 800 : 864}
                   fetchPriority="high"
                   draggable={false}
                   onError={
@@ -503,29 +539,25 @@ export default function GuestApp() {
                           const image = event.currentTarget;
                           if (image.dataset.fallback) return;
                           image.dataset.fallback = "true";
-                          image.src = "/assets/sweeto/matylda.webp";
+                          image.src = defaultSweetoCover ? "/assets/sweeto/matylda.webp" : featuredPhoto;
                         }
                       : undefined
                   }
                 />
               )}
               <div className="papu-cover-copy papu-home-width">
-                {isSweeto && <p className="papu-cover-dish">{t.gallery[0]}</p>}
                 <h1 id="guest-welcome">
                   {isSweeto ? t.dessertMenu : venue.name}
                 </h1>
-                {isSweeto ? (
-                  <p className="papu-cover-order">{t.help}</p>
-                ) : (
-                  <HomeAction
-                    icon={BookOpen}
-                    label={t.menu}
-                    destination="menu"
-                    href={path("menu")}
-                    onClick={(event) => route(event, "menu")}
-                    primary
-                  />
-                )}
+                {defaultSweetoCover && <p className="papu-cover-dish">{t.gallery[0]}</p>}
+                <HomeAction
+                  icon={BookOpen}
+                  label={t.menu}
+                  destination="menu"
+                  href={path("menu")}
+                  onClick={(event) => route(event, "menu")}
+                  primary
+                />
               </div>
             </section>
             <nav
@@ -533,18 +565,8 @@ export default function GuestApp() {
               aria-label={t.guestServices}
             >
               <div className="papu-home-action-group">
-                {isSweeto && (
-                  <HomeAction
-                    icon={BookOpen}
-                    label={t.menu}
-                    destination="menu"
-                    href={path("menu")}
-                    onClick={(event) => route(event, "menu")}
-                    primary
-                  />
-                )}
                 <HomeAction
-                  icon={isSweeto ? ClipboardList : Badge}
+                  icon={Badge}
                   label={isSweeto && !balance ? t.openCard : t.homeCard}
                   destination="card"
                   detail={
@@ -558,26 +580,7 @@ export default function GuestApp() {
                   onClick={(event) => route(event, "card")}
                   pullable
                 />
-                <HomeAction
-                  icon={WifiIcon}
-                  label={t.homeWifi}
-                  destination="wifi"
-                  detail={
-                    venueLoaded && !venue.wifi ? t.homeWifiAtCounter : undefined
-                  }
-                  href={path("wifi")}
-                  onClick={(event) => route(event, "wifi")}
-                />
-                <HomeAction
-                  icon={Star}
-                  label={reviewUrl ? t.reviewAction : t.review}
-                  destination="reviews"
-                  href={reviewUrl || path("reviews")}
-                  external={Boolean(reviewUrl)}
-                  onClick={(event) =>
-                    reviewUrl ? reviewClick(apiBase) : route(event, "reviews")
-                  }
-                />
+                {utilities}
               </div>
             </nav>
           </main>
@@ -617,11 +620,13 @@ export default function GuestApp() {
                       >
                         <ArrowLeft size={19} aria-hidden="true" />
                       </button>
-                      <span
-                        className="guest-destination-venue"
-                        role="img"
-                        aria-label={venue.name}
-                      />
+                      {defaultSweetoLogo ? (
+                        <span className="guest-destination-venue" role="img" aria-label={venue.name} />
+                      ) : (
+                        <span className="guest-destination-venue guest-destination-custom-venue">
+                          <VenueMark venue={venue} />
+                        </span>
+                      )}
                       <VenueLanguage
                         language={language}
                         onChange={changeLanguage}

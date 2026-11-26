@@ -1,7 +1,14 @@
+import { existsSync } from "node:fs";
+import { join } from "node:path";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   cacheComponents: true,
+  env: {
+    NEXT_PUBLIC_APPLE_WALLET_BADGES: ["en", "pl", "ru"]
+      .filter((language) => existsSync(join(process.cwd(), "public/assets/wallet", `apple-${language}.svg`)))
+      .join(","),
+  },
   async redirects() {
     return ["/app.html", "/en/app", "/pl/app", "/clip", "/clip.html"].map(
       (source) => ({

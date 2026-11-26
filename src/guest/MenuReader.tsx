@@ -376,14 +376,20 @@ export function venueMenu(venue: VenueStatus, language: Language) {
   return { pdf, image, polishOnly };
 }
 
+function usesSweetoCatalog(venue: VenueStatus, language: Language) {
+  const { pdf, image } = venueMenu(venue, language);
+  return (
+    venue.id === "sweeto" &&
+    image === "/assets/sweeto/menu-original.jpg" &&
+    pdf === "/assets/sweeto/menu.pdf"
+  );
+}
+
 export default function MenuReader({ language }: { language: Language }) {
   const { venue } = useVenue();
   const strings = text[language];
   const { pdf, image, polishOnly } = venueMenu(venue, language);
-  const bundledDesserts =
-    venue.id === "sweeto" &&
-    image === "/assets/sweeto/menu-original.jpg" &&
-    pdf === "/assets/sweeto/menu.pdf";
+  const bundledDesserts = usesSweetoCatalog(venue, language);
   const [original, setOriginal] = useState(false);
   const focusHeading = useRef(false);
   const catalog = bundledDesserts && !original;
@@ -414,7 +420,6 @@ export default function MenuReader({ language }: { language: Language }) {
     return (
       <DessertCatalog
         language={language}
-        venueName={venue.name}
         onOriginal={() => switchMenu(true)}
       />
     );

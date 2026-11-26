@@ -1,4 +1,4 @@
-import { lazy, Suspense, useCallback, useEffect, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
 import PapayaMark from "./PapayaMark";
 import "./papu-welcome.css";
 
@@ -7,9 +7,10 @@ const GuestAnimation = lazy(() =>
 );
 
 export default function PapuWelcomeMark({ eligible }: { eligible: boolean }) {
-  const [phase, setPhase] = useState<"loading" | "playing" | "done">(() =>
+  const marker = useRef<HTMLSpanElement>(null);
+  const [phase, setPhase] = useState<"waiting" | "loading" | "playing" | "done">(() =>
     eligible && !document.hidden && !window.matchMedia("(prefers-reduced-motion: reduce)").matches
-      ? "loading"
+      ? "waiting"
       : "done",
   );
   const finish = useCallback(() => setPhase("done"), []);
@@ -25,20 +26,27 @@ export default function PapuWelcomeMark({ eligible }: { eligible: boolean }) {
       if (preference.matches || document.hidden) finish();
     };
     stopWhenHidden();
+    const observer = phase === "waiting" && marker.current
+      ? new IntersectionObserver(([entry]) => {
+          if (entry?.isIntersecting) setPhase("loading");
+        })
+      : undefined;
+    if (observer && marker.current) observer.observe(marker.current);
     preference.addEventListener("change", stopWhenHidden);
     document.addEventListener("visibilitychange", stopWhenHidden);
     const timeout = phase === "loading" ? window.setTimeout(finish, 1200) : undefined;
     return () => {
       window.clearTimeout(timeout);
+      observer?.disconnect();
       preference.removeEventListener("change", stopWhenHidden);
       document.removeEventListener("visibilitychange", stopWhenHidden);
     };
   }, [eligible, finish, phase]);
 
   return (
-    <span className="papu-welcome" data-playing={eligible && phase === "playing"} aria-hidden="true">
+    <span ref={marker} className="papu-welcome" data-playing={eligible && phase === "playing"} aria-hidden="true">
       <PapayaMark className="papu-footer-fruit" />
-      {eligible && phase !== "done" && (
+      {eligible && (phase === "loading" || phase === "playing") && (
         <span className="papu-welcome-art">
           <Suspense fallback={null}>
             <GuestAnimation src="/assets/sweeto/sweeto-pass.riv" artboard="SweetoPass"

@@ -33,13 +33,14 @@ struct VenueDessertMenu: View {
   }
 
   private enum Presentation: Identifiable {
-    case original, counter, dessert(Dessert)
+    case original, counter, dessert(Dessert), tasting
 
     var id: String {
       switch self {
       case .original: "original"
       case .counter: "counter"
       case .dessert(let value): "dessert-" + value.id
+      case .tasting: "tasting"
       }
     }
   }
@@ -96,37 +97,47 @@ struct VenueDessertMenu: View {
 
   var body: some View {
     ScrollView {
-      LazyVStack(alignment: .leading, spacing: 13) {
-        Text(t("Menu deserów", "Dessert menu", "Меню десертов"))
-          .font(palette.display(.largeTitle))
-          .foregroundStyle(palette.forest)
-          .fixedSize(horizontal: false, vertical: true)
-          .accessibilityAddTraits(.isHeader)
-          .padding(.bottom, 5)
-        Text(t("Wybierz desery i pokaż listę przy ladzie.", "Choose desserts and show your list at the counter.", "Выберите десерты и покажите список у стойки."))
-          .font(.footnote)
-          .foregroundStyle(palette.muted)
-          .fixedSize(horizontal: false, vertical: true)
+      LazyVStack(alignment: .leading, spacing: 0) {
+        VStack(alignment: .leading, spacing: 7) {
+          Text(t("Menu deserów", "Dessert menu", "Меню десертов"))
+            .font(palette.display(.largeTitle))
+            .foregroundStyle(palette.forest)
+            .fixedSize(horizontal: false, vertical: true)
+            .accessibilityAddTraits(.isHeader)
+          Text(typeSize.isAccessibilitySize
+               ? t("Pokaż listę przy ladzie.", "Show your list at the counter.", "Покажите список у стойки.")
+               : t("Wybierz desery i pokaż listę przy ladzie.", "Choose desserts and show your list at the counter.", "Выберите десерты и покажите список у стойки."))
+            .font(.subheadline)
+            .foregroundStyle(palette.muted)
+            .fixedSize(horizontal: false, vertical: true)
+        }
+        .padding(.bottom, 14)
+        tastingAction
+          .padding(.bottom, 16)
         ForEach(Self.desserts) { dessert in
-          row(dessert)
-          Rectangle().fill(palette.line).frame(height: 1).accessibilityHidden(true)
+          menuRule
+          row(dessert).padding(.vertical, 9)
         }
-        Text(t("Zamów przy ladzie. Tam sprawdzisz też ceny i dostępność.", "Order at the counter, where you can check prices and availability.", "Закажите у стойки, там же уточняйте цены и наличие."))
-          .font(.footnote)
-          .foregroundStyle(palette.muted)
-          .fixedSize(horizontal: false, vertical: true)
-        if original != nil {
-          Button { presentation = .original } label: {
-            Label(t("Oryginalne menu (PDF)", "Original Polish menu (PDF)", "Оригинальное меню по-польски (PDF)"), systemImage: "doc.text")
-              .font(.footnote.weight(.semibold))
-              .multilineTextAlignment(.leading)
-              .padding(.horizontal, 12)
-              .frame(minHeight: 44)
-              .background(palette.surface, in: .rect(cornerRadius: 8))
-              .overlay { RoundedRectangle(cornerRadius: 8).strokeBorder(palette.line).accessibilityHidden(true) }
+        menuRule
+        VStack(alignment: .leading, spacing: 9) {
+          Text(t("Ceny i dostępność sprawdzisz przy ladzie.", "Check prices and availability at the counter.", "Цены и наличие уточняйте у стойки."))
+            .font(.footnote)
+            .foregroundStyle(palette.muted)
+            .fixedSize(horizontal: false, vertical: true)
+          if original != nil {
+            Button { presentation = .original } label: {
+              Label(t("Oryginalne menu (PDF)", "Original Polish menu (PDF)", "Оригинальное меню по-польски (PDF)"), systemImage: "doc.text")
+                .font(.footnote.weight(.semibold))
+                .multilineTextAlignment(.leading)
+                .padding(.horizontal, 12)
+                .frame(minHeight: 44)
+                .background(palette.surface, in: .rect(cornerRadius: 8))
+                .overlay { RoundedRectangle(cornerRadius: 8).strokeBorder(palette.line).allowsHitTesting(false) }
+            }
+            .buttonStyle(.plain)
           }
-          .buttonStyle(.plain)
         }
+        .padding(.top, 14)
       }
       .padding(.horizontal, 20)
       .padding(.vertical, 20)
@@ -164,6 +175,18 @@ struct VenueDessertMenu: View {
                            edit: { presentation = nil }, clear: clearDraft)
       case .dessert(let dessert):
         dessertDetail(dessert)
+      case .tasting:
+        SweetoTastingDial(
+          language: language, palette: palette,
+          choices: Self.desserts.map { dessert in
+            let words = dessert.text(for: language)
+            return SweetoTastingChoice(id: dessert.id, title: words.title, description: words.description)
+          },
+          add: { id in
+            guard let dessert = Self.desserts.first(where: { $0.id == id }) else { return false }
+            return changeQuantity(dessert, by: 1)
+          }
+        )
       case .original:
         NavigationStack {
           VenuePDFMenu(url: nil, fallback: original, language: language, isPolish: true, palette: palette)
@@ -179,74 +202,119 @@ struct VenueDessertMenu: View {
     }
   }
 
+  private var menuRule: some View {
+    Rectangle().fill(palette.line).frame(height: 1).accessibilityHidden(true)
+  }
+
+  private var tastingAction: some View {
+    Button { presentation = .tasting } label: {
+      HStack(spacing: 10) {
+        SweetoTastingThumbnail()
+          .frame(width: 36, height: 36)
+          .accessibilityHidden(true)
+        Text(t("Dobierz deser", "Find your dessert", "Выберите десерт"))
+          .font(.subheadline.weight(.semibold))
+          .multilineTextAlignment(.leading)
+          .fixedSize(horizontal: false, vertical: true)
+          .frame(maxWidth: .infinity, alignment: .leading)
+        Image(systemName: "chevron.right")
+          .font(.system(size: 12, weight: .semibold))
+          .accessibilityHidden(true)
+      }
+      .padding(.horizontal, 12)
+      .padding(.vertical, 4)
+      .frame(minHeight: 44)
+      .background(palette.peach, in: .rect(cornerRadius: 12))
+      .contentShape(.rect(cornerRadius: 12))
+    }
+    .buttonStyle(.plain)
+    .accessibilityHint(t("Dobierz deser według smaku", "Find a match by flavour", "Подбор десерта по вкусу"))
+  }
+
   private func row(_ dessert: Dessert) -> some View {
     let quantity = draft.quantity(for: dessert.id)
+    let words = dessert.text(for: language)
     let layout = typeSize.isAccessibilitySize ? AnyLayout(VStackLayout(alignment: .leading, spacing: 12))
-      : AnyLayout(HStackLayout(alignment: .top, spacing: 14))
+      : AnyLayout(HStackLayout(alignment: .center, spacing: 10))
     return layout {
       Button { presentation = .dessert(dessert) } label: {
-        Image(dessert.image).resizable().scaledToFit()
-          .frame(width: typeSize.isAccessibilitySize ? 144 : 112)
-          .clipShape(.rect(cornerRadius: 6))
-          .overlay(alignment: .topTrailing) {
-            Image(systemName: "arrow.up.left.and.arrow.down.right")
-              .font(.system(size: 10, weight: .semibold))
+        layout {
+          menuPhoto(dessert)
+          VStack(alignment: .leading, spacing: 4) {
+            Text(words.title)
+              .font(.headline.weight(.bold))
               .foregroundStyle(palette.ink)
-              .frame(width: 23, height: 23)
-              .background(palette.surface.opacity(0.94), in: .circle)
-              .overlay { Circle().strokeBorder(palette.line).allowsHitTesting(false) }
-              .padding(4)
-              .accessibilityHidden(true)
-              .allowsHitTesting(false)
+            Text(words.description)
+              .font(.subheadline)
+              .foregroundStyle(palette.muted)
           }
-          .overlay(alignment: .bottomLeading) {
-            if quantity > 0 && !typeSize.isAccessibilitySize {
-              Text("\(quantity)")
-                .font(.system(.caption, design: .monospaced, weight: .bold))
-                .foregroundStyle(palette.onAccent)
-                .padding(.horizontal, 7).padding(.vertical, 4)
-                .background(palette.primary, in: .capsule)
-                .contentTransition(reduceMotion ? .identity : .numericText())
-                .padding(4)
-                .accessibilityHidden(true)
-                .allowsHitTesting(false)
-            }
-          }
+          .fixedSize(horizontal: false, vertical: true)
+          .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .multilineTextAlignment(.leading)
+        .contentShape(.rect)
       }
       .buttonStyle(.plain)
-      .accessibilityLabel(t("Powiększ zdjęcie: \(dessert.text(for: language).title)", "Enlarge photo: \(dessert.text(for: language).title)", "Увеличить фото: \(dessert.text(for: language).title)"))
-      dessertText(dessert)
-      if typeSize.isAccessibilitySize {
-        quantityPicker(dessert, quantity: quantity)
-      } else {
-        quantityRail(dessert, quantity: quantity)
-      }
+      .accessibilityLabel(words.title)
+      .accessibilityValue(words.description)
+      .accessibilityHint(t("Otwiera szczegóły deseru", "Opens dessert details", "Открывает описание десерта"))
+      if typeSize.isAccessibilitySize { quantityPicker(dessert, quantity: quantity) }
+      else { quantityRail(dessert, quantity: quantity) }
     }
     .frame(maxWidth: .infinity, alignment: .leading)
-    .contentShape(.rect)
     .accessibilityElement(children: .contain)
+  }
+
+  private func menuPhoto(_ dessert: Dessert) -> some View {
+    Image(dessert.image).resizable().scaledToFill()
+      .frame(width: typeSize.isAccessibilitySize ? 144 : 100, height: typeSize.isAccessibilitySize ? 108 : 88)
+      .clipShape(.rect(cornerRadius: 12))
+      .overlay(alignment: .bottomTrailing) {
+        Image(systemName: "arrow.up.left.and.arrow.down.right")
+          .font(.system(size: 10, weight: .semibold))
+          .foregroundStyle(palette.ink)
+          .frame(width: 25, height: 25)
+          .background(palette.surface, in: .circle)
+          .padding(4)
+      }
+      .accessibilityHidden(true)
   }
 
   private func dessertDetail(_ dessert: Dessert) -> some View {
     let words = dessert.text(for: language)
     return NavigationStack {
       ScrollView {
-        VStack(alignment: .leading, spacing: 16) {
-          Text(words.title)
-            .font(typeSize.isAccessibilitySize ? .headline.weight(.bold) : palette.display(.title2))
-            .accessibilityAddTraits(.isHeader)
-            .fixedSize(horizontal: false, vertical: true)
-          Image(dessert.image).resizable().scaledToFit()
-            .frame(maxWidth: .infinity)
+        VStack(alignment: .leading, spacing: 14) {
+          Color.clear
+            .aspectRatio(1.56, contentMode: .fit)
+            .overlay {
+              Image(dessert.image).resizable().scaledToFill()
+            }
             .clipShape(.rect(cornerRadius: palette.actionCorner))
-            .accessibilityLabel(words.title)
-          Text(words.description).font(.body).foregroundStyle(palette.muted)
-            .fixedSize(horizontal: false, vertical: true)
-          detailQuantityControl(dessert)
+            .accessibilityHidden(true)
+          VStack(alignment: .leading, spacing: 7) {
+            Text(words.title)
+              .font(typeSize.isAccessibilitySize ? .headline.weight(.bold) : palette.display(.title))
+              .accessibilityAddTraits(.isHeader)
+            Text(words.description).font(.body).foregroundStyle(palette.muted)
+          }
+          .fixedSize(horizontal: false, vertical: true)
         }
-        .padding(20)
+        .padding(.horizontal, 20)
+        .padding(.top, 2)
+        .padding(.bottom, 16)
         .frame(maxWidth: 540, alignment: .leading)
         .frame(maxWidth: .infinity)
+      }
+      .scrollBounceBehavior(.basedOnSize)
+      .safeAreaInset(edge: .bottom, spacing: 0) {
+        detailQuantityControl(dessert)
+          .padding(.horizontal, 20)
+          .padding(.vertical, 10)
+          .frame(maxWidth: 540)
+          .frame(maxWidth: .infinity)
+          .background(palette.paper)
+          .overlay(alignment: .top) { menuRule }
       }
       .background(palette.paper.ignoresSafeArea())
       .foregroundStyle(palette.ink)
@@ -260,34 +328,26 @@ struct VenueDessertMenu: View {
       .tint(palette.ink)
     }
     .presentationDragIndicator(.visible)
+    .presentationDetents(typeSize >= .xxLarge ? [.large] : [.height(500), .large])
   }
 
-  @ViewBuilder private func detailQuantityControl(_ dessert: Dessert) -> some View {
+  private func detailQuantityControl(_ dessert: Dessert) -> some View {
     let quantity = draft.quantity(for: dessert.id)
-    if quantity > 0 {
-      quantityPicker(dessert, quantity: quantity)
-    } else {
-      Button {
-        changeQuantity(dessert, by: 1)
-      } label: {
-        HStack(spacing: 8) {
-          Image(systemName: "plus").font(.system(size: 16, weight: .semibold)).accessibilityHidden(true)
-          Text(t("Dodaj do listy", "Add to list", "В список"))
-            .font(.body.weight(.semibold))
-            .fixedSize(horizontal: false, vertical: true)
-        }
-        .padding(.horizontal, 16).padding(.vertical, 9)
-        .frame(minHeight: 44)
-        .foregroundStyle(palette.onAccent)
-        .background(palette.primary, in: .capsule)
-      }
-      .buttonStyle(.plain)
+    let label = t("Na liście", "On your list", "В списке")
+    let layout = typeSize.isAccessibilitySize ? AnyLayout(VStackLayout(alignment: .leading, spacing: 6))
+      : AnyLayout(HStackLayout(alignment: .center, spacing: 10))
+    return layout {
+      Text(label)
+        .font(.body.weight(.semibold))
+        .fixedSize(horizontal: false, vertical: true)
+        .frame(maxWidth: .infinity, alignment: .leading)
+      quantityPicker(dessert, quantity: quantity, showsZero: true)
     }
   }
 
-  private func quantityPicker(_ dessert: Dessert, quantity: Int) -> some View {
+  private func quantityPicker(_ dessert: Dessert, quantity: Int, showsZero: Bool = false) -> some View {
     HStack(spacing: 0) {
-      if quantity > 0 {
+      if quantity > 0 || showsZero {
         quantityButton(dessert, quantity: quantity, increment: false)
         Text("\(quantity)")
           .font(.system(.body, design: .monospaced, weight: .bold))
@@ -304,13 +364,17 @@ struct VenueDessertMenu: View {
   private func quantityRail(_ dessert: Dessert, quantity: Int) -> some View {
     VStack(spacing: 0) {
       quantityButton(dessert, quantity: quantity, increment: true)
-        .background(palette.surface, in: .circle)
+        .background(quantity > 0 ? palette.peach : palette.surface, in: .circle)
         .overlay { Circle().strokeBorder(palette.line).allowsHitTesting(false) }
-      if quantity > 0 {
-        quantityButton(dessert, quantity: quantity, increment: false)
-      } else {
-        Color.clear.frame(width: 44, height: 44).accessibilityHidden(true)
-      }
+      Text("\(quantity)")
+        .font(.system(.caption, design: .monospaced, weight: .semibold))
+        .contentTransition(reduceMotion ? .identity : .numericText())
+        .frame(minHeight: 20)
+        .opacity(quantity > 0 ? 1 : 0)
+        .accessibilityHidden(true)
+      quantityButton(dessert, quantity: quantity, increment: false)
+        .opacity(quantity > 0 ? 1 : 0)
+        .accessibilityHidden(quantity == 0)
     }
     .background {
       if quantity > 0 { Capsule().fill(palette.surface) }
@@ -322,19 +386,21 @@ struct VenueDessertMenu: View {
 
   private func quantityButton(_ dessert: Dessert, quantity: Int, increment: Bool) -> some View {
     let name = dessert.text(for: language).title
+    let unavailable = increment ? quantity >= SweetoCounterDraft.quantityLimit : quantity == 0
     return Button {
       changeQuantity(dessert, by: increment ? 1 : -1)
     } label: {
       Image(systemName: increment ? "plus" : "minus")
         .font(.system(size: 16, weight: .semibold))
         .foregroundStyle(palette.ink)
+        .opacity(unavailable ? 0.46 : 1)
         .frame(width: 44, height: 44)
         .background(increment && quantity > 0 ? palette.peach : .clear, in: .circle)
         .contentShape(.circle)
         .accessibilityHidden(true)
     }
     .buttonStyle(.plain)
-    .disabled(increment ? quantity >= SweetoCounterDraft.quantityLimit : quantity == 0)
+    .disabled(unavailable)
     .accessibilityLabel(increment
       ? t("Dodaj: \(name)", "Add one: \(name)", "Добавить: \(name)")
       : t("Usuń porcję: \(name)", "Remove one: \(name)", "Убрать порцию: \(name)"))
@@ -342,7 +408,7 @@ struct VenueDessertMenu: View {
   }
 
   private var counterAction: some View {
-    let title = t("Pokaż przy ladzie", "Show at the counter", "Покажите у стойки")
+    let title = t("Pokaż listę przy ladzie", "Show list at the counter", "Покажите список у стойки")
     let compact = t("Lista", "My list", "Список") + " • \(draft.total)"
     return Button {
       restoreDraft()
@@ -362,10 +428,11 @@ struct VenueDessertMenu: View {
     if draft.total == 0, case .counter? = presentation { presentation = nil }
   }
 
-  private func changeQuantity(_ dessert: Dessert, by delta: Int) {
+  @discardableResult
+  private func changeQuantity(_ dessert: Dessert, by delta: Int) -> Bool {
     var next = draft
     next.adjust(dessert.id, by: delta)
-    guard next != draft else { return }
+    guard next != draft else { return false }
     withAnimation(reduceMotion ? nil : .easeOut(duration: 0.22)) {
       draft = next
     }
@@ -374,6 +441,7 @@ struct VenueDessertMenu: View {
     let name = dessert.text(for: language).title
     let quantity = draft.quantity(for: dessert.id)
     AccessibilityNotification.Announcement(t("\(quantity) × \(name) na liście", "\(quantity) × \(name) on the list", "\(quantity) × \(name) в списке")).post()
+    return true
   }
 
   private func clearDraft() {
@@ -385,20 +453,6 @@ struct VenueDessertMenu: View {
     counterPulse += 1
   }
 
-  private func dessertText(_ dessert: Dessert) -> some View {
-    let words = dessert.text(for: language)
-    return VStack(alignment: .leading, spacing: 5) {
-      Text(words.title)
-        .font(.headline.weight(.bold))
-        .foregroundStyle(palette.ink)
-        .accessibilityAddTraits(.isHeader)
-      Text(words.description)
-        .font(.subheadline)
-        .foregroundStyle(palette.muted)
-    }
-    .fixedSize(horizontal: false, vertical: true)
-    .frame(maxWidth: .infinity, alignment: .leading)
-  }
 }
 
 struct VenueImageMenu: View {
@@ -543,6 +597,7 @@ struct VenueLoyaltyView: View {
   let palette: VenueGuestPalette
   let showPreview: Bool
   @Environment(\.scenePhase) private var scenePhase
+  @Environment(\.openURL) private var openURL
   @Environment(\.dynamicTypeSize) private var typeSize
   @Environment(\.accessibilityReduceMotion) private var reduceMotion
   @AccessibilityFocusState private var checkoutTitleFocused: Bool
@@ -552,8 +607,10 @@ struct VenueLoyaltyView: View {
   @State private var issuanceFailed = false
   @State private var readGeneration = 0
   @State private var failed = false
-  @State private var walletBusy = false
-  @State private var walletFailed = false
+  @State private var balanceConfirmed = false
+  @State private var checkingBalance = false
+  @State private var walletRequest: WalletRequest?
+  @State private var walletFailure: WalletRequest?
   @State private var wallet: NativeWalletPass?
   @State private var pendingWalletCheck: NativeWalletPass?
   @State private var installedPass: PKPass?
@@ -562,7 +619,11 @@ struct VenueLoyaltyView: View {
   @AppStorage("papupay-last-verified-wallet-membership-v1") private var previouslyInstalled = Data()
   @State private var preview = false
   @State private var walletAvailable = false
+  @State private var googleWalletAvailable = false
   @State private var walletChecked = false
+  @State private var walletLookupFailed = false
+  @State private var walletLookupAttempt = 0
+  @State private var walletMembership: String?
   @State private var cardMotion = 0
   @State private var stampMotion = 0
   @State private var stampPlayback: SweetoStampPlayback?
@@ -577,11 +638,21 @@ struct VenueLoyaltyView: View {
   @State private var confirmReset = false
 
   private enum DemoStage: Equatable { case ready, scanning, stamped(Int), redeemed }
+  private enum WalletRequest: Equatable { case addApple, refreshApple, addGoogle }
+  private struct WalletLookup: Equatable {
+    let membership: String
+    let attempt: Int
+  }
   private var stampConfirmed: Bool {
     guard case .stamped(let count) = demoStage, count > 0 else { return false }
     return card?.stamps == count && demoLedger.stamps == count
   }
   private var demo: VenueGuestDemo? { VenueGuestDemo.loyaltyConfiguration(for: api.venue) }
+  private var showingSavedBalance: Bool { demo == nil && !balanceConfirmed }
+  private var walletLookup: WalletLookup? {
+    guard let card, demo != nil || balanceConfirmed else { return nil }
+    return WalletLookup(membership: card.checkout, attempt: walletLookupAttempt)
+  }
   private var isSweeto: Bool { api.venue.slug == "sweeto" }
   private var cream: Color { isSweeto ? palette.frosting : palette.surface }
   private var receiptInk: Color { isSweeto ? palette.forest : palette.ink }
@@ -651,19 +722,28 @@ struct VenueLoyaltyView: View {
         }
       }
     }
-    .task(id: card?.code) {
+    .task(id: walletLookup) {
+      guard let lookup = walletLookup, let membership = card, lookup.membership == membership.checkout else { return }
+      guard walletMembership != lookup.membership || !walletChecked || walletLookupFailed else { return }
       walletAvailable = false
+      googleWalletAvailable = false
       walletChecked = false
+      walletLookupFailed = false
       walletUpdates = false
       installedPass = nil
       pendingWalletCheck = nil
-      defer { if !Task.isCancelled { walletChecked = true } }
-      guard let membership = card else { return }
+      walletMembership = lookup.membership
+      defer { if !Task.isCancelled, walletLookup == lookup { walletChecked = true } }
       if let demo {
         walletAvailable = demo.walletPassData(stamps: membership.stamps) != nil
       } else {
-        guard let response = try? await api.wallet(), !Task.isCancelled else { return }
+        guard let response = try? await api.wallet() else {
+          if !Task.isCancelled, walletLookup == lookup { walletLookupFailed = true }
+          return
+        }
+        guard !Task.isCancelled, walletLookup == lookup else { return }
         walletAvailable = response.status == .ready && response.passUrl != nil
+        googleWalletAvailable = response.googleStatus == .ready
         walletUpdates = response.updatesEnabled == true
       }
       // The persisted fingerprint only requests a fresh check. PassKit is authoritative.
@@ -672,6 +752,10 @@ struct VenueLoyaltyView: View {
         card?.checkout == membership.checkout else { return }
       if passIsInstalled(pass) { installedPass = pass }
       else { previouslyInstalled = Data() }
+    }
+    .task(id: walletRequest) {
+      guard let walletRequest else { return }
+      await prepareWallet(walletRequest)
     }
     .task(id: wallet == nil ? pendingWalletCheck?.id : nil) {
       guard wallet == nil, let review = pendingWalletCheck else { return }
@@ -707,8 +791,15 @@ struct VenueLoyaltyView: View {
     }
     .sheet(isPresented: $preview) { cardPreview }
     .sheet(isPresented: $demoPresented, onDismiss: cancelDemoScan) { demoScanner }
-    .alert(t("Nie udało się otworzyć Wallet", "Couldn’t open Wallet", "Не удалось открыть Wallet"), isPresented: $walletFailed) {
-      Button("OK", role: .cancel) {}
+    .alert(
+      walletFailure == .addGoogle
+        ? t("Nie udało się otworzyć Portfela Google", "Couldn’t open Google Wallet", "Не удалось открыть Google Кошелек")
+        : t("Nie udało się otworzyć Apple Wallet", "Couldn’t open Apple Wallet", "Не удалось открыть Apple Wallet"),
+      isPresented: Binding(get: { walletFailure != nil }, set: { if !$0 { walletFailure = nil } })
+    ) {
+      Button("OK", role: .cancel) { walletFailure = nil }
+    } message: {
+      Text(t("Spróbuj ponownie. Nadal możesz pokazać kod QR przy kasie.", "Try again. You can still show your QR code at the counter.", "Попробуйте ещё раз. Вы по-прежнему можете показать QR-код на кассе."))
     }
   }
 
@@ -830,19 +921,21 @@ struct VenueLoyaltyView: View {
           }
         }
         stampRow(count: card.stamps, goal: card.goal, animateNewest: demo == nil && (!isSweeto || receivedStamps > 0))
-        if receivedStamps > 0 && !failed {
+        if receivedStamps > 0 && !showingSavedBalance {
           Label(stampReceipt(receivedStamps), systemImage: "checkmark.seal.fill")
             .font(.footnote.weight(.semibold))
             .accessibilityElement(children: .combine)
         }
-        if failed {
-          Label(t("Ostatnie znane saldo. Pociągnij w dół, aby odświeżyć.", "Showing your last known balance. Pull down to refresh.", "Показан последний известный баланс. Потяните вниз, чтобы обновить."), systemImage: "arrow.clockwise")
+        if card.rewardAvailable && demo == nil && !showingSavedBalance {
+          Text(t("Pokaż ten kod obsłudze, aby odebrać nagrodę.", "Show this code to staff to claim your reward.", "Покажите этот код сотрудникам, чтобы получить награду."))
             .font(.footnote)
+            .fixedSize(horizontal: false, vertical: true)
         }
       }
       .frame(maxWidth: .infinity, alignment: .leading)
       .foregroundStyle(receiptInk).padding(.horizontal, 16).padding(.vertical, 12)
-      .background(rewardBand(available: card.rewardAvailable, animateArrival: demo == nil))
+      .background(rewardBand(available: card.rewardAvailable && !showingSavedBalance, animateArrival: demo == nil))
+      if showingSavedBalance { savedBalanceStatus }
       walletSection
     }
     .background(palette.surface, in: .rect(cornerRadius: palette.actionCorner))
@@ -851,12 +944,41 @@ struct VenueLoyaltyView: View {
   }
 
   private func progressTitle(_ card: VenueLoyaltyCard, remainder: String) -> some View {
-    Text(card.rewardAvailable
+    Text(showingSavedBalance
+      ? t("Zapisane pieczątki", "Last saved stamps", "Последние сохранённые отметки")
+      : card.rewardAvailable
       ? t("Nagroda do odbioru", "Reward ready to claim", "Награда готова")
       : t("\(remainder) do nagrody", "\(remainder) to your reward", "\(remainder) до награды"))
       .font(palette.display(.headline))
       .fixedSize(horizontal: false, vertical: true)
       .accessibilityAddTraits(.isHeader)
+  }
+
+  private var savedBalanceStatus: some View {
+    VStack(alignment: .leading, spacing: 6) {
+      Label {
+        Text(t("Możesz pokazać zapisany kod przy kasie. Liczba pieczątek może się różnić.", "You can show your saved code at the counter. Your stamp count may have changed.", "Покажите сохранённый код на кассе. Количество отметок могло измениться."))
+          .fixedSize(horizontal: false, vertical: true)
+      } icon: {
+        Image(systemName: "checkmark.shield").accessibilityHidden(true)
+      }
+      .font(.footnote)
+      if failed {
+        Button {
+          Task { await refresh() }
+        } label: {
+          Label(t("Sprawdź pieczątki", "Check stamp balance", "Проверить отметки"), systemImage: "arrow.clockwise")
+            .font(.footnote.weight(.semibold))
+            .frame(minHeight: 44, alignment: .leading)
+        }
+        .disabled(checkingBalance)
+      }
+    }
+    .frame(maxWidth: .infinity, alignment: .leading)
+    .foregroundStyle(palette.ink)
+    .padding(.horizontal, 16)
+    .padding(.vertical, 11)
+    .background(palette.surface)
   }
 
   private func progressFraction(_ card: VenueLoyaltyCard) -> some View {
@@ -960,53 +1082,18 @@ struct VenueLoyaltyView: View {
   }
 
   @ViewBuilder private var walletSection: some View {
-    if walletChecked {
+    if walletChecked, walletMembership == card?.checkout, walletLookup != nil || installedPass != nil {
       receiptSeam
       VStack(spacing: 11) {
-        if walletAvailable && PKAddPassesViewController.canAddPasses() {
-          if let installedPass {
-            if let url = installedPass.passURL {
-              Link(destination: url) {
-                Label(t("Otwórz w Wallet", "Open in Wallet", "Открыть в Wallet"), systemImage: "wallet.pass.fill")
-                  .font(.headline).frame(maxWidth: .infinity, minHeight: 44)
-              }
-            } else {
-              Label(t("Karta w Wallet", "Pass in Wallet", "Карта в Wallet"), systemImage: "checkmark.circle.fill")
-                .font(.headline)
-            }
-            if !walletUpdates {
-              Button(t("Uaktualnij kartę w Wallet", "Refresh Wallet pass", "Обновить карту в Wallet")) {
-                Task { await prepareWallet(refreshExisting: true) }
-              }
-              .font(.subheadline.weight(.semibold)).frame(minHeight: 44)
-              .disabled(walletBusy)
-            }
-          } else {
-            WalletAddButton(enabled: !walletBusy) { Task { await prepareWallet() } }
-              .frame(height: 60)
-              .frame(maxWidth: 350)
-              .frame(maxWidth: .infinity)
-          }
-          if walletBusy {
-            HStack(spacing: 8) {
-              ProgressView()
-                .controlSize(.small)
-              Text(t("Przygotowujemy kartę…", "Preparing your pass…", "Подготавливаем карту…"))
-            }
-            .font(.footnote).foregroundStyle(palette.ink)
-            .accessibilityElement(children: .combine)
-          } else if installedPass != nil && walletUpdates {
-            Text(t("Karta jest w Wallet. Pieczątki aktualizują się automatycznie.", "Your pass is in Wallet. Stamps update automatically.", "Карта уже в Wallet. Отметки обновляются автоматически."))
-              .font(.footnote).foregroundStyle(palette.muted).multilineTextAlignment(.center)
-          } else if demo != nil {
-            Text(t("Dodaj kartę ponownie, by uaktualnić pieczątki w Wallet.", "Add the demo card again to refresh the stamps in Wallet.", "Добавьте демо-карту ещё раз, чтобы обновить отметки в Wallet."))
-              .font(.footnote).foregroundStyle(palette.ink).multilineTextAlignment(.center)
-              .fixedSize(horizontal: false, vertical: true)
-          } else {
-            Text(t("Przy następnej wizycie pokaż kartę bezpośrednio z Wallet.", "Show your pass from Wallet on your next visit.", "При следующем визите покажите карту из Wallet."))
-              .font(.footnote).foregroundStyle(palette.muted).multilineTextAlignment(.center)
-              .fixedSize(horizontal: false, vertical: true)
-          }
+        if walletLookupFailed, walletLookup != nil {
+          cardEntryButton(
+            title: t("Sprawdź Wallet ponownie", "Retry Wallet setup", "Проверить Wallet ещё раз"),
+            systemImage: "arrow.clockwise"
+          ) { walletLookupAttempt += 1 }
+        } else if installedPass != nil || (walletLookup != nil && (canAddApplePass || googleWalletAvailable)) {
+          if installedPass != nil || canAddApplePass { appleWalletAction }
+          if googleWalletAvailable { googleWalletAction }
+          walletCaption
         } else if showPreview || demo != nil {
           cardEntryButton(
             title: demo != nil
@@ -1025,6 +1112,67 @@ struct VenueLoyaltyView: View {
       }
       .padding(.horizontal, 19).padding(.vertical, 12)
       .frame(maxWidth: .infinity)
+    }
+  }
+
+  private var canAddApplePass: Bool {
+    walletAvailable && PKAddPassesViewController.canAddPasses()
+  }
+
+  @ViewBuilder private var appleWalletAction: some View {
+    if let installedPass {
+      if let url = installedPass.passURL {
+        Link(destination: url) {
+          Label(t("Otwórz w Apple Wallet", "Open in Apple Wallet", "Открыть в Apple Wallet"), systemImage: "wallet.pass.fill")
+            .font(.headline).frame(maxWidth: .infinity, minHeight: 44)
+        }
+      } else {
+        Label(t("Karta w Apple Wallet", "Pass in Apple Wallet", "Карта в Apple Wallet"), systemImage: "checkmark.circle.fill")
+          .font(.headline)
+      }
+      if canAddApplePass && !walletUpdates {
+        Button(t("Uaktualnij kartę w Wallet", "Refresh Wallet pass", "Обновить карту в Wallet")) {
+          walletRequest = .refreshApple
+        }
+        .font(.subheadline.weight(.semibold)).frame(minHeight: 44)
+        .disabled(walletLookup == nil || walletRequest != nil)
+      }
+    } else {
+      WalletAddButton(enabled: walletLookup != nil && walletRequest == nil) { walletRequest = .addApple }
+        .frame(height: 55)
+        .frame(maxWidth: 222)
+        .frame(maxWidth: .infinity)
+    }
+  }
+
+  private var googleWalletAction: some View {
+    Button { walletRequest = .addGoogle } label: {
+      Image(t("GoogleWalletBadgePL", "GoogleWalletBadgeEN", "GoogleWalletBadgeRU"))
+        .resizable().scaledToFit()
+        .frame(height: 55)
+        .accessibilityHidden(true)
+    }
+    .buttonStyle(.plain)
+    .accessibilityLabel(t("Dodaj do Portfela Google", "Add to Google Wallet", "Добавить в Google Кошелек"))
+    .accessibilityHint(t("Otwiera stronę Portfela Google.", "Opens the Google Wallet website.", "Открывает сайт Google Кошелек."))
+    .disabled(walletLookup == nil || walletRequest != nil)
+  }
+
+  @ViewBuilder private var walletCaption: some View {
+    if walletRequest != nil {
+      ProgressView(t("Przygotowujemy kartę…", "Preparing your pass…", "Подготавливаем карту…"))
+        .font(.footnote).foregroundStyle(palette.ink)
+    } else {
+      let copy = if installedPass != nil && walletUpdates {
+        t("Pieczątki w Apple Wallet aktualizują się automatycznie.", "Stamps in Apple Wallet update automatically.", "Отметки в Apple Wallet обновляются автоматически.")
+      } else if installedPass != nil && canAddApplePass {
+        t("Uaktualnij kartę, aby zobaczyć nowe pieczątki w Wallet.", "Refresh the pass to see new stamps in Wallet.", "Обновите карту, чтобы увидеть новые отметки в Wallet.")
+      } else {
+        t("Przy następnej wizycie pokaż kartę bezpośrednio z portfela.", "Show the pass from your wallet on your next visit.", "При следующем визите покажите карту из кошелька.")
+      }
+      Text(copy)
+        .font(.footnote).foregroundStyle(palette.muted).multilineTextAlignment(.center)
+        .fixedSize(horizontal: false, vertical: true)
     }
   }
 
@@ -1276,7 +1424,7 @@ struct VenueLoyaltyView: View {
   }
 
   @MainActor private func refresh() async {
-    guard !creating else { return }
+    guard !creating, !checkingBalance, scenePhase == .active, wallet == nil, !preview else { return }
     if let demo {
       demoLedger = VenueDemoLoyalty.load(namespace: demo.loyaltyNamespace(for: api.venue))
       applyDemoCard()
@@ -1284,6 +1432,12 @@ struct VenueLoyaltyView: View {
       ready = true
       return
     }
+    if !ready, card == nil, let saved = api.cachedCard() {
+      card = saved
+      ready = true
+    }
+    checkingBalance = true
+    defer { checkingBalance = false }
     readGeneration += 1
     let generation = readGeneration
     do {
@@ -1294,6 +1448,7 @@ struct VenueLoyaltyView: View {
         let change = VenueStampObservation.record(found, venue: api.venue)
         if change == .stale {
           failed = true
+          balanceConfirmed = false
           ready = true
           return
         }
@@ -1315,9 +1470,15 @@ struct VenueLoyaltyView: View {
         rewardArrival = false
       }
       if found != card { card = found }
+      balanceConfirmed = found != nil
       failed = false
+    } catch is CancellationError {
+      return
     } catch {
-      if !Task.isCancelled, generation == readGeneration { failed = true }
+      if !Task.isCancelled, generation == readGeneration {
+        balanceConfirmed = false
+        failed = true
+      }
     }
     if !Task.isCancelled { ready = true }
   }
@@ -1343,6 +1504,7 @@ struct VenueLoyaltyView: View {
       withAnimation(reduceMotion ? nil : .spring(response: 0.37, dampingFraction: 0.85)) {
         focusCheckoutOnCreate = true
         card = created
+        balanceConfirmed = true
         cardMotion += 1
         failed = false
       }
@@ -1436,18 +1598,25 @@ struct VenueLoyaltyView: View {
     return try await PKPass(data: api.applePass(language: language))
   }
 
-  @MainActor private func prepareWallet(refreshExisting: Bool = false) async {
-    guard let membership = card, !walletBusy else { return }
-    walletBusy = true
-    defer { walletBusy = false }
+  @MainActor private func prepareWallet(_ request: WalletRequest) async {
+    defer { if walletRequest == request { walletRequest = nil } }
+    guard let membership = card, walletLookup != nil else { return }
     do {
+      if request == .addGoogle {
+        let url = try await api.googlePassURL()
+        guard !Task.isCancelled, card?.checkout == membership.checkout, scenePhase == .active else { return }
+        openURL(url) { accepted in
+          if !accepted && card?.checkout == membership.checkout { walletFailure = request }
+        }
+        return
+      }
       let pass = try await signedPass(for: membership)
       guard !Task.isCancelled, card?.checkout == membership.checkout, scenePhase == .active else { return }
       let alreadyInstalled = passIsInstalled(pass)
       if alreadyInstalled {
         installedPass = pass
         previouslyInstalled = membership.fingerprint(in: api.venue)
-        if !refreshExisting { return }
+        if request != .refreshApple { return }
       } else {
         installedPass = nil
         if previouslyInstalled == membership.fingerprint(in: api.venue) { previouslyInstalled = Data() }
@@ -1459,7 +1628,7 @@ struct VenueLoyaltyView: View {
     } catch is CancellationError {
       return
     } catch {
-      walletFailed = true
+      if !Task.isCancelled && card?.checkout == membership.checkout { walletFailure = request }
     }
   }
 }

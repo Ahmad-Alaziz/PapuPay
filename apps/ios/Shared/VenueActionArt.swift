@@ -32,6 +32,28 @@ import class RiveRuntime.Worker
   }
 }
 
+struct PapuLaunchHandoff: View {
+  @State private var moving = false
+
+  var body: some View {
+    ZStack {
+      Color("GuestLaunchPaper")
+      Image("PapuPayLaunchLockup")
+        .resizable()
+        .scaledToFit()
+        .frame(width: 180, height: 44)
+        .scaleEffect(moving ? 1.07 : 1)
+        .offset(y: moving ? -5 : 0)
+    }
+    .ignoresSafeArea()
+    .allowsHitTesting(false)
+    .accessibilityHidden(true)
+    .onAppear {
+      withAnimation(.easeOut(duration: 0.34)) { moving = true }
+    }
+  }
+}
+
 /// The same bundled artwork has independent welcome and loyalty timelines.
 /// Preparing this decoration never delays the venue content.
 @MainActor @Observable final class PapuGuestArrival {
@@ -48,7 +70,7 @@ import class RiveRuntime.Worker
   func play() async {
     guard !consumed else { return }
     consumed = true
-    let deadline = ContinuousClock.now.advanced(by: .milliseconds(600))
+    let deadline = ContinuousClock.now.advanced(by: .milliseconds(850))
     do {
       let file = try await SweetoStampMotionSource.file.value
       let artboard = try await file.createArtboard("SweetoPass")

@@ -41,6 +41,7 @@ function publicAsset(value) {
 
 function cleanBrand(venue) {
   const fallback = venue.id === defaultVenueId ? sweeto : {};
+  const logoUrl = publicAsset(venue.logoUrl ?? fallback.logoUrl);
   const photoUrl = publicAsset(venue.photoUrl ?? fallback.photoUrl);
   const photoMotion = Object.hasOwn(venue, "photoMotion")
     ? venue.photoMotion
@@ -61,8 +62,8 @@ function cleanBrand(venue) {
     id: venue.id,
     name: venue.name,
     address: typeof venue.address === "string" ? venue.address.slice(0, 160) : (fallback.address ?? ""),
-    logoUrl: publicAsset(venue.logoUrl ?? fallback.logoUrl),
-    logoWhiteUrl: publicAsset(venue.logoWhiteUrl ?? fallback.logoWhiteUrl),
+    logoUrl,
+    logoWhiteUrl: publicAsset(venue.logoWhiteUrl ?? (logoUrl === fallback.logoUrl ? fallback.logoWhiteUrl : undefined)),
     photoUrl,
     ...(hasSauceDrip ? { photoMotion: "sauce-drip", photoDrip: { x: photoDrip.x, y: photoDrip.y ?? 1, width: photoDrip.width ?? 0.04, color: photoDrip.color } } : {}),
     mapUrl: publicAsset(venue.mapUrl ?? fallback.mapUrl),

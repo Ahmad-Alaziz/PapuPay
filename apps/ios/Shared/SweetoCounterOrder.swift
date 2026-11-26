@@ -73,20 +73,26 @@ struct SweetoCounterOrder: View {
     language.text(pl, en, ru)
   }
 
+  private var detents: Set<PresentationDetent> {
+    if typeSize >= .xxLarge { return [.large] }
+    let translated = lines.count(where: { $0.polishName != $0.guestName })
+    let contentHeight = 302 + lines.count * 62 + translated * 21
+    return [.height(CGFloat(contentHeight)), .large]
+  }
+
   var body: some View {
     NavigationStack {
       ScrollView {
-        VStack(alignment: .leading, spacing: 18) {
+        VStack(alignment: .leading, spacing: 12) {
           if !typeSize.isAccessibilitySize {
-            Text(t("Pokaż przy ladzie", "Show at the counter", "Покажите у стойки"))
-              .font(palette.display(.largeTitle))
+            Text(t("Pokaż listę przy ladzie", "Show list at the counter", "Покажите список у стойки"))
+              .font(palette.display(.title))
               .foregroundStyle(palette.ink)
               .fixedSize(horizontal: false, vertical: true)
               .accessibilityAddTraits(.isHeader)
-            counterGuidance
           }
           ticket
-          if typeSize.isAccessibilitySize { counterGuidance }
+          counterGuidance
           Button(role: .destructive) {
             confirmClear = true
           } label: {
@@ -94,14 +100,18 @@ struct SweetoCounterOrder: View {
               .font(.subheadline.weight(.semibold))
               .fixedSize(horizontal: false, vertical: true)
               .frame(minHeight: 44)
+              .contentShape(.rect)
           }
           .foregroundStyle(palette.muted)
           .buttonStyle(.plain)
         }
-        .padding(20)
+        .padding(.horizontal, 20)
+        .padding(.top, 6)
+        .padding(.bottom, 12)
         .frame(maxWidth: 540, alignment: .leading)
         .frame(maxWidth: .infinity)
       }
+      .scrollBounceBehavior(.basedOnSize)
       .background(palette.paper.ignoresSafeArea())
       .foregroundStyle(palette.ink)
       .tint(palette.ink)
@@ -112,12 +122,13 @@ struct SweetoCounterOrder: View {
       }
       .toolbarBackground(palette.paper, for: .navigationBar)
       .toolbarBackground(.visible, for: .navigationBar)
-      .confirmationDialog(t("Wyczyścić listę?", "Clear the list?", "Очистить список?"), isPresented: $confirmClear, titleVisibility: .visible) {
+      .alert(t("Wyczyścić listę?", "Clear the list?", "Очистить список?"), isPresented: $confirmClear) {
         Button(t("Wyczyść listę", "Clear list", "Очистить список"), role: .destructive, action: clear)
         Button(t("Anuluj", "Cancel", "Отмена"), role: .cancel) {}
       }
     }
     .presentationDragIndicator(.visible)
+    .presentationDetents(detents)
   }
 
   private var counterGuidance: some View {
@@ -132,7 +143,7 @@ struct SweetoCounterOrder: View {
       VStack(alignment: .leading, spacing: 7) {
         if !typeSize.isAccessibilitySize {
           Image("SweetoWordmark").renderingMode(.template).resizable().scaledToFit()
-            .frame(width: 115, height: 24, alignment: .leading)
+            .frame(width: 92, height: 19, alignment: .leading)
             .accessibilityLabel("Sweeto")
         }
         Text(typeSize.isAccessibilitySize ? t("Lista", "My list", "Список") : "Lista deserów")
@@ -140,7 +151,8 @@ struct SweetoCounterOrder: View {
           .fixedSize(horizontal: false, vertical: true)
           .accessibilityAddTraits(.isHeader)
       }
-      .padding(18)
+      .padding(.horizontal, 17)
+      .padding(.vertical, 13)
       .frame(maxWidth: .infinity, alignment: .leading)
       .foregroundStyle(palette.frosting)
       .background(palette.ink)
@@ -158,7 +170,7 @@ struct SweetoCounterOrder: View {
         }
       }
       .padding(.horizontal, 16)
-      .padding(.bottom, 12)
+      .padding(.bottom, 5)
     }
     .background(palette.surface, in: .rect(cornerRadius: palette.actionCorner))
     .clipShape(.rect(cornerRadius: palette.actionCorner))
@@ -176,17 +188,17 @@ struct SweetoCounterOrder: View {
         .fixedSize()
       VStack(alignment: .leading, spacing: 5) {
         Text(line.polishName)
-          .font(typeSize.isAccessibilitySize ? .headline.weight(.bold) : .title2.weight(.bold))
+          .font(typeSize.isAccessibilitySize ? .subheadline.weight(.bold) : .title2.weight(.bold))
           .foregroundStyle(palette.ink)
           .fixedSize(horizontal: false, vertical: true)
         if language != .pl && line.guestName != line.polishName {
-          Text(line.guestName).font(.subheadline).foregroundStyle(palette.muted)
+          Text(line.guestName).font(typeSize.isAccessibilitySize ? .footnote : .subheadline).foregroundStyle(palette.muted)
             .fixedSize(horizontal: false, vertical: true)
         }
       }
       .frame(maxWidth: .infinity, alignment: .leading)
     }
-    .padding(.vertical, 15)
+    .padding(.vertical, 11)
     .accessibilityElement(children: .combine)
   }
 }

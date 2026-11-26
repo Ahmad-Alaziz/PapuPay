@@ -240,22 +240,88 @@
   font-weight: 700;
 }
 
-.papu-wallet .papu-wallet-save .sweeto-wallet-download {
-  min-height: 56px;
-  padding: 9px 13px 9px 16px;
-  border-radius: 14px;
-  background: var(--pass-orange);
-  color: var(--pass-ink);
-  border-color: var(--pass-orange);
-}
-.papu-wallet .papu-wallet-save .papu-action-arrow {
-  flex: none;
-  background: var(--pass-forest);
-  color: #fff6e6;
+.papu-wallet-actions {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  padding: 8px;
 }
 
-.papu-wallet .papu-wallet-save .sweeto-wallet-download:hover {
-  background: #ffa270;
+.papu-wallet-google {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.papu-wallet-badge {
+  display: inline-grid;
+  place-items: center;
+  min-height: 55px;
+  max-width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.papu-wallet-badge img {
+  display: block;
+  max-width: 100%;
+  max-height: 55px;
+  width: auto;
+  height: auto;
+}
+
+.papu-wallet-badge[aria-disabled="true"] {
+  cursor: wait;
+}
+
+.papu-wallet-apple-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 55px;
+  width: min(100%, 252px);
+  padding: 8px 14px;
+  border: 1px solid currentColor;
+  border-radius: 12px;
+  background: var(--paper, #fffdf9);
+  color: var(--ink, #102e24);
+  font-size: 0.875rem;
+  font-weight: 750;
+  line-height: 1.25;
+  text-align: center;
+  text-decoration: none;
+}
+
+.papu-wallet-apple-link svg {
+  flex: none;
+}
+
+.papu-wallet-apple-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.papu-wallet-badge:focus-visible,
+.papu-wallet-apple-link:focus-visible {
+  outline: 2px solid var(--ink, #102e24);
+  outline-offset: 3px;
+}
+
+.papu-loyalty-wallet > :is(.papu-wallet-badge, .papu-wallet-apple-link) {
+  justify-self: center;
+}
+
+.papu-wallet-google-message {
+  margin: 0;
+  color: var(--ink, #102e24);
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  text-align: center;
 }
 
 .sweeto-wallet-refresh-note {

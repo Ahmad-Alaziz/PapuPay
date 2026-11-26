@@ -12,7 +12,7 @@ The repository is connected to the `papupay` project in the existing `ahmadalazi
 | Root directory | repository root (`./`) |
 | Framework | Next.js |
 | Install command | `npm ci` |
-| Build command | `npm run build` |
+| Build command | `node scripts/prepare-vercel-assets.mjs && npm run build` |
 | Output directory | `.next` |
 | Node | 22.x |
 | Environment variables | `MAILJET_API_KEY`, `MAILJET_SECRET_KEY`, `MAILJET_SENDER_EMAIL`, `CONTACT_RECIPIENTS` |
@@ -33,7 +33,7 @@ This is a standard Next.js deployment. `src/proxy.ts` sends `/` to `/en` or `/pl
 
 `/app` opens the installed full app or its guest web experience. The Sweeto table, menu and counter links retain their original QR and NFC destinations. The browser offers the menu, Google review link, bilingual counter list and loyalty card. To enable membership, staff checkout and live Wallet balances, set `PAPUPAY_API_ORIGIN` on the site and configure the persistent service. [Venue service and Wallet setup](VENUES-AND-WALLET.md)
 
-Sweeto's images, menu PDF and Rive file are served from `/assets/sweeto/` and also bundled into the iOS app.
+The Vercel build copies shared motion assets and Wallet badges into its temporary public directory before packaging. Sweeto's images, menu PDF and Rive files are served from `/assets/sweeto/` and also bundled into the iOS app.
 
 Run `npm run test:routes` against a running local build. Set `PAPUPAY_BASE_URL=https://papupay.com` to run the same checks against production.
 

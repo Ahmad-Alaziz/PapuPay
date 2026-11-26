@@ -1,6 +1,7 @@
 import { timingSafeEqual } from "node:crypto";
 import { isAbsolute } from "node:path";
 import { ApiError, digest, openLoyalty, privateToken } from "./loyalty.mjs";
+import { createGoogleWalletSigner } from "./google-wallet.mjs";
 import { createWalletSigner } from "./wallet.mjs";
 import { startWalletWorker } from "./wallet-apns.mjs";
 import { createWalletProtocol } from "./wallet-protocol.mjs";
@@ -130,7 +131,7 @@ function pinMatches(input, configured) {
 function createVenueApi({
   brand, database, testEnabled, secureCookies,
   staffPin, managerPin, reviewLink, englishMenu, polishMenu, russianMenu,
-  wifiSsid, wifiPassword, wifiSecurity, wifiHidden, wallet, env, recoveryClock,
+  wifiSsid, wifiPassword, wifiSecurity, wifiHidden, wallet, googleWallet, googleClassId, env, recoveryClock,
 }) {
   const guestCookie = `papupay_${brand.id}_card`;
   const staffCookie = `papupay_${brand.id}_staff`;
@@ -207,12 +208,20 @@ function createVenueApi({
         passUrl: status === "ready" ? `/api/v/${brand.id}/loyalty/apple-wallet.pkpass` : null,
         updatesEnabled: status !== "unconfigured" && Boolean(wallet.updateOrigin),
         recoveryEnabled: status !== "unconfigured" && walletProtocol.offersRecovery(card),
+        ...(googleWallet.available(googleClassId) ? { googleStatus: card ? "ready" : "requires_card" } : {}),
       });
     }
     if (path === "/api/loyalty/apple-wallet.pkpass" && ["GET", "HEAD"].includes(method)) {
       const card = guest(request);
       if (!card) throw new ApiError(401, "card_required");
       return walletProtocol.issue(request, response, card);
+    }
+    if (path === "/api/loyalty/google-wallet" && method === "POST") {
+      const card = guest(request);
+      if (!card) throw new ApiError(401, "card_required");
+      const url = googleWallet.issue(googleClassId, brand, card);
+      if (!url) throw new ApiError(503, "wallet_unconfigured");
+      return respond(response, 200, { url });
     }
 
     if (canonical && path.startsWith("/api/wallet/v1/")) return walletProtocol.handle(request, response, path);
@@ -316,6 +325,7 @@ export function createPapupayApi(options = {}) {
   const directory = venueRegistry(options.venues ?? loadVenues(env.PAPUPAY_VENUES_FILE));
   const services = new Map();
   const wallet = options.wallet ?? createWalletSigner(env);
+  const googleWallet = createGoogleWalletSigner(env);
   try {
     for (const [id, { brand, settings }] of directory) {
       const primary = id === defaultVenueId;
@@ -329,7 +339,8 @@ export function createPapupayApi(options = {}) {
       const database = configuredDatabase ?? (options.database === ":memory:" ? ":memory:" : defaultVenueDatabase(id, demo));
       const testEnabled = demo && (database === ":memory:" || database === defaultVenueDatabase(id, true));
       services.set(id, createVenueApi({
-        brand, database, testEnabled, wallet, env, recoveryClock: options.recoveryClock,
+        brand, database, testEnabled, wallet, googleWallet, env, recoveryClock: options.recoveryClock,
+        googleClassId: value("googleClassId", "GOOGLE_WALLET_CLASS_ID"),
         secureCookies: options.secureCookies ?? env.NODE_ENV === "production",
         staffPin: value("staffPin", "STAFF_PIN"), managerPin: value("managerPin", "MANAGER_PIN"),
         reviewLink: value("reviewLink", "GOOGLE_REVIEW_URL") ?? settings.reviewUrl,

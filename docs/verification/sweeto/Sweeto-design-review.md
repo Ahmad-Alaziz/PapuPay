@@ -78,3 +78,13 @@ Two independent reviewers assessed the phone, tablet, and desktop layouts and th
 | Wow factor | 9.5 | 9.5 |
 
 Frame-by-frame review led to a shorter lift for the fruit on compact phones and a taller drawing area for the incoming stamp. Keyboard review led to a two-step Escape behavior. The first Escape cancels clearing the list and returns focus to the Clear control. The second closes the ticket and returns focus to the guest’s list button.
+
+## November 26 App Clip review
+
+The tasting plate in the menu lets guests choose by flavour, press a dessert into a bilingual counter list and show that list to staff. Returning guests can show their saved checkout QR while the venue service is temporarily unreachable.
+
+Two independent passes scored every design category from 9.7 to 9.8 during the preceding iteration. The reviews covered spacing and rhythm, corners and shape, hierarchy and typography, photography and brand, originality, task clarity, accessibility and adaptability, animation craft, microinteractions, transitions, fun, and wow. The simulator checks included a branded cold start, simulated touch drags on the plate, fitted counter tickets, Reduce Motion, Russian at maximum Dynamic Type, and six demo stamps with redemption.
+
+The integrated two-target release archive contains an 8.778 MB App Clip against the 15 MB raw bundle gate. Live Apple and Google Wallet installation and physical QR invocation require a configured service and device verification.
+
+The final home treatment uses the earlier Matylda close-up again. The menu button sits inside the hero and the stamp card, Wi-Fi and reviews share one panel. The existing Rive papaya plays at the home signature. The system launch image hands off to a brief animation as the App Clip becomes interactive.

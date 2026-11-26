@@ -1,10 +1,4 @@
-import {
-  ArrowDownToLine,
-  ArrowRight,
-  CakeSlice,
-  Gift,
-  QrCode,
-} from "papu-guest-icons";
+import { ArrowRight, CakeSlice, Gift, QrCode } from "papu-guest-icons";
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import type { Language } from "./catalog";
 import {
@@ -14,38 +8,38 @@ import {
 } from "./api";
 import { GuestLink, useVenue } from "./VenueContext";
 import WalletPocket from "./WalletPocket";
+import { AppleWalletLink, GoogleWalletButton } from "./WalletActions";
+import {
+  canOpenAppleWallet,
+  readWalletAvailability,
+  type WalletAvailability,
+} from "./walletAvailability";
 import PapayaMark from "./PapayaMark";
 import "./guest-flow.css";
 import "./wallet.css";
 
 const QRCode = lazy(() => import("./QRCode"));
 
-type WalletResponse = {
-  status: "unconfigured" | "requires_card" | "ready";
-  passUrl: string | null;
-  updatesEnabled?: boolean;
-  recoveryEnabled?: boolean;
-};
-
 const copy = {
   en: {
-    title: "Apple Wallet",
+    title: "Save your pass",
     preview: "Pass preview",
     stamps: "Stamps",
     reward: "Reward ready",
     qr: "Checkout QR code for your loyalty card",
-    ready: "Open the pass on your iPhone, then tap Add.",
+    ready: "Show the saved pass at the counter on your next visit.",
+    appleOtherDevice:
+      "Open the downloaded pass on an iPhone or Mac to add it to Apple Wallet.",
     refresh:
       "Download a fresh pass when you want to see your latest stamp balance in Wallet.",
     automatic: "Your stamp balance updates automatically in Wallet.",
     recovery: "To reopen your card, use the browser link in your saved pass.",
     unavailable:
-      "Apple Wallet is unavailable at this venue. Your browser card works for stamps and rewards.",
+      "Wallet passes are unavailable at this venue. You can show your browser card at the counter.",
     browserOnly:
-      "Apple Wallet is unavailable here. You can still get a card in your browser.",
+      "You can collect stamps and rewards with a card in your browser.",
     requiresCard:
-      "Get a loyalty card first, then return here to save it on your iPhone.",
-    download: "Add to Apple Wallet",
+      "Get your loyalty card first, then return here to save it to your wallet.",
     openCard: "Open loyalty card",
     getCard: "Get my card",
     loading: "Checking Wallet availability…",
@@ -55,24 +49,24 @@ const copy = {
     retry: "Try again",
   },
   pl: {
-    title: "Portfel Apple",
+    title: "Zapisz kartę",
     preview: "Podgląd karty",
     stamps: "Pieczątki",
     reward: "Nagroda do odbioru",
     qr: "Kod QR karty lojalnościowej do pokazania przy kasie",
-    ready: "Otwórz kartę na iPhonie i stuknij Dodaj.",
+    ready: "Przy kolejnej wizycie pokaż zapisaną kartę przy kasie.",
+    appleOtherDevice:
+      "Otwórz pobraną kartę na iPhonie lub Macu, aby dodać ją do Portfela Apple.",
     refresh:
       "Pobierz kartę ponownie, aby zobaczyć aktualną liczbę pieczątek w Portfelu.",
     automatic: "Liczba pieczątek aktualizuje się automatycznie w Portfelu.",
     recovery:
       "Aby wrócić do karty, skorzystaj z linku w zapisanej karcie w Portfelu.",
     unavailable:
-      "Portfel Apple jest niedostępny w tym lokalu. Nadal możesz zbierać pieczątki i odbierać nagrody z kartą w przeglądarce.",
-    browserOnly:
-      "Portfel Apple jest tu niedostępny. Nadal możesz założyć kartę w przeglądarce.",
+      "Karty do portfela są niedostępne w tym lokalu. Możesz pokazać kartę z przeglądarki przy kasie.",
+    browserOnly: "Zbieraj pieczątki i odbieraj nagrody z kartą w przeglądarce.",
     requiresCard:
-      "Najpierw załóż kartę lojalnościową, a potem wróć tutaj, aby zapisać ją na iPhonie.",
-    download: "Dodaj do Portfela Apple",
+      "Najpierw załóż kartę lojalnościową, a potem wróć tutaj, aby zapisać ją w portfelu.",
     openCard: "Otwórz kartę lojalnościową",
     getCard: "Załóż moją kartę",
     loading: "Sprawdzamy dostępność Portfela…",
@@ -83,24 +77,25 @@ const copy = {
     retry: "Spróbuj ponownie",
   },
   ru: {
-    title: "Apple Wallet",
+    title: "Сохраните карту",
     preview: "Предпросмотр карты",
     stamps: "Отметки",
     reward: "Награда готова",
     qr: "QR-код карты лояльности для предъявления на кассе",
-    ready: "Откройте карту на iPhone и нажмите «Добавить».",
+    ready: "При следующем визите покажите сохранённую карту на кассе.",
+    appleOtherDevice:
+      "Откройте загруженную карту на iPhone или Mac, чтобы добавить её в Apple Wallet.",
     refresh:
       "Скачайте карту заново, если хотите увидеть актуальное число отметок в Wallet.",
     automatic: "Количество отметок в Wallet обновляется автоматически.",
     recovery:
       "Чтобы снова открыть карту, перейдите по ссылке в сохранённой карте Wallet.",
     unavailable:
-      "Apple Wallet недоступен в этом заведении. Вы можете собирать отметки и получать награды с картой в браузере.",
+      "Сохранение в кошелёк недоступно в этом заведении. Вы можете показать карту из браузера на кассе.",
     browserOnly:
-      "Apple Wallet здесь недоступен. Вы можете получить карту в браузере.",
+      "С картой в браузере можно собирать отметки и получать награды.",
     requiresCard:
-      "Сначала получите карту лояльности, а затем вернитесь сюда, чтобы сохранить её на iPhone.",
-    download: "Добавить в Apple Wallet",
+      "Сначала получите карту лояльности, затем вернитесь сюда, чтобы сохранить её в кошельке.",
     openCard: "Открыть карту лояльности",
     getCard: "Получить карту",
     loading: "Проверяем доступность Wallet…",
@@ -115,9 +110,10 @@ const copy = {
 export default function Wallet({ language }: { language: Language }) {
   const { venue, apiBase } = useVenue();
   const t = copy[language];
-  const [wallet, setWallet] = useState<
-    WalletResponse | "loading" | "error" | "unavailable"
-  >("loading");
+  const [wallet, setWallet] = useState<{
+    apiBase: string;
+    result: WalletAvailability | "loading" | "error" | "unavailable";
+  }>();
   const [preview, setPreview] = useState<{
     apiBase: string;
     card: LoyaltyCard | null;
@@ -131,17 +127,24 @@ export default function Wallet({ language }: { language: Language }) {
   useEffect(() => {
     const controller = new AbortController();
     const signal = controller.signal;
-    setWallet("loading");
+    setWallet({ apiBase, result: "loading" });
 
-    void guestRequest<WalletResponse>(`${apiBase}/loyalty/wallet`, { signal })
+    void guestRequest<unknown>(`${apiBase}/loyalty/wallet`, { signal })
       .then((result) => {
-        if (!signal.aborted) setWallet(result);
+        if (!signal.aborted)
+          setWallet({
+            apiBase,
+            result: readWalletAvailability(result, apiBase),
+          });
       })
       .catch((failure) => {
         if (!signal.aborted)
-          setWallet(
-            isGuestServiceUnavailable(failure) ? "unavailable" : "error",
-          );
+          setWallet({
+            apiBase,
+            result: isGuestServiceUnavailable(failure)
+              ? "unavailable"
+              : "error",
+          });
       });
     void guestRequest<{ card: LoyaltyCard | null }>(`${apiBase}/loyalty/card`, {
       signal,
@@ -154,19 +157,27 @@ export default function Wallet({ language }: { language: Language }) {
     return () => controller.abort();
   }, [apiBase, attempt]);
 
-  const status = typeof wallet === "string" ? wallet : wallet.status;
+  const result = wallet?.apiBase === apiBase ? wallet.result : "loading";
+  const providers = typeof result === "object" ? result : null;
+  const status = typeof result === "string" ? result : result.status;
   const card = preview?.apiBase === apiBase ? preview.card : null;
-  const expectedPass = `${apiBase}/loyalty/apple-wallet.pkpass`;
-  const canDownload =
-    typeof wallet === "object" &&
-    status === "ready" &&
-    wallet.passUrl === expectedPass;
-  const requiresCard = status === "requires_card";
+  const appleDevice = canOpenAppleWallet(navigator.userAgent);
+  const googleReady = providers?.googleStatus === "ready";
+  const applePass =
+    providers?.passUrl && (appleDevice || !googleReady)
+      ? providers.passUrl
+      : null;
+  const canSave = Boolean(applePass) || googleReady;
+  const requiresCard =
+    status === "requires_card" || providers?.googleStatus === "requires_card";
   const cardNeeded =
-    requiresCard ||
-    (status !== "ready" && preview?.apiBase === apiBase && !card);
-  const canRetry = status === "error" || status === "unavailable";
-  const updatesEnabled = canDownload && wallet.updatesEnabled === true;
+    requiresCard || (!canSave && preview?.apiBase === apiBase && !card);
+  const canRetry =
+    !canSave &&
+    !requiresCard &&
+    (status === "error" ||
+      status === "unavailable" ||
+      providers?.googleStatus === "error");
 
   function showHandoff() {
     window.clearTimeout(handoffTimeout.current);
@@ -279,31 +290,44 @@ export default function Wallet({ language }: { language: Language }) {
           </button>
         </>
       )}
-      {canDownload ? (
+      {canSave ? (
         <div className="papu-wallet-save">
           <div className="papu-wallet-save-info">
             <WalletPocket handoff={handoff} />
-            <p className="sweeto-wallet-note">{t.ready}</p>
+            <p className="sweeto-wallet-note">
+              {applePass && !appleDevice ? t.appleOtherDevice : t.ready}
+            </p>
           </div>
-          <a
-            className="sweeto-button sweeto-wallet-download"
-            href={expectedPass}
-            onClick={showHandoff}
-          >
-            {t.download}
-            <span className="papu-action-arrow" aria-hidden="true">
-              <ArrowDownToLine size={17} />
-            </span>
-          </a>
-          <small className="sweeto-wallet-refresh-note">
-            {updatesEnabled ? t.automatic : t.refresh}
-          </small>
-          {wallet.recoveryEnabled === true && (
+          <div className="papu-wallet-actions">
+            {applePass && (
+              <AppleWalletLink
+                language={language}
+                passUrl={applePass}
+                supported={appleDevice}
+                onHandoff={showHandoff}
+              />
+            )}
+            {googleReady && (
+              <GoogleWalletButton
+                key={`${apiBase}:${card?.checkout ?? ""}`}
+                apiBase={apiBase}
+                language={language}
+                onHandoff={showHandoff}
+              />
+            )}
+          </div>
+          {applePass && appleDevice && (
+            <small className="sweeto-wallet-refresh-note">
+              {providers?.updatesEnabled ? t.automatic : t.refresh}
+            </small>
+          )}
+          {applePass && appleDevice && providers?.recoveryEnabled && (
             <small className="sweeto-wallet-refresh-note">{t.recovery}</small>
           )}
         </div>
       ) : (
-        (status === "unconfigured" || status === "ready" || requiresCard) && (
+        !canRetry &&
+        status !== "loading" && (
           <p className="sweeto-wallet-note">
             {requiresCard
               ? t.requiresCard
@@ -317,7 +341,7 @@ export default function Wallet({ language }: { language: Language }) {
         <GuestLink
           view="card"
           className={
-            canDownload || canRetry
+            canSave || canRetry
               ? "sweeto-wallet-secondary"
               : "sweeto-button sweeto-wallet-download"
           }

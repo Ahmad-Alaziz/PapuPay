@@ -19,7 +19,7 @@ const headings: Record<VenueScreen, string> = {
   card: "Karta lojalnościowa Sweeto",
   reviews: "Opinie o Sweeto",
   wifi: "Wi-Fi w Sweeto",
-  wallet: "Apple Wallet · Sweeto",
+  wallet: "Portfel · Sweeto",
   test: "Test karty Sweeto",
   restore: "Odzyskaj kartę Sweeto",
   staff: "Panel obsługi · PapuPay",
@@ -42,8 +42,8 @@ export default function VenueBootstrap({
     >
       {home && (
         <div className="venue-bootstrap-lockup" role="img" aria-label="PapuPay">
-          <img src={launchBrand.mark} width={64} height={70} alt="" />
-          <img src={launchBrand.wordmark} width={152} height={31} alt="" />
+          <img src={launchBrand.mark} width={38} height={40} alt="" />
+          <img src={launchBrand.wordmark} width={132} height={27} alt="" />
         </div>
       )}
       <div className="venue-bootstrap-content">

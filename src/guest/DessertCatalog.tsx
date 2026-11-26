@@ -1,10 +1,12 @@
 import {
   ArrowRight,
+  ChevronRight,
   FileText,
   Maximize2,
   Minus,
   Plus,
   Trash2,
+  X,
 } from "papu-guest-icons";
 import {
   useEffect,
@@ -14,6 +16,7 @@ import {
   type ReactNode,
 } from "react";
 import type { Language } from "./catalog";
+import TastingDial, { TastingThumbnail, tastingTitle } from "./TastingDial";
 import { useVenue } from "./VenueContext";
 import {
   adjustCounterDraft,
@@ -30,6 +33,7 @@ const desserts = [
   {
     id: "menu-matylda",
     photo: "/assets/sweeto/matylda.webp",
+    flavour: { pl: "Czekoladowe", en: "Chocolatey", ru: "Шоколад" },
     pl: [
       "Matylda czekoladowa",
       "Intensywnie czekoladowe ciasto z błyszczącą polewą.",
@@ -46,6 +50,7 @@ const desserts = [
   {
     id: "menu-san-sebastian",
     photo: "/assets/sweeto/san-sebastian.webp",
+    flavour: { pl: "Kremowe", en: "Creamy", ru: "Сливки" },
     pl: [
       "San Sebastian z czekoladą",
       "Baskijski sernik z kremowym środkiem i gorącą czekoladą.",
@@ -62,6 +67,7 @@ const desserts = [
   {
     id: "menu-crunch-bowl",
     photo: "/assets/sweeto/crunch-bowl.webp",
+    flavour: { pl: "Chrupiące", en: "Crunchy", ru: "Хруст" },
     pl: [
       "Chrupiący bowl",
       "Krem pistacjowy, świeże truskawki, chrupiący miks i ciemna czekolada.",
@@ -78,6 +84,7 @@ const desserts = [
   {
     id: "menu-forest-cloud",
     photo: "/assets/sweeto/forest-cloud.webp",
+    flavour: { pl: "Owocowe", en: "Fruity", ru: "Ягоды" },
     pl: [
       "Królewska chmurka leśna",
       "Puszyste ciasto nasączone mlekiem, z serkiem śmietankowym, owocami i płynną czekoladą.",
@@ -101,15 +108,15 @@ const copy = {
   pl: {
     title: "Menu deserów",
     intro: "Wybierz desery i pokaż listę przy ladzie.",
-    guidance: "Zamów przy ladzie. Tam sprawdzisz też ceny i dostępność.",
+    guidance: "Ceny i dostępność sprawdzisz przy ladzie.",
     original: "Oryginalne menu (PDF)",
     done: "Gotowe",
-    enlarge: "Powiększ zdjęcie",
+    close: "Zamknij",
     add: "Dodaj",
     remove: "Usuń porcję",
-    addToList: "Dodaj do listy",
+    inList: "Na liście",
     onList: "na liście",
-    show: "Pokaż przy ladzie",
+    show: "Pokaż listę przy ladzie",
     shortList: "Lista",
     edit: "Edytuj listę",
     clear: "Wyczyść listę",
@@ -120,16 +127,15 @@ const copy = {
   en: {
     title: "Dessert menu",
     intro: "Choose desserts and show your list at the counter.",
-    guidance:
-      "Order at the counter, where you can check prices and availability.",
+    guidance: "Check prices and availability at the counter.",
     original: "Original Polish menu (PDF)",
     done: "Done",
-    enlarge: "Enlarge photo",
+    close: "Close",
     add: "Add one",
     remove: "Remove one",
-    addToList: "Add to list",
+    inList: "On your list",
     onList: "on the list",
-    show: "Show at the counter",
+    show: "Show list at the counter",
     shortList: "My list",
     edit: "Edit list",
     clear: "Clear list",
@@ -140,15 +146,15 @@ const copy = {
   ru: {
     title: "Меню десертов",
     intro: "Выберите десерты и покажите список у стойки.",
-    guidance: "Закажите у стойки, там же уточняйте цены и наличие.",
+    guidance: "Цены и наличие уточняйте у стойки.",
     original: "Оригинальное меню по-польски (PDF)",
     done: "Готово",
-    enlarge: "Увеличить фото",
+    close: "Закрыть",
     add: "Добавить",
     remove: "Убрать порцию",
-    addToList: "В список",
+    inList: "В списке",
     onList: "в списке",
-    show: "Покажите у стойки",
+    show: "Покажите список у стойки",
     shortList: "Список",
     edit: "Изменить список",
     clear: "Очистить список",
@@ -160,12 +166,14 @@ const copy = {
 
 const motionPreference = "(prefers-reduced-motion: reduce)";
 export const dessertOverlayHistoryKey = "sweetoDessertOverlay";
-type Overlay = { kind: "photo"; id: string } | { kind: "counter" };
+type Overlay =
+  { kind: "photo"; id: string } | { kind: "counter" } | { kind: "tasting" };
 type Presentation = { route: Overlay; origin?: DOMRect };
 
 function overlayFromHistory(): Overlay | null {
   const value = history.state?.[dessertOverlayHistoryKey];
   if (value?.kind === "counter") return { kind: "counter" };
+  if (value?.kind === "tasting") return { kind: "tasting" };
   if (value?.kind === "photo" && itemIDs.has(value.id))
     return { kind: "photo", id: value.id };
   return null;
@@ -258,6 +266,7 @@ function MenuOverlay({
   closeLabel,
   className,
   origin,
+  iconClose = false,
   onClose,
   returnFocus,
   children,
@@ -266,6 +275,7 @@ function MenuOverlay({
   closeLabel: string;
   className: string;
   origin?: DOMRect;
+  iconClose?: boolean;
   onClose: () => void;
   returnFocus: () => void;
   children: ReactNode;
@@ -318,8 +328,9 @@ function MenuOverlay({
             ref={close}
             className="papu-menu-overlay-close"
             onClick={onClose}
+            aria-label={iconClose ? closeLabel : undefined}
           >
-            {closeLabel}
+            {iconClose ? <X size={18} aria-hidden="true" /> : closeLabel}
           </button>
         </div>
         {children}
@@ -362,12 +373,14 @@ function QuantityPicker({
   t,
   change,
   rail = false,
+  showsZero = false,
 }: {
   name: string;
   quantity: number;
   t: Copy;
   change: (delta: 1 | -1) => void;
   rail?: boolean;
+  showsZero?: boolean;
 }) {
   const picker = useRef<HTMLDivElement>(null);
   const focusAdd = useRef(false);
@@ -395,7 +408,7 @@ function QuantityPicker({
     />
   );
   const remove =
-    quantity > 0 ? (
+    quantity > 0 || showsZero ? (
       <QuantityButton
         key="remove"
         increment={false}
@@ -411,8 +424,13 @@ function QuantityPicker({
         aria-hidden="true"
       />
     );
-  const count = quantity > 0 && (
-    <span key="count" className="papu-menu-quantity-count" aria-hidden="true">
+  const count = (
+    <span
+      key="count"
+      className="papu-menu-quantity-count"
+      aria-hidden="true"
+      data-empty={quantity === 0 && !showsZero}
+    >
       {quantity}
     </span>
   );
@@ -448,23 +466,6 @@ function DessertDetail({
 }) {
   const t = copy[language];
   const [name, description] = dessert[language];
-  const controls = useRef<HTMLDivElement>(null);
-  const refocus = useRef(false);
-  function adjust(delta: 1 | -1) {
-    if ((quantity === 0 && delta === 1) || (quantity === 1 && delta === -1)) {
-      refocus.current =
-        controls.current?.contains(document.activeElement) ?? false;
-    }
-    change(delta);
-  }
-  useLayoutEffect(() => {
-    if (refocus.current) {
-      controls.current
-        ?.querySelector<HTMLButtonElement>(".is-add, .papu-menu-detail-add")
-        ?.focus({ preventScroll: true });
-      refocus.current = false;
-    }
-  }, [quantity]);
   return (
     <MenuOverlay
       label={name}
@@ -474,33 +475,24 @@ function DessertDetail({
       onClose={onClose}
       returnFocus={returnFocus}
     >
-      <h2 className="papu-menu-detail-title">{name}</h2>
       <img
         src={dessert.photo}
         className="papu-menu-detail-photo"
-        alt={name}
+        alt=""
         width={589}
         height={440}
       />
+      <h2 className="papu-menu-detail-title">{name}</h2>
       <p className="papu-menu-detail-description">{description}</p>
-      <div ref={controls}>
-        {quantity > 0 ? (
-          <QuantityPicker
-            name={name}
-            quantity={quantity}
-            t={t}
-            change={adjust}
-          />
-        ) : (
-          <button
-            type="button"
-            className="papu-menu-detail-add"
-            onClick={() => adjust(1)}
-          >
-            <Plus size={18} aria-hidden="true" />
-            {t.addToList}
-          </button>
-        )}
+      <div className="papu-menu-detail-controls">
+        <strong>{t.inList}</strong>
+        <QuantityPicker
+          name={name}
+          quantity={quantity}
+          t={t}
+          change={change}
+          showsZero
+        />
       </div>
       <span className="sweeto-sr-only" role="status">
         {announcement}
@@ -546,7 +538,6 @@ function CounterTicket({
     >
       <div className="papu-counter-intro">
         <h2>{t.show}</h2>
-        <p>{t.handoff}</p>
       </div>
       <article className="papu-counter-ticket" aria-label={t.shortList}>
         <header>
@@ -580,7 +571,7 @@ function CounterTicket({
             ))}
         </ul>
       </article>
-      <p className="papu-counter-guidance-compact">{t.handoff}</p>
+      <p className="papu-counter-guidance">{t.handoff}</p>
       {confirming ? (
         <section
           className="papu-counter-confirm"
@@ -624,13 +615,13 @@ export default function DessertCatalog({
   onOriginal,
 }: {
   language: Language;
-  venueName: string;
   onOriginal: () => void;
 }) {
   const { venue } = useVenue();
   const t = copy[language];
   const heading = useRef<HTMLHeadingElement>(null);
   const counterTrigger = useRef<HTMLButtonElement>(null);
+  const tastingTrigger = useRef<HTMLButtonElement>(null);
   const photos = useRef(new Map<string, HTMLButtonElement>());
   const closing = useRef(false);
   const [draft, setDraft] = useState<CounterDraft>(() => {
@@ -753,10 +744,12 @@ export default function DessertCatalog({
 
   function changeQuantity(dessert: Dessert, delta: 1 | -1) {
     const next = adjustCounterDraft(draftRef.current, dessert.id, delta);
+    if (next === draftRef.current) return false;
     remember(next);
     setAnnouncement(
       `${next.quantities[dessert.id] ?? 0} × ${dessert[language][0]} ${t.onList}`,
     );
+    return true;
   }
 
   function present(route: Overlay) {
@@ -798,9 +791,11 @@ export default function DessertCatalog({
     const target =
       route?.kind === "photo"
         ? photos.current.get(route.id)
-        : counterTotal(draftRef.current) > 0
-          ? counterTrigger.current
-          : heading.current;
+        : route?.kind === "tasting"
+          ? tastingTrigger.current
+          : counterTotal(draftRef.current) > 0
+            ? counterTrigger.current
+            : heading.current;
     (target?.isConnected ? target : heading.current)?.focus({
       preventScroll: true,
     });
@@ -824,6 +819,17 @@ export default function DessertCatalog({
           {t.title}
         </h2>
         <p>{t.intro}</p>
+        <button
+          ref={tastingTrigger}
+          type="button"
+          className="papu-menu-tasting-open"
+          aria-haspopup="dialog"
+          onClick={() => present({ kind: "tasting" })}
+        >
+          <TastingThumbnail />
+          <strong>{tastingTitle[language]}</strong>
+          <ChevronRight size={16} aria-hidden="true" />
+        </button>
       </header>
       <ul className="papu-dessert-list" role="list">
         {desserts.map((dessert) => {
@@ -838,31 +844,29 @@ export default function DessertCatalog({
                     else photos.current.delete(dessert.id);
                   }}
                   type="button"
-                  className="papu-menu-thumbnail"
-                  aria-label={`${t.enlarge}: ${name}`}
+                  className="papu-menu-open-detail"
+                  aria-label={name}
+                  aria-describedby={`${dessert.id}-description`}
                   aria-haspopup="dialog"
                   onClick={() => present({ kind: "photo", id: dessert.id })}
                 >
-                  <img
-                    src={dessert.photo}
-                    alt=""
-                    width={589}
-                    height={440}
-                    decoding="async"
-                  />
-                  <span className="papu-menu-expand" aria-hidden="true">
-                    <Maximize2 size={12} />
-                  </span>
-                  {quantity > 0 && (
-                    <span className="papu-menu-photo-count" aria-hidden="true">
-                      {quantity}
+                  <span className="papu-menu-thumbnail" aria-hidden="true">
+                    <img
+                      src={dessert.photo}
+                      alt=""
+                      width={589}
+                      height={440}
+                      decoding="async"
+                    />
+                    <span className="papu-menu-expand">
+                      <Maximize2 size={12} />
                     </span>
-                  )}
+                  </span>
+                  <span className="papu-dessert-info">
+                    <strong>{name}</strong>
+                    <span id={`${dessert.id}-description`}>{description}</span>
+                  </span>
                 </button>
-                <div className="papu-dessert-info">
-                  <h3>{name}</h3>
-                  <p>{description}</p>
-                </div>
                 <QuantityPicker
                   rail
                   name={name}
@@ -938,6 +942,32 @@ export default function DessertCatalog({
             remember(emptyCounterDraft());
           }}
         />
+      )}
+      {activeRoute?.kind === "tasting" && (
+        <MenuOverlay
+          label={tastingTitle[language]}
+          closeLabel={t.close}
+          className="papu-tasting-dialog"
+          iconClose
+          onClose={close}
+          returnFocus={returnFocus}
+        >
+          <TastingDial
+            language={language}
+            choices={desserts.map((dessert) => ({
+              id: dessert.id,
+              flavour: dessert.flavour[language],
+              name: dessert[language][0],
+              description: dessert[language][1],
+              photo: dessert.photo,
+            }))}
+            add={(id) => {
+              const dessert = desserts.find((item) => item.id === id);
+              return dessert ? changeQuantity(dessert, 1) : false;
+            }}
+            onComplete={close}
+          />
+        </MenuOverlay>
       )}
     </section>
   );

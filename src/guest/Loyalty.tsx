@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { motion } from "papu-guest-motion/react";
 import {
-  ArrowDownToLine,
   ArrowRight,
   Check,
   Gift,
@@ -20,15 +19,16 @@ import {
   type LoyaltyCard,
 } from "./api";
 import { GuestLink, useVenue } from "./VenueContext";
+import { AppleWalletLink, GoogleWalletButton } from "./WalletActions";
+import {
+  canOpenAppleWallet,
+  readWalletAvailability,
+  type WalletAvailability,
+} from "./walletAvailability";
 import "./wallet.css";
 import "./loyalty-card.css";
 
 type CardResponse = { card: LoyaltyCard | null };
-type WalletAvailability = {
-  status: "unconfigured" | "requires_card" | "ready";
-  passUrl: string | null;
-  updatesEnabled?: boolean;
-};
 type CodeRenderer = (typeof import("./QRCode"))["default"];
 // Keep creation shared when the guest closes and reopens the sheet mid-request.
 const pendingJoins = new Map<string, Promise<CardResponse>>();
@@ -45,7 +45,7 @@ function joinCard(cardPath: string) {
 }
 const cardLinks = {
   en: {
-    wallet: "Add to Apple Wallet",
+    walletOptions: "Wallet options",
     walletManual: "Add it again to refresh your Wallet balance",
     walletAutomatic: "Stamps update automatically in Wallet",
     walletPreview: "Preview Wallet pass",
@@ -70,7 +70,7 @@ const cardLinks = {
     unavailable: "Loyalty is temporarily unavailable at this venue.",
   },
   pl: {
-    wallet: "Dodaj do Portfela Apple",
+    walletOptions: "Opcje portfela",
     walletManual: "Dodaj kartę ponownie, aby odświeżyć stan pieczątek",
     walletAutomatic: "Pieczątki w Portfelu aktualizują się automatycznie",
     walletPreview: "Podgląd karty w Wallet",
@@ -95,7 +95,7 @@ const cardLinks = {
     unavailable: "Karty lojalnościowe są chwilowo niedostępne w tym lokalu.",
   },
   ru: {
-    wallet: "Добавить в Apple Wallet",
+    walletOptions: "Варианты сохранения",
     walletManual: "Добавьте карту заново, чтобы обновить баланс",
     walletAutomatic: "Отметки обновляются в Wallet автоматически",
     walletPreview: "Предпросмотр карты Wallet",
@@ -171,14 +171,22 @@ export default function Loyalty({ language }: { language: Language }) {
   const t = copy[language];
   const labels = cardLinks[language];
   const cardCode = card?.code;
-  const expectedPass = `${apiBase}/loyalty/apple-wallet.pkpass`;
   const walletPass =
-    wallet?.path === apiBase &&
-    wallet.code === cardCode &&
-    wallet.pass.status === "ready" &&
-    wallet.pass.passUrl === expectedPass
+    !error && wallet?.path === apiBase && wallet.code === cardCode
       ? wallet.pass
       : null;
+  const applePass = canOpenAppleWallet(navigator.userAgent)
+    ? walletPass?.passUrl
+    : null;
+  const googleReady = walletPass?.googleStatus === "ready";
+  const walletOptions =
+    Boolean(walletPass?.passUrl) ||
+    googleReady ||
+    walletPass?.status === "error" ||
+    walletPass?.googleStatus === "error";
+  const appleDetail = walletPass?.updatesEnabled
+    ? labels.walletAutomatic
+    : labels.walletManual;
   const focusHeading = useCallback((heading: HTMLHeadingElement | null) => {
     if (heading && focusCreatedCard.current) {
       focusCreatedCard.current = false;
@@ -327,15 +335,27 @@ export default function Loyalty({ language }: { language: Language }) {
   useEffect(() => {
     if (!cardCode) return;
     const controller = new AbortController();
-    void guestRequest<WalletAvailability>(`${apiBase}/loyalty/wallet`, {
+    void guestRequest<unknown>(`${apiBase}/loyalty/wallet`, {
       signal: controller.signal,
     })
       .then((pass) => {
         if (!controller.signal.aborted) {
-          setWallet({ path: apiBase, code: cardCode, pass });
+          setWallet({
+            path: apiBase,
+            code: cardCode,
+            pass: readWalletAvailability(pass, apiBase),
+          });
         }
       })
-      .catch(() => {});
+      .catch(() => {
+        if (!controller.signal.aborted) {
+          setWallet({
+            path: apiBase,
+            code: cardCode,
+            pass: readWalletAvailability(null, apiBase),
+          });
+        }
+      });
     return () => controller.abort();
   }, [apiBase, cardCode]);
   useEffect(() => {
@@ -512,29 +532,40 @@ export default function Loyalty({ language }: { language: Language }) {
                 <span className="papu-reward-band" aria-hidden="true" />
               )}
             </div>
-            {(walletPass || testAvailable) && (
+            {(walletOptions || testAvailable) && (
               <div className="papu-loyalty-wallet">
-                {walletPass ? (
+                {applePass || googleReady ? (
                   <>
-                    <a className="papu-loyalty-save" href={expectedPass}>
-                      <span>{labels.wallet}</span>
-                      <span className="papu-action-arrow" aria-hidden="true">
-                        <ArrowDownToLine size={17} />
-                      </span>
-                    </a>
+                    {applePass ? (
+                      <AppleWalletLink
+                        language={language}
+                        passUrl={applePass}
+                        supported
+                      />
+                    ) : (
+                      <GoogleWalletButton
+                        key={`${apiBase}:${card.checkout}`}
+                        apiBase={apiBase}
+                        language={language}
+                      />
+                    )}
                     <GuestLink
                       className="papu-loyalty-wallet-details"
                       view="wallet"
                     >
-                      {walletPass.updatesEnabled
-                        ? labels.walletAutomatic
-                        : labels.walletManual}
+                      {applePass && !googleReady
+                        ? appleDetail
+                        : labels.walletOptions}
                       <ArrowRight size={14} aria-hidden="true" />
                     </GuestLink>
                   </>
                 ) : (
                   <GuestLink className="papu-loyalty-save" view="wallet">
-                    <span>{labels.walletPreview}</span>
+                    <span>
+                      {walletOptions
+                        ? labels.walletOptions
+                        : labels.walletPreview}
+                    </span>
                     <span className="papu-action-arrow" aria-hidden="true">
                       <WalletCards size={17} />
                     </span>

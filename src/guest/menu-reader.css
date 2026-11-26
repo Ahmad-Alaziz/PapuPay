@@ -360,7 +360,7 @@
 
 .papu-dessert-heading > p,
 .papu-dessert-order {
-  margin: 12px 0 0;
+  margin: 7px 0 0;
   color: var(--muted);
   font-size: 0.875rem;
   line-height: 1.45;
@@ -375,79 +375,77 @@
 .papu-dessert-item {
   min-width: 0;
   margin: 0;
-  padding-block: 12px;
-  border-bottom: 1px solid var(--line);
+  padding-block: 9px;
+  border-top: 1px solid var(--line);
 }
 
-.papu-dessert-item:first-child {
-  padding-top: 0;
+.papu-dessert-item:last-child {
+  border-bottom: 1px solid var(--line);
 }
 
 .papu-dessert-row {
   display: grid;
-  grid-template-columns: clamp(78px, 27vw, 112px) minmax(0, 1fr) 44px;
-  align-items: start;
-  gap: 12px;
+  grid-template-columns: minmax(0, 1fr) 44px;
+  align-items: center;
+  gap: 10px;
 }
 
-.sweeto-guest .papu-menu-thumbnail {
-  position: relative;
-  width: 100%;
+.sweeto-guest .papu-menu-open-detail {
+  display: grid;
+  grid-template-columns: clamp(75px, 26vw, 100px) minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
   min-height: 44px;
   padding: 0;
   border: 0;
-  border-radius: 6px;
+  border-radius: 12px;
+  color: var(--ink);
   background: transparent;
+  text-align: start;
+}
+
+.papu-menu-open-detail:hover .papu-menu-expand {
+  border-color: var(--ink);
+}
+
+.papu-menu-thumbnail {
+  display: block;
+  position: relative;
+  width: 100%;
 }
 
 .papu-menu-thumbnail > img {
   display: block;
   width: 100%;
   height: auto;
-  aspect-ratio: 589 / 440;
-  object-fit: contain;
-  border-radius: 6px;
+  aspect-ratio: 100 / 88;
+  object-fit: cover;
+  border-radius: 12px;
 }
 
-.papu-menu-expand,
-.papu-menu-photo-count {
+.papu-menu-expand {
   position: absolute;
   display: grid;
   place-items: center;
   pointer-events: none;
   color: var(--ink);
-}
-
-.papu-menu-expand {
-  top: 4px;
+  bottom: 4px;
   right: 4px;
-  width: 23px;
-  height: 23px;
+  width: 25px;
+  height: 25px;
   border-radius: 50%;
   border: 1px solid var(--line);
   background: var(--surface);
 }
 
-.papu-menu-photo-count {
-  bottom: 4px;
-  left: 4px;
-  min-width: 24px;
-  min-height: 24px;
-  padding: 2px 6px;
-  border-radius: 100px;
-  font-size: 0.8rem;
-  line-height: 1;
-  font-weight: 800;
-  font-variant-numeric: tabular-nums;
-  background: var(--accent);
-}
-
 .papu-dessert-info {
+  display: grid;
+  gap: 4px;
   min-width: 0;
 }
 
-.papu-dessert-item h3 {
-  margin: 0 0 4px;
+.papu-dessert-info strong {
   color: var(--ink);
   font-size: 1rem;
   font-weight: 800;
@@ -455,8 +453,7 @@
   overflow-wrap: anywhere;
 }
 
-.papu-dessert-item p {
-  margin: 0;
+.papu-dessert-info > span {
   color: var(--muted);
   font-size: 0.9375rem;
   line-height: 1.45;
@@ -481,7 +478,7 @@
 
 .papu-menu-quantity.is-rail {
   flex-direction: column;
-  min-height: 88px;
+  min-height: 108px;
   width: 44px;
 }
 
@@ -506,7 +503,11 @@
 }
 
 .papu-menu-quantity[data-selected="true"] .papu-menu-adjust.is-add {
-  background: var(--paper);
+  background: var(--butter, #fcefd2);
+}
+
+.papu-menu-adjust:disabled {
+  opacity: 0.46;
 }
 
 .papu-menu-adjust svg {
@@ -514,7 +515,10 @@
 }
 
 .papu-menu-quantity-count {
+  display: grid;
+  place-items: center;
   min-width: 30px;
+  min-height: 20px;
   text-align: center;
   font-weight: 800;
   line-height: 1;
@@ -522,7 +526,11 @@
 }
 
 .papu-menu-quantity.is-rail .papu-menu-quantity-count {
-  display: none;
+  font-size: 0.8125rem;
+}
+
+.papu-menu-quantity-count[data-empty="true"] {
+  visibility: hidden;
 }
 
 .papu-menu-quantity-space {
@@ -624,23 +632,21 @@
 }
 
 @container dessert-catalog (max-width: 15rem) {
-  .papu-dessert-row {
+  .papu-dessert-row,
+  .sweeto-guest .papu-menu-open-detail {
     grid-template-columns: minmax(0, 1fr);
   }
-  .sweeto-guest .papu-menu-thumbnail {
+  .papu-menu-thumbnail {
     width: min(100%, 144px);
   }
-  .papu-menu-photo-count,
-  .papu-menu-quantity.is-rail .papu-menu-quantity-space {
+  .papu-menu-quantity.is-rail
+    :is(.papu-menu-quantity-space, [data-empty="true"]) {
     display: none;
   }
   .papu-menu-quantity.is-rail {
     flex-direction: row;
     width: fit-content;
     min-height: 44px;
-  }
-  .papu-menu-quantity.is-rail .papu-menu-quantity-count {
-    display: block;
   }
   .papu-counter-open-full,
   .papu-counter-open-detail {
@@ -711,29 +717,45 @@
   overflow-wrap: anywhere;
 }
 
+.papu-menu-detail-title {
+  margin: 14px 0 0;
+}
+
 .papu-menu-detail-photo {
   display: block;
   width: 100%;
   height: auto;
-  aspect-ratio: 589 / 440;
-  object-fit: contain;
+  aspect-ratio: 1.56;
+  object-fit: cover;
   border-radius: 20px;
 }
 
 .papu-menu-detail-description,
-.papu-counter-intro p,
-.papu-counter-guidance-compact {
-  margin: 14px 0 16px;
+.papu-counter-guidance {
+  margin: 10px 0 12px;
   color: var(--muted);
   font-size: 1rem;
   line-height: 1.45;
+}
+
+.papu-menu-detail-controls {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+  background: var(--paper);
 }
 
 .papu-menu-photo-flight {
   position: fixed;
   display: block;
   transform-origin: top left;
-  object-fit: contain;
+  object-fit: cover;
   background: #f5f4f9;
   border-radius: 6px;
   max-width: none;
@@ -741,7 +763,7 @@
   pointer-events: none;
 }
 
-.sweeto-guest :is(.papu-menu-detail-add, .papu-counter-confirm-clear) {
+.sweeto-guest .papu-counter-confirm-clear {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -764,7 +786,7 @@
 }
 
 .papu-counter-ticket header {
-  padding: 18px;
+  padding: 13px 17px;
   color: var(--surface);
   background: var(--ink);
   border-radius: 22px;
@@ -772,7 +794,7 @@
 
 .papu-counter-ticket header img {
   display: block;
-  width: 115px;
+  width: 92px;
   height: auto;
   margin-bottom: 8px;
 }
@@ -785,8 +807,7 @@
   overflow-wrap: anywhere;
 }
 
-.papu-counter-ticket-compact,
-.papu-counter-guidance-compact {
+.papu-counter-ticket-compact {
   display: none;
 }
 
@@ -803,13 +824,13 @@
 .papu-counter-ticket ul {
   list-style: none;
   margin: 0;
-  padding: 0 18px 10px;
+  padding: 0 16px 5px;
 }
 
 .papu-counter-line {
   display: flex;
   gap: 14px;
-  padding-block: 13px;
+  padding-block: 11px;
   align-items: baseline;
 }
 
@@ -848,7 +869,7 @@
   align-items: center;
   gap: 8px;
   min-height: 44px;
-  margin-top: 14px;
+  margin-top: 0;
   padding: 8px 0;
   border: 0;
   color: var(--muted);
@@ -897,8 +918,7 @@
   .papu-counter-ticket-standard {
     display: none;
   }
-  .papu-counter-ticket-compact,
-  .papu-counter-guidance-compact {
+  .papu-counter-ticket-compact {
     display: block;
   }
   .papu-counter-line {
@@ -913,5 +933,345 @@
 @media (max-width: 780px) {
   .papu-menu-overlay {
     margin: auto auto max(8px, env(safe-area-inset-bottom));
+  }
+}
+
+.sweeto-guest .papu-menu-tasting-open {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 44px;
+  margin-top: 14px;
+  padding: 4px 11px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--butter, #fcefd2);
+  color: var(--ink);
+  text-align: start;
+  font-size: 0.9375rem;
+  overflow-wrap: anywhere;
+}
+
+.papu-menu-tasting-open:hover {
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+.papu-tasting-thumbnail {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 36px;
+  height: 36px;
+  border: 1px solid #a4774d;
+  border-radius: 50%;
+  background:
+    repeating-conic-gradient(#a4774d 0 1deg, transparent 1deg 9deg), #f4d8a5;
+  box-shadow: inset 0 0 0 2px #fff3d4;
+}
+
+.papu-tasting-thumbnail img {
+  width: 76%;
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 1px solid #fff9ee;
+}
+
+.papu-tasting-dialog {
+  width: min(calc(100% - 16px), 446px);
+}
+
+.papu-tasting-dialog .papu-menu-overlay-body {
+  display: flex;
+  flex-direction: column;
+  padding: 18px 20px 16px;
+}
+
+.papu-tasting-dialog .papu-menu-overlay-controls {
+  flex: none;
+  width: fit-content;
+  margin: 0 0 -44px auto;
+  padding: 0;
+  background: transparent;
+}
+
+.sweeto-guest .papu-tasting-dialog .papu-menu-overlay-close {
+  display: grid;
+  place-items: center;
+  padding: 0;
+}
+
+.papu-tasting-heading {
+  padding-inline-end: 49px;
+}
+
+.papu-tasting-heading h2 {
+  margin: 0;
+  color: var(--ink);
+  font-size: 1.65rem;
+  font-weight: 850;
+  letter-spacing: -0.035em;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+
+.papu-tasting-heading p,
+.papu-tasting-description {
+  margin: 5px 0 0;
+  color: var(--muted);
+  font-size: 0.9375rem;
+  line-height: 1.43;
+  overflow-wrap: anywhere;
+}
+
+.papu-tasting-plate {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: min(232px, 88%);
+  aspect-ratio: 1;
+  margin: 16px auto;
+  flex: none;
+  user-select: none;
+  filter: drop-shadow(0 8px 10px #172b211e);
+}
+
+.papu-tasting-plate[data-motion="true"] {
+  touch-action: none;
+  cursor: grab;
+}
+
+.papu-tasting-plate[data-motion="true"]:active {
+  cursor: grabbing;
+}
+
+.papu-tasting-plate-fallback {
+  position: absolute;
+  inset: 3%;
+  border-radius: 50%;
+  border: 1px solid #805338;
+  background:
+    radial-gradient(circle closest-side, #fff4d8 0 78%, transparent 78.5%),
+    repeating-conic-gradient(#ad7d56 0 1deg, #fff4d8 1.05deg 7.5deg);
+  box-shadow:
+    inset 0 0 0 4px #f0d09a,
+    inset 0 0 0 5px #a4774d;
+}
+
+.papu-tasting-rive {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.papu-tasting-rive[data-ready="true"] {
+  visibility: visible;
+}
+
+.papu-tasting-plate:has(.papu-tasting-rive[data-ready="true"])
+  .papu-tasting-plate-fallback {
+  visibility: hidden;
+}
+
+.papu-tasting-rive canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.papu-tasting-plate > .papu-tasting-food {
+  position: absolute;
+  width: 71.8%;
+  height: 71.8%;
+  border: 1px solid #fff9ee;
+  border-radius: 50%;
+  object-fit: cover;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 180ms ease-out;
+}
+
+.papu-tasting-plate > .papu-tasting-food[data-selected="true"] {
+  opacity: 1;
+}
+
+.papu-tasting-pointer {
+  position: absolute;
+  top: 3px;
+  border-top: 9px solid var(--ink);
+  border-inline: 5px solid transparent;
+  pointer-events: none;
+}
+
+.papu-tasting-options {
+  order: 1;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.papu-tasting-option {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  min-height: 44px;
+  padding: 7px 10px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+
+.papu-tasting-option:hover,
+.papu-tasting-option:has(input:checked) {
+  border-color: color-mix(in srgb, var(--ink) 45%, transparent);
+  background: var(--butter, #fcefd2);
+}
+
+.papu-tasting-option:has(input:focus-visible) {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+.papu-tasting-option-mark {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 16px;
+  height: 16px;
+  border: 1px solid var(--ink);
+  border-radius: 50%;
+}
+
+.papu-tasting-option:has(input:checked) .papu-tasting-option-mark {
+  background: var(--ink);
+  color: var(--surface);
+}
+
+.papu-tasting-recommendation {
+  order: 2;
+  margin: 15px 0 0;
+}
+
+.papu-tasting-recommendation h3 {
+  margin: 0;
+  color: var(--ink);
+  font-size: 1.3rem;
+  line-height: 1.2;
+  font-weight: 825;
+  overflow-wrap: anywhere;
+}
+
+.papu-tasting-description {
+  order: 3;
+}
+
+.papu-tasting-pick-instruction,
+.papu-tasting-add-compact {
+  display: none;
+}
+
+.papu-tasting-footer {
+  order: 4;
+  position: sticky;
+  bottom: -16px;
+  margin: 10px 0 -16px;
+  padding: 6px 0 16px;
+  background: var(--paper);
+}
+
+.papu-tasting-limit {
+  margin: 0 0 10px;
+  color: var(--ink);
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.sweeto-guest .papu-tasting-add {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  width: 100%;
+  min-height: 52px;
+  padding: 9px 16px;
+  border: 0;
+  border-radius: 13px;
+  background: var(--accent);
+  color: var(--ink);
+  font-size: 1rem;
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+
+.papu-tasting-add svg {
+  flex: none;
+}
+
+.sweeto-guest .papu-tasting-add[data-added="true"] {
+  background: var(--ink);
+  color: var(--surface);
+}
+
+.papu-tasting-add[data-added="true"]::after {
+  position: absolute;
+  inset: 0 17px 0 auto;
+  width: 6px;
+  background:
+    radial-gradient(circle at 50% 0, var(--paper) 3px, transparent 3.5px),
+    radial-gradient(circle at 50% 100%, var(--paper) 3px, transparent 3.5px),
+    repeating-linear-gradient(var(--surface) 0 3px, transparent 3px 7px)
+      center / 1px 100% no-repeat;
+  pointer-events: none;
+  content: "";
+}
+
+@container menu-overlay (max-width: 15rem) {
+  .papu-tasting-heading {
+    padding-inline-end: 0;
+  }
+  .papu-tasting-dialog .papu-menu-overlay-controls {
+    margin-bottom: 6px;
+  }
+  .papu-tasting-plate,
+  .papu-tasting-turn-instruction,
+  .papu-tasting-add-full {
+    display: none;
+  }
+  .papu-tasting-pick-instruction,
+  .papu-tasting-add-compact {
+    display: inline;
+  }
+  .papu-tasting-recommendation {
+    order: 0;
+    margin-bottom: 12px;
+  }
+  .papu-tasting-recommendation h3 {
+    font-size: 1.06rem;
+  }
+  .papu-tasting-options {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .papu-tasting-plate > .papu-tasting-food {
+    transition: none;
   }
 }

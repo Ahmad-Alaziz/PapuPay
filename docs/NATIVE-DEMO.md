@@ -17,6 +17,10 @@ The copy and controls support Polish, English and Russian. The card and its Wall
 
 The Sweeto home opens directly into its dessert photograph and four venue actions. The PapuPay fruit makes a single Rive entrance at the bottom before settling next to the wordmark. Direct menu and counter links skip the entrance. Reduce Motion shows the settled mark. On the guest card, an observed new stamp makes a single ink impression while the QR stays in place.
 
+On a home launch the system PapuPay lockup hands off to a short animated reveal. The restored home uses the Matylda close-up and the original Rive fruit entrance. In the dessert menu, the tasting dial follows a drag or a tap on a labelled flavour, then shows the matching dessert to add to the counter list. Reduce Motion keeps the still artwork and selection controls.
+
+When a live member loses connectivity, the App Clip can show their last saved checkout QR. It labels the cached balance and requires an online check to confirm rewards.
+
 ## Private build configuration
 
 Source control contains only `apps/ios/Resources/GuestDemo.plist` with `enabled: false`. The protected `apple-signing` environment can provide `PAPUPAY_GUEST_DEMO_BASE64` to the manually run TestFlight workflow. It is a base64-encoded binary property list, optionally compressed with gzip, containing:
@@ -31,6 +35,6 @@ The runtime loader accepts this demo only for Sweeto and the designated demo ide
 
 ## Verification status
 
-The integrated unsigned device archive passed for the app, Clip and both embedded extensions. The raw Clip measured 13.28 MB, below its 15 MB gate. All seven passes passed manifest hashes, CMS signatures, Apple certificate-chain verification and native macOS PassKit parsing. Checks cover disabled/enabled resource handling, wrong-venue isolation, bounded decompression, card creation, retry protection, six-stamp limits, redemption, local persistence and the next reward cycle.
+The November 26 unsigned archive passed for the app and embedded Clip. The raw Clip measured 8.778 MB, below its 15 MB gate. All seven passes passed manifest hashes, CMS signatures, Apple certificate-chain verification and native macOS PassKit parsing. Checks cover disabled/enabled resource handling, wrong-venue isolation, bounded decompression, card creation, retry protection, six-stamp limits, redemption, local persistence and the next reward cycle.
 
 The simulator walkthrough verified card creation, six scans, confirmed redemption back to zero stamps, retained progress after reinstall, the signed pass in Apple’s Add to Wallet sheet, and populated Wi-Fi details with a manual fallback. Physical-device installation, the Wi-Fi consent/join result and Wallet behavior must also be checked through the next assigned TestFlight build. Publication status is recorded separately after upload and group assignment.

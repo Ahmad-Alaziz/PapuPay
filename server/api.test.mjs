@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
-import { randomUUID } from "node:crypto";
-import { mkdtemp, rm } from "node:fs/promises";
+import { generateKeyPairSync, randomUUID, verify } from "node:crypto";
+import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { Readable } from "node:stream";
@@ -268,6 +268,69 @@ test("no Apple Wallet package is served without validated signing credentials", 
   const pass = await request(path + "/apple-wallet.pkpass", { cookie });
   assert.equal(pass.status, 503);
   assert.deepEqual(pass.data, { error: "wallet_unconfigured" });
+});
+
+test("Google Wallet issues a signed checkout QR for the active venue membership", async (t) => {
+  const directory = await mkdtemp(join(tmpdir(), "papupay-google-wallet-test-"));
+  t.after(() => rm(directory, { recursive: true, force: true }));
+  const { privateKey, publicKey } = generateKeyPairSync("rsa", { modulusLength: 2048 });
+  const credentialPath = join(directory, "service-account.json");
+  const email = "wallet@example.iam.gserviceaccount.com";
+  await writeFile(credentialPath, JSON.stringify({
+    type: "service_account",
+    client_email: email,
+    private_key: privateKey.export({ type: "pkcs8", format: "pem" }),
+  }), { mode: 0o600 });
+  const classId = "123456789012345.sweeto";
+  const request = await start(t, {
+    venues: [{ id: "berry-counter", name: "Berry Counter" }],
+    env: {
+      PAPUPAY_GOOGLE_WALLET_CLASS_ID: classId,
+      PAPUPAY_GOOGLE_WALLET_SERVICE_ACCOUNT_PATH: credentialPath,
+    },
+  });
+  const base = "/api/v/sweeto/loyalty";
+  const save = `${base}/google-wallet`;
+  assert.equal((await request(`${base}/wallet`)).data.googleStatus, "requires_card");
+  assert.equal((await request(save, { method: "POST" })).status, 401);
+  const guest = await request(`${base}/card`, { method: "POST" });
+  const owner = { cookie: guest.cookie };
+  const status = (await request(`${base}/wallet`, owner)).data;
+  assert.equal(status.status, "unconfigured");
+  assert.equal(status.googleStatus, "ready");
+  assert.equal((await request(save, { ...owner, method: "POST", origin: "https://elsewhere.test" })).status, 403);
+  assert.equal((await request("/api/v/berry-counter/loyalty/google-wallet", { ...owner, method: "POST" })).status, 401);
+  const berry = await request("/api/v/berry-counter/loyalty/card", { method: "POST" });
+  assert.equal((await request("/api/v/berry-counter/loyalty/google-wallet", { cookie: berry.cookie, method: "POST" })).status, 503);
+
+  const issue = () => request(save, { ...owner, method: "POST" });
+  const issued = await issue();
+  assert.equal(issued.status, 200);
+  assert.equal(issued.cacheControl, "no-store");
+  const tokenFrom = (result) => /^https:\/\/pay\.google\.com\/gp\/v\/save\/([\w.-]+)$/.exec(result.data.url)[1];
+  const token = tokenFrom(issued);
+  assert.ok(token.length <= 1800);
+  const [header, rawClaims, signature] = token.split(".");
+  assert.equal(verify("RSA-SHA256", Buffer.from(`${header}.${rawClaims}`), publicKey, Buffer.from(signature, "base64url")), true);
+  const decode = (segment) => JSON.parse(Buffer.from(segment, "base64url"));
+  assert.deepEqual(decode(header), { alg: "RS256", typ: "JWT" });
+  const claims = decode(rawClaims);
+  assert.equal(claims.iss, email);
+  assert.equal(claims.aud, "google");
+  assert.equal(claims.typ, "savetowallet");
+  assert.ok(Number.isInteger(claims.iat));
+  assert.deepEqual(claims.origins, ["https://papupay.com"]);
+  const [pass] = claims.payload.loyaltyObjects;
+  assert.deepEqual(pass, {
+    id: `123456789012345.papupay-${walletSerial({ id: "sweeto" }, guest.data.card)}`,
+    classId,
+    state: "ACTIVE",
+    accountId: guest.data.card.code,
+    barcode: { type: "QR_CODE", value: guest.data.card.checkout, alternateText: guest.data.card.code },
+  });
+  const second = decode(tokenFrom(await issue()).split(".")[1]);
+  assert.equal(second.payload.loyaltyObjects[0].id, pass.id);
+  assert.ok(!JSON.stringify(claims).includes(guest.cookie.split("=")[1]));
 });
 
 test("Wallet protocol authenticates registration and pass updates against stable per-pass identity", async (t) => {

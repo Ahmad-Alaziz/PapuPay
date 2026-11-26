@@ -1,7 +1,7 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-/node_modules
+node_modules/
 /.pnp
 .pnp.*
 .yarn/*
@@ -54,6 +54,9 @@ DerivedData/
 *.sqlite-shm
 *.pkpass
 *.p12
+*.p8
+*.ipa
+*.keychain-db
 *.mobileprovision
 __pycache__/
 *.pyc

@@ -139,6 +139,7 @@ struct VenueGuestConfig: Decodable {
   let name: String?
   let address: String?
   let logoUrl: String?
+  let logoWhiteUrl: String?
   let photoUrl: String?
   let photoMotion: String?
   let photoDrip: VenueGuestPhotoDrip?
@@ -155,7 +156,7 @@ struct VenueGuestConfig: Decodable {
   }
 }
 
-struct VenueLoyaltyCard: Decodable, Equatable {
+struct VenueLoyaltyCard: Codable, Equatable {
   let code: String
   let checkout: String
   let stamps: Int
@@ -163,6 +164,12 @@ struct VenueLoyaltyCard: Decodable, Equatable {
   let rewardAvailable: Bool
   var visits: Int?
   var updatedAt: String?
+
+  var revisionDate: Date? {
+    guard let updatedAt else { return nil }
+    return try? Date(updatedAt, strategy: .iso8601.year().month().day()
+      .time(includingFractionalSeconds: true).timeZone(separator: .omitted))
+  }
 
   func fingerprint(in venue: VenueGuestLink) -> Data {
     Data(SHA256.hash(data: Data((venue.origin.absoluteString + "|" + venue.slug + "|" + checkout).utf8)))
@@ -187,8 +194,7 @@ struct VenueStampObservation: Codable, Equatable {
       defaults.removeObject(forKey: key)
       return .quiet
     }
-    guard let visits = card.visits, let timestamp = card.updatedAt,
-      let updated = try? Date(timestamp, strategy: .iso8601.year().month().day().time(includingFractionalSeconds: true).timeZone(separator: .omitted)),
+    guard let visits = card.visits, let updated = card.revisionDate,
       visits >= 0, !card.checkout.isEmpty, card.goal > 0, (0...card.goal).contains(card.stamps), card.stamps <= visits,
       card.rewardAvailable == (card.stamps == card.goal)
     else { return .quiet }
@@ -211,11 +217,13 @@ struct VenueGuestAPI {
   private struct CardResponse: Decodable { let card: VenueLoyaltyCard? }
   private struct WiFiResponse: Decodable { let wifi: VenueGuestWiFi? }
   private struct VenueResponse: Decodable { let venues: [VenueGuestConfig] }
+  private struct GoogleWalletResponse: Decodable { let url: URL }
   struct WalletResponse: Decodable {
     enum Status: String, Decodable { case unconfigured, requires_card, ready }
     let status: Status
     let passUrl: String?
     let updatesEnabled: Bool?
+    let googleStatus: Status?
   }
   let venue: VenueGuestLink
 
@@ -253,10 +261,16 @@ struct VenueGuestAPI {
     return result.venues
   }
 
+  @MainActor func cachedCard() -> VenueLoyaltyCard? {
+    let url = venue.origin.appending(path: loyaltyPath)
+    return VenueMembership(venue: venue, requestURL: url).cachedCard()
+  }
+
   func card(create: Bool = false) async throws -> VenueLoyaltyCard? {
     let cardRequest = request(loyaltyPath)
     guard let url = cardRequest.url else { throw URLError(.badURL) }
     let membership = VenueMembership(venue: venue, requestURL: url)
+    let startedAt = ContinuousClock.now
     for credential in membership.candidates() {
       var validation = cardRequest
       validation.httpShouldHandleCookies = false
@@ -265,14 +279,19 @@ struct VenueGuestAPI {
       let decoded = try JSONDecoder().decode(CardResponse.self, from: data)
       try Task.checkCancellation()
       if let card = decoded.card {
-        membership.accept(credential)
+        guard await membership.accept(credential, card: card, startedAt: startedAt, validating: true) else {
+          throw CancellationError()
+        }
         return card
       }
-      membership.discard(credential)
+      guard await membership.discard(credential, startedAt: startedAt) else { throw CancellationError() }
     }
     let result: CardResponse = try await json(loyaltyPath, create ? "POST" : "GET")
-    if result.card != nil, let credential = membership.nativeCredential() {
-      membership.accept(credential)
+    try Task.checkCancellation()
+    if let card = result.card, let credential = membership.nativeCredential() {
+      guard await membership.accept(credential, card: card, startedAt: startedAt) else {
+        throw CancellationError()
+      }
     }
     return result.card
   }
@@ -298,6 +317,16 @@ struct VenueGuestAPI {
     request.url = request.url?.appending(queryItems: [.init(name: "lang", value: language.rawValue)])
     return try await transport(request, contentType: "application/vnd.apple.pkpass")
   }
+
+  func googlePassURL() async throws -> URL {
+    let response: GoogleWalletResponse = try await json("\(tenantPath)/loyalty/google-wallet", "POST")
+    let url = response.url
+    guard url.scheme == "https", url.host == "pay.google.com", url.port == nil,
+      url.user == nil, url.password == nil, url.query == nil, url.fragment == nil,
+      url.path.range(of: #"^/gp/v/save/[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$"#, options: .regularExpression) != nil
+    else { throw URLError(.badServerResponse) }
+    return url
+  }
 }
 
 private final class NoMembershipRedirects: NSObject, URLSessionTaskDelegate {
@@ -313,6 +342,7 @@ struct VenueMembership {
   struct Credential: Codable {
     let token: String
     let expires: Date?
+    var cachedCard: VenueLoyaltyCard?
 
     var isValid: Bool {
       token.range(of: "^[A-Za-z0-9_-]{43}$", options: .regularExpression) != nil &&
@@ -323,6 +353,7 @@ struct VenueMembership {
   private static let clipService = "com.papupay.app.membership.clip"
   private static let appService = "com.papupay.app.membership.full"
   private static let lastVenueAccount = "last-venue"
+  @MainActor private static var lastResolvedRequest: [String: ContinuousClock.Instant] = [:]
 
   private static var currentService: String {
 #if PAPUPAY_APP_CLIP
@@ -363,8 +394,29 @@ struct VenueMembership {
     }
   }
 
-  func accept(_ credential: Credential) {
-    guard credential.isValid, let host = venue.origin.host else { return }
+  @MainActor func cachedCard() -> VenueLoyaltyCard? {
+    guard let token = candidates().first?.token else { return nil }
+    return services
+      .compactMap(credential(for:))
+      .compactMap { $0.token == token ? $0.cachedCard : nil }
+      .max { ($0.revisionDate ?? .distantPast) < ($1.revisionDate ?? .distantPast) }
+  }
+
+  @MainActor func accept(
+    _ credential: Credential, card: VenueLoyaltyCard, startedAt: ContinuousClock.Instant, validating: Bool = false
+  ) -> Bool {
+    let service = Self.currentService
+    guard !Task.isCancelled, credential.isValid, let host = venue.origin.host,
+      Self.lastResolvedRequest[account].map({ $0 <= startedAt }) ?? true,
+      !validating || candidates().contains(where: { $0.token == credential.token })
+    else { return false }
+    Self.lastResolvedRequest[account] = startedAt
+    if let previous = self.credential(for: service), previous.token == credential.token,
+       let saved = previous.cachedCard, saved.checkout == card.checkout,
+       let savedRevision = saved.revisionDate, let incomingRevision = card.revisionDate,
+       incomingRevision < savedRevision {
+      return true
+    }
     if nativeCookie?.value != credential.token {
       var properties: [HTTPCookiePropertyKey: Any] = [
         .name: cookieName, .value: credential.token, .domain: host, .path: "/api",
@@ -375,22 +427,36 @@ struct VenueMembership {
     }
     let encoder = JSONEncoder()
     encoder.outputFormatting = .sortedKeys
-    if let data = try? encoder.encode(credential) {
-      Self.write(data, service: Self.currentService, account: account)
+    // Keep an authenticated counter code readable while the venue is offline.
+    // Code and valid credential are stored together in the device Keychain.
+    // Confirmation and reward redemption remain server-side.
+    let saved = Credential(token: credential.token, expires: credential.expires,
+                           cachedCard: Self.canStore(card) ? card : nil)
+    if let data = try? encoder.encode(saved) {
+      Self.write(data, service: service, account: account)
     }
 #if PAPUPAY_APP_CLIP
     let cardURL = venue.origin.appending(path: "v/\(venue.slug)/card")
     Self.write(Data(cardURL.absoluteString.utf8), service: Self.clipService, account: Self.lastVenueAccount)
 #endif
+    return true
   }
 
-  func discard(_ credential: Credential) {
+  @MainActor func discard(_ credential: Credential, startedAt: ContinuousClock.Instant) -> Bool {
+    guard !Task.isCancelled, Self.lastResolvedRequest[account].map({ $0 <= startedAt }) ?? true else { return false }
+    Self.lastResolvedRequest[account] = startedAt
     if let cookie = nativeCookie, cookie.value == credential.token {
       HTTPCookieStorage.shared.deleteCookie(cookie)
     }
     for service in services where self.credential(for: service)?.token == credential.token {
       SecItemDelete(Self.key(service: service, account: account) as CFDictionary)
     }
+    return true
+  }
+
+  private static func canStore(_ card: VenueLoyaltyCard) -> Bool {
+    !card.checkout.isEmpty && !card.code.isEmpty && card.goal > 0 &&
+      (0...card.goal).contains(card.stamps) && card.rewardAvailable == (card.stamps == card.goal)
   }
 
   private func credential(for service: String) -> Credential? {

@@ -1,4 +1,4 @@
-# Venue configuration and Apple Wallet
+# Venue configuration and Wallet passes
 
 Sweeto is the built-in venue. To operate another venue on the same server, point `PAPUPAY_VENUES_FILE` to a JSON file containing the list of approved venue definitions. Use distinct lower-case IDs. Each venue uses its own SQLite database and cookies. The `/api/*` compatibility routes continue to resolve to Sweeto.
 
@@ -65,6 +65,23 @@ Configure the Pass Type ID, Apple Developer team and server signing credentials 
 Keep the P12, its password and recovery secret outside source control. Restart the service after changing signing credentials. The service checks the certificate against the configured type and team, the private key and Apple’s official WWDR G4 intermediate before it offers a download. Add to Wallet downloads a store card with the same QR alias as the browser card. Without an update origin, the installed card shows the stamp count at download. The original pass continues to work at checkout. A fresh download uses the same serial number and replaces the saved copy. [Apple certificate setup](https://developer.apple.com/help/account/capabilities/create-wallet-identifiers-and-certificates) · [Apple WWDR certificate list](https://www.apple.com/certificateauthority/) · [Apple pass format](https://developer.apple.com/documentation/walletpasses/building-a-pass)
 
 Without qualifying credentials the app can preview a card. It serves a `.pkpass` only after it can sign it with the configured Pass Type ID key. Apple Wallet installation still requires a device check with the actual developer certificate. [Apple pass distribution](https://developer.apple.com/documentation/walletpasses/distributing-and-updating-a-pass)
+
+The App Clip uses Apple's native Wallet control. The website keeps a text link to the signed pass. An authorized Apple Developer account representative can download Apple’s approved badge artwork and add the unmodified localized SVGs as `apple-en.svg`, `apple-pl.svg` and `apple-ru.svg` under `public/assets/wallet/`. The web build detects these files and shows the matching badge when the Apple pass is available on an Apple device. [Apple badge guidelines and license](https://developer.apple.com/wallet/add-to-apple-wallet-guidelines/)
+
+## Google Wallet
+
+In the Google Wallet Business Console, authorize a Google Cloud service account for the issuer and publish an approved Loyalty Class for each participating venue. Use its venue name, pass artwork and terms. [Issuer onboarding](https://developers.google.com/wallet/retail/loyalty-cards/getting-started/issuer-onboarding) · [Loyalty Class format](https://developers.google.com/wallet/reference/rest/v1/loyaltyclass)
+
+| Environment variable | Purpose |
+| --- | --- |
+| `PAPUPAY_GOOGLE_WALLET_SERVICE_ACCOUNT_PATH` | Path to the private service account JSON key on the server |
+| `PAPUPAY_GOOGLE_WALLET_CLASS_ID` | Sweeto’s approved class ID, including the numeric issuer prefix |
+| `PAPUPAY_VENUE_<ID>_GOOGLE_WALLET_CLASS_ID` | Another venue’s approved class ID for the same service account |
+| `PAPUPAY_GOOGLE_WALLET_ORIGIN` | Optional HTTPS web origin for signed links. Defaults to `https://papupay.com`. |
+
+Keep the service account key outside source control and restart the Node service after changing credentials. The Wallet status reports Google availability separately from Apple based on the local configuration. An authenticated card owner can request a signed Google save link with `POST /api/v/<id>/loyalty/google-wallet`. The pass has a stable object ID and carries the existing checkout QR code and membership number. Staff see the live balance when they scan it. Guests check stamp balances in PapuPay. [Google save-link flow](https://developers.google.com/wallet/retail/loyalty-cards/web)
+
+The App Clip and web open Google’s save flow so the guest can choose a Google account. On Android the web checkout offers Google Wallet first. Apple devices get the Apple action first and can choose Google Wallet on the Wallet page when both are available. Save the pass with an authorized account, then use an Android device to show the pass QR at the counter. The offline TestFlight demo uses its bundled Apple Wallet passes.
 
 ## Live Wallet updates
 
