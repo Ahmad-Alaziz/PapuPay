@@ -329,26 +329,39 @@ struct PapupayGuestView: View {
       ScrollView {
         VStack(spacing: 0) {
           if venueIsReady {
-            let posterHeight = isSweeto ? min(555, max(410, viewport.size.width * 1.34))
+            let posterHeight = isSweeto ? min(460, max(280, viewport.size.width * 0.97))
               : min(470, max(345, viewport.size.width * 0.94))
+            let actionHeight = isSweeto ? min(64, max(52, (availableHeight - posterHeight - 100) / 4)) : 56
+            // The poster copy is close to the tabletop at regular sizes. Move
+            // it onto opaque stock before larger text reaches the food or logo.
             let separatesCopy = isSweeto && (dynamicTypeSize >= .xxLarge ||
               (dynamicTypeSize == .xLarge && viewport.size.width <= 375))
             menuHero(topInset: statusInset, height: posterHeight, separatesCopy: separatesCopy)
 
             VStack(spacing: 8) {
-              guestActions(rowHeight: 55)
-                .buttonStyle(GuestActionPress(palette: palette))
-              venueDetails
+              guestActions(rowHeight: actionHeight)
+                .buttonStyle(GuestActionPress(palette: palette, cornerRadius: 13, tactileEdge: isSweeto))
+              if !isSweeto { venueDetails }
             }
             .padding(.horizontal, 20)
-            .padding(.top, 16)
+            .padding(.top, isSweeto ? 14 : 16)
+            .padding(.bottom, isSweeto ? 3 : 0)
             .frame(maxWidth: 560)
             .frame(maxWidth: .infinity)
-            .background(isSweeto ? Color(hex: "F7F0E2") : palette.paper)
+            .background(palette.paper)
 
-            GuestWordmark(palette: palette, size: 15, welcome: isSweeto ? welcome : nil)
-              .padding(.top, isSweeto ? 21 : 9)
-              .padding(.bottom, 15)
+            if isSweeto {
+              Spacer(minLength: 23)
+              homeFooter
+                .padding(.horizontal, 20)
+                .frame(maxWidth: 560)
+                .padding(.bottom, 10)
+                .frame(maxWidth: .infinity)
+            } else {
+              Spacer(minLength: 16)
+              GuestWordmark(palette: palette, size: 15)
+                .padding(.bottom, 12)
+            }
           } else {
             venueStatus(topInset: statusInset)
           }
@@ -376,7 +389,7 @@ struct PapupayGuestView: View {
     .background(alignment: .top) {
       palette.forest.frame(height: 110).ignoresSafeArea(.container, edges: .top)
     }
-    .background((isSweeto ? Color(hex: "F7F0E2") : palette.paper).ignoresSafeArea())
+    .background(palette.paper.ignoresSafeArea())
     .foregroundStyle(palette.ink)
   }
 
@@ -397,27 +410,24 @@ struct PapupayGuestView: View {
           .padding(.top, 14)
           .frame(maxWidth: 560)
           .frame(maxWidth: .infinity, alignment: .leading)
-        heroMenuButton
-          .padding(.horizontal, 20)
-          .padding(.top, 15)
-          .padding(.bottom, 22)
-          .frame(maxWidth: 560)
+          .padding(.bottom, 20)
       }
       .background(palette.forest)
+      .clipShape(.rect(bottomLeadingRadius: 22, bottomTrailingRadius: 22))
     } else {
       VStack(alignment: .leading, spacing: 0) {
         heroHeader(topInset: topInset)
         Spacer(minLength: isSweeto ? 20 : 30).accessibilityHidden(true)
         heroCopy
-        if isSweeto { heroMenuButton.padding(.top, 17) }
       }
       .padding(.horizontal, isSweeto ? 20 : 22)
-      .padding(.bottom, isSweeto ? 23 : 22)
+      .padding(.bottom, isSweeto ? 18 : 22)
       .frame(maxWidth: 560)
       .frame(height: isSweeto && !dynamicTypeSize.isAccessibilitySize ? height : nil)
       .frame(maxWidth: .infinity, minHeight: height)
       .background { heroPhotograph(withText: true) }
       .background(palette.forest)
+      .clipShape(.rect(bottomLeadingRadius: isSweeto ? 22 : 0, bottomTrailingRadius: isSweeto ? 22 : 0))
     }
   }
 
@@ -433,14 +443,25 @@ struct PapupayGuestView: View {
 
   private var heroCopy: some View {
     VStack(alignment: .leading, spacing: 5) {
+      if isSweeto && venueCover == nil && dynamicTypeSize < .accessibility3 {
+        HStack(spacing: 8) {
+          Rectangle().fill(palette.primary).frame(width: 17, height: 2)
+            .accessibilityHidden(true)
+          Text(t("Matylda czekoladowa", "Matylda chocolate cake", "Шоколадная Матильда"))
+            .font(.footnote.weight(.semibold))
+            .foregroundStyle(palette.peach)
+            .fixedSize(horizontal: false, vertical: true)
+        }
+      }
       Text(isSweeto ? t("Menu deserów", "Dessert menu", "Меню десертов") : t("Menu", "Menu", "Меню"))
-        .font(dynamicTypeSize.isAccessibilitySize ? .title2.weight(.bold) : palette.poster(47))
+        .font(dynamicTypeSize.isAccessibilitySize ? .title.weight(.bold) : palette.poster(47))
+        .textCase(isSweeto && !dynamicTypeSize.isAccessibilitySize ? .uppercase : nil)
         .tracking(-0.4)
         .fixedSize(horizontal: false, vertical: true)
         .accessibilityAddTraits(.isHeader)
-      if isSweeto && venueCover == nil && dynamicTypeSize < .accessibility3 {
-        Text(t("Matylda czekoladowa", "Matylda chocolate cake", "Шоколадная Матильда"))
-          .font(.subheadline.weight(.medium))
+      if isSweeto {
+        Text(t("Zamów przy ladzie", "Order at the counter", "Заказ у стойки"))
+          .font(.footnote)
           .fixedSize(horizontal: false, vertical: true)
       }
     }
@@ -451,22 +472,53 @@ struct PapupayGuestView: View {
 
   private func heroPhotograph(withText: Bool) -> some View {
     GeometryReader { photo in
+      let isTableScene = isSweeto && venueCover == nil
+      // Preserve the photographed square and limit the centre crop to its margins.
+      let photoWidth = isTableScene ? min(photo.size.width, photo.size.height / 0.88) : photo.size.width
+      let photoHeight = isTableScene ? min(photo.size.height, photoWidth / 0.88) : photo.size.height
       GuestCoverArt(palette: palette, isSweeto: isSweeto, remotePhoto: venueCover)
-        .frame(width: photo.size.width, height: photo.size.height,
-               alignment: isSweeto && venueCover == nil ? .trailing : .center)
+        .frame(width: photoWidth, height: photoHeight)
         .clipped()
+        .accessibilityHidden(true)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .overlay {
-          if withText {
+          if withText && isTableScene {
+            ZStack {
+              LinearGradient(
+                colors: [.black.opacity(0.35), .clear, .clear],
+                startPoint: .top, endPoint: .bottom
+              )
+              LinearGradient(stops: [
+                .init(color: .clear, location: 0.62),
+                .init(color: .black.opacity(0.10), location: 0.77),
+                .init(color: Color(hex: "1A1711"), location: 1)
+              ], startPoint: .top, endPoint: .bottom)
+              LinearGradient(stops: [
+                .init(color: .clear, location: 0.48),
+                .init(color: .black.opacity(0.65), location: 0.74),
+                .init(color: .black.opacity(0.85), location: 1)
+              ], startPoint: .top, endPoint: .bottom)
+              .mask {
+                LinearGradient(stops: [
+                  .init(color: .white, location: 0),
+                  .init(color: .white.opacity(0.94), location: 0.34),
+                  .init(color: .white.opacity(0.24), location: 0.73),
+                  .init(color: .clear, location: 1)
+                ], startPoint: .leading, endPoint: .trailing)
+              }
+            }
+          } else if withText {
             LinearGradient(stops: [
-              .init(color: .black.opacity(0.42), location: 0),
-              .init(color: .clear, location: 0.39),
-              .init(color: .black.opacity(0.10), location: 0.55),
-              .init(color: isSweeto ? Color(hex: "0E281F").opacity(0.89) : .black.opacity(0.76), location: 0.84),
-              .init(color: Color(hex: isSweeto ? "0E281F" : "1A1711"), location: 1)
+              .init(color: .black.opacity(isSweeto ? 0.80 : 0.35), location: 0),
+              .init(color: .clear, location: 0.35),
+              .init(color: .black.opacity(0.16), location: 0.5),
+              .init(color: .black.opacity(0.76), location: 0.79),
+              .init(color: Color(hex: "1A1711"), location: 1)
             ], startPoint: .top, endPoint: .bottom)
           }
         }
     }
+    .background(withText ? palette.forest : Color(hex: "1A1711"))
     .accessibilityHidden(true)
   }
 
@@ -497,134 +549,147 @@ struct PapupayGuestView: View {
     }
   }
 
-  private var heroMenuButton: some View {
-    NavigationLink(value: VenueGuestScreen.menu) {
-      HStack(spacing: 12) {
-        homeSymbol("book", emphasized: true, onAccent: true)
-        Text(t("Zobacz menu", "View menu", "Открыть меню"))
-          .font(.body.weight(.bold))
-          .fixedSize(horizontal: false, vertical: true)
-          .frame(maxWidth: .infinity, alignment: .leading)
-        actionArrow(onAccent: true)
+  @ViewBuilder private func guestActions(rowHeight: CGFloat) -> some View {
+    let actions = VStack(spacing: isSweeto ? 9 : 0) {
+      NavigationLink(value: VenueGuestScreen.menu) {
+        guestAction(t("Zobacz menu", "View menu", "Открыть меню"), symbol: "book", rowHeight: rowHeight)
       }
-      .foregroundStyle(palette.ink)
-      .padding(.horizontal, 12)
-      .padding(.vertical, 8)
-      .frame(minHeight: 52)
-      .background(Color(hex: "FF7D43"), in: .rect(cornerRadius: 16))
-      .contentShape(.rect(cornerRadius: 16))
-    }
-    .buttonStyle(GuestActionPress(prominent: true, palette: palette, cornerRadius: 16))
-    .accessibilityHint(t("Zamów przy ladzie", "Order at the counter", "Заказ у стойки"))
-  }
+      .modifier(GuestPaperNavigation(screen: .menu, namespace: paperTransition, reduceMotion: reduceMotion || isSweeto))
 
-  private func guestTicket(rowHeight: CGFloat) -> some View {
-    Button { openTicket() } label: {
-      guestAction(
-        ticketTitle,
-        symbol: isSweeto ? "seal" : "wallet.pass",
-        detail: isSweeto ? ticketCaption : compactTicketProgress,
-        pull: ticketPull, emphasized: isSweeto, rowHeight: rowHeight
-      )
-    }
-    .accessibilityLabel(ticketTitle)
-    .accessibilityValue(ticketCaption)
-    .overlay(alignment: .trailing) {
-      GuestTicketPull(opensOnRelease: isSweeto, pull: { ticketPull = $0 }, release: { releaseTicket(open: $0) }, tap: { openTicket() })
-        .frame(width: 60)
-        .frame(maxHeight: .infinity)
-        .accessibilityHidden(true)
-    }
-    .modifier(GuestPaperNavigation(screen: .card, namespace: paperTransition, reduceMotion: reduceMotion))
-  }
-
-  private var ticketTitle: String {
-    if isSweeto && homeStamps == nil {
-      return t("Otwórz kartę", "Open your card", "Открыть карту")
-    }
-    return t("Twoja karta", "Your stamp card", "Ваша карта")
-  }
-
-  private func guestActions(rowHeight: CGFloat) -> some View {
-    VStack(spacing: 0) {
-      if !isSweeto {
-        NavigationLink(value: VenueGuestScreen.menu) {
-          guestAction(t("Zobacz menu", "View menu", "Открыть меню"), symbol: "book", rowHeight: rowHeight)
-        }
-        .modifier(GuestPaperNavigation(screen: .menu, namespace: paperTransition, reduceMotion: reduceMotion))
-        venueActionDivider
+      venueActionDivider
+      Button { openTicket() } label: {
+        guestAction(
+          isSweeto && homeStamps == nil ? t("Otwórz kartę", "Open your card", "Открыть карту")
+            : t("Twoja karta", "Your stamp card", "Ваша карта"),
+          symbol: isSweeto ? "list.clipboard" : "wallet.pass", detail: isSweeto ? ticketCaption : compactTicketProgress,
+          pull: ticketPull, ticket: isSweeto, rowHeight: rowHeight
+        )
       }
-      guestTicket(rowHeight: rowHeight)
+      .accessibilityValue(ticketCaption)
+      .overlay(alignment: .trailing) {
+        GuestTicketPull(opensOnRelease: isSweeto, pull: { ticketPull = $0 }, release: { releaseTicket(open: $0) }, tap: { openTicket() })
+          .frame(width: 60)
+          .frame(maxHeight: .infinity)
+          .accessibilityHidden(true)
+      }
+      .modifier(GuestPaperNavigation(screen: .card, namespace: paperTransition, reduceMotion: reduceMotion))
+
       venueActionDivider
       NavigationLink(value: VenueGuestScreen.wifi) {
-        guestAction(t("Wi-Fi dla gości", "Guest Wi-Fi", "Гостевой Wi-Fi"), symbol: "wifi", rowHeight: rowHeight)
+        guestAction(t("Wi-Fi dla gości", "Guest Wi-Fi", "Гостевой Wi-Fi"),
+                    symbol: "wifi", detail: isSweeto ? wifiAvailabilityHint : nil, rowHeight: rowHeight)
       }
       .accessibilityHint(wifiAvailabilityHint ?? "")
+
       venueActionDivider
       if let reviewURL {
         Button { review(reviewURL) } label: {
           guestAction(t("Oceń w Google", "Review on Google", "Оценить в Google"), symbol: "star", outbound: true, rowHeight: rowHeight)
         }
-        .accessibilityHint(t("Otwiera Google", "Opens Google", "Открывает Google"))
+        .accessibilityHint(isSweeto ? t("Otwiera Google", "Opens Google", "Открывает Google") : "")
       } else {
         NavigationLink(value: VenueGuestScreen.reviews) {
           guestAction(t("Opinie Google", "Google reviews", "Отзывы Google"), symbol: "star", rowHeight: rowHeight)
         }
       }
     }
-    .background(isSweeto ? Color(hex: "FFF9EE") : palette.surface)
-    .clipShape(.rect(cornerRadius: 16))
-    .overlay {
-      RoundedRectangle(cornerRadius: 16)
-        .strokeBorder(isSweeto ? Color(hex: "E6D8C1") : palette.ink.opacity(0.16))
-        .allowsHitTesting(false)
+    if isSweeto {
+      actions
+    } else {
+      actions
+        .background(palette.surface)
+        .clipShape(.rect(cornerRadius: 14))
+        .overlay {
+          RoundedRectangle(cornerRadius: 14)
+            .strokeBorder(palette.ink.opacity(0.16))
+            .allowsHitTesting(false)
+        }
     }
   }
 
-  private var venueActionDivider: some View {
-    Rectangle().fill(isSweeto ? Color(hex: "E6D8C1") : palette.ink.opacity(0.14))
-      .frame(height: 1)
-      .padding(.horizontal, 14)
-      .accessibilityHidden(true)
+  @ViewBuilder private var venueActionDivider: some View {
+    if !isSweeto {
+      Rectangle().fill(palette.ink.opacity(0.14))
+        .frame(height: 1)
+        .padding(.horizontal, 16)
+        .accessibilityHidden(true)
+    }
   }
 
-  private func guestAction(
+  @ViewBuilder private func guestAction(
     _ title: String, symbol: String, detail: String? = nil, pull: CGFloat = 0, outbound: Bool = false,
-    emphasized: Bool = false, rowHeight: CGFloat
+    ticket: Bool = false, rowHeight: CGFloat
   ) -> some View {
-    HStack(spacing: 12) {
-      homeSymbol(symbol, emphasized: emphasized)
+    let row = HStack(spacing: 12) {
+      Image(systemName: symbol)
+        .font(.system(size: 18, weight: .medium))
+        .frame(width: 22)
+        .accessibilityHidden(true)
+
       actionCopy(title, detail: detail)
-        .font(.body.weight(.semibold))
-        .multilineTextAlignment(.leading)
-        .frame(maxWidth: .infinity, alignment: .leading)
-      actionArrow(outbound: outbound, emphasized: emphasized)
+      .font(.body.weight(.semibold))
+      .multilineTextAlignment(.leading)
+      .frame(maxWidth: .infinity, alignment: .leading)
+
+      actionArrow(outbound: outbound)
+        .opacity(isSweeto && ticket ? 0 : 1)
         .rotationEffect(.degrees(reduceMotion ? 0 : 4 * Double(pull)))
         .offset(x: reduceMotion ? 0 : 6 * pull)
     }
-    .padding(.horizontal, 12)
-    .padding(.vertical, 7)
+    .padding(.horizontal, isSweeto ? 14 : 16)
+    .padding(.vertical, isSweeto ? 8 : 9)
     .frame(maxWidth: .infinity, minHeight: rowHeight)
     .foregroundStyle(palette.ink)
-    .contentShape(.rect)
+    if isSweeto {
+      row
+        .background(palette.surface, in: .rect(cornerRadius: 13))
+        .overlay {
+          RoundedRectangle(cornerRadius: 13)
+            .strokeBorder(palette.ink.opacity(0.16))
+            .allowsHitTesting(false)
+        }
+        .overlay(alignment: .trailing) {
+          if ticket {
+            ticketStub(pull: pull)
+          }
+        }
+        .contentShape(.rect(cornerRadius: 13))
+    } else {
+      row.contentShape(.rect)
+    }
   }
 
-  private func homeSymbol(_ symbol: String, emphasized: Bool = false, onAccent: Bool = false) -> some View {
-    Image(systemName: symbol)
-      .font(.system(size: 18, weight: .medium))
-      .frame(width: 34, height: 34)
-      .background(onAccent ? palette.ink.opacity(0.08) :
-        emphasized ? palette.primary.opacity(0.30) : Color(hex: "F3EDDE"), in: .circle)
-      .accessibilityHidden(true)
-  }
-
-  private func actionArrow(outbound: Bool = false, emphasized: Bool = false, onAccent: Bool = false) -> some View {
+  private func actionArrow(outbound: Bool = false) -> some View {
     Image(systemName: outbound ? "arrow.up.right" : "arrow.right")
       .font(.system(size: 15, weight: .semibold))
       .frame(width: 34, height: 34)
-      .foregroundStyle(onAccent ? palette.frosting : palette.ink)
-      .background(onAccent ? palette.ink : emphasized ? palette.primary : Color(hex: "F3EDDE"), in: .circle)
+      .foregroundStyle(palette.ink)
+      .background(palette.primary, in: .circle)
       .accessibilityHidden(true)
+  }
+
+  private func ticketStub(pull: CGFloat) -> some View {
+    let travel = reduceMotion ? 0 : 6 * min(pull, 1.25)
+    let stock = UnevenRoundedRectangle(bottomTrailingRadius: 13, topTrailingRadius: 13)
+    return ZStack {
+      if travel > 0 {
+        stock.fill(palette.surface)
+          .overlay {
+            stock.strokeBorder(palette.ink.opacity(0.16))
+              .mask { LinearGradient(colors: [.clear, .black], startPoint: .leading, endPoint: .trailing) }
+          }
+          .shadow(color: palette.ink.opacity(0.10), radius: 2, x: -2, y: 1)
+      }
+      actionArrow()
+    }
+    .frame(width: 60)
+    .frame(maxHeight: .infinity)
+    .overlay(alignment: .leading) {
+      GuestPerforation(color: palette.ink.opacity(0.34), vertical: true, cutout: palette.paper, notchRadius: 2.5)
+    }
+    .offset(x: travel)
+    .allowsHitTesting(false)
+    .accessibilityHidden(true)
   }
 
   @ViewBuilder private func actionCopy(_ title: String, detail: String?) -> some View {
@@ -688,6 +753,23 @@ struct PapupayGuestView: View {
     if open { openTicket() }
     let returnAnimation: Animation = isSweeto ? .spring(response: 0.29, dampingFraction: 0.77) : .easeOut(duration: 0.2)
     withAnimation(reduceMotion ? nil : returnAnimation) { ticketPull = 0 }
+  }
+
+  private var homeFooter: some View {
+    ViewThatFits(in: .horizontal) {
+      HStack(spacing: 8) {
+        venueDetails.fixedSize(horizontal: true, vertical: false)
+        Spacer(minLength: 0)
+        GuestWordmark(palette: palette, size: 14, welcome: welcome)
+      }
+      VStack(alignment: .leading, spacing: 4) {
+        venueDetails
+        GuestWordmark(palette: palette, size: 14, welcome: welcome)
+          .padding(.top, 16)
+          .padding(.horizontal, 2)
+      }
+    }
+    .frame(maxWidth: .infinity, alignment: .leading)
   }
 
   private var venueDetails: some View {
@@ -1164,6 +1246,7 @@ struct GuestActionPress: ButtonStyle {
   var prominent = false
   var palette: VenueGuestPalette? = nil
   var cornerRadius: CGFloat? = nil
+  var tactileEdge = false
 
   func makeBody(configuration: Configuration) -> some View {
     if let palette, !palette.isSweeto {
@@ -1171,9 +1254,31 @@ struct GuestActionPress: ButtonStyle {
         .scaleEffect(configuration.isPressed && !reduceMotion ? 0.995 : 1)
         .background(configuration.isPressed ? Color(hex: "F3E2C8") : .clear)
         .animation(reduceMotion ? nil : .easeOut(duration: configuration.isPressed ? 0.09 : 0.16), value: configuration.isPressed)
+    } else if tactileEdge, let palette {
+      paperPress(configuration, palette: palette)
     } else {
       sweetoPress(configuration)
     }
+  }
+
+  private func paperPress(_ configuration: Configuration, palette: VenueGuestPalette) -> some View {
+    let shape = RoundedRectangle(cornerRadius: cornerRadius ?? 13)
+    let edgeDepth: CGFloat = 2.5
+    let pressed = configuration.isPressed
+    return configuration.label
+      .overlay {
+        shape.strokeBorder(palette.ink.opacity(pressed ? 0.34 : 0))
+          .allowsHitTesting(false)
+          .accessibilityHidden(true)
+      }
+      .offset(y: pressed && !reduceMotion ? edgeDepth : 0)
+      .background {
+        shape.fill(palette.ink.opacity(pressed && reduceMotion ? 0.06 : 0.14))
+          .offset(y: edgeDepth)
+          .allowsHitTesting(false)
+          .accessibilityHidden(true)
+      }
+      .animation(reduceMotion ? nil : .easeOut(duration: pressed ? 0.07 : 0.16), value: pressed)
   }
 
   private func sweetoPress(_ configuration: Configuration) -> some View {
@@ -1367,7 +1472,7 @@ private struct GuestCoverArt: View {
   }
 
   @ViewBuilder private var fallback: some View {
-    if isSweeto, let art = UIImage(named: "guest-menu-cover") ?? UIImage(named: "menu-matylda") {
+    if isSweeto, let art = UIImage(named: "sweeto-table-cover") ?? UIImage(named: "menu-matylda") {
       Image(uiImage: art).resizable().scaledToFill()
     } else { palette.forest }
   }

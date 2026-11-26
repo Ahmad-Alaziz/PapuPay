@@ -8,11 +8,35 @@ import { test } from "node:test";
 import { promisify } from "node:util";
 import { crc32, gzipSync } from "node:zlib";
 import { buildPassArchive, buildStorePassFiles, signManifest, storePassDocument } from "./wallet.mjs";
+import { venueRegistry } from "./venues.mjs";
 
 const openssl = promisify(execFile);
 const brand = { id: "berry-counter", name: "Berry Counter", theme: { ink: "#64344e", background: "#fff8fb", accent: "#98546d" } };
 const card = { checkout: "pp_fixture_checkout_identifier", code: "TESTCARD", stamps: 2, goal: 6 };
 const config = { passTypeId: "pass.test.papupay", teamId: "TESTTEAM01", origin: "https://example.test" };
+
+test("only a venue's own valid storefront pin is attached to its pass", () => {
+  const sweeto = { id: "sweeto", name: "Sweeto" };
+  const sweetoPin = { latitude: 52.1720425, longitude: 21.0185431 };
+  const otherPin = { latitude: 0, longitude: -1.2 };
+  const locations = (entry) => {
+    const { brand } = venueRegistry(entry ? [entry] : []).get(entry?.id ?? "sweeto");
+    return storePassDocument(brand, card, config).locations;
+  };
+  assert.deepEqual(locations(), [{ ...sweetoPin, relevantText: "You can collect stamps here." }]);
+  assert.deepEqual(locations(sweeto), locations());
+  assert.equal(locations(brand), undefined);
+  assert.equal(locations({ ...sweeto, address: "New address" }), undefined);
+  assert.equal(locations({ ...sweeto, mapUrl: "https://example.test/new" }), undefined);
+  for (const walletLocation of [null, {}, { latitude: "0", longitude: 10 },
+    { latitude: NaN, longitude: 1 }, { latitude: 91, longitude: 0 }, { latitude: 0, longitude: -181 }]) {
+    assert.equal(locations({ ...sweeto, walletLocation }), undefined);
+  }
+  for (const venue of [sweeto, brand]) {
+    assert.deepEqual(locations({ ...venue, address: "New address", walletLocation: otherPin }),
+      [{ ...otherPin, relevantText: "You can collect stamps here." }]);
+  }
+});
 
 test("the Papupay Wallet pass shows progress and venue identity with the original checkout code", () => {
   const pass = storePassDocument(brand, card, config);
@@ -182,7 +206,14 @@ test("the Wallet signature independently verifies as detached DER against its ma
     "/CN=PapuPay Signing Test", "-keyout", keyPath, "-out", certPath]);
   const certificate = new X509Certificate(await readFile(certPath));
   const key = await readFile(keyPath);
-  const manifest = Buffer.from('{"pass.json":"fixture"}');
+  const files = await buildStorePassFiles(venueRegistry().get("sweeto").brand, card, config);
+  const pass = JSON.parse(files.get("pass.json"));
+  assert.deepEqual(pass.locations, [{ latitude: 52.1720425, longitude: 21.0185431, relevantText: "You can collect stamps here." }]);
+  assert.match(files.get("pl.lproj/pass.strings").toString("utf16le"), /Tu możesz zbierać pieczątki/);
+  assert.match(files.get("ru.lproj/pass.strings").toString("utf16le"), /Здесь можно получить отметку/);
+  const manifest = Buffer.from(JSON.stringify(Object.fromEntries(
+    [...files].map(([name, bytes]) => [name, createHash("sha1").update(bytes).digest("hex")])
+  )));
   const signature = await signManifest({ openssl: "openssl" }, { certificate, key, wwdr: certificate }, manifest);
   await Promise.all([writeFile(dataPath, manifest), writeFile(sigPath, signature)]);
   const verified = await openssl("openssl", ["smime", "-verify", "-binary", "-inform", "DER", "-in", sigPath,

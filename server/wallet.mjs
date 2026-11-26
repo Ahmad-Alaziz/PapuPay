@@ -155,6 +155,9 @@ export function storePassDocument(brand, card, { passTypeId, teamId, origin }, p
     foregroundColor: rgb(palette.paper),
     backgroundColor: rgb(palette.body),
     labelColor: rgb(palette.label),
+    ...(brand.walletLocation ? {
+      locations: [{ ...brand.walletLocation, relevantText: "You can collect stamps here." }],
+    } : {}),
     ...(demo || profile.recoveryUrl ? { sharingProhibited: true } : {}),
     ...(liveUpdates ? {
       webServiceURL: profile.webServiceURL, authenticationToken: profile.authenticationToken,
@@ -188,6 +191,7 @@ export function storePassDocument(brand, card, { passTypeId, teamId, origin }, p
 const translations = {
   en: {},
   pl: {
+    "You can collect stamps here.": "Tu możesz zbierać pieczątki.",
     "Loyalty card": "Karta lojalnościowa",
     "Demo card": "Karta demo",
     "Papupay loyalty card": "Karta lojalnościowa Papupay",
@@ -215,6 +219,7 @@ const translations = {
     "Papupay support": "Pomoc Papupay",
   },
   ru: {
+    "You can collect stamps here.": "Здесь можно получить отметку.",
     "Loyalty card": "Карта лояльности",
     "Demo card": "Пробная карта",
     "Papupay loyalty card": "Карта лояльности Papupay",
@@ -271,6 +276,7 @@ export async function buildStorePassFiles(brand, card, config, profile = {}) {
   const fields = [...(pass.storeCard.headerFields ?? []), ...pass.storeCard.secondaryFields, ...pass.storeCard.backFields];
   for (const [language, values] of Object.entries(translations)) {
     const localized = { [pass.description]: passTitle(brand, profile.offlineDemo === true, values) };
+    for (const { relevantText } of pass.locations ?? []) localized[relevantText] = values[relevantText] ?? relevantText;
     for (const { label, value, changeMessage } of fields) {
       if (changeMessage && Object.hasOwn(values, changeMessage)) localized[changeMessage] = values[changeMessage];
       if (Object.hasOwn(values, label)) localized[label] = values[label];

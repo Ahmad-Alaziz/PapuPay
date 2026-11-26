@@ -52,7 +52,7 @@
     "nativeHomeFile": "apps/ios/Resources/Assets.xcassets/sweeto-table-cover.imageset/matylda-table.jpg",
     "webHomeFile": "public/assets/sweeto/matylda-table.webp",
     "webExport": "The runtime WebP uses the complete final native image at its exported resolution without cropping or retouching. The original full-resolution PNG is retained separately as the editable master.",
-    "method": "AI-generated editorial reconstruction of the takeaway presentation. The earlier takeaway cover uses a square, dark-counter composition with warm side light, photographed from a moderate three-quarter angle. Its whole kraft tub spans approximately 60% of the frame width. The upper 30% of the frame is clear counter for the App Clip status, brand and language control.",
+    "method": "AI-generated editorial reconstruction of the takeaway presentation. The home uses a square, dark-counter composition with warm side light, photographed from a moderate three-quarter angle. Its whole kraft tub spans approximately 60% of the frame width. The upper 30% of the frame is clear counter for the App Clip status, brand and language control.",
     "retiredStudioOriginalName": "exec-ef707d4f-26ac-45de-8762-2d6b098b95c3.png",
     "retiredStudioNote": "The alternate packaging composition was removed from app bundles when the menu returned to the merchant’s genuine Matylda cake-layer photograph. Its generated original is archived outside the release tree for provenance.",
     "menuPhoto": "The menu and expanded product view use the merchant's Matylda product photograph listed in productPhotography."
@@ -61,7 +61,7 @@
     "nativeFile": "apps/ios/Resources/Assets.xcassets/guest-menu-cover.imageset/guest-menu-cover.jpg",
     "webFile": "public/assets/guest-menu-cover.webp",
     "originalName": "exec-aeb932f9-647e-4ec7-a53c-709c4baa4ec6.png",
-    "note": "The restored Sweeto home uses this close-up cake photograph on a green plate. The editable original is archived outside the release tree for provenance."
+    "note": "Earlier alternate cake photograph on a green plate. The editable original is archived outside the release tree for provenance."
   },
   "matyldaCutout": {
     "file": "matylda-cutout.webp",

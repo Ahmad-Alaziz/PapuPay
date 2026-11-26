@@ -33,14 +33,13 @@ struct VenueDessertMenu: View {
   }
 
   private enum Presentation: Identifiable {
-    case original, counter, dessert(Dessert), tasting
+    case original, counter, dessert(Dessert)
 
     var id: String {
       switch self {
       case .original: "original"
       case .counter: "counter"
       case .dessert(let value): "dessert-" + value.id
-      case .tasting: "tasting"
       }
     }
   }
@@ -112,8 +111,6 @@ struct VenueDessertMenu: View {
             .fixedSize(horizontal: false, vertical: true)
         }
         .padding(.bottom, 14)
-        tastingAction
-          .padding(.bottom, 16)
         ForEach(Self.desserts) { dessert in
           menuRule
           row(dessert).padding(.vertical, 9)
@@ -175,18 +172,6 @@ struct VenueDessertMenu: View {
                            edit: { presentation = nil }, clear: clearDraft)
       case .dessert(let dessert):
         dessertDetail(dessert)
-      case .tasting:
-        SweetoTastingDial(
-          language: language, palette: palette,
-          choices: Self.desserts.map { dessert in
-            let words = dessert.text(for: language)
-            return SweetoTastingChoice(id: dessert.id, title: words.title, description: words.description)
-          },
-          add: { id in
-            guard let dessert = Self.desserts.first(where: { $0.id == id }) else { return false }
-            return changeQuantity(dessert, by: 1)
-          }
-        )
       case .original:
         NavigationStack {
           VenuePDFMenu(url: nil, fallback: original, language: language, isPolish: true, palette: palette)
@@ -204,31 +189,6 @@ struct VenueDessertMenu: View {
 
   private var menuRule: some View {
     Rectangle().fill(palette.line).frame(height: 1).accessibilityHidden(true)
-  }
-
-  private var tastingAction: some View {
-    Button { presentation = .tasting } label: {
-      HStack(spacing: 10) {
-        SweetoTastingThumbnail()
-          .frame(width: 36, height: 36)
-          .accessibilityHidden(true)
-        Text(t("Dobierz deser", "Find your dessert", "Выберите десерт"))
-          .font(.subheadline.weight(.semibold))
-          .multilineTextAlignment(.leading)
-          .fixedSize(horizontal: false, vertical: true)
-          .frame(maxWidth: .infinity, alignment: .leading)
-        Image(systemName: "chevron.right")
-          .font(.system(size: 12, weight: .semibold))
-          .accessibilityHidden(true)
-      }
-      .padding(.horizontal, 12)
-      .padding(.vertical, 4)
-      .frame(minHeight: 44)
-      .background(palette.peach, in: .rect(cornerRadius: 12))
-      .contentShape(.rect(cornerRadius: 12))
-    }
-    .buttonStyle(.plain)
-    .accessibilityHint(t("Dobierz deser według smaku", "Find a match by flavour", "Подбор десерта по вкусу"))
   }
 
   private func row(_ dessert: Dessert) -> some View {
@@ -428,11 +388,10 @@ struct VenueDessertMenu: View {
     if draft.total == 0, case .counter? = presentation { presentation = nil }
   }
 
-  @discardableResult
-  private func changeQuantity(_ dessert: Dessert, by delta: Int) -> Bool {
+  private func changeQuantity(_ dessert: Dessert, by delta: Int) {
     var next = draft
     next.adjust(dessert.id, by: delta)
-    guard next != draft else { return false }
+    guard next != draft else { return }
     withAnimation(reduceMotion ? nil : .easeOut(duration: 0.22)) {
       draft = next
     }
@@ -441,7 +400,6 @@ struct VenueDessertMenu: View {
     let name = dessert.text(for: language).title
     let quantity = draft.quantity(for: dessert.id)
     AccessibilityNotification.Announcement(t("\(quantity) × \(name) na liście", "\(quantity) × \(name) on the list", "\(quantity) × \(name) в списке")).post()
-    return true
   }
 
   private func clearDraft() {

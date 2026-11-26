@@ -1,12 +1,10 @@
 import {
   ArrowRight,
-  ChevronRight,
   FileText,
   Maximize2,
   Minus,
   Plus,
   Trash2,
-  X,
 } from "papu-guest-icons";
 import {
   useEffect,
@@ -16,7 +14,6 @@ import {
   type ReactNode,
 } from "react";
 import type { Language } from "./catalog";
-import TastingDial, { TastingThumbnail, tastingTitle } from "./TastingDial";
 import { useVenue } from "./VenueContext";
 import {
   adjustCounterDraft,
@@ -33,7 +30,6 @@ const desserts = [
   {
     id: "menu-matylda",
     photo: "/assets/sweeto/matylda.webp",
-    flavour: { pl: "Czekoladowe", en: "Chocolatey", ru: "Шоколад" },
     pl: [
       "Matylda czekoladowa",
       "Intensywnie czekoladowe ciasto z błyszczącą polewą.",
@@ -50,7 +46,6 @@ const desserts = [
   {
     id: "menu-san-sebastian",
     photo: "/assets/sweeto/san-sebastian.webp",
-    flavour: { pl: "Kremowe", en: "Creamy", ru: "Сливки" },
     pl: [
       "San Sebastian z czekoladą",
       "Baskijski sernik z kremowym środkiem i gorącą czekoladą.",
@@ -67,7 +62,6 @@ const desserts = [
   {
     id: "menu-crunch-bowl",
     photo: "/assets/sweeto/crunch-bowl.webp",
-    flavour: { pl: "Chrupiące", en: "Crunchy", ru: "Хруст" },
     pl: [
       "Chrupiący bowl",
       "Krem pistacjowy, świeże truskawki, chrupiący miks i ciemna czekolada.",
@@ -84,7 +78,6 @@ const desserts = [
   {
     id: "menu-forest-cloud",
     photo: "/assets/sweeto/forest-cloud.webp",
-    flavour: { pl: "Owocowe", en: "Fruity", ru: "Ягоды" },
     pl: [
       "Królewska chmurka leśna",
       "Puszyste ciasto nasączone mlekiem, z serkiem śmietankowym, owocami i płynną czekoladą.",
@@ -111,7 +104,6 @@ const copy = {
     guidance: "Ceny i dostępność sprawdzisz przy ladzie.",
     original: "Oryginalne menu (PDF)",
     done: "Gotowe",
-    close: "Zamknij",
     add: "Dodaj",
     remove: "Usuń porcję",
     inList: "Na liście",
@@ -130,7 +122,6 @@ const copy = {
     guidance: "Check prices and availability at the counter.",
     original: "Original Polish menu (PDF)",
     done: "Done",
-    close: "Close",
     add: "Add one",
     remove: "Remove one",
     inList: "On your list",
@@ -149,7 +140,6 @@ const copy = {
     guidance: "Цены и наличие уточняйте у стойки.",
     original: "Оригинальное меню по-польски (PDF)",
     done: "Готово",
-    close: "Закрыть",
     add: "Добавить",
     remove: "Убрать порцию",
     inList: "В списке",
@@ -167,13 +157,12 @@ const copy = {
 const motionPreference = "(prefers-reduced-motion: reduce)";
 export const dessertOverlayHistoryKey = "sweetoDessertOverlay";
 type Overlay =
-  { kind: "photo"; id: string } | { kind: "counter" } | { kind: "tasting" };
+  { kind: "photo"; id: string } | { kind: "counter" };
 type Presentation = { route: Overlay; origin?: DOMRect };
 
 function overlayFromHistory(): Overlay | null {
   const value = history.state?.[dessertOverlayHistoryKey];
   if (value?.kind === "counter") return { kind: "counter" };
-  if (value?.kind === "tasting") return { kind: "tasting" };
   if (value?.kind === "photo" && itemIDs.has(value.id))
     return { kind: "photo", id: value.id };
   return null;
@@ -266,7 +255,6 @@ function MenuOverlay({
   closeLabel,
   className,
   origin,
-  iconClose = false,
   onClose,
   returnFocus,
   children,
@@ -275,7 +263,6 @@ function MenuOverlay({
   closeLabel: string;
   className: string;
   origin?: DOMRect;
-  iconClose?: boolean;
   onClose: () => void;
   returnFocus: () => void;
   children: ReactNode;
@@ -328,9 +315,8 @@ function MenuOverlay({
             ref={close}
             className="papu-menu-overlay-close"
             onClick={onClose}
-            aria-label={iconClose ? closeLabel : undefined}
           >
-            {iconClose ? <X size={18} aria-hidden="true" /> : closeLabel}
+            {closeLabel}
           </button>
         </div>
         {children}
@@ -621,7 +607,6 @@ export default function DessertCatalog({
   const t = copy[language];
   const heading = useRef<HTMLHeadingElement>(null);
   const counterTrigger = useRef<HTMLButtonElement>(null);
-  const tastingTrigger = useRef<HTMLButtonElement>(null);
   const photos = useRef(new Map<string, HTMLButtonElement>());
   const closing = useRef(false);
   const [draft, setDraft] = useState<CounterDraft>(() => {
@@ -744,12 +729,11 @@ export default function DessertCatalog({
 
   function changeQuantity(dessert: Dessert, delta: 1 | -1) {
     const next = adjustCounterDraft(draftRef.current, dessert.id, delta);
-    if (next === draftRef.current) return false;
+    if (next === draftRef.current) return;
     remember(next);
     setAnnouncement(
       `${next.quantities[dessert.id] ?? 0} × ${dessert[language][0]} ${t.onList}`,
     );
-    return true;
   }
 
   function present(route: Overlay) {
@@ -791,11 +775,9 @@ export default function DessertCatalog({
     const target =
       route?.kind === "photo"
         ? photos.current.get(route.id)
-        : route?.kind === "tasting"
-          ? tastingTrigger.current
-          : counterTotal(draftRef.current) > 0
-            ? counterTrigger.current
-            : heading.current;
+        : counterTotal(draftRef.current) > 0
+          ? counterTrigger.current
+          : heading.current;
     (target?.isConnected ? target : heading.current)?.focus({
       preventScroll: true,
     });
@@ -819,17 +801,6 @@ export default function DessertCatalog({
           {t.title}
         </h2>
         <p>{t.intro}</p>
-        <button
-          ref={tastingTrigger}
-          type="button"
-          className="papu-menu-tasting-open"
-          aria-haspopup="dialog"
-          onClick={() => present({ kind: "tasting" })}
-        >
-          <TastingThumbnail />
-          <strong>{tastingTitle[language]}</strong>
-          <ChevronRight size={16} aria-hidden="true" />
-        </button>
       </header>
       <ul className="papu-dessert-list" role="list">
         {desserts.map((dessert) => {
@@ -942,32 +913,6 @@ export default function DessertCatalog({
             remember(emptyCounterDraft());
           }}
         />
-      )}
-      {activeRoute?.kind === "tasting" && (
-        <MenuOverlay
-          label={tastingTitle[language]}
-          closeLabel={t.close}
-          className="papu-tasting-dialog"
-          iconClose
-          onClose={close}
-          returnFocus={returnFocus}
-        >
-          <TastingDial
-            language={language}
-            choices={desserts.map((dessert) => ({
-              id: dessert.id,
-              flavour: dessert.flavour[language],
-              name: dessert[language][0],
-              description: dessert[language][1],
-              photo: dessert.photo,
-            }))}
-            add={(id) => {
-              const dessert = desserts.find((item) => item.id === id);
-              return dessert ? changeQuantity(dessert, 1) : false;
-            }}
-            onComplete={close}
-          />
-        </MenuOverlay>
       )}
     </section>
   );

@@ -738,9 +738,9 @@ body:has(.sweeto-guest) {
   }
 }
 
-/* Sweeto keeps a single menu action in the poster and a grouped service list. */
+/* Sweeto home follows the same PapuPay poster and paper actions as the App Clip. */
 body:has(.sweeto-guest[data-venue="sweeto"]) {
-  background: #f7f0e2;
+  background: #faf6ed;
 }
 
 .sweeto-guest[data-venue="sweeto"] {
@@ -753,11 +753,12 @@ body:has(.sweeto-guest[data-venue="sweeto"]) {
   --muted: #536451;
   --line: #dfe6d2;
   --guest-cream: #faf6ed;
-  --guest-orange: #ff7d43;
-  --guest-green: #102e24;
+  --guest-orange: #ff7837;
+  --guest-green: #123c2d;
   --home-gutter: 20px;
   --home-width: 35rem;
-  background: #f7f0e2;
+  --home-row-height: clamp(52px, calc((100svh - max(300px, min(97vw, 530px)) - 110px) / 4), 64px);
+  --paper-edge: rgb(18 60 45 / 16%);
   container: sweeto-home / inline-size;
 }
 
@@ -766,7 +767,7 @@ body:has(.sweeto-guest[data-venue="sweeto"]) {
 }
 
 .sweeto-guest[data-venue="sweeto"] .sweeto-venue-mark {
-  width: clamp(110px, 36vw, 142px);
+  width: clamp(118px, 36vw, 142px);
 }
 
 .sweeto-venue-mark[data-custom-logo] {
@@ -794,229 +795,459 @@ body:has(.sweeto-guest[data-venue="sweeto"]) {
 }
 
 .sweeto-guest[data-venue="sweeto"] .papu-cover {
-  min-height: clamp(410px, 134vw, 555px);
+  min-height: max(300px, min(97vw, 530px));
   padding-top: calc(72px + env(safe-area-inset-top));
-  border-radius: 0;
-  background: #0e281f;
+  background: #1a1711;
   overflow: hidden;
+  border-radius: 0 0 22px 22px;
 }
 
 .sweeto-guest[data-venue="sweeto"] .papu-cover-photo {
   inset: 0;
-  width: 100%;
+  width: min(100%, 540px);
   height: 100%;
-  object-position: right center;
+  margin-inline: auto;
+  object-fit: cover;
+  object-position: center;
   mask-image: none;
 }
 
-.sweeto-guest[data-venue="sweeto"] .papu-cover[data-custom-cover] .papu-cover-photo {
-  object-position: center;
+.sweeto-guest[data-venue="sweeto"] .papu-cover-photo[data-fallback] {
+  object-fit: contain;
 }
 
 .sweeto-guest[data-venue="sweeto"] .papu-cover::before {
-  background: linear-gradient(180deg,
-    rgb(0 0 0 / 42%) 0%,
-    transparent 38%,
-    rgb(0 0 0 / 10%) 55%,
-    rgb(14 40 31 / 89%) 84%,
-    #0e281f 100%);
+  background:
+    linear-gradient(180deg, rgb(0 0 0 / 35%), transparent 49%),
+    linear-gradient(0deg, #1a1711, rgb(0 0 0 / 10%) 23%, transparent 38%),
+    linear-gradient(
+      to top right,
+      rgb(0 0 0 / 85%),
+      rgb(0 0 0 / 40%) 35%,
+      transparent 65%
+    );
 }
 
 .sweeto-guest[data-venue="sweeto"] .papu-cover-copy {
-  padding-block: 12px 23px;
+  padding-top: 12px;
+  padding-bottom: 19px;
+}
+
+.sweeto-guest[data-venue="sweeto"] .papu-cover-dish {
+  position: static;
+  margin: 0 0 5px;
+  color: #fff2d6;
+  font-size: 0.8125rem;
+  font-weight: 680;
+  overflow-wrap: anywhere;
+}
+
+.sweeto-guest[data-venue="sweeto"] .papu-cover-dish::before {
+  display: block;
+  width: 17px;
+  height: 2px;
+  background: var(--accent);
 }
 
 .sweeto-guest[data-venue="sweeto"] .papu-cover h1 {
   max-width: none;
-  margin: 0 0 5px;
-  font: 400 clamp(2.35rem, 11.7vw, 3.4rem) / 1.06 var(--display);
+  margin: 0 0 6px;
+  font: 400 clamp(2.35rem, 11.7vw, 3.4rem) / 1.04 var(--display);
   letter-spacing: -0.01em;
-  overflow-wrap: break-word;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
 }
 
 .sweeto-guest[data-venue="sweeto"] .papu-cover h1:lang(ru) {
   font-size: clamp(1.85rem, 9.25vw, 2.7rem);
   font-weight: 800;
+  letter-spacing: -0.04em;
 }
 
-.sweeto-guest[data-venue="sweeto"] .papu-cover-dish {
-  position: static;
-  margin: 0 0 3px;
-  color: var(--guest-cream);
-  font-size: 0.9375rem;
-  font-weight: 570;
-  overflow-wrap: break-word;
-}
-
-.sweeto-guest[data-venue="sweeto"] .papu-cover-dish::before {
-  display: none;
-}
-
-.sweeto-guest[data-venue="sweeto"] .papu-cover .papu-home-action-primary {
-  width: 100%;
-  min-height: 52px;
-  margin-top: 17px;
-  padding: 7px 12px;
-  border-radius: 16px;
-  color: var(--guest-green);
+.sweeto-guest[data-venue="sweeto"] .papu-cover-order {
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.43;
 }
 
 .sweeto-guest[data-venue="sweeto"] .papu-home-actions {
-  margin-block: 16px 0;
+  margin-block: 14px 0;
 }
 
 .sweeto-guest[data-venue="sweeto"] .papu-home-action-group {
   grid-template-columns: minmax(0, 1fr);
-  gap: 0;
-  padding: 0 12px;
-  border: 1px solid #e6d8c1;
-  border-radius: 16px;
-  background: #fff9ee;
-}
-
-.sweeto-guest[data-venue="sweeto"] .papu-home-actions .papu-home-action {
-  grid-template-columns: 34px minmax(0, 1fr) 34px;
-  gap: 12px;
-  min-height: 55px;
-  padding: 7px 0;
+  gap: 9px;
+  padding: 0;
   border: 0;
   border-radius: 0;
   background: none;
 }
 
-.sweeto-guest[data-venue="sweeto"] .papu-home-actions .papu-home-action + .papu-home-action {
-  border-top: 1px solid #e6d8c1;
+.sweeto-guest[data-venue="sweeto"] .papu-home-actions .papu-home-action {
+  grid-template-columns: 24px minmax(0, 1fr) 60px;
+  gap: 10px;
+  width: 100%;
+  min-height: var(--home-row-height);
+  padding: 8px 0 8px 14px;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid rgb(18 60 45 / 17%);
+  border-radius: 13px;
+  box-shadow: 0 2.5px 0 var(--paper-edge);
+  transition: background-color 140ms ease-out, border-color 140ms ease-out,
+    transform 150ms var(--ease), box-shadow 150ms var(--ease);
 }
 
-.sweeto-guest[data-venue="sweeto"] .papu-home-action .papu-action-copy {
-  gap: 2px;
+.sweeto-guest[data-venue="sweeto"]
+  .papu-home-actions
+  .papu-home-action:focus-visible {
+  outline-color: var(--ink);
+  outline-offset: -4px;
 }
 
-.sweeto-guest[data-venue="sweeto"] .papu-home-action .papu-action-label {
-  font-size: 1rem;
-  font-weight: 690;
-  line-height: 1.25;
-}
-
-.sweeto-guest[data-venue="sweeto"] .papu-home-action .papu-action-detail {
-  font-size: 0.8125rem;
-  line-height: 1.25;
-}
-
-.sweeto-guest[data-venue="sweeto"] .papu-home-action .papu-action-icon,
-.sweeto-guest[data-venue="sweeto"] .papu-home-action .papu-action-arrow {
-  width: 34px;
-  height: 34px;
+.sweeto-guest[data-venue="sweeto"] .papu-home-action .papu-action-icon {
+  width: 24px;
+  height: 24px;
+  background: transparent;
 }
 
 .sweeto-guest[data-venue="sweeto"] .papu-action-symbol {
-  width: 20px;
-  height: 20px;
+  width: 21px;
+  height: 21px;
 }
 
-.sweeto-guest[data-venue="sweeto"] .papu-home-action[data-destination="card"] .papu-action-arrow {
-  background: var(--guest-orange);
+.sweeto-guest[data-venue="sweeto"] .papu-action-label {
+  font-size: 1rem;
+  font-weight: 670;
+  line-height: 1.2;
+}
+
+.sweeto-guest[data-venue="sweeto"] .papu-action-detail {
+  font-size: 0.8125rem;
+  line-height: 1.24;
+  font-weight: 550;
+}
+
+.sweeto-guest[data-venue="sweeto"] .papu-action-copy {
+  gap: 2px;
+}
+
+.sweeto-guest[data-venue="sweeto"] .papu-action-tail {
+  position: relative;
+  margin-block: -8px;
+  min-height: 50px;
+}
+
+.sweeto-guest[data-venue="sweeto"] .papu-home-action .papu-action-arrow {
+  width: 34px;
+  height: 34px;
+  color: var(--ink);
+  background: var(--accent);
+}
+
+.sweeto-guest[data-venue="sweeto"] .papu-ticket-stub::before,
+.sweeto-guest[data-venue="sweeto"] .papu-ticket-stub::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+
+/* The physical stub is the pointer target, including its decorative arrow. */
+.sweeto-guest[data-venue="sweeto"] .papu-ticket-stub .papu-action-arrow {
+  pointer-events: none;
+}
+
+.sweeto-guest[data-venue="sweeto"] .papu-ticket-stub {
+  border-radius: 0 12px 12px 0;
+  transition: transform 160ms var(--ease);
+}
+
+.sweeto-guest[data-venue="sweeto"] .papu-ticket-stub::before {
+  inset-block: 3px;
+  left: 0;
+  border-left: 1px dashed rgb(18 60 45 / 36%);
+}
+
+.sweeto-guest[data-venue="sweeto"] .papu-ticket-stub::after {
+  inset-block: -1px;
+  left: -3px;
+  width: 6px;
+  background:
+    radial-gradient(circle at center top, var(--paper) 2.5px, transparent 3px)
+      center top / 6px 6px no-repeat,
+    radial-gradient(
+        circle at center bottom,
+        var(--paper) 2.5px,
+        transparent 3px
+      )
+      center bottom / 6px 6px no-repeat;
+}
+
+@media (hover: hover) {
+  .sweeto-guest[data-venue="sweeto"]
+    .papu-home-actions
+    .papu-home-action:hover {
+    background: #fff2d6;
+    border-color: rgb(18 60 45 / 32%);
+  }
+  .sweeto-guest[data-venue="sweeto"]
+    .papu-home-action:hover
+    .papu-action-arrow {
+    transform: none;
+  }
+}
+
+.sweeto-guest[data-venue="sweeto"] .papu-home-actions .papu-home-action:active,
+.sweeto-guest[data-venue="sweeto"]
+  .papu-home-actions
+  .papu-home-action[data-pulling] {
+  background: #fff2d6;
+  border-color: rgb(18 60 45 / 28%);
+}
+
+.sweeto-guest[data-venue="sweeto"]
+  .papu-home-actions
+  .papu-home-action:active:not([data-pulling]) {
+  transform: translateY(2.5px);
+  box-shadow: 0 0 0 var(--paper-edge);
+  transition-duration: 70ms;
+}
+
+.sweeto-guest[data-venue="sweeto"] .papu-home-action[data-pulling] .papu-ticket-stub {
+  transform: translateX(calc(var(--ticket-pull, 0) * 7px));
+  background: #fff2d6;
+  box-shadow: -2px 1px 4px rgb(18 60 45 / 10%);
+  transition: none;
+}
+
+.sweeto-guest[data-venue="sweeto"] .papu-home-action[data-pulling] .papu-action-arrow {
+  transform: none;
 }
 
 .sweeto-guest[data-venue="sweeto"] .papu-footer {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 0;
-  margin-top: 0;
-  padding-block: 3px 15px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0 8px;
+  padding-top: 14px;
+  padding-bottom: 12px;
+  margin-top: auto;
+}
+
+.sweeto-guest[data-venue="sweeto"] .papu-footer-location {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .sweeto-guest[data-venue="sweeto"] .papu-footer-brand {
-  justify-self: center;
-  min-height: 32px;
-  margin-block-start: 12px;
-  margin-inline-start: 0;
+  width: auto;
+  justify-content: flex-end;
+  margin-inline-start: auto;
+  opacity: 1;
+}
+
+@media (560px <= width < 800px) {
+  .sweeto-guest[data-venue="sweeto"] .papu-cover-photo {
+    mask-image: linear-gradient(
+      90deg,
+      transparent,
+      #000 12%,
+      #000 89%,
+      transparent
+    );
+  }
+}
+
+/* On shorter phones the full ticket list takes priority. Retain the whole tub. */
+@media (max-width: 360px) and (max-height: 650px) {
+  .sweeto-guest[data-venue="sweeto"] {
+    --home-gutter: 14px;
+  }
+  .sweeto-guest[data-venue="sweeto"] .papu-cover {
+    min-height: 90vw;
+  }
+  .sweeto-guest[data-venue="sweeto"] .papu-cover-photo {
+    inset: -28px 0 auto auto;
+    width: 91%;
+    height: auto;
+    aspect-ratio: 1;
+    margin: 0;
+    object-fit: contain;
+    mask-image: linear-gradient(90deg, transparent, #000 12%), linear-gradient(180deg, #000 84%, transparent);
+    mask-composite: intersect;
+  }
+  .sweeto-guest[data-venue="sweeto"] .papu-cover-copy {
+    padding-bottom: 12px;
+  }
+  .sweeto-guest[data-venue="sweeto"] .papu-home-actions {
+    margin-top: 8px;
+  }
+  .sweeto-guest[data-venue="sweeto"] .papu-home-action-group {
+    gap: 6px;
+  }
+  .sweeto-guest[data-venue="sweeto"] .papu-home-actions .papu-home-action {
+    min-height: 48px;
+    padding: 6px 0 6px 10px;
+    gap: 8px;
+  }
+  .sweeto-guest[data-venue="sweeto"] .papu-action-tail {
+    margin-block: -6px;
+    min-height: 46px;
+  }
+  .sweeto-guest[data-venue="sweeto"] .papu-home-action .papu-action-arrow {
+    width: 32px;
+    height: 32px;
+  }
+  .sweeto-guest[data-venue="sweeto"] .papu-footer {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    font-size: 0.72rem;
+    gap: 0 6px;
+  }
 }
 
 @media (min-width: 800px) {
   .sweeto-guest[data-venue="sweeto"] {
-    --home-width: 67.5rem;
     --home-gutter: 36px;
+    --home-width: 67.5rem;
   }
-
+  .sweeto-guest[data-venue="sweeto"] .papu-header {
+    min-height: 80px;
+  }
   .sweeto-guest[data-venue="sweeto"] .papu-cover {
-    min-height: clamp(430px, 39vw, 550px);
+    min-height: clamp(410px, 42vw, 490px);
+    background: #1b1c13;
   }
-
   .sweeto-guest[data-venue="sweeto"] .papu-cover-photo {
-    width: 74%;
-    inset-inline: auto 0;
-    object-position: 76% 57%;
-    mask-image: linear-gradient(90deg, transparent, #000 29%);
+    inset: 50% max(0px, calc((100% - var(--home-width)) / 2)) auto auto;
+    width: min(58vw, 500px);
+    height: auto;
+    aspect-ratio: 1;
+    margin: 0;
+    object-fit: contain;
+    transform: translateY(-50%);
+    mask-image: linear-gradient(
+      90deg,
+      transparent,
+      #000 19%,
+      #000 80%,
+      transparent
+    );
   }
-
+  .sweeto-guest[data-venue="sweeto"] .papu-cover::before {
+    background:
+      linear-gradient(180deg, rgb(0 0 0 / 35%), transparent 35%),
+      linear-gradient(90deg, #15271be0, transparent 60%),
+      linear-gradient(0deg, #1a1711, transparent 29%);
+  }
   .sweeto-guest[data-venue="sweeto"] .papu-cover-copy {
-    padding-bottom: 38px;
+    padding-bottom: 46px;
   }
-
-  .sweeto-guest[data-venue="sweeto"] .papu-cover h1,
-  .sweeto-guest[data-venue="sweeto"] .papu-cover h1:lang(ru) {
-    max-width: 48%;
-    font-size: clamp(3.2rem, 5vw, 5rem);
+  .sweeto-guest[data-venue="sweeto"] .papu-cover h1 {
+    max-width: 52%;
+    font-size: clamp(3.6rem, 5.3vw, 5rem);
     text-wrap: balance;
   }
-
-  .sweeto-guest[data-venue="sweeto"] .papu-cover .papu-home-action-primary {
-    width: min(100%, 22rem);
+  .sweeto-guest[data-venue="sweeto"] .papu-cover h1:lang(ru) {
+    font-size: clamp(3rem, 4.2vw, 4.15rem);
   }
-
+  .sweeto-guest[data-venue="sweeto"] .papu-cover-dish,
+  .sweeto-guest[data-venue="sweeto"] .papu-cover-order {
+    font-size: 0.9375rem;
+  }
   .sweeto-guest[data-venue="sweeto"] .papu-home-action-group {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    padding-inline: 0;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
   }
-
+  .sweeto-guest[data-venue="sweeto"] .papu-home-actions {
+    margin-top: 20px;
+  }
   .sweeto-guest[data-venue="sweeto"] .papu-home-actions .papu-home-action {
-    min-height: 66px;
-    padding-inline: 14px;
-  }
-
-  .sweeto-guest[data-venue="sweeto"] .papu-home-actions .papu-home-action + .papu-home-action {
-    border-top: 0;
-    border-left: 1px solid #e6d8c1;
-  }
-
-  .sweeto-guest[data-venue="sweeto"] .papu-footer {
-    display: flex;
-    margin-top: auto;
-  }
-
-  .sweeto-guest[data-venue="sweeto"] .papu-footer-brand {
-    margin-block-start: 0;
+    min-height: 64px;
   }
 }
 
-@container sweeto-home (max-width: 19rem) {
+/* Scale the authored food scene, never the food proportions, on wide screens. */
+@media (min-width: 1280px) {
+  .sweeto-guest[data-venue="sweeto"] .papu-cover {
+    min-height: clamp(490px, 39vw, 580px);
+  }
+  .sweeto-guest[data-venue="sweeto"] .papu-cover-photo {
+    top: 0;
+    right: max(0px, calc((100% - var(--home-width)) / 2 - 80px));
+    width: min(44.5vw, 760px);
+    transform: none;
+    mask-image: linear-gradient(90deg, transparent, #000 19%, #000 94%, transparent);
+  }
+}
+
+/* Keep the actual photograph and the title separate on narrow, enlarged-text layouts. */
+@container sweeto-home ((max-width: 20rem) and (min-width: 321px)) or (max-width: 18rem) {
   .sweeto-guest[data-venue="sweeto"] .papu-header {
     position: static;
     background: var(--pine);
   }
-
   .sweeto-guest[data-venue="sweeto"] .papu-cover {
+    flex-direction: column;
+    align-items: stretch;
     min-height: 0;
     padding-top: 0;
-    background: var(--pine);
+    background: #1a1711;
   }
-
-  .sweeto-guest[data-venue="sweeto"] .papu-cover-photo,
-  .sweeto-guest[data-venue="sweeto"] .papu-cover-dish,
+  .sweeto-guest[data-venue="sweeto"] .papu-cover-photo {
+    position: static;
+    width: 100%;
+    height: min(64vw, 300px);
+    aspect-ratio: auto;
+    object-fit: cover;
+    object-position: 50% 52%;
+    mask-image: none;
+    mask-composite: add;
+    z-index: auto;
+    margin: 0;
+    transform: none;
+  }
   .sweeto-guest[data-venue="sweeto"] .papu-cover::before {
-    display: none;
+    content: none;
   }
-
+  .sweeto-guest[data-venue="sweeto"] .papu-cover-copy {
+    background: var(--pine);
+    padding-block: 16px;
+  }
   .sweeto-guest[data-venue="sweeto"] .papu-cover h1,
   .sweeto-guest[data-venue="sweeto"] .papu-cover h1:lang(ru) {
-    font-size: clamp(1.55rem, 11vw, 2rem);
+    font-size: max(1.55rem, 11vw);
+    text-transform: none;
     line-height: 1.12;
+    overflow-wrap: break-word;
+  }
+  .sweeto-guest[data-venue="sweeto"] .sweeto-venue-mark {
+    width: min(140px, 34vw);
+  }
+  .sweeto-guest[data-venue="sweeto"] .papu-footer {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .sweeto-guest[data-venue="sweeto"] .papu-footer-brand {
+    margin: 0;
+    justify-content: flex-start;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .sweeto-guest[data-venue="sweeto"] .papu-home-action .papu-action-arrow {
+  .sweeto-guest[data-venue="sweeto"] .papu-home-action .papu-action-arrow,
+  .sweeto-guest[data-venue="sweeto"]
+    .papu-home-action[data-pulling]
+    .papu-action-arrow,
+  .sweeto-guest[data-venue="sweeto"]
+    .papu-home-action[data-pulling]
+    .papu-ticket-stub {
     transform: none;
+  }
+  .sweeto-guest[data-venue="sweeto"] .papu-home-actions .papu-home-action:active:not([data-pulling]) {
+    transform: none;
+    box-shadow: 0 1px 0 var(--paper-edge);
   }
 }

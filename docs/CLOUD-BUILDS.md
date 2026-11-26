@@ -19,6 +19,8 @@ The dedicated App Manager team API key and distribution key are stored in the fo
 - **iOS archive checks** runs on native changes to `main`, pull requests, or manual dispatch. It runs the guest demo resource and loyalty checks, archives the app and App Clip without signing, checks bundle IDs/build numbers/embedded products/privacy manifests, and applies the 15 MB raw App Clip size gate.
 - **Upload PapuPay to TestFlight** is manually dispatched from `main` only. It uses the `apple-signing` environment, fetches profiles for exactly the two PapuPay identifiers (`com.papupay.app` and `com.papupay.app.Clip`), reuses a dedicated distribution private key, archives, validates packaging and size, exports, and uploads. It does not submit public App Store releases or external beta review.
 
+Select **Distribute internal** in the manual workflow to wait for Apple to process the build, configure the three Sweeto App Clip invocations, and assign the processed build to **PapuPay Demo**. The distribution step checks that the group is internal and that Apple has marked the build available for internal testing. With the option unchecked, the workflow finishes after uploading.
+
 Build numbers are `<workflow run number>.<attempt>`. The app and the embedded App Clip use the same number. The version is 1.0. Only reports are uploaded as GitHub artifacts, with seven-day retention; certificates, API keys and provisioning profiles are excluded.
 
 ## One-time credential setup

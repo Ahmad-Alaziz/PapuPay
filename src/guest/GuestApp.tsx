@@ -22,6 +22,7 @@ import {
   BookOpen,
   type LucideIcon,
   Badge,
+  ClipboardList,
   Star,
   Wifi as WifiIcon,
   X,
@@ -130,7 +131,7 @@ function Sheet({
         );
         (
           homeAction ??
-          document.querySelector<HTMLElement>(".papu-home-action-primary")
+          document.querySelector<HTMLElement>('.papu-home-action[data-destination="menu"]')
         )?.focus({ preventScroll: true });
       }
     };
@@ -342,7 +343,7 @@ export default function GuestApp() {
   const reviewUrl = venue.reviewUrl;
   const isSweeto = id === "sweeto";
   const defaultSweetoCover = isSweeto && (!venue.photoUrl || venue.photoUrl === sweeto.photoUrl);
-  const featuredPhoto = "/assets/guest-menu-cover.webp";
+  const featuredPhoto = "/assets/sweeto/matylda-table.webp";
   const photo = defaultSweetoCover ? featuredPhoto : venue.photoUrl;
   const defaultSweetoLogo = isSweeto && venue.logoUrl === sweeto.logoUrl &&
     venue.name.toLowerCase() === "sweeto";
@@ -484,13 +485,23 @@ export default function GuestApp() {
         )}
       </main>
     );
+  const menuAction = (
+    <HomeAction
+      icon={BookOpen}
+      label={t.menu}
+      destination="menu"
+      href={path("menu")}
+      onClick={(event) => route(event, "menu")}
+      primary
+    />
+  );
   const utilities = (
     <>
       <HomeAction
         icon={WifiIcon}
         label={t.homeWifi}
         destination="wifi"
-        detail={!isSweeto && venueLoaded && !venue.wifi ? t.homeWifiAtCounter : undefined}
+        detail={venueLoaded && !venue.wifi ? t.homeWifiAtCounter : undefined}
         href={path("wifi")}
         onClick={(event) => route(event, "wifi")}
       />
@@ -529,8 +540,8 @@ export default function GuestApp() {
                   key={photo}
                   src={photo}
                   alt=""
-                  width={isSweeto ? 1200 : 1296}
-                  height={isSweeto ? 800 : 864}
+                  width={defaultSweetoCover ? 1170 : 1296}
+                  height={defaultSweetoCover ? 1170 : 864}
                   fetchPriority="high"
                   draggable={false}
                   onError={
@@ -546,18 +557,11 @@ export default function GuestApp() {
                 />
               )}
               <div className="papu-cover-copy papu-home-width">
+                {defaultSweetoCover && <p className="papu-cover-dish">{t.gallery[0]}</p>}
                 <h1 id="guest-welcome">
                   {isSweeto ? t.dessertMenu : venue.name}
                 </h1>
-                {defaultSweetoCover && <p className="papu-cover-dish">{t.gallery[0]}</p>}
-                <HomeAction
-                  icon={BookOpen}
-                  label={t.menu}
-                  destination="menu"
-                  href={path("menu")}
-                  onClick={(event) => route(event, "menu")}
-                  primary
-                />
+                {isSweeto ? <p className="papu-cover-order">{t.help}</p> : menuAction}
               </div>
             </section>
             <nav
@@ -565,8 +569,9 @@ export default function GuestApp() {
               aria-label={t.guestServices}
             >
               <div className="papu-home-action-group">
+                {isSweeto && menuAction}
                 <HomeAction
-                  icon={Badge}
+                  icon={isSweeto ? ClipboardList : Badge}
                   label={isSweeto && !balance ? t.openCard : t.homeCard}
                   destination="card"
                   detail={

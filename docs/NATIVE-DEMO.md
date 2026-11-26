@@ -17,7 +17,7 @@ The copy and controls support Polish, English and Russian. The card and its Wall
 
 The Sweeto home opens directly into its dessert photograph and four venue actions. The PapuPay fruit makes a single Rive entrance at the bottom before settling next to the wordmark. Direct menu and counter links skip the entrance. Reduce Motion shows the settled mark. On the guest card, an observed new stamp makes a single ink impression while the QR stays in place.
 
-On a home launch the system PapuPay lockup hands off to a short animated reveal. The restored home uses the Matylda close-up and the original Rive fruit entrance. In the dessert menu, the tasting dial follows a drag or a tap on a labelled flavour, then shows the matching dessert to add to the counter list. Reduce Motion keeps the still artwork and selection controls.
+On a home launch the system PapuPay lockup hands off to a short animated reveal. The compact photo panel shows the blue Sweeto takeaway box above four full-width actions. The PapuPay fruit plays its original Rive entrance at the footer.
 
 When a live member loses connectivity, the App Clip can show their last saved checkout QR. It labels the cached balance and requires an online check to confirm rewards.
 

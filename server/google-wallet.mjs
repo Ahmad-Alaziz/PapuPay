@@ -43,6 +43,7 @@ export function createGoogleWalletSigner(env) {
             classId,
             state: "ACTIVE",
             accountId: card.code,
+            ...(brand.walletLocation ? { merchantLocations: [brand.walletLocation] } : {}),
             barcode: { type: "QR_CODE", value: card.checkout, alternateText: card.code },
           }],
         },

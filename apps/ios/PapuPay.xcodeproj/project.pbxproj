@@ -22,7 +22,6 @@
 		3BC7961EDE2954BFBDCC7B7F /* motion-berry-review.webp in Resources */ = {isa = PBXBuildFile; fileRef = B7EE1564C62EF2A557218557 /* motion-berry-review.webp */; };
 		3C96EEEDDAF4EBADC9DB0E7A /* motion-berry-menu.webp in Resources */ = {isa = PBXBuildFile; fileRef = D009CBCDD9EF5662C0378219 /* motion-berry-menu.webp */; };
 		3CF35ACB981B9F1745BD3099 /* VenueGuestAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05F284A58157C3935417A585 /* VenueGuestAPI.swift */; };
-		3D5587284165C4754C980263 /* sweeto-tasting-dial.riv in Resources */ = {isa = PBXBuildFile; fileRef = A58FD1EE60D67E09B46BAB58 /* sweeto-tasting-dial.riv */; };
 		3EAE4F308598B6429DEE2F45 /* VenueGuestAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05F284A58157C3935417A585 /* VenueGuestAPI.swift */; };
 		3ED960E43BAAD63A4D69AFF8 /* motion-berry-wifi.webp in Resources */ = {isa = PBXBuildFile; fileRef = 75D496FBBE7576F8EA3B029E /* motion-berry-wifi.webp */; };
 		3F16D17B46478FA19C477175 /* SweetoCounterOrder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 710B2E8F4C4E333B30D6F2CD /* SweetoCounterOrder.swift */; };
@@ -54,12 +53,10 @@
 		8B89238DA624686BC84EE192 /* motion-berry-loyalty.webp in Resources */ = {isa = PBXBuildFile; fileRef = 30909D509D38B5E7732CF72D /* motion-berry-loyalty.webp */; };
 		8D01F88CF791B92644AB1DDB /* BricolageGrotesque-OFL.txt in Resources */ = {isa = PBXBuildFile; fileRef = D7A0C343CAC226A54D6325E5 /* BricolageGrotesque-OFL.txt */; };
 		8D0D86E72B97BDAD9CE98C91 /* Manrope-OFL.txt in Resources */ = {isa = PBXBuildFile; fileRef = D2AD1C7CD81BFD69A5A27290 /* Manrope-OFL.txt */; };
-		8E38D299F2B041B0C9A46517 /* sweeto-tasting-dial.riv in Resources */ = {isa = PBXBuildFile; fileRef = A58FD1EE60D67E09B46BAB58 /* sweeto-tasting-dial.riv */; };
 		90C6A3686DACC9893A738532 /* RiveRuntime in Frameworks */ = {isa = PBXBuildFile; productRef = 18006F3E9F26E036F634CA6E /* RiveRuntime */; };
 		920CD5667085723784DB020F /* VenueGuestFeatures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22A47D44243CDD2C6F2ABEF8 /* VenueGuestFeatures.swift */; };
 		9294E96F0011F9EC5A9F0565 /* PapuDisplay-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C7FEE8C288A0BB4687CF344D /* PapuDisplay-ExtraBold.ttf */; };
 		930DECAB5B938B033FC3219A /* motion-forest-review.webp in Resources */ = {isa = PBXBuildFile; fileRef = 18783523F7950118E82D8F42 /* motion-forest-review.webp */; };
-		975DD693E27A933E87974696 /* SweetoTastingDial.swift in Sources */ = {isa = PBXBuildFile; fileRef = 528935FD28B2A9393B8D6AB4 /* SweetoTastingDial.swift */; };
 		9A5CC255B24287B659D18301 /* PapuPoster.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 616A363571BD8651B95A4F07 /* PapuPoster.ttf */; };
 		B1206A121893710091CA5BB1 /* motion-forest-loyalty.webp in Resources */ = {isa = PBXBuildFile; fileRef = CC6F77D17A773FD175008545 /* motion-forest-loyalty.webp */; };
 		B37C1B2155DF4EAD67CA0338 /* motion-berry-review.webp in Resources */ = {isa = PBXBuildFile; fileRef = B7EE1564C62EF2A557218557 /* motion-berry-review.webp */; };
@@ -81,7 +78,6 @@
 		E19F002DE45B3001040127F7 /* DesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF1930A6830A1BA344ACB386 /* DesignSystem.swift */; };
 		F05AA2FC442B9C1C20C6907C /* Manrope-OFL.txt in Resources */ = {isa = PBXBuildFile; fileRef = D2AD1C7CD81BFD69A5A27290 /* Manrope-OFL.txt */; };
 		F40139A97AC80C93E74DF286 /* menu.pdf in Resources */ = {isa = PBXBuildFile; fileRef = B9FDDBAFC3FE3F15B4DC698A /* menu.pdf */; };
-		F8D4522CC3E33E901AA57868 /* SweetoTastingDial.swift in Sources */ = {isa = PBXBuildFile; fileRef = 528935FD28B2A9393B8D6AB4 /* SweetoTastingDial.swift */; };
 		F9E0BDDF243E9F39705D3289 /* motion-forest-menu.webp in Resources */ = {isa = PBXBuildFile; fileRef = 9CAE3DCE0DF2DA0E616D1A8E /* motion-forest-menu.webp */; };
 		FBC4FC2CDF4618C69F099E3D /* motion-wifi.webp in Resources */ = {isa = PBXBuildFile; fileRef = CA55008296B4B92F37C39BF6 /* motion-wifi.webp */; };
 /* End PBXBuildFile section */
@@ -121,7 +117,6 @@
 		38FFC62259B2B010A0A4C1D2 /* motion-loyalty.webp */ = {isa = PBXFileReference; includeInIndex = 1; name = "motion-loyalty.webp"; path = "../../../packages/motion/sweeto-actions/runtime/motion-loyalty.webp"; sourceTree = "<group>"; };
 		3E2F8274E49B16570697D55B /* PapuPayClip.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PapuPayClip.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3F66940B8F78C981AF279FAB /* SweetoGuestView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SweetoGuestView.swift; sourceTree = "<group>"; };
-		528935FD28B2A9393B8D6AB4 /* SweetoTastingDial.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SweetoTastingDial.swift; sourceTree = "<group>"; };
 		58ACFF21ED0CB9AB87B94719 /* sweeto-actions.riv */ = {isa = PBXFileReference; includeInIndex = 1; name = "sweeto-actions.riv"; path = "../../../packages/motion/sweeto-actions/runtime/sweeto-actions.riv"; sourceTree = "<group>"; };
 		58E5253080D590477E6782CF /* motion-forest-wifi.webp */ = {isa = PBXFileReference; includeInIndex = 1; name = "motion-forest-wifi.webp"; path = "../../../packages/motion/sweeto-actions/runtime/motion-forest-wifi.webp"; sourceTree = "<group>"; };
 		616A363571BD8651B95A4F07 /* PapuPoster.ttf */ = {isa = PBXFileReference; includeInIndex = 1; path = PapuPoster.ttf; sourceTree = "<group>"; };
@@ -134,7 +129,6 @@
 		8CC2BFFBA2012CB471E9A7C1 /* VenueGuestDemo.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VenueGuestDemo.swift; sourceTree = "<group>"; };
 		9AA5E521D7FA9AD35A274C58 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		9CAE3DCE0DF2DA0E616D1A8E /* motion-forest-menu.webp */ = {isa = PBXFileReference; includeInIndex = 1; name = "motion-forest-menu.webp"; path = "../../../packages/motion/sweeto-actions/runtime/motion-forest-menu.webp"; sourceTree = "<group>"; };
-		A58FD1EE60D67E09B46BAB58 /* sweeto-tasting-dial.riv */ = {isa = PBXFileReference; includeInIndex = 1; name = "sweeto-tasting-dial.riv"; path = "../../../packages/motion/sweeto-tasting/runtime/sweeto-tasting-dial.riv"; sourceTree = "<group>"; };
 		B14400E5F381C3F5F02F6B96 /* PapuPayApp.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PapuPayApp.swift; sourceTree = "<group>"; };
 		B7EE1564C62EF2A557218557 /* motion-berry-review.webp */ = {isa = PBXFileReference; includeInIndex = 1; name = "motion-berry-review.webp"; path = "../../../packages/motion/sweeto-actions/runtime/motion-berry-review.webp"; sourceTree = "<group>"; };
 		B9B2FC0FAC9DF9C23D5ADE00 /* motion-review.webp */ = {isa = PBXFileReference; includeInIndex = 1; name = "motion-review.webp"; path = "../../../packages/motion/sweeto-actions/runtime/motion-review.webp"; sourceTree = "<group>"; };
@@ -219,7 +213,6 @@
 				6F913D5FB5CE41B527F7C589 /* BricolageGrotesque.ttf */,
 				D2AD1C7CD81BFD69A5A27290 /* Manrope-OFL.txt */,
 				D7A0C343CAC226A54D6325E5 /* BricolageGrotesque-OFL.txt */,
-				A58FD1EE60D67E09B46BAB58 /* sweeto-tasting-dial.riv */,
 			);
 			name = Resources;
 			path = Resources;
@@ -264,7 +257,6 @@
 				05F284A58157C3935417A585 /* VenueGuestAPI.swift */,
 				8CC2BFFBA2012CB471E9A7C1 /* VenueGuestDemo.swift */,
 				22A47D44243CDD2C6F2ABEF8 /* VenueGuestFeatures.swift */,
-				528935FD28B2A9393B8D6AB4 /* SweetoTastingDial.swift */,
 			);
 			name = Shared;
 			path = Shared;
@@ -378,7 +370,6 @@
 				021DA4C9F20140EAFD19E2E2 /* BricolageGrotesque.ttf in Resources */,
 				8D0D86E72B97BDAD9CE98C91 /* Manrope-OFL.txt in Resources */,
 				C0F940AEF391BD2E6BBDAA6D /* BricolageGrotesque-OFL.txt in Resources */,
-				8E38D299F2B041B0C9A46517 /* sweeto-tasting-dial.riv in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -411,7 +402,6 @@
 				2D8DF91C21ADB62A3C0CDD90 /* BricolageGrotesque.ttf in Resources */,
 				F05AA2FC442B9C1C20C6907C /* Manrope-OFL.txt in Resources */,
 				8D01F88CF791B92644AB1DDB /* BricolageGrotesque-OFL.txt in Resources */,
-				3D5587284165C4754C980263 /* sweeto-tasting-dial.riv in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -431,7 +421,6 @@
 				25D05DDDBF3EE6654C171BD0 /* VenueGuestDemo.swift in Sources */,
 				30EC27AC44CDE0BB3C7487C6 /* VenueGuestFeatures.swift in Sources */,
 				3B8F33F0E75C3894F812C17C /* PapuPayApp.swift in Sources */,
-				F8D4522CC3E33E901AA57868 /* SweetoTastingDial.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -448,7 +437,6 @@
 				DE2D48912C043BB7D73A335D /* VenueGuestDemo.swift in Sources */,
 				920CD5667085723784DB020F /* VenueGuestFeatures.swift in Sources */,
 				61F299DBDE853011966C0236 /* PapuPayApp.swift in Sources */,
-				975DD693E27A933E87974696 /* SweetoTastingDial.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -29,7 +29,7 @@ body {
 .venue-bootstrap[data-sweeto="true"] {
   background-image:
     linear-gradient(0deg, #102e24f2 12%, #102e2466 57%, #102e2433),
-    url("/assets/guest-menu-cover.webp");
+    url("/assets/sweeto/matylda-table.webp");
   background-position: center;
   background-size: cover;
 }

@@ -1,6 +1,7 @@
 import { writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { createWalletSigner } from "../../server/wallet.mjs";
+import { loadVenues, venueRegistry } from "../../server/venues.mjs";
 
 async function main() {
   const directory = process.argv[2];
@@ -19,7 +20,7 @@ async function main() {
     if (serialNumber && (passTypeIdentifier !== signer.passTypeId || teamIdentifier !== process.env.PAPUPAY_WALLET_TEAM_ID)) {
       throw new Error("The signing certificate must match the existing demo pass identity.");
     }
-    const brand = { id: "sweeto", name: "Sweeto" };
+    const { brand } = venueRegistry(loadVenues(process.env.PAPUPAY_VENUES_FILE)).get("sweeto");
     for (let stamps = 0; stamps <= 6; stamps += 1) {
       const card = { code: cardCode, checkout, stamps, goal: 6 };
       const pass = await signer.issue(brand, card, { offlineDemo: true, serialNumber });

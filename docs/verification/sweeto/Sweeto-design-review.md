@@ -79,7 +79,7 @@ Two independent reviewers assessed the phone, tablet, and desktop layouts and th
 
 Frame-by-frame review led to a shorter lift for the fruit on compact phones and a taller drawing area for the incoming stamp. Keyboard review led to a two-step Escape behavior. The first Escape cancels clearing the list and returns focus to the Clear control. The second closes the ticket and returns focus to the guest’s list button.
 
-## November 26 App Clip review
+## Earlier November 26 iteration
 
 The tasting plate in the menu lets guests choose by flavour, press a dessert into a bilingual counter list and show that list to staff. Returning guests can show their saved checkout QR while the venue service is temporarily unreachable.
 
@@ -87,4 +87,4 @@ Two independent passes scored every design category from 9.7 to 9.8 during the p
 
 The integrated two-target release archive contains an 8.778 MB App Clip against the 15 MB raw bundle gate. Live Apple and Google Wallet installation and physical QR invocation require a configured service and device verification.
 
-The final home treatment uses the earlier Matylda close-up again. The menu button sits inside the hero and the stamp card, Wi-Fi and reviews share one panel. The existing Rive papaya plays at the home signature. The system launch image hands off to a brief animation as the App Clip becomes interactive.
+The next home revision restored the photographed Sweeto takeaway box in the compact panel with rounded lower corners. Four cream rows open the menu, stamp card, Wi-Fi and reviews. The dessert picker was removed from both the App Clip and the web menu. The branded launch and PapuPay welcome animation remain.

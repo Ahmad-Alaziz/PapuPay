@@ -7,7 +7,6 @@ Each project keeps its editable design alongside a `runtime/` directory containi
 | Sweeto guest pass | `/assets/sweeto/sweeto-pass.riv` | `SweetoPass`, `State Machine 1` (ink imprint), `PapuPay Welcome` (arrival) |
 | Sweeto browser imprint | `/assets/sweeto/sweeto-imprint-web.riv` | `SweetoPass`, `State Machine 1` (browser press outside the artboard bounds) |
 | Sweeto stamp still | `/assets/sweeto/sweeto-pass.webp` | Compact derivative of the lossless settled PNG |
-| Sweeto tasting plate | `/assets/sweeto/sweeto-tasting-dial.riv` | `Sweeto Tasting Dial`, `State Machine 1`, `Tasting Dial.Turn` and `Tasting Dial.Press` |
 | Venue action illustrations | `/assets/sweeto/sweeto-actions.riv` | `SweetoMenu`, `SweetoLoyalty`, `SweetoReview`, `SweetoWifi`; `Gesture`; `VenuePalette` |
 | Shared guest stamp | `/assets/guest-feedback.riv` | `LoyaltySeal`, `Feedback`; static fallback `/assets/guest-loyalty-seal.webp` |
 | Wallet pocket | `/assets/wallet-pocket.riv` | `Pocket`, `Preview` or `Handoff`; static fallback `/assets/wallet-pocket-still.svg` |

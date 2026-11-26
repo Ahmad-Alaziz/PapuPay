@@ -22,6 +22,7 @@ const sweeto = {
   photoMotion: "sauce-drip",
   photoDrip: { x: 0.733, y: 0.99, width: 0.077, color: "#581f08" },
   mapUrl: "https://www.google.com/maps?cid=12629433022150019195",
+  walletLocation: { latitude: 52.1720425, longitude: 21.0185431 },
   menuFallback: "/assets/sweeto/menu.pdf",
   menuImageUrl: "/assets/sweeto/menu-original.jpg",
   reviewUrl: "https://search.google.com/local/writereview?placeid=ChIJZSkE8-IzGUcRewjXh2vCRK8",
@@ -41,6 +42,12 @@ function publicAsset(value) {
 
 function cleanBrand(venue) {
   const fallback = venue.id === defaultVenueId ? sweeto : {};
+  const address = typeof venue.address === "string" ? venue.address.slice(0, 160) : (fallback.address ?? "");
+  const mapUrl = publicAsset(venue.mapUrl ?? fallback.mapUrl);
+  const sameAddress = address === fallback.address && mapUrl === fallback.mapUrl;
+  const pin = Object.hasOwn(venue, "walletLocation") ? venue.walletLocation : sameAddress ? fallback.walletLocation : null;
+  const hasPin = Number.isFinite(pin?.latitude) && Math.abs(pin.latitude) <= 90
+    && Number.isFinite(pin.longitude) && Math.abs(pin.longitude) <= 180;
   const logoUrl = publicAsset(venue.logoUrl ?? fallback.logoUrl);
   const photoUrl = publicAsset(venue.photoUrl ?? fallback.photoUrl);
   const photoMotion = Object.hasOwn(venue, "photoMotion")
@@ -61,12 +68,13 @@ function cleanBrand(venue) {
   return {
     id: venue.id,
     name: venue.name,
-    address: typeof venue.address === "string" ? venue.address.slice(0, 160) : (fallback.address ?? ""),
+    address,
     logoUrl,
     logoWhiteUrl: publicAsset(venue.logoWhiteUrl ?? (logoUrl === fallback.logoUrl ? fallback.logoWhiteUrl : undefined)),
     photoUrl,
     ...(hasSauceDrip ? { photoMotion: "sauce-drip", photoDrip: { x: photoDrip.x, y: photoDrip.y ?? 1, width: photoDrip.width ?? 0.04, color: photoDrip.color } } : {}),
-    mapUrl: publicAsset(venue.mapUrl ?? fallback.mapUrl),
+    mapUrl,
+    ...(hasPin ? { walletLocation: { latitude: pin.latitude, longitude: pin.longitude } } : {}),
     menuFallback: publicAsset(venue.menuFallback ?? fallback.menuFallback),
     menuImageUrl: publicAsset(venue.menuImageUrl ?? fallback.menuImageUrl),
     theme: { ...theme, motionTheme },

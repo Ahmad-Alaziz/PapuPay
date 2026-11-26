@@ -283,9 +283,10 @@ test("Google Wallet issues a signed checkout QR for the active venue membership"
   }), { mode: 0o600 });
   const classId = "123456789012345.sweeto";
   const request = await start(t, {
-    venues: [{ id: "berry-counter", name: "Berry Counter" }],
+    venues: [{ id: "berry-counter", name: "Berry Counter" }, { id: "forest-counter", name: "Forest Counter" }],
     env: {
       PAPUPAY_GOOGLE_WALLET_CLASS_ID: classId,
+      PAPUPAY_VENUE_FOREST_COUNTER_GOOGLE_WALLET_CLASS_ID: "123456789012345.forest",
       PAPUPAY_GOOGLE_WALLET_SERVICE_ACCOUNT_PATH: credentialPath,
     },
   });
@@ -326,11 +327,17 @@ test("Google Wallet issues a signed checkout QR for the active venue membership"
     classId,
     state: "ACTIVE",
     accountId: guest.data.card.code,
+    merchantLocations: [{ latitude: 52.1720425, longitude: 21.0185431 }],
     barcode: { type: "QR_CODE", value: guest.data.card.checkout, alternateText: guest.data.card.code },
   });
   const second = decode(tokenFrom(await issue()).split(".")[1]);
   assert.equal(second.payload.loyaltyObjects[0].id, pass.id);
   assert.ok(!JSON.stringify(claims).includes(guest.cookie.split("=")[1]));
+  const forest = await request("/api/v/forest-counter/loyalty/card", { method: "POST" });
+  const forestPass = await request("/api/v/forest-counter/loyalty/google-wallet", { cookie: forest.cookie, method: "POST" });
+  const forestObject = decode(tokenFrom(forestPass).split(".")[1]).payload.loyaltyObjects[0];
+  assert.equal(forestObject.classId, "123456789012345.forest");
+  assert.equal(forestObject.merchantLocations, undefined);
 });
 
 test("Wallet protocol authenticates registration and pass updates against stable per-pass identity", async (t) => {

@@ -3,6 +3,14 @@ run-name: TestFlight build ${{ github.run_number }}.${{ github.run_attempt }}
 
 on:
   workflow_dispatch:
+    inputs:
+      distribute_internal:
+        type: boolean
+        description: Verify the Sweeto App Clip invocations and distribute to the PapuPay Demo internal group
+        default: false
+  push:
+    branches: [main]
+    paths: ['.github/workflows/testflight.yml']
 
 permissions:
   contents: read
@@ -13,10 +21,15 @@ concurrency:
 
 jobs:
   testflight:
-    if: github.repository == 'Ahmad-Alaziz/PapuPay' && github.ref == 'refs/heads/main'
+    if: >-
+      github.repository == 'Ahmad-Alaziz/PapuPay' && github.ref == 'refs/heads/main' &&
+      (github.event_name == 'workflow_dispatch' ||
+       (github.event_name == 'push' && github.actor == github.repository_owner &&
+        github.event.before == '0e880252e870cab47690b5404db7093c485013ad' &&
+        github.event.head_commit.message == 'Publish the restored Sweeto App Clip to internal TestFlight'))
     runs-on: macos-26
     environment: apple-signing
-    timeout-minutes: 45
+    timeout-minutes: 65
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
         with:
@@ -41,6 +54,13 @@ jobs:
           CERTIFICATE_PRIVATE_KEY: ${{ secrets.CERTIFICATE_PRIVATE_KEY }}
           PAPUPAY_GUEST_DEMO_BASE64: ${{ secrets.PAPUPAY_GUEST_DEMO_BASE64 }}
         run: bash scripts/ci/upload-testflight.sh
+      - name: Distribute to the PapuPay Demo internal group
+        if: github.event_name == 'push' || inputs.distribute_internal
+        env:
+          APP_STORE_CONNECT_KEY_IDENTIFIER: ${{ secrets.APP_STORE_CONNECT_KEY_IDENTIFIER }}
+          APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          APP_STORE_CONNECT_PRIVATE_KEY: ${{ secrets.APP_STORE_CONNECT_PRIVATE_KEY }}
+        run: python3 scripts/ci/distribute-testflight.py "${GITHUB_RUN_NUMBER}.${GITHUB_RUN_ATTEMPT}"
       - name: Keep non-secret packaging reports
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2

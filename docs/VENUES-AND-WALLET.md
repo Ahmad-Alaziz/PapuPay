@@ -83,6 +83,16 @@ Keep the service account key outside source control and restart the Node service
 
 The App Clip and web open Google’s save flow so the guest can choose a Google account. On Android the web checkout offers Google Wallet first. Apple devices get the Apple action first and can choose Google Wallet on the Wallet page when both are available. Save the pass with an authorized account, then use an Android device to show the pass QR at the counter. The offline TestFlight demo uses its bundled Apple Wallet passes.
 
+## Finding a saved card at the counter
+
+A venue can set `walletLocation` to its public entrance coordinates. Sweeto’s default is `{"latitude":52.1720425,"longitude":21.0185431}` at Puławska 246, Pawilon 8. The pin matches the venue’s Google Maps place record. Every other venue supplies its own pin. [Sweeto storefront](https://www.google.com/maps?cid=12629433022150019195)
+
+Both values must be JSON numbers. Latitude ranges from −90 to 90 and longitude from −180 to 180. Set `walletLocation` to `null` to turn off nearby suggestions on newly issued passes. An invalid pin also omits location relevance. When changing Sweeto’s address or map link, include the new pin to enable suggestions at the new storefront.
+
+Apple Wallet can surface the saved card on the Lock Screen when the guest is nearby. Google Wallet can show a nearby notification if its notification and precise background location settings allow it. The operating system chooses when to surface the card. PapuPay provides the merchant’s coordinates. The guest’s location stays with their Wallet provider. Staff record the visit through the usual QR scan. [Apple Wallet relevance](https://developer.apple.com/documentation/walletpasses/showing-a-pass-on-the-lock-screen) · [Google Wallet nearby notifications](https://developers.google.com/wallet/retail/loyalty-cards/use-cases/trigger-push-notifications)
+
+The pin is included in newly signed Apple passes and new Google Wallet objects after the venue service is updated. An existing Apple pass receives it on a subsequent signed update or download. An existing Google object needs an issuer update. Offline TestFlight passes keep their original signed contents until the seven demo passes are regenerated and installed. Verify nearby presentation on a physical device at the venue.
+
 ## Live Wallet updates
 
 Set `PAPUPAY_WALLET_WEBSERVICE_ORIGIN` after the Node service is reachable there by HTTPS. A new download includes that venue’s `/api/v/<id>/wallet` base URL and an authentication token generated for the pass. Apple Wallet registers the device with this route. A stamp, redemption or correction updates the pass revision in the same SQLite transaction as the ledger. A background worker sends an empty update signal through production APNs with the existing Pass Type ID certificate. The device retrieves the signed replacement. Transient delivery failures are retried and invalid device tokens are removed. Preserve the database and its owner-only permissions across restarts. [Apple pass update service](https://developer.apple.com/documentation/walletpasses/adding-a-web-service-to-update-passes)
