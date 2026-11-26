@@ -1183,56 +1183,67 @@ body:has(.sweeto-guest[data-venue="sweeto"]) {
   }
 }
 
-/* Keep the actual photograph and the title separate on narrow, enlarged-text layouts. */
-@container sweeto-home ((max-width: 20rem) and (min-width: 321px)) or (max-width: 18rem) {
-  .sweeto-guest[data-venue="sweeto"] .papu-header {
-    position: static;
-    background: var(--pine);
-  }
+/* Give enlarged type room below the photograph while keeping the venue header on it. */
+@container sweeto-home (max-width: 14rem) {
   .sweeto-guest[data-venue="sweeto"] .papu-cover {
     flex-direction: column;
     align-items: stretch;
     min-height: 0;
     padding-top: 0;
-    background: #1a1711;
+    background: var(--paper);
   }
   .sweeto-guest[data-venue="sweeto"] .papu-cover-photo {
     position: static;
+    z-index: auto;
     width: 100%;
-    height: min(64vw, 300px);
+    height: clamp(165px, 72cqw, 360px);
+    margin: 0;
+    border-radius: 0 0 22px 22px;
     aspect-ratio: auto;
     object-fit: cover;
-    object-position: 50% 52%;
+    object-position: 50% 57%;
     mask-image: none;
-    mask-composite: add;
-    z-index: auto;
-    margin: 0;
     transform: none;
   }
   .sweeto-guest[data-venue="sweeto"] .papu-cover::before {
-    content: none;
+    z-index: 0;
+    height: min(100px, 45cqw);
+    background: linear-gradient(rgb(0 0 0 / 52%), transparent);
+    pointer-events: none;
   }
   .sweeto-guest[data-venue="sweeto"] .papu-cover-copy {
-    background: var(--pine);
-    padding-block: 16px;
+    padding-block: 14px 0;
+    color: var(--ink);
+  }
+  .sweeto-guest[data-venue="sweeto"] .papu-cover-dish {
+    color: var(--muted);
   }
   .sweeto-guest[data-venue="sweeto"] .papu-cover h1,
   .sweeto-guest[data-venue="sweeto"] .papu-cover h1:lang(ru) {
-    font-size: max(1.55rem, 11vw);
+    font-size: 1.65rem;
     text-transform: none;
     line-height: 1.12;
     overflow-wrap: break-word;
   }
   .sweeto-guest[data-venue="sweeto"] .sweeto-venue-mark {
-    width: min(140px, 34vw);
+    width: min(140px, 36cqw);
   }
-  .sweeto-guest[data-venue="sweeto"] .papu-footer {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
+  .sweeto-guest[data-venue="sweeto"] .papu-footer-location {
+    flex: 1 1 9rem;
   }
-  .sweeto-guest[data-venue="sweeto"] .papu-footer-brand {
-    margin: 0;
-    justify-content: flex-start;
+  .sweeto-guest[data-venue="sweeto"] .papu-footer-location a {
+    min-width: 0;
+  }
+}
+
+@container sweeto-home (max-width: 270px) {
+  .sweeto-guest[data-venue="sweeto"] .papu-home-actions .papu-home-action {
+    grid-template-columns: minmax(0, 1fr) 42px;
+    padding-inline-start: 10px;
+    gap: 6px;
+  }
+  .sweeto-guest[data-venue="sweeto"] .papu-home-action .papu-action-icon {
+    display: none;
   }
 }
 

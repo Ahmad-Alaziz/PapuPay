@@ -226,7 +226,8 @@ function createVenueApi({
 
     if (canonical && path.startsWith("/api/wallet/v1/")) return walletProtocol.handle(request, response, path);
 
-    if (recovery.enabled && method === "POST" && ["/api/loyalty/restore", "/api/loyalty/restore/preview", "/api/loyalty/restore/revoke"].includes(path)) {
+    if (method === "POST" && ["/api/loyalty/restore", "/api/loyalty/restore/preview", "/api/loyalty/restore/revoke"].includes(path)) {
+      if (!recovery.enabled) throw new ApiError(503, "recovery_unavailable");
       if (path === "/api/loyalty/restore/revoke") {
         const card = guest(request);
         if (!card) throw new ApiError(401, "card_required");

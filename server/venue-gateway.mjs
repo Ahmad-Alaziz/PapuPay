@@ -38,8 +38,11 @@ export async function forwardVenueRequest(request, configuredOrigin, send = fetc
   }
 
   const origin = request.headers.get("origin");
+  // Next may normalize the request URL's hostname (e.g. 127.0.0.1 to localhost).
+  // The browser compares origins against the HTTP authority it actually requested.
+  const publicOrigin = url.protocol + "//" + (request.headers.get("host") || url.host);
   if (!["GET", "HEAD"].includes(request.method) &&
-      (request.headers.get("sec-fetch-site") === "cross-site" || (origin && origin !== url.origin))) {
+      (request.headers.get("sec-fetch-site") === "cross-site" || (origin && origin !== publicOrigin))) {
     return errorResponse(403, "invalid_origin");
   }
   const headers = new Headers();

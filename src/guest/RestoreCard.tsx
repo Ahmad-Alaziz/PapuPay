@@ -1,13 +1,28 @@
-import { useId, useLayoutEffect, useRef, useState } from "react";
+import { useId, useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
 import { ArrowRight, Check, RefreshCw, TicketCheck } from "papu-guest-icons";
 import type { Language } from "./catalog";
 import { guestRequest, type LoyaltyCard } from "./api";
 import { useVenue } from "./VenueContext";
+import QRCode from "./QRCode";
+import { browserDemo, saveDemo, savedDemoChanged, savedDemoFragment, subscribeDemo } from "./saved-demo-card";
 import "./restore.css";
 
 const copy = {
   pl: {
     title: "Twoja karta, tutaj",
+    demoTitle: "Karta testowa Sweeto",
+    demoNote: "Liczba pieczątek w chwili zapisania karty w Portfelu. Ten podgląd służy do testów w TestFlight.",
+    demoQr: "Kod QR karty testowej Sweeto",
+    saveDemo: "Zapisz kartę testową w przeglądarce",
+    savedDemo: "Zapisana karta testowa",
+    openSaved: "Otwórz zapisaną kartę testową",
+    demoStored: "Karta testowa jest zapisana w tej przeglądarce.",
+    replaceDemo: "Zastąp zapisaną kartę testową",
+    replaceCount: (old: number, next: number) => `Zmienić liczbę pieczątek w zapisanej kopii z ${old}/6 na ${next}/6?`,
+    keepDemo: "Zachowaj obecną kopię",
+    savedNote: "To zapisana kopia z TestFlight. Znajdziesz ją również na ekranie karty.",
+    emptyDemo: "Aby zapisać kartę testową, otwórz ją z Portfela Apple w tej przeglądarce.",
+    saveFailed: "Nie udało się zapisać karty. Możesz ponownie otworzyć ten podgląd z Portfela Apple.",
     intro: "Otwórz tę samą kartę, którą masz w Portfelu Apple.",
     loading: "Sprawdzamy kartę…",
     code: "Kod karty",
@@ -25,6 +40,19 @@ const copy = {
   },
   en: {
     title: "Your card, right here",
+    demoTitle: "Sweeto demo card",
+    demoNote: "These stamps were on the pass when you saved it to Wallet. This preview is for TestFlight testing.",
+    demoQr: "Sweeto demo card QR code",
+    saveDemo: "Save demo card in this browser",
+    savedDemo: "Saved TestFlight card",
+    openSaved: "Open saved demo card",
+    demoStored: "Your demo card is saved in this browser.",
+    replaceDemo: "Replace saved demo card",
+    replaceCount: (old: number, next: number) => `Change your saved copy from ${old}/6 to ${next}/6 stamps?`,
+    keepDemo: "Keep current copy",
+    savedNote: "This is your saved TestFlight copy. You can also open it from the card screen.",
+    emptyDemo: "To save a demo card here, open your TestFlight pass from Apple Wallet in this browser.",
+    saveFailed: "This browser couldn’t save the card. You can reopen this preview from Apple Wallet.",
     intro: "Open the same card you keep in Apple Wallet.",
     loading: "Checking your card…",
     code: "Card code",
@@ -42,6 +70,19 @@ const copy = {
   },
   ru: {
     title: "Ваша карта здесь",
+    demoTitle: "Демокарта Sweeto",
+    demoNote: "Столько отметок было на карте при сохранении в Wallet. Это демоверсия для тестирования в TestFlight.",
+    demoQr: "QR-код демоверсии карты Sweeto",
+    saveDemo: "Сохранить демокарту в браузере",
+    savedDemo: "Сохранённая карта TestFlight",
+    openSaved: "Открыть сохранённую демокарту",
+    demoStored: "Демокарта сохранена в этом браузере.",
+    replaceDemo: "Заменить сохранённую демокарту",
+    replaceCount: (old: number, next: number) => `Изменить число отметок на сохранённой карте с ${old}/6 на ${next}/6?`,
+    keepDemo: "Оставить текущую копию",
+    savedNote: "Это сохранённая копия из TestFlight. Её можно открыть и на экране карты.",
+    emptyDemo: "Чтобы сохранить демокарту, откройте её из Apple Wallet в этом браузере.",
+    saveFailed: "Не удалось сохранить карту в этом браузере. Вы можете снова открыть её из Apple Wallet.",
     intro: "Откройте ту же карту, которую вы храните в Apple Wallet.",
     loading: "Проверяем карту…",
     code: "Код карты",
@@ -75,6 +116,7 @@ export async function checkRestore(
   const [target, session] = await Promise.allSettled([
     fetch(`${apiBase}/loyalty/restore/preview`, {
       method: "POST",
+      redirect: "error",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ token }),
       cache: "no-store",
@@ -97,7 +139,139 @@ export async function checkRestore(
     return { status: "error" };
   }
   const preview: Preview = await target.value.json();
+  if (!preview || typeof preview.code !== "string" || !/^[A-Z0-9]{8}$/.test(preview.code) ||
+      !Number.isSafeInteger(preview.goal) || preview.goal < 1 || !Number.isSafeInteger(preview.stamps) ||
+      preview.stamps < 0 || preview.stamps > preview.goal) return { status: "error" };
   return { status: "ready", preview, currentCode: session.value.card?.code };
+}
+
+function CardSummary({ preview, language }: { preview: Preview; language: Language }) {
+  const t = copy[language];
+  return (
+    <dl className="papu-restore-summary">
+      <div>
+        <dt>{t.code}</dt>
+        <dd><bdi>{preview.code}</bdi></dd>
+      </div>
+      <div>
+        <dt>{t.stamps}</dt>
+        <dd>{preview.stamps} / {preview.goal}</dd>
+      </div>
+    </dl>
+  );
+}
+
+const noDemo = () => null;
+const savedDemoPath = "/v/sweeto/restore" + savedDemoFragment;
+
+export function SavedDemoLink({ language }: { language: Language }) {
+  const saved = useSyncExternalStore(subscribeDemo, browserDemo, noDemo);
+  if (saved === null) return null;
+  return (
+    <p className="papu-saved-demo-link">
+      <a href={savedDemoPath}>{copy[language].savedDemo}<ArrowRight size={16} aria-hidden="true" /></a>
+    </p>
+  );
+}
+
+export function DemoPassSnapshot({ language, stamps }: { language: Language; stamps: number | null }) {
+  const t = copy[language];
+  const heading = useId();
+  const saved = useSyncExternalStore(subscribeDemo, browserDemo, noDemo);
+  const [saveFailed, setSaveFailed] = useState(false);
+  const [replacing, setReplacing] = useState<{ old: number; next: number } | null>(null);
+  const saving = useRef(false);
+  const title = useRef<HTMLHeadingElement>(null);
+  const onward = useRef<HTMLAnchorElement>(null);
+  const replaceTrigger = useRef<HTMLButtonElement>(null);
+  const keep = useRef<HTMLButtonElement>(null);
+  const moveFocus = useRef<"onward" | "replace" | "title" | null>(null);
+  const count = stamps ?? saved;
+  const confirmedChoice = replacing && replacing.old === saved && replacing.next === stamps;
+
+  useLayoutEffect(() => {
+    if (confirmedChoice) keep.current?.focus({ preventScroll: true });
+    else if (moveFocus.current) {
+      const target = moveFocus.current === "title" ? title.current :
+        moveFocus.current === "onward" ? onward.current : replaceTrigger.current;
+      if (target) {
+        target.focus({ preventScroll: true });
+        moveFocus.current = null;
+      }
+    }
+  }, [confirmedChoice, saved, stamps]);
+
+  async function save(expected: number | null) {
+    if (stamps === null || saving.current) return;
+    saving.current = true;
+    try {
+      const write = () => saveDemo(window.localStorage, stamps, expected);
+      const savedNow = navigator.locks ? await navigator.locks.request(savedDemoChanged, write) : write();
+      if (savedNow) moveFocus.current = "onward";
+      setReplacing(null);
+      setSaveFailed(false);
+      window.dispatchEvent(new Event(savedDemoChanged));
+    } catch {
+      setSaveFailed(true);
+    } finally {
+      saving.current = false;
+    }
+  }
+
+  return (
+    <section className="papu-restore" aria-labelledby={heading}>
+      <header className="papu-restore-heading">
+        <span className="papu-restore-mark" aria-hidden="true"><TicketCheck size={29} /></span>
+        <div><p>TestFlight</p><h2 id={heading} ref={title} tabIndex={-1}>{stamps === null ? t.savedDemo : t.demoTitle}</h2></div>
+      </header>
+      <p>{count === null ? t.emptyDemo : stamps === null ? t.savedNote : t.demoNote}</p>
+      {count !== null && <>
+        <CardSummary language={language} preview={{ code: "DEMO2026", stamps: count, goal: 6 }} />
+        <QRCode value="PAPUPAY-DEMO:SWEETO:DEMO2026" label={t.demoQr} />
+      </>}
+      {stamps !== null && saved === null && (
+        <button className="sweeto-button papu-demo-save" type="button" onClick={() => void save(null)}>
+          {t.saveDemo}<ArrowRight size={18} aria-hidden="true" />
+        </button>
+      )}
+      {stamps !== null && saved !== null && (
+        <>
+          {saved === stamps && (
+            <p className="papu-restore-note" role="status">
+              <Check size={16} aria-hidden="true" />{t.demoStored}
+            </p>
+          )}
+          <a ref={onward} className="sweeto-button papu-demo-save" href={savedDemoFragment}
+            onClick={(event) => {
+              if (!event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) moveFocus.current = "title";
+            }}>
+            {t.openSaved}<ArrowRight size={18} aria-hidden="true" />
+          </a>
+          {saved !== stamps && (confirmedChoice ? (
+            <div className="papu-demo-replace" role="group" aria-label={t.replaceDemo}
+              onKeyDown={(event) => {
+                if (event.key === "Escape") {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  moveFocus.current = "replace";
+                  setReplacing(null);
+                }
+              }}>
+              <p>{t.replaceCount(saved, stamps)}</p>
+              <button ref={keep} type="button" onClick={() => { moveFocus.current = "replace"; setReplacing(null); }}>
+                {t.keepDemo}
+              </button>
+              <button type="button" onClick={() => void save(saved)}>{t.replaceDemo}</button>
+            </div>
+          ) : (
+            <button ref={replaceTrigger} className="papu-demo-replace-trigger" type="button"
+              onClick={() => setReplacing({ old: saved, next: stamps })}>{t.replaceDemo}</button>
+          ))}
+        </>
+      )}
+      {saveFailed && <p className="sweeto-error" role="alert">{t.saveFailed}</p>}
+    </section>
+  );
 }
 
 export default function RestoreCard({
@@ -112,43 +286,43 @@ export default function RestoreCard({
   const { venue, apiBase, navigate } = useVenue();
   const headingId = useId();
   const saving = useRef<AbortController | null>(null);
-  const [check, setCheck] = useState<RestoreCheck>({ status: "loading" });
-  const { status } = check;
   const [attempt, setAttempt] = useState(0);
-  const [opening, setOpening] = useState(false);
-  const [saveError, setSaveError] = useState(false);
+  const [checked, setChecked] = useState<{
+    token: string; apiBase: string; attempt: number; result: RestoreCheck;
+  } | null>(null);
+  const check: RestoreCheck = !token
+    ? { status: "invalid" }
+    : checked?.token === token && checked.apiBase === apiBase && checked.attempt === attempt
+      ? checked.result : { status: "loading" };
+  const { status } = check;
+  const [handoff, setHandoff] = useState<{ token: string; status: "pending" | "error" } | null>(null);
+  const opening = handoff?.token === token && handoff.status === "pending";
+  const saveError = handoff?.token === token && handoff.status === "error";
   const t = copy[language];
   useLayoutEffect(() => {
-    setOpening(false);
-    setSaveError(false);
+    if (!token) return;
     const controller = new AbortController();
-    if (!token) {
-      setCheck({ status: "invalid" });
-      return;
-    }
-    setCheck({ status: "loading" });
     void checkRestore(apiBase, token, controller.signal)
       .then((result) => {
-        if (!controller.signal.aborted) setCheck(result);
+        if (!controller.signal.aborted) setChecked({ token, apiBase, attempt, result });
       })
       .catch(() => {
-        if (!controller.signal.aborted) setCheck({ status: "error" });
+        if (!controller.signal.aborted) setChecked({ token, apiBase, attempt, result: { status: "error" } });
       });
     return () => {
       controller.abort();
       saving.current?.abort();
-      saving.current = null;
     };
   }, [apiBase, attempt, token]);
   async function restore() {
     if (saving.current || status !== "ready") return;
     const controller = new AbortController();
     saving.current = controller;
-    setOpening(true);
-    setSaveError(false);
+    setHandoff({ token, status: "pending" });
     try {
       const response = await fetch(`${apiBase}/loyalty/restore`, {
         method: "POST",
+        redirect: "error",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token }),
         cache: "no-store",
@@ -157,20 +331,26 @@ export default function RestoreCard({
       });
       if (controller.signal.aborted) return;
       if (invalidStatus(response.status)) {
-        setCheck({ status: "invalid" });
+        setChecked({ token, apiBase, attempt, result: { status: "invalid" } });
         return;
       }
       if (!response.ok) throw new Error("unavailable");
+      const restored: { card?: LoyaltyCard } = await response.json();
+      if (restored.card?.code !== check.preview.code) throw new Error("unavailable");
+      const session = await guestRequest<{ card: LoyaltyCard | null }>(
+        `${apiBase}/loyalty/card`, { signal: controller.signal },
+      );
+      if (session.card?.code !== check.preview.code) throw new Error("unavailable");
       if (!controller.signal.aborted) {
         onRestored();
         navigate?.("card");
       }
     } catch {
-      if (!controller.signal.aborted) setSaveError(true);
+      if (!controller.signal.aborted) setHandoff({ token, status: "error" });
     } finally {
       if (saving.current === controller) {
         saving.current = null;
-        setOpening(false);
+        setHandoff((current) => current?.status === "pending" ? null : current);
       }
     }
   }
@@ -205,20 +385,7 @@ export default function RestoreCard({
         check.status === "ready" && (
           <>
             <p>{t.intro}</p>
-            <dl className="papu-restore-summary">
-              <div>
-                <dt>{t.code}</dt>
-                <dd>
-                  <bdi>{check.preview.code}</bdi>
-                </dd>
-              </div>
-              <div>
-                <dt>{t.stamps}</dt>
-                <dd>
-                  {check.preview.stamps} / {check.preview.goal}
-                </dd>
-              </div>
-            </dl>
+            <CardSummary preview={check.preview} language={language} />
             {check.currentCode && check.currentCode !== check.preview.code && (
               <p className="papu-restore-replace">{t.replace}</p>
             )}

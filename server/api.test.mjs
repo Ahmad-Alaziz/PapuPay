@@ -435,6 +435,18 @@ test("a local recovery link previews without a session, restores only on POST, a
   assert.equal((await request(base + "/loyalty/restore/preview", { body: { token: "invalid" } })).status, 429);
 });
 
+test("an unconfigured restore service reports unavailability without changing the session", async (t) => {
+  const request = await start(t, { env: {} });
+  const owner = await request("/api/v/sweeto/loyalty/card", { method: "POST" });
+  for (const action of ["restore/preview", "restore"]) {
+    const response = await request("/api/v/sweeto/loyalty/" + action, { body: { token: "unused" }, cookie: owner.cookie });
+    assert.equal(response.status, 503);
+    assert.equal(response.data.error, "recovery_unavailable");
+    assert.equal(response.cookie, undefined);
+  }
+  assert.deepEqual((await request("/api/v/sweeto/loyalty/card", { cookie: owner.cookie })).data, owner.data);
+});
+
 test("an Apple pass identity can only carry its originally issued recovery link", async (t) => {
   let now = Date.now();
   const passTypeId = "pass.test.papupay";

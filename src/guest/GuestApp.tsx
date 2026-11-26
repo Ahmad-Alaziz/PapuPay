@@ -35,7 +35,8 @@ import { VenueContext, sweeto } from "./VenueContext";
 import Wallet from "./Wallet";
 import LoyaltyTest from "./LoyaltyTest";
 import MenuReader from "./MenuReader";
-import RestoreCard from "./RestoreCard";
+import RestoreCard, { DemoPassSnapshot, SavedDemoLink } from "./RestoreCard";
+import { parseRecoveryLink } from "./recovery-link";
 import Wifi from "./Wifi";
 import PapuWelcomeMark from "./PapuWelcomeMark";
 import { guestPath, guestRoute, venueId, type View } from "./route";
@@ -289,24 +290,28 @@ function HomeAction({
 
 export default function GuestApp() {
   const [language, setLanguage] = useState(initialLanguage);
-  const [restoreToken, setRestoreToken] = useState(
-    () => new URLSearchParams(location.hash.slice(1)).get("token") || "",
+  const [view, setView] = useState<View>(
+    () => guestRoute(location.pathname).view,
+  );
+  const [restoreLink, setRestoreLink] = useState(() =>
+    parseRecoveryLink(location.pathname, location.hash),
   );
   useLayoutEffect(() => {
+    function scrubLiveFragment() {
+      const kind = parseRecoveryLink(location.pathname, location.hash)?.kind;
+      if (location.hash && guestRoute(location.pathname).view === "restore" &&
+          kind !== "demo" && kind !== "savedDemo") {
+        history.replaceState(history.state, "", location.pathname + location.search);
+      }
+    }
     function captureRestoreLink() {
-      if (guestRoute(location.pathname).view !== "restore" || !location.hash)
-        return;
-      setRestoreToken(
-        new URLSearchParams(location.hash.slice(1)).get("token") || "",
-      );
-      history.replaceState(
-        history.state,
-        "",
-        location.pathname + location.search,
-      );
+      if (guestRoute(location.pathname).view !== "restore") return;
+      setRestoreLink(parseRecoveryLink(location.pathname, location.hash));
+      scrubLiveFragment();
       setView("restore");
     }
-    captureRestoreLink();
+    // Live fragments carry credentials. The public demo URL also works on reload.
+    scrubLiveFragment();
     window.addEventListener("hashchange", captureRestoreLink);
     return () => window.removeEventListener("hashchange", captureRestoreLink);
   }, []);
@@ -315,9 +320,6 @@ export default function GuestApp() {
   const [venue, setVenue] = useState<VenueStatus>(sweeto);
   const [venueLoaded, setVenueLoaded] = useState(false);
   const [venueError, setVenueError] = useState(false);
-  const [view, setView] = useState<View>(
-    () => guestRoute(location.pathname).view,
-  );
   const [balance, setBalance] = useState<Pick<
     LoyaltyCard,
     "stamps" | "goal" | "rewardAvailable"
@@ -357,28 +359,30 @@ export default function GuestApp() {
   };
   useEffect(() => {
     const controller = new AbortController();
-    void guestRequest<VenueStatus>(`${apiBase}/venue`, {
-      signal: controller.signal,
-    })
-      .then((value) => {
-        setVenue(value);
-        setVenueLoaded(true);
-      })
-      .catch(() => {
-        if (controller.signal.aborted) return;
-        if (id === "sweeto") setVenueLoaded(true);
-        else setVenueError(true);
-      });
+    if (restoreLink?.kind !== "demo" && restoreLink?.kind !== "savedDemo") {
+      void guestRequest<VenueStatus>(`${apiBase}/venue`, { signal: controller.signal })
+        .then((value) => {
+          setVenue(value);
+          setVenueLoaded(true);
+        })
+        .catch(() => {
+          if (controller.signal.aborted) return;
+          if (id === "sweeto") setVenueLoaded(true);
+          else setVenueError(true);
+        });
+    }
     const pop = () => {
       setLanguage(initialLanguage());
-      setView(guestRoute(location.pathname).view);
+      const route = guestRoute(location.pathname);
+      if (route.view !== "restore") setRestoreLink(null);
+      setView(route.view);
     };
     window.addEventListener("popstate", pop);
     return () => {
       controller.abort();
       window.removeEventListener("popstate", pop);
     };
-  }, [apiBase]);
+  }, [apiBase, id, restoreLink?.kind]);
   useEffect(() => {
     document.documentElement.lang = language;
     document.title =
@@ -422,6 +426,7 @@ export default function GuestApp() {
     if (history.state?.sweetoSheet) history.back();
     else {
       history.replaceState({}, "", path("home"));
+      if (view === "restore") setRestoreLink(null);
       setView("home");
     }
   }
@@ -435,6 +440,7 @@ export default function GuestApp() {
       closeSheet();
       return;
     }
+    if (view === "restore") setRestoreLink(null);
     history.pushState(
       { sweetoSheet: true, sweetoParentView: view },
       "",
@@ -649,17 +655,24 @@ export default function GuestApp() {
                 view={view}
                 returnsToSheet={Boolean(parentView && parentView !== "home")}
               >
-                {view === "card" && <Loyalty language={language} />}
+                {view === "card" && (
+                  <>
+                    <Loyalty language={language} />
+                    {isSweeto && <SavedDemoLink language={language} />}
+                  </>
+                )}
                 {view === "wifi" && <Wifi language={language} />}
                 {view === "wallet" && <Wallet language={language} />}
                 {view === "test" && <LoyaltyTest language={language} />}
-                {view === "restore" && (
+                {view === "restore" && (restoreLink?.kind === "demo" || restoreLink?.kind === "savedDemo" ? (
+                  <DemoPassSnapshot language={language} stamps={restoreLink.kind === "demo" ? restoreLink.stamps : null} />
+                ) : (
                   <RestoreCard
                     language={language}
-                    token={restoreToken}
-                    onRestored={() => setRestoreToken("")}
+                    token={restoreLink?.kind === "live" ? restoreLink.token : ""}
+                    onRestored={() => setRestoreLink(null)}
                   />
-                )}
+                ))}
                 {view === "menu" && <MenuReader language={language} />}
                 {view === "reviews" && (
                   <section className="sweeto-detail">

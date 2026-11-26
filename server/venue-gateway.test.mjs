@@ -69,3 +69,15 @@ test("staff requests forward only this venue's staff session", async () => {
   });
   assert.equal(result.status, 200);
 });
+
+test("same-origin browser writes use the requested authority when Next normalizes localhost", async () => {
+  const url = "http://localhost:3000" + path;
+  const headers = { host: "127.0.0.1:3000", origin: "http://127.0.0.1:3000", "sec-fetch-site": "same-origin" };
+  const ok = await forwardVenueRequest(new Request(url, { method: "POST", headers }), privateOrigin,
+    async () => Response.json({ ok: true }));
+  assert.equal(ok.status, 200);
+  for (const origin of ["http://localhost:3000", "https://127.0.0.1:3000", "http://127.0.0.1:3001"]) {
+    const request = new Request(url, { method: "POST", headers: { ...headers, origin } });
+    assert.equal((await forwardVenueRequest(request, privateOrigin, unused)).status, 403);
+  }
+});

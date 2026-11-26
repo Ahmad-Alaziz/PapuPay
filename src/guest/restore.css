@@ -135,3 +135,46 @@
   border-inline-start: 3px solid var(--accent);
   background: var(--surface);
 }
+
+.papu-restore > .papu-qr {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin-inline: auto;
+}
+
+.papu-restore .papu-demo-save {
+  margin-top: 16px;
+}
+.papu-saved-demo-link {
+  margin: 0;
+  padding: 0 clamp(20px, 5vw, 36px) 20px;
+}
+.papu-saved-demo-link a {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink);
+  text-decoration: underline;
+}
+
+.papu-demo-replace-trigger,
+.papu-demo-replace button {
+  min-height: 44px;
+  margin-top: 8px;
+  padding: 6px 10px;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+.papu-demo-replace {
+  margin-top: 14px;
+}
+.papu-demo-replace p {
+  margin: 0;
+}
+.papu-demo-replace button + button {
+  margin-inline-start: 4px;
+}
