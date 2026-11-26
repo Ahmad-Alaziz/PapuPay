@@ -39,7 +39,7 @@ Run `npm run test:routes` against a running local build. Set `PAPUPAY_BASE_URL=h
 
 ## Skipped deploys
 
-`ignoreCommand` in `vercel.json` skips a deployment when the latest commit changes nothing outside `apps/ios`, `packages/brand`, `scripts`, `.github` and `docs`. Shared Rive runtime changes in `packages/motion` trigger a web build.
+`ignoreCommand` in `vercel.json` skips a deployment when the latest commit changes nothing outside `apps/ios`, `packages/brand`, `.github` and `docs`, with an exception for the Wallet badges served by the web app. Build scripts and shared Rive runtime changes trigger a web build.
 
 ## DNS
 

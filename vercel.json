@@ -17,5 +17,5 @@
       "permanent": true
     }
   ],
-  "ignoreCommand": "git diff --quiet HEAD^ HEAD -- . ':(exclude)apps/ios' ':(exclude)packages/brand' ':(exclude)scripts' ':(exclude).github' ':(exclude)docs' && git diff --quiet HEAD^ HEAD -- 'apps/ios/Resources/Assets.xcassets/GoogleWalletBadge*.imageset' scripts/prepare-vercel-assets.mjs scripts/embed-launch-brand.mjs"
+  "ignoreCommand": "git diff --quiet HEAD^ HEAD -- . ':!apps/ios' ':!packages/brand' ':!.github' ':!docs' && git diff --quiet HEAD^ HEAD -- ':(glob)apps/ios/Resources/Assets.xcassets/GoogleWalletBadge*.imageset/**'"
 }
