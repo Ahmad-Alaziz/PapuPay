@@ -517,22 +517,20 @@
   transform: scale(0.98);
 }
 
-.sweeto-guest .papu-loyalty-wallet-details {
-  display: inline-flex;
+.papu-loyalty-wallet:has(.papu-other-wallets) {
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  min-height: 44px;
-  color: var(--pass-meta);
-  font-size: 0.75rem;
-  line-height: 1.35;
-  text-decoration: underline;
-  text-decoration-color: #49605268;
-  text-underline-offset: 3px;
 }
-
-.papu-loyalty-wallet-details svg {
-  flex: none;
+.sweeto-guest .papu-other-wallets {
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  color: var(--pass-ink);
 }
 
 .papu-loyalty .sweeto-no-account {

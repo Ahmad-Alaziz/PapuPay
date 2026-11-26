@@ -27,13 +27,8 @@ const copy = {
     stamps: "Stamps",
     reward: "Reward ready",
     qr: "Checkout QR code for your loyalty card",
-    ready: "Show the saved pass at the counter on your next visit.",
     appleOtherDevice:
       "Open the downloaded pass on an iPhone or Mac to add it to Apple Wallet.",
-    refresh:
-      "Download a fresh pass when you want to see your latest stamp balance in Wallet.",
-    automatic: "Your stamp balance updates automatically in Wallet.",
-    recovery: "To reopen your card, use the browser link in your saved pass.",
     unavailable:
       "Wallet passes are unavailable at this venue. You can show your browser card at the counter.",
     browserOnly:
@@ -54,14 +49,8 @@ const copy = {
     stamps: "Pieczątki",
     reward: "Nagroda do odbioru",
     qr: "Kod QR karty lojalnościowej do pokazania przy kasie",
-    ready: "Przy kolejnej wizycie pokaż zapisaną kartę przy kasie.",
     appleOtherDevice:
       "Otwórz pobraną kartę na iPhonie lub Macu, aby dodać ją do Portfela Apple.",
-    refresh:
-      "Pobierz kartę ponownie, aby zobaczyć aktualną liczbę pieczątek w Portfelu.",
-    automatic: "Liczba pieczątek aktualizuje się automatycznie w Portfelu.",
-    recovery:
-      "Aby wrócić do karty, skorzystaj z linku w zapisanej karcie w Portfelu.",
     unavailable:
       "Karty do portfela są niedostępne w tym lokalu. Możesz pokazać kartę z przeglądarki przy kasie.",
     browserOnly: "Zbieraj pieczątki i odbieraj nagrody z kartą w przeglądarce.",
@@ -82,14 +71,8 @@ const copy = {
     stamps: "Отметки",
     reward: "Награда готова",
     qr: "QR-код карты лояльности для предъявления на кассе",
-    ready: "При следующем визите покажите сохранённую карту на кассе.",
     appleOtherDevice:
       "Откройте загруженную карту на iPhone или Mac, чтобы добавить её в Apple Wallet.",
-    refresh:
-      "Скачайте карту заново, если хотите увидеть актуальное число отметок в Wallet.",
-    automatic: "Количество отметок в Wallet обновляется автоматически.",
-    recovery:
-      "Чтобы снова открыть карту, перейдите по ссылке в сохранённой карте Wallet.",
     unavailable:
       "Сохранение в кошелёк недоступно в этом заведении. Вы можете показать карту из браузера на кассе.",
     browserOnly:
@@ -163,10 +146,7 @@ export default function Wallet({ language }: { language: Language }) {
   const card = preview?.apiBase === apiBase ? preview.card : null;
   const appleDevice = canOpenAppleWallet(navigator.userAgent);
   const googleReady = providers?.googleStatus === "ready";
-  const applePass =
-    providers?.passUrl && (appleDevice || !googleReady)
-      ? providers.passUrl
-      : null;
+  const applePass = providers?.passUrl;
   const canSave = Boolean(applePass) || googleReady;
   const requiresCard =
     status === "requires_card" || providers?.googleStatus === "requires_card";
@@ -297,12 +277,7 @@ export default function Wallet({ language }: { language: Language }) {
       )}
       {canSave ? (
         <div className="papu-wallet-save">
-          <div className="papu-wallet-save-info">
-            <WalletPocket handoff={handoff} />
-            <p className="sweeto-wallet-note">
-              {applePass && !appleDevice ? t.appleOtherDevice : t.ready}
-            </p>
-          </div>
+          <WalletPocket handoff={handoff} />
           <div className="papu-wallet-actions">
             {applePass && (
               <AppleWalletLink
@@ -321,13 +296,8 @@ export default function Wallet({ language }: { language: Language }) {
               />
             )}
           </div>
-          {applePass && appleDevice && (
-            <small className="sweeto-wallet-refresh-note">
-              {providers?.updatesEnabled ? t.automatic : t.refresh}
-            </small>
-          )}
-          {applePass && appleDevice && providers?.recoveryEnabled && (
-            <small className="sweeto-wallet-refresh-note">{t.recovery}</small>
+          {applePass && !appleDevice && (
+            <p className="sweeto-wallet-note">{t.appleOtherDevice}</p>
           )}
         </div>
       ) : (
@@ -342,7 +312,7 @@ export default function Wallet({ language }: { language: Language }) {
           </p>
         )
       )}
-      {status !== "loading" && (
+      {status !== "loading" && (!canSave || !card || venue.id !== "sweeto") && (
         <GuestLink
           view="card"
           className={

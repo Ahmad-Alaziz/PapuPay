@@ -183,6 +183,15 @@ test("Wi-Fi rejects malformed settings and supports open networks", async (t) =>
   } });
 });
 
+test("Sweeto exposes only venue-supplied calories for known dessert portions", async (t) => {
+  const request = await start(t, { venues: [{
+    id: "sweeto", name: "Sweeto",
+    dessertKcalPerServing: { "menu-matylda": 315, "menu-san-sebastian": -1, "menu-crunch-bowl": "unknown", missing: 25 },
+  }] });
+  const { data } = await request("/api/v/sweeto/venue");
+  assert.deepEqual(data.dessertKcalPerServing, { "menu-matylda": 315 });
+});
+
 test("venue branding and guest/staff sessions stay isolated even inside one browser", async (t) => {
   const options = { venues: [
     { id: "berry-counter", name: "Berry Counter", theme: { motionTheme: "berry" }, menuPdf: { pl: "https://example.test/berry.pdf" } },
@@ -421,7 +430,12 @@ test("a local recovery link previews without a session, restores only on POST, a
   const preview = await request(base + "/loyalty/restore/preview", { body });
   assert.deepEqual(preview.data, { code: card.data.card.code, stamps: 0, goal: 6, name: "Sweeto" });
   assert.equal(preview.cookie, undefined);
-  const recovered = await request(base + "/loyalty/restore", { body });
+  const different = await request(base + "/loyalty/card", { method: "POST" });
+  const changed = await request(base + "/loyalty/restore", { cookie: different.cookie, body: { token, expectedCurrentCode: null } });
+  assert.equal(changed.status, 409);
+  assert.equal(changed.cookie, undefined);
+  assert.equal((await request(base + "/loyalty/card", { cookie: different.cookie })).data.card.code, different.data.card.code);
+  const recovered = await request(base + "/loyalty/restore", { body: { token, expectedCurrentCode: null } });
   assert.deepEqual(recovered.data, card.data);
   assert.notEqual(recovered.cookie, card.cookie);
   assert.match(recovered.headers["Set-Cookie"], /HttpOnly; SameSite=Strict/);

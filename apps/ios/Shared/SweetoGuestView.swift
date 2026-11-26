@@ -167,15 +167,10 @@ struct PapupayGuestView: View {
       }
     }
     .environment(\.locale, Locale(identifier: language.rawValue))
-    .onOpenURL(perform: follow)
-    .sheet(item: $walletRecovery) { recovery in
-      VenueWalletRecoveryView(link: recovery, palette: palette) {
-        walletRecovery = nil
-        membershipRevision = UUID()
-        choose(recovery.venue, screen: .card)
-      }
-      .id(recovery.id)
+    .onChange(of: path) { _, screens in
+      if screens.isEmpty { walletRecovery = nil }
     }
+    .onOpenURL(perform: follow)
     .onContinueUserActivity(NSUserActivityTypeBrowsingWeb) { activity in
       if let url = activity.webpageURL { follow(url) }
     }
@@ -837,7 +832,8 @@ struct PapupayGuestView: View {
     case .menu:
       let backup = standardSweetoMenu ? Bundle.main.url(forResource: "menu", withExtension: "pdf") : nil
       if showsDessertCatalog {
-        VenueDessertMenu(original: backup, language: language, palette: palette)
+        VenueDessertMenu(original: backup, language: language, palette: palette,
+                         kcalPerServing: config?.dessertKcalPerServing ?? [:])
       } else if venueMenuPDF == nil, let imageURL = link.imageURL(config?.menuImageUrl) {
         VenueImageMenu(image: imageURL, language: language, palette: palette)
       } else {
@@ -845,13 +841,29 @@ struct PapupayGuestView: View {
                      isPolish: translatedMenuURL == nil, palette: palette)
       }
     case .card, .checkout:
-      VenueLoyaltyView(
-        api: api, venueName: venueName, language: language,
-        palette: palette, showPreview: Self.walletPreviewEnabled,
-        logo: venueLogo(onPhoto: true), showingCheckout: screen == .checkout
-      )
-      .id(link)
-      .id(membershipRevision)
+      if let recovery = walletRecovery, recovery.venue == link {
+        if case let .demonstration(stamps) = recovery.source {
+          VenueLoyaltyView(api: api, venueName: venueName, language: language, palette: palette, showPreview: false,
+                           logo: venueLogo(onPhoto: true), snapshotOnly: VenueLoyaltyCard(
+                             code: "DEMO2026", checkout: "PAPUPAY-DEMO:SWEETO:DEMO2026", stamps: stamps,
+                             goal: VenueDemoLoyalty.goal, rewardAvailable: stamps == VenueDemoLoyalty.goal))
+            .id(recovery.id)
+        } else {
+          VenueWalletRecoveryView(link: recovery, palette: palette) {
+            walletRecovery = nil
+            membershipRevision = UUID()
+          }
+          .id(recovery.id)
+        }
+      } else {
+        VenueLoyaltyView(
+          api: api, venueName: venueName, language: language,
+          palette: palette, showPreview: Self.walletPreviewEnabled,
+          logo: venueLogo(onPhoto: true), showingCheckout: screen == .checkout
+        )
+        .id(link)
+        .id(membershipRevision)
+      }
     case .reviews:
       ScrollView {
         VStack(alignment: .leading, spacing: 14) {
@@ -904,6 +916,18 @@ struct PapupayGuestView: View {
       showVenues = false
 #endif
       walletRecovery = recovery
+      if case let .demonstration(stamps) = recovery.source,
+         let demo = VenueGuestDemo.loyaltyConfiguration(for: recovery.venue), demo.cardCode == "DEMO2026" {
+        let namespace = demo.loyaltyNamespace(for: recovery.venue)
+        var ledger = VenueDemoLoyalty.load(namespace: namespace)
+        if !ledger.created {
+          ledger.restoreSavedPass(stamps: stamps)
+          ledger.save(namespace: namespace)
+        }
+        walletRecovery = nil
+      }
+      membershipRevision = UUID()
+      choose(recovery.venue, screen: .card)
       return
     }
     guard let (location, screen, preferredLanguage) = VenueGuestLink.parse(url) else { badLink = true; return }

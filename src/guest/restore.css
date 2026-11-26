@@ -3,52 +3,14 @@
   color: var(--ink);
 }
 
-.papu-restore-heading {
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-  padding-inline-end: 40px;
-  margin-block: 4px 20px;
+.papu-restore h2 {
+  margin: 0;
+  font: 700 1.25rem/1.2 var(--font, sans-serif);
 }
-
-.papu-restore-mark {
-  display: grid;
-  place-items: center;
-  flex: none;
-  width: 52px;
-  height: 52px;
-  border-radius: 14px 14px 14px 4px;
-  background: var(--ink);
-  color: var(--accent);
-}
-
-.papu-restore-heading p,
 .papu-restore-summary dt {
   margin: 0 0 6px;
-  font-size: 0.6875rem;
-  font-weight: 750;
-  letter-spacing: 0.09em;
-  line-height: 1.35;
-  text-transform: uppercase;
+  font-size: .75rem;
 }
-
-.papu-restore-heading p {
-  color: var(--muted);
-}
-
-.papu-restore-heading h2 {
-  margin: 0;
-  font-family: var(--display);
-  font-size: clamp(1.6rem, 6vw, 2.45rem);
-  font-weight: 400;
-  line-height: 1;
-  text-transform: uppercase;
-}
-
-.papu-restore-heading h2:lang(ru) {
-  font-weight: 800;
-}
-
 .papu-restore > p:not(.sweeto-error) {
   color: var(--muted);
   font-size: 0.875rem;
@@ -115,35 +77,15 @@
   justify-content: space-between;
 }
 
-.papu-restore .papu-restore-note {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  justify-content: center;
-  margin: 12px 0 0;
-  font-size: 0.75rem;
-  text-align: center;
-}
-
-.papu-restore svg {
-  flex: none;
-}
-
-.papu-restore-replace {
-  margin-block: 16px;
-  padding: 10px 12px;
-  border-inline-start: 3px solid var(--accent);
-  background: var(--surface);
-}
-
-.papu-restore .papu-demo-save {
-  margin-top: 16px;
-}
 .papu-saved-demo-link {
   margin: 0;
   padding: 0 clamp(20px, 5vw, 36px) 20px;
 }
-.papu-saved-demo-link a {
+.papu-saved-demo-link :is(a,button) {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
   display: inline-flex;
   min-height: 44px;
   align-items: center;
@@ -152,7 +94,7 @@
   text-decoration: underline;
 }
 
-.papu-demo-replace-trigger,
+.papu-restore-keep,
 .papu-demo-replace button {
   min-height: 44px;
   margin-top: 8px;

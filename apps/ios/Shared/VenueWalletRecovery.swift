@@ -33,126 +33,83 @@ struct VenueWalletRecovery: Identifiable {
   }
 }
 
+/// The card destination shows errors and account switches in place while Wallet links resolve.
 struct VenueWalletRecoveryView: View {
   let link: VenueWalletRecovery
   let palette: VenueGuestPalette
-  let onRestore: () -> Void
-  @Environment(\.dismiss) private var dismiss
-  @Environment(\.dynamicTypeSize) private var typeSize
-  @State private var preview: VenueGuestAPI.RecoveryPreview?
-  @State private var unavailable = false
-  @State private var invalid = false
-  @State private var confirming = false
-  @State private var attempt = 0
-  @State private var confirmation: Task<Void, Never>?
+  let onOpen: () -> Void
 
+  private enum Phase { case loading, invalid, unavailable, switchCard(VenueGuestAPI.RecoveryPreview, from: String) }
+  @State private var phase = Phase.loading
+  @State private var attempt = 0
+  @State private var approved: String?
   private var api: VenueGuestAPI { VenueGuestAPI(venue: link.venue) }
-  private var isDemo: Bool {
-    if case .demonstration = link.source { return true }
-    return false
-  }
-  private var demo: VenueGuestDemo? { VenueGuestDemo.loyaltyConfiguration(for: link.venue) }
   private func t(_ pl: String, _ en: String, _ ru: String) -> String { palette.language.text(pl, en, ru) }
 
   var body: some View {
-    NavigationStack {
-      ScrollView {
-        VStack(alignment: .leading, spacing: 18) {
-          Image(systemName: "wallet.pass.fill")
-            .font(.system(size: 32)).foregroundStyle(palette.ink).accessibilityHidden(true)
-          Text(isDemo ? t("Karta demo Sweeto", "Sweeto demo card", "Демо-карта Sweeto")
-               : t("Twoja karta z Wallet", "Your card from Wallet", "Ваша карта из Wallet"))
-            .font(palette.display(.largeTitle)).accessibilityAddTraits(.isHeader)
-          if invalid {
-            Text(t("Ten link jest nieaktualny. Otwórz najnowszą kartę w Wallet lub poproś o pomoc w lokalu.",
-                   "This link is no longer valid. Open your latest pass in Wallet or ask the venue for help.",
-                   "Ссылка недействительна. Откройте последнюю карту в Wallet или обратитесь в заведение."))
-          } else if let preview {
-            Text(isDemo
-                 ? t("Saldo zapisane w testowej karcie Wallet.", "The balance saved on your TestFlight pass.", "Баланс, сохранённый на тестовой карте Wallet.")
-                 : t("Otwórz tę kartę na tym urządzeniu, aby wrócić do swoich pieczątek.", "Open this card on this device to get back to your stamps.", "Откройте карту на этом устройстве, чтобы вернуться к своим отметкам."))
-            VStack(alignment: .leading, spacing: 10) {
-              if let name = preview.name {
-                Text(name).font(.headline)
-              }
-              Text(t("Pieczątki", "Stamps", "Отметки")).font(.subheadline.weight(.medium))
-              Text("\(preview.stamps) / \(preview.goal)").font(palette.display(.largeTitle)).monospacedDigit()
-              Text(t("Numer karty", "Card number", "Номер карты") + "  " + preview.code).font(.callout)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading).padding(20)
-            .foregroundStyle(palette.paper)
-            .background(palette.ink, in: RoundedRectangle(cornerRadius: 18))
-            if !isDemo, let existing = api.cachedCard(), existing.code != preview.code {
-              Text(t("Otwarcie tej karty przełączy kartę używaną na tym urządzeniu.", "Opening this card switches the card used on this device.", "На этом устройстве будет открыта другая карта."))
-            } else if isDemo, let demo, let existing = demo.loyaltyCard(for: link.venue), existing.stamps != preview.stamps {
-              Text(t("Otworzymy aktualną kartę zapisaną na tym urządzeniu.", "We’ll open the current demo card saved on this device.", "Мы откроем текущую демо-карту, сохранённую на устройстве."))
-            }
-            if !isDemo || demo != nil {
-              VenueNativeButton(title: t("Otwórz moją kartę", "Open my card", "Открыть мою карту"),
-                                systemImage: "arrow.right", palette: palette) {
-                guard confirmation == nil else { return }
-                confirmation = Task { await confirm() }
-              }
-              .disabled(confirming)
-            }
-          } else if !unavailable {
-            ProgressView(t("Sprawdzamy kartę…", "Checking your card…", "Проверяем карту…"))
+    ScrollView {
+      VStack(alignment: .leading, spacing: 16) {
+        switch phase {
+        case .loading:
+          ProgressView(t("Otwieramy kartę…", "Opening your card…", "Открываем карту…"))
+        case .invalid:
+          Text(t("Ten link jest nieaktualny", "This link has expired", "Эта ссылка больше не действует"))
+            .font(palette.display(.title)).accessibilityAddTraits(.isHeader)
+          Text(t("Otwórz najnowszą kartę w Wallet lub poproś o pomoc w lokalu.",
+                 "Open your latest Wallet pass or ask the venue for help.",
+                 "Откройте последнюю карту в Wallet или обратитесь в заведение."))
+        case .unavailable:
+          Text(t("Nie udało się połączyć.", "Couldn’t connect.", "Не удалось подключиться."))
+          Button(t("Spróbuj ponownie", "Try again", "Повторить")) { approved = nil; attempt += 1 }
+            .font(.headline).frame(minHeight: 44)
+        case let .switchCard(target, current):
+          Text(t("Otworzyć inną kartę?", "Switch cards?", "Открыть другую карту?"))
+            .font(palette.display(.title)).accessibilityAddTraits(.isHeader)
+          Text(t("Na tym urządzeniu masz inną kartę. Karta z Wallet ma numer \(target.code) i saldo \(target.stamps)/\(target.goal).",
+                 "This device has a different card. The Wallet card is \(target.code) with \(target.stamps)/\(target.goal) stamps.",
+                 "На устройстве другая карта. Карта из Wallet: \(target.code), отметок: \(target.stamps)/\(target.goal)."))
+          VenueNativeButton(title: t("Otwórz kartę z Wallet", "Open Wallet card", "Открыть карту из Wallet"),
+                            systemImage: "arrow.right", palette: palette) {
+            approved = current; attempt += 1
           }
-          if unavailable {
-            Text(t("Nie udało się połączyć. Spróbuj ponownie.", "Couldn’t connect. Please try again.", "Не удалось подключиться. Попробуйте ещё раз."))
-            if preview == nil {
-              Button(t("Spróbuj ponownie", "Try again", "Повторить")) { attempt += 1 }
-                .font(.headline).frame(minHeight: 44)
-            }
-          }
-        }
-        .frame(maxWidth: 480, alignment: .leading).padding(24).frame(maxWidth: .infinity)
-      }
-      .foregroundStyle(palette.ink)
-      .background(palette.paper.ignoresSafeArea())
-      .toolbar {
-        ToolbarItem(placement: .cancellationAction) {
-          Button(t("Zamknij", "Close", "Закрыть")) { dismiss() }
+          Button(t("Zachowaj obecną kartę", "Keep current card", "Оставить текущую карту"), action: onOpen)
+            .font(.headline).frame(minHeight: 44)
         }
       }
+      .frame(maxWidth: 480, alignment: .leading).padding(24).frame(maxWidth: .infinity)
     }
-    .environment(\.colorScheme, .light)
-    .presentationDetents(typeSize >= .xxLarge ? [.large] : [.height(500), .large])
-    .presentationDragIndicator(.visible)
-    .task(id: attempt) {
-      unavailable = false
-      switch link.source {
-      case .invalid: invalid = true
-      case let .demonstration(count):
-        preview = .init(code: "DEMO2026", stamps: count, goal: VenueDemoLoyalty.goal)
-      case let .membership(token):
-        do { let result = try await api.recoveryPreview(token); if !Task.isCancelled { preview = result } }
-        catch VenueGuestAPI.RecoveryFailure.invalid { if !Task.isCancelled { invalid = true } }
-        catch { if !Task.isCancelled { unavailable = true } }
-      }
-    }
-    .onDisappear { confirmation?.cancel() }
+    .foregroundStyle(palette.ink)
+    .background(palette.paper.ignoresSafeArea())
+    .task(id: attempt) { await open() }
   }
 
-  @MainActor private func confirm() async {
-    confirming = true
-    unavailable = false
-    defer { confirming = false; confirmation = nil }
-    switch link.source {
-    case .invalid: return
-    case let .demonstration(count):
-      guard let demo else { return }
-      let namespace = demo.loyaltyNamespace(for: link.venue)
-      var ledger = VenueDemoLoyalty.load(namespace: namespace)
-      ledger.restoreSavedPass(stamps: count)
-      ledger.save(namespace: namespace)
-    case let .membership(token):
-      do { _ = try await api.restoreCard(token) }
-      catch VenueGuestAPI.RecoveryFailure.invalid { invalid = true; preview = nil; return }
-      catch { if !Task.isCancelled { unavailable = true }; return }
+  @MainActor private func open() async {
+    guard case let .membership(token) = link.source else { phase = .invalid; return }
+    phase = .loading
+    do {
+      async let preview = api.recoveryPreview(token)
+      let current = try await api.card()
+      let target = try await preview
+      try Task.checkCancellation()
+      guard target.goal > 0, (0...target.goal).contains(target.stamps),
+            target.code.range(of: #"^[A-Z0-9]{8}$"#, options: .regularExpression) != nil else { phase = .unavailable; return }
+      let demo = VenueGuestDemo.loyaltyConfiguration(for: link.venue)?.loyaltyCard(for: link.venue)
+      if let code = current?.code ?? demo?.code, code != target.code, code != approved {
+        phase = .switchCard(target, from: code)
+        return
+      }
+      if current?.code != target.code {
+        _ = try await api.restoreCard(token, expectedCode: target.code, replacing: current?.code)
+      }
+      try Task.checkCancellation()
       VenueGuestDemo.preferRecoveredMembership(for: link.venue)
+      onOpen()
+    } catch VenueGuestAPI.RecoveryFailure.membershipChanged {
+      if !Task.isCancelled { approved = nil; attempt += 1 }
+    } catch VenueGuestAPI.RecoveryFailure.invalid {
+      if !Task.isCancelled { phase = .invalid }
+    } catch {
+      if !Task.isCancelled { phase = .unavailable }
     }
-    guard !Task.isCancelled else { return }
-    onRestore()
   }
 }

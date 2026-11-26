@@ -1,0 +1,78 @@
+[
+  {
+    "id": "menu-matylda",
+    "photo": "/assets/sweeto/matylda.webp",
+    "pl": {
+      "name": "Matylda czekoladowa",
+      "summary": "Ciasto czekoladowe z płynną polewą",
+      "description": "Gęste, intensywnie czekoladowe ciasto przykrywa warstwa błyszczącej, płynnej czekolady."
+    },
+    "en": {
+      "name": "Matylda chocolate cake",
+      "summary": "Chocolate cake with a glossy glaze",
+      "description": "Dense chocolate cake topped with a thick layer of glossy chocolate sauce."
+    },
+    "ru": {
+      "name": "Шоколадная Матильда",
+      "summary": "Шоколадный торт с глазурью",
+      "description": "Плотный шоколадный торт под толстым слоем глянцевой шоколадной глазури."
+    }
+  },
+  {
+    "id": "menu-san-sebastian",
+    "photo": "/assets/sweeto/san-sebastian.webp",
+    "pl": {
+      "name": "San Sebastian z czekoladą",
+      "summary": "Baskijski sernik z gorącą czekoladą",
+      "description": "Baskijski sernik ma miękki, kremowy środek. Przy podaniu polewamy go gorącą czekoladą."
+    },
+    "en": {
+      "name": "Chocolate San Sebastian cheesecake",
+      "summary": "Basque cheesecake with hot chocolate sauce",
+      "description": "The centre of this Basque cheesecake is soft and creamy. Hot chocolate sauce is poured over the slice when served."
+    },
+    "ru": {
+      "name": "Сан-Себастьян с шоколадом",
+      "summary": "Баскский чизкейк с горячим шоколадом",
+      "description": "У баскского чизкейка мягкая кремовая середина. Перед подачей кусок поливают горячим шоколадом."
+    }
+  },
+  {
+    "id": "menu-crunch-bowl",
+    "photo": "/assets/sweeto/crunch-bowl.webp",
+    "pl": {
+      "name": "Chrupiący bowl",
+      "summary": "Pistacja, truskawka i ciemna czekolada",
+      "description": "Na spodzie znajdziesz ciemną czekoladę i chrupiący Secret Crunch Mix. Dalej gęsty krem pistacjowy, świeże truskawki i płynną czekoladę."
+    },
+    "en": {
+      "name": "Crunchy bowl",
+      "summary": "Pistachio, strawberry and dark chocolate",
+      "description": "Dark chocolate and Sweeto’s Secret Crunch Mix form the base. Thick pistachio cream, fresh strawberries and a drizzle of chocolate finish the bowl."
+    },
+    "ru": {
+      "name": "Хрустящий боул",
+      "summary": "Фисташка, клубника и тёмный шоколад",
+      "description": "В основе тёмный шоколад и хрустящая смесь Secret Crunch Mix. Сверху густой фисташковый крем, свежая клубника и жидкий шоколад."
+    }
+  },
+  {
+    "id": "menu-forest-cloud",
+    "photo": "/assets/sweeto/forest-cloud.webp",
+    "pl": {
+      "name": "Królewska chmurka leśna",
+      "summary": "Ciasto mleczne z owocami i czekoladą",
+      "description": "Puszyste ciasto nasączamy mieszanką mlek. Na wierzch trafia delikatny serek śmietankowy, owoce i płynna czekolada."
+    },
+    "en": {
+      "name": "Forest cloud cake",
+      "summary": "Milk-soaked cake with fruit and chocolate",
+      "description": "The fluffy cake is soaked in a blend of milks, then topped with cream cheese, fruit and chocolate sauce."
+    },
+    "ru": {
+      "name": "Королевское лесное облако",
+      "summary": "Торт с молочной пропиткой, фруктами и шоколадом",
+      "description": "Воздушный корж пропитывают молочной смесью. Сверху добавляют сливочный сыр, фрукты и жидкий шоколад."
+    }
+  }
+]

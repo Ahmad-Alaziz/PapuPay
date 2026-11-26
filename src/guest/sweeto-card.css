@@ -198,19 +198,38 @@
   outline: 3px solid #12392b;
   outline-offset: 3px;
 }
+.sweeto-card-stage {
+  perspective: 1100px;
+  perspective-origin: 50% 47%;
+}
+.sweeto-card-turn {
+  display: grid;
+  transform-style: preserve-3d;
+  transition-property: none;
+  transform: rotateY(0deg);
+}
+.sweeto-card-turn[data-checkout] {
+  transform: rotateY(180deg);
+}
+.sweeto-card-panel {
+  grid-area: 1 / 1;
+  display: grid;
+  min-width: 0;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+.sweeto-card-reverse {
+  transform: rotateY(180deg);
+}
 @media (prefers-reduced-motion: no-preference) {
-  .sweeto-card-side[data-turn] {
-    animation: sweeto-card-turn 210ms ease-out;
+  .sweeto-card-turn {
+    transition: transform 420ms cubic-bezier(0.42, 0, 0.18, 1);
   }
 }
-@keyframes sweeto-card-turn {
-  from {
-    opacity: 0.3;
-    transform: perspective(850px) rotateY(-22deg);
-  }
-  to {
-    opacity: 1;
-    transform: none;
+@container (min-width: 300px) {
+  .sweeto-code-window {
+    position: relative;
+    top: -6px;
   }
 }
 

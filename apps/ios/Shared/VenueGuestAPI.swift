@@ -145,6 +145,7 @@ struct VenueGuestConfig: Decodable {
   let photoDrip: VenueGuestPhotoDrip?
   let menuFallback: String?
   let menuImageUrl: String?
+  let dessertKcalPerServing: [String: Int]?
   let theme: VenueGuestTheme?
   let reviewUrl: URL?
   let mapUrl: URL?
@@ -336,7 +337,7 @@ struct VenueGuestAPI {
     var name: String?
   }
 
-  enum RecoveryFailure: Error { case invalid }
+  enum RecoveryFailure: Error { case invalid, membershipChanged }
 
   // The link is a bearer capability. Keep it in memory and send it only in the
   // body of a POST to the exact venue origin, without redirects or URL caching.
@@ -358,17 +359,17 @@ struct VenueGuestAPI {
     return try JSONDecoder().decode(RecoveryPreview.self, from: body)
   }
 
-  func restoreCard(_ token: String) async throws -> VenueLoyaltyCard {
+  func restoreCard(_ token: String, expectedCode: String, replacing currentCode: String?) async throws -> VenueLoyaltyCard {
     let startedAt = ContinuousClock.now
     let (body, response) = try await recover(token, preview: false)
     let requestURL = venue.origin.appending(path: loyaltyPath)
     let membership = VenueMembership(venue: venue, requestURL: requestURL)
-    guard let card = try JSONDecoder().decode(CardResponse.self, from: body).card,
+    guard let card = try JSONDecoder().decode(CardResponse.self, from: body).card, card.code == expectedCode,
           let header = response.value(forHTTPHeaderField: "Set-Cookie"),
           let cookie = HTTPCookie.cookies(withResponseHeaderFields: ["Set-Cookie": header], for: requestURL)
             .first(where: { $0.name == membership.cookieName && $0.isSecure }) else { throw URLError(.badServerResponse) }
     let credential = VenueMembership.Credential(token: cookie.value, expires: cookie.expiresDate)
-    guard await membership.accept(credential, card: card, startedAt: startedAt) else { throw CancellationError() }
+    try await membership.acceptRecovered(credential, card: card, startedAt: startedAt, replacing: currentCode)
     return card
   }
 }
@@ -444,6 +445,19 @@ struct VenueMembership {
       .compactMap(credential(for:))
       .compactMap { $0.token == token ? $0.cachedCard : nil }
       .max { ($0.revisionDate ?? .distantPast) < ($1.revisionDate ?? .distantPast) }
+  }
+
+  @MainActor func acceptRecovered(_ credential: Credential, card: VenueLoyaltyCard, startedAt: ContinuousClock.Instant,
+                                  replacing currentCode: String?) throws {
+    try Task.checkCancellation()
+    // Compare and persist on the same actor. A different return, login, or migration can
+    // change the active credential while the network request for this pass is in flight.
+    if let currentCode {
+      guard cachedCard()?.code == currentCode else { throw VenueGuestAPI.RecoveryFailure.membershipChanged }
+    } else if !candidates().isEmpty {
+      throw VenueGuestAPI.RecoveryFailure.membershipChanged
+    }
+    guard accept(credential, card: card, startedAt: startedAt) else { throw CancellationError() }
   }
 
   @MainActor func accept(

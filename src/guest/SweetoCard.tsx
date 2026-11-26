@@ -150,34 +150,43 @@ export function SweetoMemberCard({
   const t = words[face.language];
   return (
     <div className="sweeto-card-holder">
-      <div
-        id={id}
-        className="sweeto-card-side"
-        key={atCounter ? "code" : "face"}
-        data-turn={hasTurned || undefined}
-      >
-        {atCounter ? (
-          <div className="sweeto-code-side">
-            <div className="sweeto-code-identity">
-              <span>{face.demo ? t.demo : t.title}</span>
-              <strong>{t.back}</strong>
-              <span>
-                {t.code}
-                <bdi>{code}</bdi>
-              </span>
-            </div>
-            <div className="sweeto-code-window">{qr}</div>
+      <div id={id} className="sweeto-card-stage">
+        <div
+          className="sweeto-card-turn"
+          data-checkout={atCounter || undefined}
+        >
+          <div
+            className="sweeto-card-panel"
+            inert={atCounter}
+            aria-hidden={atCounter}
+          >
+            <SweetoCardFace
+              {...face}
+              earnedKey={
+                hasTurned && side.earnedRevision === earnedRevision
+                  ? undefined
+                  : face.earnedKey
+              }
+            />
           </div>
-        ) : (
-          <SweetoCardFace
-            {...face}
-            earnedKey={
-              hasTurned && side.earnedRevision === earnedRevision
-                ? undefined
-                : face.earnedKey
-            }
-          />
-        )}
+          <div
+            className="sweeto-card-panel sweeto-card-reverse"
+            inert={!atCounter}
+            aria-hidden={!atCounter}
+          >
+            <div className="sweeto-code-side">
+              <div className="sweeto-code-identity">
+                <span>{face.demo ? t.demo : t.title}</span>
+                <strong>{t.back}</strong>
+                <span>
+                  {t.code}
+                  <bdi>{code}</bdi>
+                </span>
+              </div>
+              <div className="sweeto-code-window">{qr}</div>
+            </div>
+          </div>
+        </div>
       </div>
       <button
         type="button"

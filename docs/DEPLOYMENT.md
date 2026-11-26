@@ -31,7 +31,7 @@ This is a standard Next.js deployment. `src/proxy.ts` sends `/` to `/en` or `/pl
 
 `public/.well-known/apple-app-site-association` associates `papupay.com` with the App Clip (`5W4JVD497D.com.papupay.app.Clip`) and lists `/app`, `/go/*` and `/v/*` for the installed full app. `next.config.ts` serves it as `application/json`. These URLs bypass the marketing locale redirect.
 
-`/app` opens the installed full app or its guest web experience. The Sweeto table, menu and counter links retain their original QR and NFC destinations. The browser offers the menu, Google review link, bilingual counter list and loyalty card. To enable membership, staff checkout and live Wallet balances, set `PAPUPAY_API_ORIGIN` on the site and configure the persistent service. [Venue service and Wallet setup](VENUES-AND-WALLET.md)
+`/app` opens the installed full app or its guest web experience. The Sweeto table, menu and counter links retain their original QR and NFC destinations. The browser offers the dessert menu, Google review link and loyalty card. To enable membership, staff checkout and live Wallet balances, set `PAPUPAY_API_ORIGIN` on the site and configure the persistent service. [Venue service and Wallet setup](VENUES-AND-WALLET.md)
 
 The Vercel build copies shared motion assets and Wallet badges into its temporary public directory before packaging. Sweeto's images, menu PDF and Rive files are served from `/assets/sweeto/` and also bundled into the iOS app.
 

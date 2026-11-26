@@ -219,27 +219,20 @@
 }
 
 .papu-wallet-save {
-  margin: 18px auto 6px;
-  padding: 15px;
-  border: 1px solid #e9ccaa;
-  border-radius: 16px;
-  background: #fff6e6;
-}
-
-.papu-wallet-save-info {
-  display: grid;
-  grid-template-columns: minmax(0, 60px) minmax(0, 1fr);
+  display: flex;
+  justify-content: center;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 8px;
+  flex-wrap: wrap;
+  gap: 0 8px;
+  margin: 14px auto 4px;
 }
-
-.papu-wallet-save-info .sweeto-wallet-note {
-  margin: 0;
-  color: var(--pass-ink);
-  font-weight: 700;
+.papu-wallet-save > .papu-wallet-pocket {
+  width: 48px;
 }
-
+.papu-wallet-save > .sweeto-wallet-note {
+  flex-basis: 100%;
+  text-align: center;
+}
 .papu-wallet-actions {
   display: grid;
   justify-items: center;
@@ -322,14 +315,6 @@
   font-size: 0.8125rem;
   line-height: 1.45;
   text-align: center;
-}
-
-.sweeto-wallet-refresh-note {
-  display: block;
-  margin: 10px 0 4px;
-  color: var(--muted, #486253);
-  font-size: 0.75rem;
-  line-height: 1.45;
 }
 
 .sweeto-wallet .sweeto-wallet-secondary,

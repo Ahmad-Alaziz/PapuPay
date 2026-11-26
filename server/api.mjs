@@ -234,13 +234,16 @@ function createVenueApi({
         store.wallet.revoke(card.checkout);
         return respond(response, 204);
       }
-      const { token } = await readBody(request);
+      const { token, expectedCurrentCode } = await readBody(request);
       const check = recovery.validate(token, request.socket.remoteAddress);
       if (check.limited) throw new ApiError(429, "too_many_attempts");
       if (!check.entry) throw new ApiError(401, "invalid_restore");
       if (path === "/api/loyalty/restore/preview") {
         const { code, stamps, goal } = store.wallet.card(check.entry);
         return respond(response, 200, { code, stamps, goal, name: brand.name });
+      }
+      if (expectedCurrentCode !== undefined && expectedCurrentCode !== (guest(request)?.code ?? null)) {
+        throw new ApiError(409, "membership_changed");
       }
       const session = privateToken();
       const card = store.wallet.recover(check.entry.reference, check.entry.version, digest(session), Date.now() + guestLifetime * 1000);

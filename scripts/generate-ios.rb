@@ -20,7 +20,7 @@ entry = entry_group.new_file('PapuPayApp.swift')
 resources = project.main_group.new_group('Resources', 'Resources')
 resource_refs = Dir.glob(File.join(ios, 'Resources/*')).reject { |p| p.end_with?('.txt') }.map { |p| resources.new_file(File.basename(p)) }
 # Web media lives under public/. Motion runtimes have a single canonical source.
-resource_refs << resources.new_file('../../../public/assets/sweeto/menu.pdf')
+%w[menu.pdf desserts.json].each { |file| resource_refs << resources.new_file("../../../public/assets/sweeto/#{file}") }
 action_runtime = 'sweeto-actions/runtime'
 motion_posters = %w[menu loyalty review wifi].flat_map do |kind|
   %W[motion-#{kind}.webp motion-berry-#{kind}.webp motion-forest-#{kind}.webp]

@@ -2,6 +2,7 @@ import {
   useEffect,
   useLayoutEffect,
   useRef,
+  useSyncExternalStore,
   useState,
   type ReactNode,
   type MouseEvent,
@@ -36,6 +37,7 @@ import Wallet from "./Wallet";
 import LoyaltyTest from "./LoyaltyTest";
 import MenuReader from "./MenuReader";
 import RestoreCard, { DemoPassSnapshot, SavedDemoLink } from "./RestoreCard";
+import { browserDemo, savedDemoFragment, subscribeDemo } from "./saved-demo-card";
 import { parseRecoveryLink } from "./recovery-link";
 import Wifi from "./Wifi";
 import PapuWelcomeMark from "./PapuWelcomeMark";
@@ -297,24 +299,31 @@ export default function GuestApp() {
     parseRecoveryLink(location.pathname, location.hash),
   );
   useLayoutEffect(() => {
-    function scrubLiveFragment() {
-      const kind = parseRecoveryLink(location.pathname, location.hash)?.kind;
-      if (location.hash && guestRoute(location.pathname).view === "restore" &&
-          kind !== "demo" && kind !== "savedDemo") {
-        history.replaceState(history.state, "", location.pathname + location.search);
+    function resolveLocation(initial = false) {
+      const { pathname, hash, search } = location;
+      const route = guestRoute(pathname);
+      const link = parseRecoveryLink(pathname, hash);
+      if (link?.kind === "demo" || link?.kind === "savedDemo") {
+        if (route.view === "restore") history.replaceState(history.state, "", guestPath("card", "sweeto") + search + hash);
+        setRestoreLink(link);
+        setView("card");
+      } else {
+        if (route.view === "restore" && hash) history.replaceState(history.state, "", pathname + search);
+        // Strict Mode may repeat this effect after the bearer fragment was removed.
+        if (!initial || hash || route.view !== "restore") setRestoreLink(link);
+        setView(route.view);
       }
     }
-    function captureRestoreLink() {
-      if (guestRoute(location.pathname).view !== "restore") return;
-      setRestoreLink(parseRecoveryLink(location.pathname, location.hash));
-      scrubLiveFragment();
-      setView("restore");
-    }
-    // Live fragments carry credentials. The public demo URL also works on reload.
-    scrubLiveFragment();
-    window.addEventListener("hashchange", captureRestoreLink);
-    return () => window.removeEventListener("hashchange", captureRestoreLink);
+    const sync = () => { setLanguage(initialLanguage()); resolveLocation(); };
+    resolveLocation(true);
+    window.addEventListener("hashchange", sync);
+    window.addEventListener("popstate", sync);
+    return () => {
+      window.removeEventListener("hashchange", sync);
+      window.removeEventListener("popstate", sync);
+    };
   }, []);
+  const savedDemo = useSyncExternalStore(subscribeDemo, browserDemo, () => null);
   const id = venueId(location.pathname);
   const apiBase = `/api/v/${id}`;
   const [venue, setVenue] = useState<VenueStatus>(sweeto);
@@ -371,17 +380,7 @@ export default function GuestApp() {
           else setVenueError(true);
         });
     }
-    const pop = () => {
-      setLanguage(initialLanguage());
-      const route = guestRoute(location.pathname);
-      if (route.view !== "restore") setRestoreLink(null);
-      setView(route.view);
-    };
-    window.addEventListener("popstate", pop);
-    return () => {
-      controller.abort();
-      window.removeEventListener("popstate", pop);
-    };
+    return () => controller.abort();
   }, [apiBase, id, restoreLink?.kind]);
   useEffect(() => {
     document.documentElement.lang = language;
@@ -426,7 +425,7 @@ export default function GuestApp() {
     if (history.state?.sweetoSheet) history.back();
     else {
       history.replaceState({}, "", path("home"));
-      if (view === "restore") setRestoreLink(null);
+      setRestoreLink(null);
       setView("home");
     }
   }
@@ -440,13 +439,18 @@ export default function GuestApp() {
       closeSheet();
       return;
     }
-    if (view === "restore") setRestoreLink(null);
+    setRestoreLink(null);
     history.pushState(
       { sweetoSheet: true, sweetoParentView: view },
       "",
       path(next),
     );
     setView(next);
+  }
+  function enterRecoveredCard(useDemo = false) {
+    history.replaceState(history.state, "", path("card") + (useDemo ? savedDemoFragment : ""));
+    setRestoreLink(useDemo ? { kind: "savedDemo" } : null);
+    setView("card");
   }
   function changeLanguage(next: Language) {
     setLanguage(next);
@@ -618,10 +622,10 @@ export default function GuestApp() {
           <AnimatePresence mode="wait">
             {view !== "home" && (
               <Sheet
-                key={view}
+                key={view === "restore" ? "card" : view}
                 navigation={
                   id === "sweeto" &&
-                  ["menu", "card", "wifi", "reviews"].includes(view) ? (
+                  ["menu", "card", "wifi", "reviews", "restore"].includes(view) ? (
                     <header className="guest-destination-nav">
                       <button
                         type="button"
@@ -652,27 +656,27 @@ export default function GuestApp() {
                     : t.close
                 }
                 onClose={closeSheet}
-                view={view}
+                view={view === "restore" ? "card" : view}
                 returnsToSheet={Boolean(parentView && parentView !== "home")}
               >
-                {view === "card" && (
-                  <>
-                    <Loyalty language={language} />
-                    {isSweeto && <SavedDemoLink language={language} />}
-                  </>
+                {(view === "card" || view === "restore") && (
+                  restoreLink?.kind === "demo" || restoreLink?.kind === "savedDemo" ? (
+                    <DemoPassSnapshot language={language}
+                      stamps={restoreLink.kind === "demo" ? restoreLink.stamps : null}
+                      useSaved={() => enterRecoveredCard(true)} />
+                  ) : view === "restore" ? (
+                    <RestoreCard key={restoreLink?.kind === "live" ? restoreLink.token : "invalid"} language={language}
+                      token={restoreLink?.kind === "live" ? restoreLink.token : ""}
+                      onRestored={() => enterRecoveredCard()} />
+                  ) : (
+                    <Loyalty language={language}
+                      savedDemo={isSweeto && savedDemo !== null ? <DemoPassSnapshot language={language} stamps={null} atCounter={guestRoute(location.pathname).placement === "counter"} /> : undefined}
+                      savedDemoLink={isSweeto && savedDemo !== null ? <SavedDemoLink language={language} /> : undefined} />
+                  )
                 )}
                 {view === "wifi" && <Wifi language={language} />}
                 {view === "wallet" && <Wallet language={language} />}
                 {view === "test" && <LoyaltyTest language={language} />}
-                {view === "restore" && (restoreLink?.kind === "demo" || restoreLink?.kind === "savedDemo" ? (
-                  <DemoPassSnapshot language={language} stamps={restoreLink.kind === "demo" ? restoreLink.stamps : null} />
-                ) : (
-                  <RestoreCard
-                    language={language}
-                    token={restoreLink?.kind === "live" ? restoreLink.token : ""}
-                    onRestored={() => setRestoreLink(null)}
-                  />
-                ))}
                 {view === "menu" && <MenuReader language={language} />}
                 {view === "reviews" && (
                   <section className="sweeto-detail">

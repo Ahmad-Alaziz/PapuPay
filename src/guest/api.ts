@@ -19,6 +19,7 @@ export interface VenueStatus {
   photoDrip?: { x: number; y?: number; width?: number; color: string };
   mapUrl?: string;
   menuImageUrl?: string;
+  dessertKcalPerServing?: Record<string, number>;
   menuFallback?: string;
   theme: {
     background: string;

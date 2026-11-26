@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { motion } from "papu-guest-motion/react";
 import {
   ArrowRight,
   Check,
   Gift,
+  MoreHorizontal,
   RefreshCw,
   ScanLine,
   BadgeCheck,
@@ -48,14 +49,12 @@ function joinCard(cardPath: string) {
 const cardLinks = {
   en: {
     walletOptions: "Wallet options",
-    walletManual: "Add it again to refresh your Wallet balance",
-    walletAutomatic: "Stamps update automatically in Wallet",
-    walletPreview: "Preview Wallet pass",
     test: "Try checkout simulation",
     title: "Stamp card",
     paperTitle: "Stamp card",
     demoCard: "Demo card",
     demoJoin: "Create a demo card",
+    venueJoin: "Create a venue card",
     demoNotice: "Demo card · test rewards",
     checkout: "Show at the counter",
     firstStamp: "Show this code for your first stamp",
@@ -73,14 +72,12 @@ const cardLinks = {
   },
   pl: {
     walletOptions: "Opcje portfela",
-    walletManual: "Dodaj kartę ponownie, aby odświeżyć stan pieczątek",
-    walletAutomatic: "Pieczątki w Portfelu aktualizują się automatycznie",
-    walletPreview: "Podgląd karty w Wallet",
     test: "Wypróbuj symulację kasy",
     title: "Karta gościa",
     paperTitle: "Karta na pieczątki",
     demoCard: "Karta demo",
     demoJoin: "Utwórz kartę demo",
+    venueJoin: "Załóż kartę lokalu",
     demoNotice: "Karta demonstracyjna · nagrody testowe",
     checkout: "Pokaż przy kasie",
     firstStamp: "Pokaż kod, by zebrać pierwszą pieczątkę",
@@ -98,14 +95,12 @@ const cardLinks = {
   },
   ru: {
     walletOptions: "Варианты сохранения",
-    walletManual: "Добавьте карту заново, чтобы обновить баланс",
-    walletAutomatic: "Отметки обновляются в Wallet автоматически",
-    walletPreview: "Предпросмотр карты Wallet",
     test: "Попробовать симуляцию кассы",
     title: "Карта гостя",
     paperTitle: "Карта отметок",
     demoCard: "Демо-карта",
     demoJoin: "Создать демо-карту",
+    venueJoin: "Создать карту заведения",
     demoNotice: "Демо-карта · тестовые награды",
     checkout: "Покажите на кассе",
     firstStamp: "Покажите код для первой отметки",
@@ -141,7 +136,7 @@ function PassIdentity({ name, logo }: { name: string; logo?: string }) {
   );
 }
 
-export default function Loyalty({ language }: { language: Language }) {
+export default function Loyalty({ language, savedDemo, savedDemoLink }: { language: Language; savedDemo?: ReactNode; savedDemoLink?: ReactNode }) {
   const { venue, apiBase } = useVenue();
   const isSweeto = venue.id === "sweeto";
   const cardPath = `${apiBase}/loyalty/card`;
@@ -177,18 +172,15 @@ export default function Loyalty({ language }: { language: Language }) {
     !error && wallet?.path === apiBase && wallet.code === cardCode
       ? wallet.pass
       : null;
-  const applePass = canOpenAppleWallet(navigator.userAgent)
-    ? walletPass?.passUrl
-    : null;
+  const appleDevice = canOpenAppleWallet(navigator.userAgent);
   const googleReady = walletPass?.googleStatus === "ready";
-  const walletOptions =
-    Boolean(walletPass?.passUrl) ||
-    googleReady ||
-    walletPass?.status === "error" ||
-    walletPass?.googleStatus === "error";
-  const appleDetail = walletPass?.updatesEnabled
-    ? labels.walletAutomatic
-    : labels.walletManual;
+  const applePass =
+    appleDevice || (!googleReady && !/Android/i.test(navigator.userAgent))
+      ? walletPass?.passUrl
+      : null;
+  const walletIssue =
+    walletPass?.status === "error" || walletPass?.googleStatus === "error";
+  const hasOtherWallet = Boolean(walletPass?.passUrl && googleReady);
   const focusHeading = useCallback((heading: HTMLHeadingElement | null) => {
     if (heading && focusCreatedCard.current) {
       focusCreatedCard.current = false;
@@ -419,19 +411,36 @@ export default function Loyalty({ language }: { language: Language }) {
               : t.stampAdded
             : t.cardSaved}
       </span>
-      <button
-        className="sweeto-refresh"
-        type="button"
-        disabled={refreshing}
-        onClick={() => {
-          if (QRCode === "unavailable") setQrAttempt((attempt) => attempt + 1);
-          void load();
-        }}
-      >
-        <RefreshCw size={15} className={refreshing ? "sweeto-spinning" : ""} />
-        {t.refresh}
-      </button>
+      {(!isSweeto || error || QRCode === "unavailable") && (
+        <button
+          className="sweeto-refresh"
+          type="button"
+          disabled={refreshing}
+          onClick={() => {
+            if (QRCode === "unavailable")
+              setQrAttempt((attempt) => attempt + 1);
+            void load();
+          }}
+        >
+          <RefreshCw
+            size={15}
+            className={refreshing ? "sweeto-spinning" : ""}
+          />
+          {t.refresh}
+        </button>
+      )}
     </div>
+  );
+  if (!card && savedDemo && status !== "loading") return (
+    <>
+      {savedDemo}
+      {status === "ready" && <div className="papu-saved-demo-link">
+        <button type="button" disabled={saving} onClick={() => void join()}>
+          {saving ? t.creating : labels.venueJoin}
+        </button>
+        {error && <p className="sweeto-error" role="alert">{t.connection}</p>}
+      </div>}
+    </>
   );
   return (
     <section
@@ -483,7 +492,7 @@ export default function Loyalty({ language }: { language: Language }) {
                     guestRoute(location.pathname).placement === "counter"
                   }
                 />
-                {cardMeta}
+                {(receipt || error || QRCode === "unavailable") && cardMeta}
               </>
             ) : (
               <>
@@ -556,42 +565,31 @@ export default function Loyalty({ language }: { language: Language }) {
                 </div>
               </>
             )}
-            {(walletOptions || testAvailable) && (
+            {(applePass || googleReady || walletIssue) && (
               <div className="papu-loyalty-wallet">
-                {applePass || googleReady ? (
-                  <>
-                    {applePass ? (
-                      <AppleWalletLink
-                        language={language}
-                        passUrl={applePass}
-                        supported
-                      />
-                    ) : (
-                      <GoogleWalletButton
-                        key={`${apiBase}:${card.checkout}`}
-                        apiBase={apiBase}
-                        language={language}
-                      />
-                    )}
-                    <GuestLink
-                      className="papu-loyalty-wallet-details"
-                      view="wallet"
-                    >
-                      {applePass && !googleReady
-                        ? appleDetail
-                        : labels.walletOptions}
-                      <ArrowRight size={14} aria-hidden="true" />
-                    </GuestLink>
-                  </>
+                {applePass ? (
+                  <AppleWalletLink
+                    language={language}
+                    passUrl={applePass}
+                    supported={appleDevice}
+                  />
+                ) : googleReady ? (
+                  <GoogleWalletButton
+                    key={card.checkout}
+                    apiBase={apiBase}
+                    language={language}
+                  />
                 ) : (
                   <GuestLink className="papu-loyalty-save" view="wallet">
-                    <span>
-                      {walletOptions
-                        ? labels.walletOptions
-                        : labels.walletPreview}
-                    </span>
-                    <span className="papu-action-arrow" aria-hidden="true">
-                      <WalletCards size={17} />
+                    <span>{labels.walletOptions}</span>
+                    <WalletCards size={17} aria-hidden="true" />
+                  </GuestLink>
+                )}
+                {hasOtherWallet && (
+                  <GuestLink className="papu-other-wallets" view="wallet">
+                    <MoreHorizontal size={20} aria-hidden="true" />
+                    <span className="sweeto-sr-only">
+                      {labels.walletOptions}
                     </span>
                   </GuestLink>
                 )}
@@ -704,7 +702,7 @@ export default function Loyalty({ language }: { language: Language }) {
           </div>
         </div>
       )}
-      {(card || status === "ready") && (
+      {((!card && status === "ready") || (card && !isSweeto)) && (
         <p className="sweeto-card-terms">
           {isSweeto && testAvailable ? labels.demoNotice : t.terms}
         </p>
@@ -721,6 +719,7 @@ export default function Loyalty({ language }: { language: Language }) {
           {t.connection}
         </p>
       )}
+      {status === "ready" && savedDemoLink}
     </section>
   );
 }

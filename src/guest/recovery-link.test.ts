@@ -11,12 +11,18 @@ describe("Wallet recovery links", () => {
     }
   });
 
+  it("accepts the same public snapshot on the main card after handoff and reload", () => {
+    expect(parseRecoveryLink("/v/sweeto/card", "#demo=sweeto-testflight-v1.3")).toEqual({ kind: "demo", stamps: 3 });
+    expect(parseRecoveryLink("/v/sweeto/card", "#demo=sweeto-testflight-saved")).toEqual({ kind: "savedDemo" });
+    expect(parseRecoveryLink("/v/sweeto/card", "#token=" + token)).toBeNull();
+  });
+
   it("never promotes a demo link to a live membership", () => {
     const demo = "#demo=sweeto-testflight-v1.3";
     for (const hash of [demo + "&token=" + token, "#token=" + token + "&demo=3", demo + "\n", demo + "0", demo.replace(".3", ".7"), "#demo=3", ""]) {
       expect(parseRecoveryLink(path, hash)).toBeNull();
     }
-    for (const wrongPath of ["/v/elsewhere/restore", "/v/maka-maslo/restore", "/v/sweeto/card"]) {
+    for (const wrongPath of ["/v/elsewhere/restore", "/v/maka-maslo/restore"]) {
       expect(parseRecoveryLink(wrongPath, demo)).toBeNull();
     }
   });

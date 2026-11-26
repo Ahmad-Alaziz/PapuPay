@@ -73,7 +73,7 @@ scripts/               iOS project generation, font preparation, CI and test hel
 
 ## The App Clip and native app
 
-The [full app link](https://papupay.com/app) opens the installed iPhone app or the browser guest page. Guests can open Sweeto through the App Clip, or in a browser at `/go/sweeto/table` and `/v/sweeto`. Direct menu and counter links open their destination immediately. Guests can choose desserts from the menu, show staff a bilingual counter list and present their loyalty QR. Venues can offer Apple Wallet and Google Wallet passes when their issuer credentials are configured. Staff use the venue checkout to record stamps and redemptions.
+The [full app link](https://papupay.com/app) opens the installed iPhone app or the browser guest page. Guests can open Sweeto through the App Clip, or in a browser at `/go/sweeto/table` and `/v/sweeto`. Direct menu and counter links open their destination immediately. Guests can browse dessert details, see the Polish name when ordering at the counter, and present their loyalty QR. Venues can offer Apple Wallet and Google Wallet passes when their issuer credentials are configured. Staff use the venue checkout to record stamps and redemptions.
 
 The Next.js site forwards venue API requests to the Node loyalty service configured by `PAPUPAY_API_ORIGIN`. For local development, add `PAPUPAY_API_ORIGIN=http://127.0.0.1:4173` to `.env.local` and run `npm run venue:serve` alongside `npm run dev`. The service requires Node 22.13 or newer. Production needs a persistent SQLite volume, an absolute database path for each venue and the venue's staff credentials. The public marketing pages and contact form operate independently. [Venue and Wallet configuration](docs/VENUES-AND-WALLET.md)
 

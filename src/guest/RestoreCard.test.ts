@@ -1,5 +1,5 @@
 import { afterEach, expect, it, vi } from "vitest";
-import { checkRestore } from "./RestoreCard";
+import { checkRestore, openMembership } from "./RestoreCard";
 
 const base = "/api/v/sweeto";
 const preview = { code: "DEMO1234", stamps: 2, goal: 6 };
@@ -49,4 +49,19 @@ it("keeps a valid preview non-actionable when the current card check fails", asy
   await expect(
     checkRestore(base, "example", new AbortController().signal),
   ).resolves.toEqual({ status: "error" });
+});
+
+it("opens the same signed-in account without issuing another session", async () => {
+  const fetch = vi.fn();
+  vi.stubGlobal("fetch", fetch);
+  await openMembership(base, "example", { status: "ready", preview, currentCode: preview.code }, new AbortController().signal);
+  expect(fetch).not.toHaveBeenCalled();
+});
+
+it("sends an empty-session expectation before auto-restoring a new device and verifies its cookie", async () => {
+  const fetch = vi.fn().mockResolvedValueOnce(Response.json({ card: preview })).mockResolvedValueOnce(Response.json({ card: preview }));
+  vi.stubGlobal("fetch", fetch);
+  await openMembership(base, "example", { status: "ready", preview }, new AbortController().signal);
+  expect(JSON.parse(fetch.mock.calls[0][1].body)).toEqual({ token: "example", expectedCurrentCode: null });
+  expect(fetch.mock.calls[1][0]).toBe(base + "/loyalty/card");
 });

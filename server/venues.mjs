@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
+import sweetoDesserts from "../public/assets/sweeto/desserts.json" with { type: "json" };
 
 export const defaultVenueId = "sweeto";
 export const venueIdPattern = /^[a-z0-9](?:[a-z0-9-]{0,30}[a-z0-9])?$/;
@@ -65,6 +66,13 @@ function cleanBrand(venue) {
     const valid = key === "font" ? ["bricolage", "dm-sans", "manrope", "serif", "system"].includes(requested) : /^#[0-9a-f]{6}$/i.test(requested ?? "");
     return [key, valid ? requested : value];
   }));
+  const dessertKcalPerServing = {};
+  if (venue.id === defaultVenueId) {
+    for (const { id } of sweetoDesserts) {
+      const kcal = venue.dessertKcalPerServing?.[id];
+      if (Number.isSafeInteger(kcal) && kcal >= 0) dessertKcalPerServing[id] = kcal;
+    }
+  }
   return {
     id: venue.id,
     name: venue.name,
@@ -75,6 +83,7 @@ function cleanBrand(venue) {
     ...(hasSauceDrip ? { photoMotion: "sauce-drip", photoDrip: { x: photoDrip.x, y: photoDrip.y ?? 1, width: photoDrip.width ?? 0.04, color: photoDrip.color } } : {}),
     mapUrl,
     ...(hasPin ? { walletLocation: { latitude: pin.latitude, longitude: pin.longitude } } : {}),
+    ...(Object.keys(dessertKcalPerServing).length ? { dessertKcalPerServing } : {}),
     menuFallback: publicAsset(venue.menuFallback ?? fallback.menuFallback),
     menuImageUrl: publicAsset(venue.menuImageUrl ?? fallback.menuImageUrl),
     theme: { ...theme, motionTheme },
