@@ -23,18 +23,22 @@ When a live member loses connectivity, the App Clip can show their last saved ch
 
 ## Private build configuration
 
-Source control contains only `apps/ios/Resources/GuestDemo.plist` with `enabled: false`. The protected `apple-signing` environment can provide `PAPUPAY_GUEST_DEMO_BASE64` to the manually run TestFlight workflow. It is a base64-encoded binary property list, optionally compressed with gzip, containing:
+The checked-in `GuestDemo.plist` has `enabled: false`. The protected `apple-signing` environment supplies the original demo through `PAPUPAY_GUEST_DEMO_BASE64`, a base64-encoded binary property list with optional gzip compression.
 
 - `enabled`, `venueId`, `cardCode` and `checkout`;
 - `wifi` with the approved test network details;
 - `walletPasses`, seven signed pass files stored as property-list Data values.
 
-The signing step validates and decodes the resource before archiving, unsets the secret environment variable, and restores the disabled source resource afterward. The 48 KB secret and 512 KB decompressed payload limits are checked. Logs and packaging artifacts exclude the private resource contents. Signing keys are not bundled.
+The signing step verifies each original pass, then rebuilds all seven states from the current artwork, the protected card identity and the detached CMS signatures in `scripts/ci/guest-wallet-signatures/`. It verifies every manifest and uses the signer from the protected passes to authenticate the rebuilt files. Only the internal app bundle receives the private demo, and the step restores the disabled source resource after archiving. The original secret is limited to 48 KiB encoded and 512 KiB after decompression.
+
+When the pass template changes, use the local Wallet signer and the original protected demo configuration to run `python3 scripts/ci/regenerate-guest-wallet.py --signatures scripts/ci/guest-wallet-signatures`. This checks that all seven pass archives reproduce exactly before writing their detached signatures. Only those signatures belong in source control. The pass type, serial number and checkout QR stay the same across stamp states. Each pass links to its own saved demo stamp count.
 
 The runtime loader accepts this demo only for Sweeto and the designated demo identity. Removing the encrypted environment secret produces a new build with the demo disabled. Build a fresh release with it disabled before public distribution; do not promote a private internal demo binary to the App Store.
 
 ## Verification status
 
 The November 26 unsigned archive passed for the app and embedded Clip. The raw Clip measured 8.778 MB, below its 15 MB gate. All seven passes passed manifest hashes, CMS signatures, Apple certificate-chain verification and native macOS PassKit parsing. Checks cover disabled/enabled resource handling, wrong-venue isolation, bounded decompression, card creation, retry protection, six-stamp limits, redemption, local persistence and the next reward cycle.
+
+For the redesigned Wallet pass, Node 22.14.0 and 22.21.1 independently reproduced all seven signed manifests. Apple PassKit read the recorded balance from each pass. Each of the seven recovered cards kept its original checkout QR and matching English, Polish and Russian Wallet links. The renewed pass packages measured 32,829–32,940 bytes.
 
 The simulator walkthrough verified card creation, six scans, confirmed redemption back to zero stamps, retained progress after reinstall, the signed pass in Apple’s Add to Wallet sheet, and populated Wi-Fi details with a manual fallback. Physical-device installation, the Wi-Fi consent/join result and Wallet behavior must also be checked through the next assigned TestFlight build. Publication status is recorded separately after upload and group assignment.

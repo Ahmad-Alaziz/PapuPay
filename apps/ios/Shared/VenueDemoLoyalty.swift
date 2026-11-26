@@ -14,6 +14,12 @@ struct VenueDemoLoyalty: Codable, Equatable {
     created = true
   }
 
+  mutating func restoreSavedPass(stamps saved: Int) {
+    guard !created, (0...Self.goal).contains(saved) else { return }
+    created = true
+    stamps = saved
+  }
+
   @discardableResult mutating func scan(_ id: UUID) -> Bool {
     guard created, stamps < Self.goal, !processedScans.contains(id) else { return false }
     stamps += 1

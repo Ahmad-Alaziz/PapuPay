@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Materialize a TestFlight-only demo resource without logging its private values."""
 
+import argparse
 import base64
 import gzip
 import io
@@ -9,6 +10,8 @@ from pathlib import Path
 import plistlib
 import sys
 import zipfile
+
+from guest_demo_wallet import MAX_PASS_BYTES, refresh_passes
 
 
 def decode_configuration(encoded):
@@ -50,7 +53,7 @@ def decode_configuration(encoded):
         if not isinstance(passes, list) or len(passes) != 7:
             raise ValueError("Bundled demo Wallet passes must cover all seven stamp states.")
         for wallet in passes:
-            if not isinstance(wallet, bytes) or len(wallet) > 50 * 1024:
+            if not isinstance(wallet, bytes) or len(wallet) > MAX_PASS_BYTES:
                 raise ValueError("Bundled demo Wallet pass is invalid or too large.")
             try:
                 with zipfile.ZipFile(io.BytesIO(wallet)) as archive:
@@ -62,10 +65,14 @@ def decode_configuration(encoded):
 
 
 def main():
-    if len(sys.argv) != 2:
-        raise ValueError("Supply the destination resource path.")
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("destination", type=Path)
+    parser.add_argument("--refresh-wallet", action="store_true")
+    args = parser.parse_args()
     configuration = decode_configuration(os.environ.get("PAPUPAY_GUEST_DEMO_BASE64", ""))
-    destination = Path(sys.argv[1])
+    if args.refresh_wallet and configuration["enabled"]:
+        configuration["walletPasses"], _ = refresh_passes(configuration)
+    destination = args.destination
     destination.parent.mkdir(parents=True, exist_ok=True)
     destination.write_bytes(plistlib.dumps(configuration, fmt=plistlib.FMT_BINARY))
     destination.chmod(0o600)

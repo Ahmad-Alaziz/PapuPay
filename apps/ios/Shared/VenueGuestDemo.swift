@@ -26,6 +26,7 @@ struct VenueGuestDemo: Decodable {
   }
 
   static func loyaltyConfiguration(for venue: VenueGuestLink) -> Self? {
+    guard !UserDefaults.standard.bool(forKey: livePreference(for: venue)) else { return nil }
     if let provisioned = configuration(for: venue) { return provisioned }
     #if DEBUG && targetEnvironment(simulator)
     if venue == .starter && !ProcessInfo.processInfo.arguments.contains("-useLiveLoyalty") {
@@ -33,6 +34,14 @@ struct VenueGuestDemo: Decodable {
     }
     #endif
     return nil
+  }
+
+  private static func livePreference(for venue: VenueGuestLink) -> String {
+    "papupay.recovered-live-membership." + venue.origin.absoluteString + "|" + venue.slug
+  }
+
+  static func preferRecoveredMembership(for venue: VenueGuestLink) {
+    UserDefaults.standard.set(true, forKey: livePreference(for: venue))
   }
 
   func loyaltyNamespace(for venue: VenueGuestLink) -> String {

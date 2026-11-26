@@ -41,7 +41,7 @@ trap cleanup EXIT
 
 # Only this protected TestFlight workflow injects private demo data. The
 # committed resource remains disabled and no private values enter build logs.
-python3 scripts/ci/prepare-guest-demo.py "$demo_resource"
+python3 scripts/ci/prepare-guest-demo.py --refresh-wallet "$demo_resource"
 unset PAPUPAY_GUEST_DEMO_BASE64
 
 keychain initialize --path "$keychain_path" --password "$keychain_password"
@@ -92,14 +92,7 @@ xcodebuild -exportArchive -archivePath "$PWD/build/PapuPay.xcarchive" \
     tail -n 100 build/reports/export.log
     exit 1
   }
-# Upload only. External beta review and public App Store submission are separate actions.
-app-store-connect publish --path "$PWD/build/export/PapuPay.ipa"
-cat >> "$GITHUB_STEP_SUMMARY" <<'SUMMARY'
-## PapuPay uploaded
-
-Apple has received the build. Processing can take a few minutes.
-
-[Open TestFlight](https://appstoreconnect.apple.com/apps/6826778125/testflight/ios)
-
-Use the Sweeto App Clip invocations `/go/sweeto/table`, `/go/sweeto/menu` and `/go/sweeto/counter` on `https://papupay.com`, then assign the build to internal testers. This workflow does not submit a public App Store release.
-SUMMARY
+if [[ ! -s build/export/PapuPay.ipa ]]; then
+  echo "::error::Xcode did not export build/export/PapuPay.ipa"
+  exit 1
+fi

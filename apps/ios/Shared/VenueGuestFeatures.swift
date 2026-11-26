@@ -578,6 +578,7 @@ struct VenueLoyaltyView: View {
   @State private var preview = false
   @State private var walletAvailable = false
   @State private var googleWalletAvailable = false
+  @State private var walletRecoveryAvailable = false
   @State private var walletChecked = false
   @State private var walletLookupFailed = false
   @State private var walletLookupAttempt = 0
@@ -685,6 +686,7 @@ struct VenueLoyaltyView: View {
       guard walletMembership != lookup.membership || !walletChecked || walletLookupFailed else { return }
       walletAvailable = false
       googleWalletAvailable = false
+      walletRecoveryAvailable = false
       walletChecked = false
       walletLookupFailed = false
       walletUpdates = false
@@ -694,6 +696,7 @@ struct VenueLoyaltyView: View {
       defer { if !Task.isCancelled, walletLookup == lookup { walletChecked = true } }
       if let demo {
         walletAvailable = demo.walletPassData(stamps: membership.stamps) != nil
+        walletRecoveryAvailable = walletAvailable
       } else {
         guard let response = try? await api.wallet() else {
           if !Task.isCancelled, walletLookup == lookup { walletLookupFailed = true }
@@ -703,6 +706,7 @@ struct VenueLoyaltyView: View {
         walletAvailable = response.status == .ready && response.passUrl != nil
         googleWalletAvailable = response.googleStatus == .ready
         walletUpdates = response.updatesEnabled == true
+        walletRecoveryAvailable = response.recoveryEnabled == true
       }
       // The persisted fingerprint only requests a fresh check. PassKit is authoritative.
       guard walletAvailable, previouslyInstalled == membership.fingerprint(in: api.venue),
@@ -1125,6 +1129,8 @@ struct VenueLoyaltyView: View {
         t("Pieczątki w Apple Wallet aktualizują się automatycznie.", "Stamps in Apple Wallet update automatically.", "Отметки в Apple Wallet обновляются автоматически.")
       } else if installedPass != nil && canAddApplePass {
         t("Uaktualnij kartę, aby zobaczyć nowe pieczątki w Wallet.", "Refresh the pass to see new stamps in Wallet.", "Обновите карту, чтобы увидеть новые отметки в Wallet.")
+      } else if walletRecoveryAvailable && canAddApplePass {
+        t("W szczegółach karty w Wallet znajdziesz link do swoich pieczątek.", "Open Pass Details in Wallet to get back to your stamps.", "В сведениях о карте в Wallet есть ссылка на ваши отметки.")
       } else {
         t("Przy następnej wizycie pokaż kartę bezpośrednio z portfela.", "Show the pass from your wallet on your next visit.", "При следующем визите покажите карту из кошелька.")
       }
@@ -1574,7 +1580,6 @@ struct VenueLoyaltyView: View {
       if alreadyInstalled {
         installedPass = pass
         previouslyInstalled = membership.fingerprint(in: api.venue)
-        if request != .refreshApple { return }
       } else {
         installedPass = nil
         if previouslyInstalled == membership.fingerprint(in: api.venue) { previouslyInstalled = Data() }

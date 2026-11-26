@@ -23,6 +23,13 @@ struct DemoLoyaltyTests {
     ledger.save(namespace: "sweeto-test", defaults: defaults)
     precondition(VenueDemoLoyalty.load(namespace: "sweeto-test", defaults: defaults) == ledger)
     precondition(!VenueDemoLoyalty.load(namespace: "other-venue", defaults: defaults).created)
+    var restored = VenueDemoLoyalty()
+    restored.restoreSavedPass(stamps: 7)
+    precondition(!restored.created)
+    restored.restoreSavedPass(stamps: 6)
+    precondition(restored.rewardAvailable && restored.redeem())
+    restored.restoreSavedPass(stamps: 6)
+    precondition(restored.stamps == 0 && !restored.rewardAvailable, "A saved pass cannot replay a redeemed card")
     print("Demo loyalty checks passed: creation, retry protection, goal, redemption, next round, persistence and venue isolation.")
   }
 }

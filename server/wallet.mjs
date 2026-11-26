@@ -7,7 +7,7 @@ import { join } from "node:path";
 import { promisify } from "node:util";
 import { deflateRawSync } from "node:zlib";
 import { createApnsSender } from "./wallet-apns.mjs";
-import { renderStampSheet } from "./wallet.stamp-sheet.mjs";
+import { inkSweetoStrip, renderStampSheet } from "./wallet.stamp-sheet.mjs";
 
 const run = promisify(execFile);
 const artworkFiles = ["icon", "logo", "strip"].flatMap((slot) => (
@@ -41,7 +41,7 @@ function zipFiles(files, compress) {
     const name = Buffer.from(path);
     const checksum = crc32(content);
     // Let the enclosing demo gzip find the shared certificate and strip data across states.
-    const deflated = compress && path !== "signature" && !path.startsWith("strip")
+    const deflated = compress && !["signature", "pass.json"].includes(path) && !path.startsWith("strip") && !path.endsWith(".strings")
       ? deflateRawSync(content) : content;
     const compression = deflated.length < content.length ? 8 : 0;
     const packed = compression ? deflated : content;
@@ -114,7 +114,8 @@ export function publicHttpsOrigin(value) {
 
 function passLink(url, text) {
   const href = url.replaceAll("&", "&amp;").replaceAll('"', "&quot;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
-  return `<a href="${href}">${text}</a>`;
+  const label = text.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+  return `<a href="${href}">${label}</a>`;
 }
 
 function passTitle(brand, demo, translations = {}) {
@@ -136,10 +137,11 @@ export function storePassDocument(brand, card, { passTypeId, teamId, origin }, p
   const next = remaining
     ? { key: "remaining", label: "Reward in", value: stampCount(remaining) }
     : { key: "reward", label: "Reward", value: "Ready" };
-  const webLink = profile.recoveryUrl ? {
-    key: "website", label: "Restore your card", value: "Open loyalty card",
-    attributedValue: passLink(profile.recoveryUrl, "Open loyalty card"),
-  } : { key: "website", label: "Browser card", value: cardUrl.href };
+  const cardLink = profile.recoveryUrl ?? cardUrl.href;
+  const openCard = {
+    key: "website", label: demo ? "TestFlight demo" : "Your loyalty card",
+    value: "Open my card", attributedValue: passLink(cardLink, "Open my card"),
+  };
   const stampBalance = { key: "stamps", label: "Stamp balance", value: `${card.stamps} / ${card.goal}` };
   const notifyBalance = isSweeto && liveUpdates;
   const firstField = isSweeto
@@ -155,6 +157,9 @@ export function storePassDocument(brand, card, { passTypeId, teamId, origin }, p
     foregroundColor: rgb(palette.paper),
     backgroundColor: rgb(palette.body),
     labelColor: rgb(palette.label),
+    associatedStoreIdentifiers: [6826778125],
+    appLaunchURL: cardLink,
+    featuredActions: [{ identifier: "open-membership", type: "membershipBenefits", url: cardLink }],
     ...(brand.walletLocation ? {
       locations: [{ ...brand.walletLocation, relevantText: "You can collect stamps here." }],
     } : {}),
@@ -164,14 +169,17 @@ export function storePassDocument(brand, card, { passTypeId, teamId, origin }, p
     } : {}),
     barcodes: [{ format: "PKBarcodeFormatQR", message: card.checkout, messageEncoding: "iso-8859-1", altText: card.code }],
     storeCard: {
-      ...(notifyBalance ? { headerFields: [{ ...stampBalance, changeMessage: "Stamp balance: %@." }] } : {}),
+      ...(isSweeto ? { headerFields: [notifyBalance ? { ...stampBalance, changeMessage: "Stamp balance: %@." } : stampBalance] } : {}),
       secondaryFields: [firstField, next],
       backFields: [
-        ...(demo ? [{ key: "instructions", label: "TestFlight demo", value: "Use this card to try the checkout flow." }] : [
-          { key: "instructions", label: "At checkout", value: "Show this QR code to collect stamps or redeem your reward." },
-          webLink,
+        openCard,
+        ...(demo ? [{ key: "instructions", label: "About this demo", value: "Test visits and rewards are saved in the app on this device." }] : [
+          { key: "instructions", label: "How stamps work", value: "Staff add stamps at checkout. When your card is full, you can redeem a reward at the counter." },
         ]),
-        ...(notifyBalance ? [] : [stampBalance]),
+        ...(brand.address ? [{ key: "address", label: "Visit us", value: brand.address,
+          ...(brand.mapUrl ? { attributedValue: passLink(brand.mapUrl, brand.address) } : {}),
+        }] : []),
+        ...(isSweeto ? [] : [stampBalance]),
         {
           key: "balanceSource",
           label: liveUpdates ? "Live balance" : "Balance when saved",
@@ -181,7 +189,7 @@ export function storePassDocument(brand, card, { passTypeId, teamId, origin }, p
               ? "Add this pass again after collecting a stamp or claiming a reward to update it."
               : "Open your browser card for the latest progress or download an updated pass.",
         },
-        { key: "code", label: "Card code", value: card.code },
+        ...(!demo && profile.recoveryUrl ? [{ key: "venue", label: "Venue page", value: new URL(`/v/${brand.id}`, origin).href }] : []),
         { key: "support", label: "Papupay support", value: supportUrl },
       ],
     },
@@ -191,6 +199,14 @@ export function storePassDocument(brand, card, { passTypeId, teamId, origin }, p
 const translations = {
   en: {},
   pl: {
+    "Open my card": "Otwórz moją kartę",
+    "Your loyalty card": "Twoja karta lojalnościowa",
+    "About this demo": "O wersji demonstracyjnej",
+    "Test visits and rewards are saved in the app on this device.": "Testowe wizyty i nagrody są zapisywane w aplikacji na tym urządzeniu.",
+    "How stamps work": "Jak zbierać pieczątki",
+    "Staff add stamps at checkout. When your card is full, you can redeem a reward at the counter.": "Obsługa dodaje pieczątki przy kasie. Z pełną kartą możesz odebrać nagrodę przy ladzie.",
+    "Visit us": "Adres lokalu",
+    "Venue page": "Strona lokalu",
     "You can collect stamps here.": "Tu możesz zbierać pieczątki.",
     "Loyalty card": "Karta lojalnościowa",
     "Demo card": "Karta demo",
@@ -219,6 +235,14 @@ const translations = {
     "Papupay support": "Pomoc Papupay",
   },
   ru: {
+    "Open my card": "Открыть мою карту",
+    "Your loyalty card": "Ваша карта лояльности",
+    "About this demo": "О демонстрационной версии",
+    "Test visits and rewards are saved in the app on this device.": "Пробные посещения и награды сохраняются в приложении на этом устройстве.",
+    "How stamps work": "Как получить отметку",
+    "Staff add stamps at checkout. When your card is full, you can redeem a reward at the counter.": "При оплате сотрудник добавит отметку. Когда карта заполнится, заберите награду на кассе.",
+    "Visit us": "Адрес заведения",
+    "Venue page": "Страница заведения",
     "You can collect stamps here.": "Здесь можно получить отметку.",
     "Loyalty card": "Карта лояльности",
     "Demo card": "Пробная карта",
@@ -265,6 +289,10 @@ export async function buildStorePassFiles(brand, card, config, profile = {}) {
   const isSweeto = brand.id === "sweeto";
   const images = await Promise.all((profile.offlineDemo ? demoArtworkFiles : artworkFiles).map(async (name) => {
     if (name.startsWith("strip")) {
+      if (isSweeto && card.goal === 6) {
+        const template = await readFile(new URL(`./wallet-assets/sweeto-${name}`, import.meta.url));
+        return [name, inkSweetoStrip(template, card.stamps)];
+      }
       const scale = Number(name.match(/@(\d)x/)?.[1] ?? 1);
       return [name, renderStampSheet(card, scale, isSweeto ? "sweeto" : "classic")];
     }
@@ -283,10 +311,8 @@ export async function buildStorePassFiles(brand, card, config, profile = {}) {
       if (Object.hasOwn(values, value)) localized[value] = values[value];
     }
     if (remaining > 0) localized[stampCount(remaining)] = stampCount(remaining, language);
-    if (!profile.offlineDemo && profile.recoveryUrl) {
-      const linkText = values["Open loyalty card"] ?? "Open loyalty card";
-      localized[passLink(profile.recoveryUrl, "Open loyalty card")] = passLink(profile.recoveryUrl, linkText);
-    }
+    const cardAction = pass.storeCard.backFields[0];
+    localized[cardAction.attributedValue] = passLink(pass.appLaunchURL, values[cardAction.value] ?? cardAction.value);
     const strings = Object.entries(localized)
       .map(([key, value]) => `${JSON.stringify(key)} = ${JSON.stringify(value)};`)
       .join("\n");

@@ -52,14 +52,17 @@ test("the Papupay Wallet pass shows progress and venue identity with the origina
   assert.deepEqual(pass.barcodes[0], {
     format: "PKBarcodeFormatQR", message: card.checkout, messageEncoding: "iso-8859-1", altText: card.code,
   });
-  assert.equal(pass.storeCard.backFields[1].value, "https://example.test/v/berry-counter/card");
+  assert.deepEqual(pass.featuredActions, [{ identifier: "open-membership", type: "membershipBenefits", url: "https://example.test/v/berry-counter/card" }]);
+  assert.deepEqual(pass.associatedStoreIdentifiers, [6826778125]);
+  assert.equal(pass.appLaunchURL, pass.featuredActions[0].url);
+  assert.equal(pass.storeCard.backFields[0].attributedValue, '<a href="https://example.test/v/berry-counter/card">Open my card</a>');
   assert.equal(pass.storeCard.backFields.find(({ key }) => key === "balanceSource").label, "Balance when saved");
   assert.equal(pass.serialNumber, storePassDocument(brand, { ...card, stamps: 3 }, config).serialNumber);
   assert.notEqual(pass.serialNumber, storePassDocument({ ...brand, id: "forest-counter" }, card, config).serialNumber);
   assert.equal(pass.sharingProhibited, undefined);
   const recovery = storePassDocument(brand, card, config, { recoveryUrl: "https://example.test/v/berry-counter/restore#token=fixture" });
   assert.equal(recovery.sharingProhibited, true);
-  assert.match(recovery.storeCard.backFields[1].attributedValue, /#token=fixture/);
+  assert.match(recovery.storeCard.backFields[0].attributedValue, /#token=fixture/);
   const live = storePassDocument(brand, card, config, {
     webServiceURL: "https://example.test/api/v/berry-counter/wallet", authenticationToken: "fixture",
   });
@@ -88,7 +91,7 @@ test("Wallet bundles native-size artwork and localized terms and recovery links"
   assert.match(polish, /"4 stamps" = "4 pieczątki"/);
   assert.match(polish, /"Balance when saved" = "Stan przy zapisie"/);
   assert.match(polish, /Karta lojalnościowa Papupay · Berry Counter/);
-  assert.ok(polish.includes(JSON.stringify(`<a href="${recoveryUrl}">Otwórz kartę lojalnościową</a>`)));
+  assert.ok(polish.includes(JSON.stringify(`<a href="${recoveryUrl}">Otwórz moją kartę</a>`)));
   assert.ok(files.get("en.lproj/pass.strings"));
   assert.match(files.get("ru.lproj/pass.strings").toString("utf16le"), /"Reward in" = "До награды"/);
 });
@@ -109,7 +112,8 @@ test("only updatable Sweeto passes announce their actual stamp balance", async (
   }
   for (const pass of [storePassDocument(sweeto, card, config),
     storePassDocument(sweeto, card, config, { ...live, offlineDemo: true }), storePassDocument(brand, card, config, live)]) {
-    assert.equal(pass.storeCard.headerFields, undefined);
+    if (pass.description.includes("Sweeto")) assert.equal(pass.storeCard.headerFields[0].value, "2 / 6");
+    else assert.equal(pass.storeCard.headerFields, undefined);
     assert.ok(!JSON.stringify(pass).includes("changeMessage"));
   }
 });
@@ -123,7 +127,7 @@ test("offline demo passes keep their identity and fit the TestFlight bundle", as
     readFile(new URL(`./wallet-assets/sweeto-${name}@2x.png`, import.meta.url))));
   for (let stamps = 0; stamps <= 6; stamps += 1) {
     const files = await buildStorePassFiles(sweeto, { ...card, stamps }, config, {
-      offlineDemo: true, serialNumber: "fixture-demo", webServiceURL: "https://example.test/", authenticationToken: "fixture",
+      offlineDemo: true, serialNumber: "fixture-demo", recoveryUrl: `https://papupay.com/v/sweeto/restore#demo=sweeto-testflight-v1.${stamps}`, webServiceURL: "https://example.test/", authenticationToken: "fixture",
     });
     const demo = JSON.parse(files.get("pass.json"));
     assert.equal(demo.organizationName, "Sweeto");
@@ -134,7 +138,11 @@ test("offline demo passes keep their identity and fit the TestFlight bundle", as
     assert.equal(demo.storeCard.backFields.at(-1).label, "Papupay support");
     assert.equal(demo.serialNumber, "fixture-demo");
     assert.equal(demo.barcodes[0].message, card.checkout);
-    assert.equal(demo.storeCard.backFields.find(({ key }) => key === "stamps").value, `${stamps} / 6`);
+    assert.equal(demo.storeCard.headerFields[0].value, `${stamps} / 6`);
+    assert.equal(demo.storeCard.backFields[0].label, "TestFlight demo");
+    assert.equal(demo.appLaunchURL, `https://papupay.com/v/sweeto/restore#demo=sweeto-testflight-v1.${stamps}`);
+    assert.equal(demo.featuredActions[0].url, demo.appLaunchURL);
+    assert.equal(demo.storeCard.backFields[0].attributedValue, `<a href="${demo.appLaunchURL}">Open my card</a>`);
     assert.equal(demo.storeCard.secondaryFields[1].key, stamps < 6 ? "remaining" : "reward");
     assert.equal(demo.webServiceURL, undefined);
     assert.equal(demo.authenticationToken, undefined);

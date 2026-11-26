@@ -14,6 +14,7 @@
 		1D697A3CF03884B291C39558 /* VenueActionArt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15898865C844B62B49656720 /* VenueActionArt.swift */; };
 		1E84B090BF6424B96F7B1225 /* SweetoCounterOrder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 710B2E8F4C4E333B30D6F2CD /* SweetoCounterOrder.swift */; };
 		25D05DDDBF3EE6654C171BD0 /* VenueGuestDemo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CC2BFFBA2012CB471E9A7C1 /* VenueGuestDemo.swift */; };
+		A1B47C9D3AFB4E55B5B9F203 /* VenueWalletRecovery.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B47C9D3AFB4E55B5B9F202 /* VenueWalletRecovery.swift */; };
 		2D8DF91C21ADB62A3C0CDD90 /* BricolageGrotesque.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6F913D5FB5CE41B527F7C589 /* BricolageGrotesque.ttf */; };
 		30EC27AC44CDE0BB3C7487C6 /* VenueGuestFeatures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22A47D44243CDD2C6F2ABEF8 /* VenueGuestFeatures.swift */; };
 		38BFB9B75D456B9068409CAA /* PapuPayClip.app in Embed App Clips */ = {isa = PBXBuildFile; fileRef = 3E2F8274E49B16570697D55B /* PapuPayClip.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -75,6 +76,7 @@
 		D461E37CE6EEA6717DB1D0C1 /* SweetoGuestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F66940B8F78C981AF279FAB /* SweetoGuestView.swift */; };
 		DDED8B68F7B29B885E4657FA /* sweeto-actions.riv in Resources */ = {isa = PBXBuildFile; fileRef = 58ACFF21ED0CB9AB87B94719 /* sweeto-actions.riv */; };
 		DE2D48912C043BB7D73A335D /* VenueGuestDemo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CC2BFFBA2012CB471E9A7C1 /* VenueGuestDemo.swift */; };
+		A1B47C9D3AFB4E55B5B9F204 /* VenueWalletRecovery.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B47C9D3AFB4E55B5B9F202 /* VenueWalletRecovery.swift */; };
 		E19F002DE45B3001040127F7 /* DesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF1930A6830A1BA344ACB386 /* DesignSystem.swift */; };
 		F05AA2FC442B9C1C20C6907C /* Manrope-OFL.txt in Resources */ = {isa = PBXBuildFile; fileRef = D2AD1C7CD81BFD69A5A27290 /* Manrope-OFL.txt */; };
 		F40139A97AC80C93E74DF286 /* menu.pdf in Resources */ = {isa = PBXBuildFile; fileRef = B9FDDBAFC3FE3F15B4DC698A /* menu.pdf */; };
@@ -127,6 +129,7 @@
 		79607959A6CD09A4DCF35B82 /* motion-menu.webp */ = {isa = PBXFileReference; includeInIndex = 1; name = "motion-menu.webp"; path = "../../../packages/motion/sweeto-actions/runtime/motion-menu.webp"; sourceTree = "<group>"; };
 		7F97E0C5610ABCCE24860437 /* Manrope.ttf */ = {isa = PBXFileReference; includeInIndex = 1; name = Manrope.ttf; path = ../../../packages/brand/fonts/Manrope.ttf; sourceTree = "<group>"; };
 		8CC2BFFBA2012CB471E9A7C1 /* VenueGuestDemo.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VenueGuestDemo.swift; sourceTree = "<group>"; };
+		A1B47C9D3AFB4E55B5B9F202 /* VenueWalletRecovery.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VenueWalletRecovery.swift; sourceTree = "<group>"; };
 		9AA5E521D7FA9AD35A274C58 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		9CAE3DCE0DF2DA0E616D1A8E /* motion-forest-menu.webp */ = {isa = PBXFileReference; includeInIndex = 1; name = "motion-forest-menu.webp"; path = "../../../packages/motion/sweeto-actions/runtime/motion-forest-menu.webp"; sourceTree = "<group>"; };
 		B14400E5F381C3F5F02F6B96 /* PapuPayApp.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PapuPayApp.swift; sourceTree = "<group>"; };
@@ -256,6 +259,7 @@
 				660263C3C9580D834154D557 /* VenueDemoLoyalty.swift */,
 				05F284A58157C3935417A585 /* VenueGuestAPI.swift */,
 				8CC2BFFBA2012CB471E9A7C1 /* VenueGuestDemo.swift */,
+				A1B47C9D3AFB4E55B5B9F202 /* VenueWalletRecovery.swift */,
 				22A47D44243CDD2C6F2ABEF8 /* VenueGuestFeatures.swift */,
 			);
 			name = Shared;
@@ -419,6 +423,7 @@
 				C858B5066FAADA1F2D7CD0D8 /* VenueDemoLoyalty.swift in Sources */,
 				3CF35ACB981B9F1745BD3099 /* VenueGuestAPI.swift in Sources */,
 				25D05DDDBF3EE6654C171BD0 /* VenueGuestDemo.swift in Sources */,
+				A1B47C9D3AFB4E55B5B9F203 /* VenueWalletRecovery.swift in Sources */,
 				30EC27AC44CDE0BB3C7487C6 /* VenueGuestFeatures.swift in Sources */,
 				3B8F33F0E75C3894F812C17C /* PapuPayApp.swift in Sources */,
 			);
@@ -435,6 +440,7 @@
 				C29A22FA2A14391723E20581 /* VenueDemoLoyalty.swift in Sources */,
 				3EAE4F308598B6429DEE2F45 /* VenueGuestAPI.swift in Sources */,
 				DE2D48912C043BB7D73A335D /* VenueGuestDemo.swift in Sources */,
+				A1B47C9D3AFB4E55B5B9F204 /* VenueWalletRecovery.swift in Sources */,
 				920CD5667085723784DB020F /* VenueGuestFeatures.swift in Sources */,
 				61F299DBDE853011966C0236 /* PapuPayApp.swift in Sources */,
 			);

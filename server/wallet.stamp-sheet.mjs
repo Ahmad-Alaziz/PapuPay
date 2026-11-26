@@ -1,4 +1,5 @@
 import { crc32, deflateSync } from "node:zlib";
+import sweetoInk from "./wallet-assets/sweeto-strip-ink.json" with { type: "json" };
 
 const width = 375;
 const height = 144;
@@ -35,7 +36,26 @@ function pngChunk(type, data) {
   return chunk;
 }
 
-function encodePng(pixels, pixelWidth, pixelHeight, palette) {
+// Our indexed template puts its palette immediately after IHDR. Recolour only
+// the occupied seals. Every balance preserves the identical compressed raster.
+export function inkSweetoStrip(template, stamps) {
+  const result = Buffer.from(template);
+  const chunk = 33;
+  if (result.toString("ascii", chunk + 4, chunk + 8) !== "PLTE") throw Error("Missing Sweeto strip palette");
+  const end = chunk + 8 + result.readUInt32BE(chunk);
+  const palette = result.subarray(chunk + 8, end);
+  const { firstSlot, earnedColours } = sweetoInk;
+  for (let slot = 0; slot < Math.min(6, stamps); slot++) {
+    for (const [index, source] of earnedColours.entries()) {
+      const offset = (firstSlot + slot * earnedColours.length + index) * 3;
+      palette.copy(palette, offset, source * 3, source * 3 + 3);
+    }
+  }
+  result.writeUInt32BE(crc32(result.subarray(chunk + 4, end)), end);
+  return result;
+}
+
+export function encodePng(pixels, pixelWidth, pixelHeight, palette, subFilter = false) {
   const header = Buffer.alloc(13);
   header.writeUInt32BE(pixelWidth);
   header.writeUInt32BE(pixelHeight, 4);
@@ -44,8 +64,13 @@ function encodePng(pixels, pixelWidth, pixelHeight, palette) {
 
   const rows = Buffer.alloc((pixelWidth + 1) * pixelHeight);
   for (let y = 0; y < pixelHeight; y += 1) {
-    // The filter byte remains zero. For the flat illustration, None compresses best.
-    pixels.copy(rows, y * (pixelWidth + 1) + 1, y * pixelWidth, (y + 1) * pixelWidth);
+    const start = y * (pixelWidth + 1);
+    const source = y * pixelWidth;
+    pixels.copy(rows, start + 1, source, source + pixelWidth);
+    if (subFilter) {
+      rows[start] = 1;
+      for (let x = 1; x < pixelWidth; x++) rows[start + 1 + x] = pixels[source + x] - pixels[source + x - 1];
+    }
   }
 
   return Buffer.concat([

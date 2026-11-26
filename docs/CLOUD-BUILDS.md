@@ -21,7 +21,7 @@ Both archive jobs run on GitHub’s `xcode-27` image with Xcode 27.2. Before exp
 - **iOS archive checks** runs on native changes to `main`, pull requests, or manual dispatch. It runs the guest demo resource and loyalty checks, archives the app and App Clip without signing, checks bundle IDs/build numbers/embedded products/privacy manifests, and applies the 15 MB raw App Clip size gate.
 - **Upload PapuPay to TestFlight** is manually dispatched from `main` only. It uses the `apple-signing` environment, fetches profiles for exactly the two PapuPay identifiers (`com.papupay.app` and `com.papupay.app.Clip`), reuses a dedicated distribution private key, archives, validates packaging and size, exports, and uploads. It does not submit public App Store releases or external beta review.
 
-Select **Distribute internal** in the manual workflow to wait for Apple to process the build, configure the three Sweeto App Clip invocations, and assign the processed build to **PapuPay Demo**. The distribution step checks that the group is internal and that Apple has marked the build available for internal testing. With the option unchecked, the workflow finishes after uploading.
+After Xcode exports the signed IPA, the pinned TestFlight upload action transfers it through the App Store Connect Build Uploads API. Select **Distribute internal** to wait for Apple to process the build, configure the three Sweeto App Clip invocations, and assign the processed build to **PapuPay Demo**. The distribution step checks that the group is internal and that Apple has marked the build available for internal testing. With the option unchecked, the workflow finishes after uploading. [Upload action](https://github.com/Apple-Actions/upload-testflight-build/tree/665328adbecbc3ad929d3da710696d928b8a7ba9)
 
 Build numbers are `<workflow run number>.<attempt>`. The app and the embedded App Clip use the same number. The version is 1.0. Only reports are uploaded as GitHub artifacts, with seven-day retention; certificates, API keys and provisioning profiles are excluded.
 
@@ -41,7 +41,7 @@ Build numbers are `<workflow run number>.<attempt>`. The app and the embedded Ap
 4. Restrict the environment to the `main` branch. The approved key destination is GitHub encrypted environment secrets; no extra local backup copies are created. Apple permits only one `.p8` download. Never paste keys in chat or commit them.
 5. Run **Upload PapuPay to TestFlight**. The open-source Codemagic CLI runs on GitHub's runner and communicates with Apple; no Codemagic account/service is used. The first run creates a distribution certificate and the two profiles if necessary. It never revokes existing certificates. If Apple's certificate quota is full, stop and review the team's existing certificates instead of revoking them automatically.
 
-GitHub encrypts secrets at rest. The signing job creates a temporary keychain, then removes its keychain and temporary signing files on exit. The runner is disposable. Only the signing step receives the Apple secrets; PR checks have no signing environment.
+GitHub encrypts secrets at rest. The signing step removes its temporary keychain and signing files after export. Only that step receives the distribution certificate key and private demo configuration. The upload and internal distribution steps receive the App Store Connect API credentials on the disposable release runner.
 
 ## Test on an iPhone
 

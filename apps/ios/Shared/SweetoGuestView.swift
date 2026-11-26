@@ -79,6 +79,8 @@ struct PapupayGuestView: View {
   @State private var config: VenueGuestConfig?
   @State private var configFailed = false
   @State private var badLink = false
+  @State private var walletRecovery: VenueWalletRecovery?
+  @State private var membershipRevision = UUID()
   @State private var wifiBusy = false
   @State private var wifiAccepted = false
   @State private var wifiFailed = false
@@ -166,6 +168,14 @@ struct PapupayGuestView: View {
     }
     .environment(\.locale, Locale(identifier: language.rawValue))
     .onOpenURL(perform: follow)
+    .sheet(item: $walletRecovery) { recovery in
+      VenueWalletRecoveryView(link: recovery, palette: palette) {
+        walletRecovery = nil
+        membershipRevision = UUID()
+        choose(recovery.venue, screen: .card)
+      }
+      .id(recovery.id)
+    }
     .onContinueUserActivity(NSUserActivityTypeBrowsingWeb) { activity in
       if let url = activity.webpageURL { follow(url) }
     }
@@ -332,11 +342,7 @@ struct PapupayGuestView: View {
             let posterHeight = isSweeto ? min(460, max(280, viewport.size.width * 0.97))
               : min(470, max(345, viewport.size.width * 0.94))
             let actionHeight = isSweeto ? min(64, max(52, (availableHeight - posterHeight - 100) / 4)) : 56
-            // The poster copy is close to the tabletop at regular sizes. Move
-            // it onto opaque stock before larger text reaches the food or logo.
-            let separatesCopy = isSweeto && (dynamicTypeSize >= .xxLarge ||
-              (dynamicTypeSize == .xLarge && viewport.size.width <= 375))
-            menuHero(topInset: statusInset, height: posterHeight, separatesCopy: separatesCopy)
+            menuHero(topInset: statusInset, height: posterHeight)
 
             VStack(spacing: 8) {
               guestActions(rowHeight: actionHeight)
@@ -393,55 +399,47 @@ struct PapupayGuestView: View {
     .foregroundStyle(palette.ink)
   }
 
-  @ViewBuilder private func menuHero(topInset: CGFloat, height: CGFloat, separatesCopy: Bool) -> some View {
-    if separatesCopy {
+  @ViewBuilder private func menuHero(topInset: CGFloat, height: CGFloat) -> some View {
+    if dynamicTypeSize.isAccessibilitySize {
       VStack(spacing: 0) {
         heroHeader(topInset: topInset)
           .padding(.horizontal, 20)
-          .padding(.bottom, 6)
           .frame(maxWidth: 560)
-          .frame(maxWidth: .infinity)
-        if dynamicTypeSize < .accessibility3 {
-          heroPhotograph(withText: false)
-            .frame(height: dynamicTypeSize.isAccessibilitySize ? 138 : min(244, max(174, height * 0.50)))
-        }
-        heroCopy
+          .frame(maxWidth: .infinity, minHeight: min(300, max(200, height * 0.73)), alignment: .top)
+          .background { heroPhotograph(withText: false) }
+          .clipShape(.rect(bottomLeadingRadius: isSweeto ? 22 : 0, bottomTrailingRadius: isSweeto ? 22 : 0))
+        heroCopy(onPhoto: false)
           .padding(.horizontal, 20)
-          .padding(.top, 14)
+          .padding(.top, 15)
           .frame(maxWidth: 560)
           .frame(maxWidth: .infinity, alignment: .leading)
-          .padding(.bottom, 20)
       }
-      .background(palette.forest)
-      .clipShape(.rect(bottomLeadingRadius: 22, bottomTrailingRadius: 22))
+      .background(palette.paper)
     } else {
       VStack(alignment: .leading, spacing: 0) {
         heroHeader(topInset: topInset)
-        Spacer(minLength: isSweeto ? 20 : 30).accessibilityHidden(true)
-        heroCopy
+        Spacer(minLength: isSweeto ? height * 0.18 : 30).accessibilityHidden(true)
+        heroCopy(onPhoto: true)
       }
       .padding(.horizontal, isSweeto ? 20 : 22)
       .padding(.bottom, isSweeto ? 18 : 22)
       .frame(maxWidth: 560)
-      .frame(height: isSweeto && !dynamicTypeSize.isAccessibilitySize ? height : nil)
       .frame(maxWidth: .infinity, minHeight: height)
       .background { heroPhotograph(withText: true) }
-      .background(palette.forest)
       .clipShape(.rect(bottomLeadingRadius: isSweeto ? 22 : 0, bottomTrailingRadius: isSweeto ? 22 : 0))
     }
   }
 
   private func heroHeader(topInset: CGFloat) -> some View {
     HStack {
-      VenueIdentityMark(name: venueName, isSweeto: isSweeto, logo: venueLogo(onPhoto: true),
-                        ink: palette.frosting, width: isSweeto ? 142 : 145)
+      homeVenueIdentity
       Spacer(minLength: 12)
       languagePicker(ink: palette.frosting, onPhoto: isSweeto)
     }
     .padding(.top, topInset + 3)
   }
 
-  private var heroCopy: some View {
+  private func heroCopy(onPhoto: Bool) -> some View {
     VStack(alignment: .leading, spacing: 5) {
       if isSweeto && venueCover == nil && dynamicTypeSize < .accessibility3 {
         HStack(spacing: 8) {
@@ -449,7 +447,7 @@ struct PapupayGuestView: View {
             .accessibilityHidden(true)
           Text(t("Matylda czekoladowa", "Matylda chocolate cake", "Шоколадная Матильда"))
             .font(.footnote.weight(.semibold))
-            .foregroundStyle(palette.peach)
+            .foregroundStyle(onPhoto ? palette.peach : palette.muted)
             .fixedSize(horizontal: false, vertical: true)
         }
       }
@@ -466,23 +464,23 @@ struct PapupayGuestView: View {
       }
     }
     .multilineTextAlignment(.leading)
-    .foregroundStyle(palette.frosting)
+    .foregroundStyle(onPhoto ? palette.frosting : palette.ink)
     .frame(maxWidth: .infinity, alignment: .leading)
   }
 
   private func heroPhotograph(withText: Bool) -> some View {
     GeometryReader { photo in
       let isTableScene = isSweeto && venueCover == nil
-      // Preserve the photographed square and limit the centre crop to its margins.
-      let photoWidth = isTableScene ? min(photo.size.width, photo.size.height / 0.88) : photo.size.width
-      let photoHeight = isTableScene ? min(photo.size.height, photoWidth / 0.88) : photo.size.height
       GuestCoverArt(palette: palette, isSweeto: isSweeto, remotePhoto: venueCover)
-        .frame(width: photoWidth, height: photoHeight)
+        .frame(width: photo.size.width, height: photo.size.height)
         .clipped()
-        .accessibilityHidden(true)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .overlay {
-          if withText && isTableScene {
+          if !withText {
+            LinearGradient(stops: [
+              .init(color: .black.opacity(0.58), location: 0),
+              .init(color: .clear, location: 0.58)
+            ], startPoint: .top, endPoint: .bottom)
+          } else if isTableScene {
             ZStack {
               LinearGradient(
                 colors: [.black.opacity(0.35), .clear, .clear],
@@ -507,7 +505,7 @@ struct PapupayGuestView: View {
                 ], startPoint: .leading, endPoint: .trailing)
               }
             }
-          } else if withText {
+          } else {
             LinearGradient(stops: [
               .init(color: .black.opacity(isSweeto ? 0.80 : 0.35), location: 0),
               .init(color: .clear, location: 0.35),
@@ -755,45 +753,42 @@ struct PapupayGuestView: View {
     withAnimation(reduceMotion ? nil : returnAnimation) { ticketPull = 0 }
   }
 
-  private var homeFooter: some View {
-    ViewThatFits(in: .horizontal) {
-      HStack(spacing: 8) {
-        venueDetails.fixedSize(horizontal: true, vertical: false)
-        Spacer(minLength: 0)
-        GuestWordmark(palette: palette, size: 14, welcome: welcome)
+  @ViewBuilder private var homeVenueIdentity: some View {
+    let mark = VenueIdentityMark(name: venueName, isSweeto: isSweeto, logo: venueLogo(onPhoto: true),
+                                 ink: palette.frosting, width: isSweeto ? 142 : 145)
+#if PAPUPAY_APP_CLIP
+    mark
+#else
+    Button { showVenues = true } label: {
+      HStack(spacing: 7) {
+        mark
+        Image(systemName: "chevron.down")
+          .font(.system(size: 11, weight: .bold))
+          .foregroundStyle(palette.frosting)
+          .accessibilityHidden(true)
       }
-      VStack(alignment: .leading, spacing: 4) {
-        venueDetails
-        GuestWordmark(palette: palette, size: 14, welcome: welcome)
-          .padding(.top, 16)
-          .padding(.horizontal, 2)
-      }
+      .frame(minHeight: 44)
+      .contentShape(.rect)
     }
-    .frame(maxWidth: .infinity, alignment: .leading)
+    .buttonStyle(.plain)
+    .accessibilityLabel(t("Zmień lokal", "Change venue", "Сменить заведение"))
+    .accessibilityValue(venueName)
+#endif
+  }
+
+  private var homeFooter: some View {
+    HStack(spacing: 12) {
+      venueDetails
+      GuestWordmark(palette: palette, size: 14, welcome: welcome)
+    }
+    .frame(maxWidth: .infinity)
   }
 
   private var venueDetails: some View {
-    Group {
-#if PAPUPAY_APP_CLIP
-      addressLink
-#else
-      ViewThatFits(in: .horizontal) {
-        HStack(spacing: 12) {
-          addressLink.fixedSize(horizontal: true, vertical: false)
-          Spacer(minLength: 0)
-          venuePicker.fixedSize(horizontal: true, vertical: false)
-        }
-        VStack(alignment: .leading, spacing: 0) {
-          addressLink
-          venuePicker
-        }
-      }
-#endif
-    }
-    .font(.footnote.weight(.medium))
-    .foregroundStyle(palette.muted)
-    .frame(maxWidth: .infinity, alignment: .leading)
-    .padding(.horizontal, 2)
+    addressLink
+      .font(.footnote.weight(.medium))
+      .foregroundStyle(palette.muted)
+      .frame(maxWidth: .infinity, alignment: .leading)
   }
 
   @ViewBuilder private var addressLink: some View {
@@ -802,7 +797,9 @@ struct PapupayGuestView: View {
         Link(destination: maps) {
           HStack(spacing: 6) {
             Image(systemName: "mappin.and.ellipse").accessibilityHidden(true)
-            Text(address).multilineTextAlignment(.leading)
+            Text(address)
+              .multilineTextAlignment(.leading)
+              .fixedSize(horizontal: false, vertical: true)
             Image(systemName: "arrow.up.right").font(.caption2).accessibilityHidden(true)
           }
           .frame(minHeight: 44)
@@ -810,13 +807,6 @@ struct PapupayGuestView: View {
       } else { Label(address, systemImage: "mappin.and.ellipse") }
     }
   }
-
-#if !PAPUPAY_APP_CLIP
-  private var venuePicker: some View {
-    Button(t("Zmień lokal", "Change venue", "Сменить заведение")) { showVenues = true }
-      .frame(minHeight: 44)
-  }
-#endif
 
   @MainActor private func refreshHomeStamps() async {
     guard path.isEmpty, scenePhase == .active else { return }
@@ -860,6 +850,7 @@ struct PapupayGuestView: View {
         palette: palette, showPreview: Self.walletPreviewEnabled
       )
       .id(link)
+      .id(membershipRevision)
     case .reviews:
       ScrollView {
         VStack(alignment: .leading, spacing: 14) {
@@ -904,7 +895,18 @@ struct PapupayGuestView: View {
   }
 
   private func follow(_ url: URL) {
+    if let recovery = VenueWalletRecovery(url) {
+      showLaunchHandoff = false
+      welcome.finish()
+#if !PAPUPAY_APP_CLIP
+      handledInvocation = true
+      showVenues = false
+#endif
+      walletRecovery = recovery
+      return
+    }
     guard let (location, screen, preferredLanguage) = VenueGuestLink.parse(url) else { badLink = true; return }
+    walletRecovery = nil
     if screen != nil || location.slug != "sweeto" {
       showLaunchHandoff = false
       welcome.finish()

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Refresh the seven private TestFlight Wallet passes with the current artwork."""
 
+import argparse
 import base64
 import gzip
 import io
@@ -14,6 +15,8 @@ from tempfile import TemporaryDirectory
 import zipfile
 
 from importlib.util import module_from_spec, spec_from_file_location
+
+from guest_demo_wallet import refresh_passes
 
 
 HERE = Path(__file__).resolve().parent
@@ -65,9 +68,26 @@ def regenerate(encoded):
 
 
 def main():
-    if len(sys.argv) != 2:
-        raise ValueError("Supply the path for a new, private demo secret file.")
-    destination = Path(sys.argv[1])
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("destination", type=Path)
+    parser.add_argument("--signatures", action="store_true",
+                        help="Write only detached CMS signatures for protected TestFlight reconstruction")
+    args = parser.parse_args()
+    destination = args.destination
+    if args.signatures:
+        payload = decoder.decode_configuration(os.environ.get("PAPUPAY_GUEST_DEMO_BASE64", ""))
+        signed, proofs = refresh_passes(payload, issue=True)
+        with TemporaryDirectory(prefix="papupay-wallet-cms-") as temporary:
+            for n, proof in enumerate(proofs):
+                (Path(temporary) / f"{n}.der").write_bytes(proof)
+            rebuilt, _ = refresh_passes(payload, signatures=temporary)
+            if signed != rebuilt:
+                raise ValueError("The private rollout failed its package reproducibility check.")
+        destination.mkdir(parents=True, exist_ok=True)
+        for n, proof in enumerate(proofs):
+            (destination / f"{n}.der").write_bytes(proof)
+        print("Verified seven signed demo states and exported their detached signatures.")
+        return
     if destination.exists():
         raise ValueError("The output path already exists. Supply a new file path.")
     result = regenerate(os.environ.get("PAPUPAY_GUEST_DEMO_BASE64", ""))

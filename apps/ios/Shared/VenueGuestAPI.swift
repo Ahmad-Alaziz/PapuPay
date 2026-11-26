@@ -223,6 +223,7 @@ struct VenueGuestAPI {
     let status: Status
     let passUrl: String?
     let updatesEnabled: Bool?
+    let recoveryEnabled: Bool?
     let googleStatus: Status?
   }
   let venue: VenueGuestLink
@@ -326,6 +327,49 @@ struct VenueGuestAPI {
       url.path.range(of: #"^/gp/v/save/[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$"#, options: .regularExpression) != nil
     else { throw URLError(.badServerResponse) }
     return url
+  }
+
+  struct RecoveryPreview: Decodable {
+    let code: String
+    let stamps: Int
+    let goal: Int
+    var name: String?
+  }
+
+  enum RecoveryFailure: Error { case invalid }
+
+  // The link is a bearer capability. Keep it in memory and send it only in the
+  // body of a POST to the exact venue origin, without redirects or URL caching.
+  private func recover(_ token: String, preview: Bool) async throws -> (Data, HTTPURLResponse) {
+    let path = "\(tenantPath)/loyalty/restore" + (preview ? "/preview" : "")
+    var query = request(path, method: "POST")
+    query.httpShouldHandleCookies = false
+    query.setValue("application/json", forHTTPHeaderField: "Content-Type")
+    query.httpBody = try JSONEncoder().encode(["token": token])
+    let (body, response) = try await Self.membershipValidation.data(for: query)
+    guard let http = response as? HTTPURLResponse, http.url == query.url else { throw URLError(.badServerResponse) }
+    if [400, 401, 403, 410].contains(http.statusCode) { throw RecoveryFailure.invalid }
+    guard http.statusCode == 200, http.mimeType == "application/json" else { throw URLError(.badServerResponse) }
+    return (body, http)
+  }
+
+  func recoveryPreview(_ token: String) async throws -> RecoveryPreview {
+    let (body, _) = try await recover(token, preview: true)
+    return try JSONDecoder().decode(RecoveryPreview.self, from: body)
+  }
+
+  func restoreCard(_ token: String) async throws -> VenueLoyaltyCard {
+    let startedAt = ContinuousClock.now
+    let (body, response) = try await recover(token, preview: false)
+    let requestURL = venue.origin.appending(path: loyaltyPath)
+    let membership = VenueMembership(venue: venue, requestURL: requestURL)
+    guard let card = try JSONDecoder().decode(CardResponse.self, from: body).card,
+          let header = response.value(forHTTPHeaderField: "Set-Cookie"),
+          let cookie = HTTPCookie.cookies(withResponseHeaderFields: ["Set-Cookie": header], for: requestURL)
+            .first(where: { $0.name == membership.cookieName && $0.isSecure }) else { throw URLError(.badServerResponse) }
+    let credential = VenueMembership.Credential(token: cookie.value, expires: cookie.expiresDate)
+    guard await membership.accept(credential, card: card, startedAt: startedAt) else { throw CancellationError() }
+    return card
   }
 }
 
