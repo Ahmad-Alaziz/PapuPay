@@ -3,9 +3,9 @@ name: iOS archive checks
 on:
   push:
     branches: [main]
-    paths: ['apps/ios/**', 'scripts/ci/**', 'scripts/check-clip-size.py', 'scripts/generate-ios.rb', 'public/assets/sweeto/**', 'packages/brand/fonts/**', '.github/workflows/ios-checks.yml']
+    paths: ['apps/ios/**', 'scripts/ci/**', 'scripts/check-clip-size.py', 'scripts/generate-ios.rb', 'scripts/prepare-fonts.py', 'packages/motion/**', 'public/assets/sweeto/**', 'packages/brand/fonts/**', '.github/workflows/ios-checks.yml']
   pull_request:
-    paths: ['apps/ios/**', 'scripts/ci/**', 'scripts/check-clip-size.py', 'scripts/generate-ios.rb', 'public/assets/sweeto/**', 'packages/brand/fonts/**', '.github/workflows/ios-checks.yml']
+    paths: ['apps/ios/**', 'scripts/ci/**', 'scripts/check-clip-size.py', 'scripts/generate-ios.rb', 'scripts/prepare-fonts.py', 'packages/motion/**', 'public/assets/sweeto/**', 'packages/brand/fonts/**', '.github/workflows/ios-checks.yml']
   workflow_dispatch:
 
 permissions:

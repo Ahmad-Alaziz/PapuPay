@@ -1,0 +1,532 @@
+.sweeto-wallet,
+.sweeto-loyalty-test {
+  width: 100%;
+  max-width: 520px;
+  margin-inline: auto;
+  padding: clamp(24px, 5vw, 36px);
+  color: var(--ink, #102e24);
+}
+
+.sweeto-loyalty-test h2 {
+  margin: 0 42px 12px 0;
+  font: 800 clamp(2.15rem, 9vw, 3.2rem) / 0.98 var(--display, sans-serif);
+  letter-spacing: -0.035em;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+
+.papu-wallet {
+  --pass-forest: #102e24;
+  --pass-orange: #ff7a38;
+  --pass-ink: #102e24;
+  --pass-stock: #f5e5d2;
+}
+
+.papu-wallet .papu-wallet-heading {
+  margin: 0 0 18px;
+}
+
+.sweeto-guest[data-venue="sweeto"] .papu-wallet {
+  --pass-forest: var(--ink);
+  --pass-orange: var(--accent);
+  --pass-ink: var(--ink);
+  --pass-stock: #fff0cf;
+}
+
+.papu-wallet-wordmark {
+  display: inline-flex;
+  align-items: center;
+  font-size: 1.35rem;
+  font-weight: 850;
+  letter-spacing: -0.055em;
+  line-height: 1;
+}
+
+.papu-wallet-wordmark svg {
+  width: 1.15em;
+  height: 1.25em;
+  margin-right: 0.2em;
+}
+
+.papu-wallet-wordmark span {
+  color: var(--pass-orange);
+}
+
+.papu-wallet-venue {
+  margin-inline-start: auto;
+  font-size: 0.95rem;
+  font-weight: 650;
+}
+
+.sweeto-guest[data-venue="sweeto"] .papu-wallet-punches span[data-earned] {
+  border-color: transparent;
+  background: transparent;
+}
+
+.papu-wallet-punches span img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.papu-wallet-stage {
+  width: min(100%, 360px);
+  margin: 0 auto;
+}
+
+.papu-wallet-preview {
+  overflow: hidden;
+  border-radius: 21px;
+  background: var(--pass-forest);
+  color: #fff6e6;
+  box-shadow: 0 12px 32px #102e2423;
+}
+
+.papu-wallet-preview-brand {
+  display: flex;
+  align-items: center;
+  min-height: 62px;
+  padding: 18px 22px;
+}
+
+.papu-wallet-preview-brand img {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: 23px;
+  object-fit: contain;
+  object-position: left;
+}
+
+.papu-wallet-preview-brand strong {
+  font-size: 1.15rem;
+  font-weight: 850;
+  overflow-wrap: anywhere;
+}
+
+.papu-wallet-strip {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  padding: 19px 16px 14px;
+  text-align: center;
+  color: var(--pass-ink);
+  background: var(--pass-stock);
+}
+
+.papu-wallet-punches {
+  display: flex;
+  justify-content: center;
+  gap: clamp(4px, 1.6vw, 8px);
+  width: 100%;
+}
+
+.papu-wallet-punches span {
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  width: 37px;
+  aspect-ratio: 1;
+  border: 1px dashed #89684f;
+  border-radius: 50%;
+}
+
+.papu-wallet-punches span[data-reward] {
+  border: 1px solid var(--pass-forest);
+  color: #a7401b;
+}
+
+.papu-wallet-punches span[data-earned] {
+  border: 1px solid var(--pass-forest);
+  color: var(--pass-ink);
+  background: var(--pass-orange);
+}
+
+.papu-wallet-punches svg {
+  width: 52%;
+  height: auto;
+}
+
+.papu-wallet-strip p {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 800;
+}
+
+.papu-wallet-fields {
+  display: grid;
+  padding: 16px 20px 20px;
+}
+
+.papu-wallet-barcode,
+.papu-wallet-placeholder {
+  justify-self: center;
+  width: min(100%, 162px);
+  border-radius: 7px;
+}
+
+.papu-wallet-barcode {
+  display: grid;
+  justify-items: center;
+  padding: 0 2px 8px;
+  background: #fff;
+  color: #102e24;
+}
+
+.papu-wallet-barcode-placeholder {
+  width: 100%;
+  aspect-ratio: 1;
+}
+
+.papu-wallet-barcode code {
+  max-width: 100%;
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.065em;
+  overflow-wrap: anywhere;
+}
+
+.papu-wallet-placeholder {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 162 / 176;
+  border: 1px dashed #fff9ee55;
+  color: #f7f0e2b3;
+}
+
+.sweeto-wallet-note,
+.sweeto-test-intro,
+.sweeto-loyalty-test > p:not(.sweeto-test-kicker, .sweeto-error) {
+  margin: 14px 0;
+  color: var(--muted, #486253);
+  font-size: 0.875rem;
+  line-height: 1.55;
+}
+
+.sweeto-wallet .sweeto-button,
+.sweeto-loyalty-test .sweeto-button {
+  width: 100%;
+  text-align: center;
+}
+
+.papu-wallet .sweeto-button.sweeto-wallet-download {
+  justify-content: space-between;
+}
+
+.sweeto-wallet .sweeto-button svg,
+.sweeto-loyalty-test .sweeto-button svg {
+  flex: none;
+}
+
+.papu-wallet-save {
+  margin: 18px auto 6px;
+  padding: 15px;
+  border: 1px solid #e9ccaa;
+  border-radius: 16px;
+  background: #fff6e6;
+}
+
+.papu-wallet-save-info {
+  display: grid;
+  grid-template-columns: minmax(0, 60px) minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.papu-wallet-save-info .sweeto-wallet-note {
+  margin: 0;
+  color: var(--pass-ink);
+  font-weight: 700;
+}
+
+.papu-wallet .papu-wallet-save .sweeto-wallet-download {
+  min-height: 56px;
+  padding: 9px 13px 9px 16px;
+  border-radius: 14px;
+  background: var(--pass-orange);
+  color: var(--pass-ink);
+  border-color: var(--pass-orange);
+}
+.papu-wallet .papu-wallet-save .papu-action-arrow {
+  flex: none;
+  background: var(--pass-forest);
+  color: #fff6e6;
+}
+
+.papu-wallet .papu-wallet-save .sweeto-wallet-download:hover {
+  background: #ffa270;
+}
+
+.sweeto-wallet-refresh-note {
+  display: block;
+  margin: 10px 0 4px;
+  color: var(--muted, #486253);
+  font-size: 0.75rem;
+  line-height: 1.45;
+}
+
+.sweeto-wallet .sweeto-wallet-secondary,
+.sweeto-loyalty-test .sweeto-wallet-secondary,
+.sweeto-loyalty-test .sweeto-test-back,
+.papu-loyalty .sweeto-test-link {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink, #102e24);
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 700;
+}
+
+.sweeto-wallet .sweeto-wallet-secondary:hover,
+.sweeto-loyalty-test .sweeto-wallet-secondary:hover,
+.sweeto-loyalty-test .sweeto-test-back:hover,
+.papu-loyalty .sweeto-test-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+button.sweeto-wallet-secondary {
+  margin-right: 16px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.sweeto-test-link {
+  color: var(--muted, #486253);
+}
+
+/* The test counter uses the same physical receipt as the guest card. */
+.sweeto-guest[data-venue="sweeto"] .sweeto-dialog[data-view="test"] {
+  height: min(90svh, 720px);
+}
+
+.sweeto-loyalty-test.papu-loyalty {
+  --pass-accent: var(--accent);
+  --pass-cream: var(--surface);
+  --pass-tint: var(--surface);
+  --pass-ink: var(--ink);
+  --pass-meta: var(--muted);
+  --pass-score: var(--ink);
+  padding: clamp(16px, 5vw, 24px);
+}
+
+.sweeto-loyalty-test:not([data-papu-paper]) .papu-member-stamps li.earned {
+  background: var(--pass-ink);
+  color: var(--pass-cream);
+}
+
+.sweeto-loyalty-test[data-papu-paper] h2 {
+  margin-bottom: 16px;
+  color: var(--pass-ink);
+  font:
+    750 clamp(1.9rem, 8.3vw, 2.25rem) / 1.1 "Papu Editorial",
+    "Papu Cyrillic",
+    sans-serif;
+  letter-spacing: -0.025em;
+  text-transform: none;
+}
+
+.sweeto-loyalty-test .sweeto-test-pass-heading,
+.papu-loyalty[data-papu-paper] .sweeto-test-pass-heading {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 9px;
+  min-height: 0;
+  padding: 11px 16px;
+}
+
+.sweeto-test-pass-heading span {
+  overflow-wrap: anywhere;
+}
+.sweeto-test-brand-mark {
+  width: 24px;
+  height: 26px;
+  max-width: 24px;
+  max-height: 26px;
+  object-fit: contain;
+  flex: none;
+}
+
+.sweeto-test-ticket .papu-checkout-stub {
+  padding: 8px 16px;
+  gap: 3px;
+}
+.sweeto-test-ticket .papu-member-face {
+  padding: 11px 16px;
+}
+.sweeto-test-ticket .papu-stamp-count {
+  margin-bottom: 8px;
+}
+.sweeto-test-ticket .papu-member-stamps {
+  gap: 6px;
+}
+
+.sweeto-test-ticket .sweeto-test-scan-frame {
+  --scan-frame: 136px;
+  width: min(var(--scan-frame), 100%);
+  padding: 7px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.sweeto-test-ticket .papu-qr-mount > svg.papu-qr {
+  width: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  aspect-ratio: 1;
+}
+
+.sweeto-test-scan-line {
+  position: absolute;
+  z-index: 1;
+  top: 3px;
+  inset-inline: 0;
+  height: 3px;
+  pointer-events: none;
+  background:
+    linear-gradient(var(--pass-accent), var(--pass-accent)) left / 5px 3px
+      no-repeat,
+    linear-gradient(var(--pass-accent), var(--pass-accent)) right / 5px 3px
+      no-repeat;
+  animation: sweeto-test-scan 440ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.sweeto-test-outcome {
+  display: grid;
+  gap: 4px;
+  margin-top: 16px;
+}
+.sweeto-test-outcome h3 {
+  display: flex;
+  gap: 7px;
+  align-items: baseline;
+  margin: 0;
+  color: var(--pass-ink);
+  font:
+    750 clamp(1.22rem, 5vw, 1.5rem) / 1.2 "Papu Editorial",
+    "Papu Cyrillic",
+    sans-serif;
+}
+.sweeto-test-outcome h3 svg {
+  flex: none;
+}
+.sweeto-test-outcome p {
+  margin: 0;
+  color: var(--pass-meta);
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.sweeto-test-actions {
+  display: grid;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.sweeto-guest .sweeto-button.sweeto-test-advance {
+  display: flex;
+  justify-content: space-between;
+  min-height: 54px;
+  padding: 9px 13px 9px 16px;
+  border-radius: 14px;
+  background: var(--pass-accent);
+  color: var(--pass-ink);
+  font-size: 1rem;
+  text-align: start;
+}
+.sweeto-test-advance .papu-action-arrow {
+  flex: none;
+  background: var(--pass-ink);
+  color: var(--pass-cream);
+}
+.sweeto-guest .sweeto-button.sweeto-test-advance:hover {
+  background: #ffa270;
+}
+
+.sweeto-guest .sweeto-button.sweeto-test-advance[aria-disabled="true"] {
+  cursor: default;
+  opacity: 0.72;
+  background: var(--pass-accent);
+}
+
+.sweeto-test-notice {
+  margin: 10px 0 0;
+  color: var(--pass-meta);
+  font-size: 0.75rem;
+  line-height: 1.45;
+}
+
+.papu-reward-confirm {
+  max-width: none;
+  width: min(100% - 40px, 360px);
+  padding: 20px;
+  border: 1px solid #123c2d33;
+  border-radius: 20px;
+  background: var(--pass-cream);
+  color: var(--pass-ink);
+  box-shadow: 0 24px 64px #071a1255;
+}
+.papu-reward-confirm::backdrop {
+  background: #071a1270;
+}
+.papu-reward-confirm h3 {
+  margin: 0;
+  font:
+    750 1.5rem / 1.2 "Papu Editorial",
+    "Papu Cyrillic",
+    sans-serif;
+}
+.papu-reward-confirm p {
+  margin: 8px 0 18px;
+  color: var(--pass-meta);
+  line-height: 1.45;
+}
+.sweeto-guest .papu-reward-confirm .papu-reward-confirm-action {
+  display: grid;
+  width: 100%;
+  min-height: 48px;
+  background: var(--pass-accent);
+  color: var(--pass-ink);
+  border-radius: 14px;
+  font-size: 1rem;
+}
+.papu-reward-cancel {
+  display: grid;
+  width: 100%;
+  min-height: 44px;
+  margin-top: 8px;
+  place-items: center;
+  border: 1px solid var(--pass-ink);
+  border-radius: 14px;
+  background: transparent;
+  color: var(--pass-ink);
+  font-weight: 700;
+}
+
+@keyframes sweeto-test-scan {
+  from {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  12%,
+  82% {
+    opacity: 1;
+  }
+  to {
+    transform: translateY(calc(var(--scan-frame) - 6px));
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sweeto-test-scan-line {
+    animation: none;
+    display: none;
+  }
+}

@@ -1,0 +1,137 @@
+.papu-restore {
+  padding: clamp(24px, 6vw, 36px);
+  color: var(--ink);
+}
+
+.papu-restore-heading {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding-inline-end: 40px;
+  margin-block: 4px 20px;
+}
+
+.papu-restore-mark {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px 14px 14px 4px;
+  background: var(--ink);
+  color: var(--accent);
+}
+
+.papu-restore-heading p,
+.papu-restore-summary dt {
+  margin: 0 0 6px;
+  font-size: 0.6875rem;
+  font-weight: 750;
+  letter-spacing: 0.09em;
+  line-height: 1.35;
+  text-transform: uppercase;
+}
+
+.papu-restore-heading p {
+  color: var(--muted);
+}
+
+.papu-restore-heading h2 {
+  margin: 0;
+  font-family: var(--display);
+  font-size: clamp(1.6rem, 6vw, 2.45rem);
+  font-weight: 400;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.papu-restore-heading h2:lang(ru) {
+  font-weight: 800;
+}
+
+.papu-restore > p:not(.sweeto-error) {
+  color: var(--muted);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.papu-restore-summary {
+  --notch: 7px;
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  margin: 20px 0 16px;
+  border-radius: 14px;
+  background: var(--ink);
+  color: var(--surface);
+}
+
+.papu-restore-summary > div {
+  padding: 18px 16px;
+}
+
+.papu-restore-summary > div + div {
+  position: relative;
+  border-inline-start: 1px dashed #fff9ee66;
+}
+
+.papu-restore-summary > div + div::before,
+.papu-restore-summary > div + div::after {
+  content: "";
+  position: absolute;
+  inset-inline-start: calc(-1 * var(--notch));
+  width: calc(2 * var(--notch));
+  height: calc(2 * var(--notch));
+  border-radius: 50%;
+  background: var(--surface);
+}
+
+.papu-restore-summary > div + div::before {
+  top: calc(-1 * var(--notch));
+}
+
+.papu-restore-summary > div + div::after {
+  bottom: calc(-1 * var(--notch));
+}
+
+.papu-restore-summary dt {
+  color: #e0dfba;
+}
+
+.papu-restore-summary dd {
+  margin: 0;
+  font-size: clamp(1rem, 4vw, 1.35rem);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+.papu-restore-summary > div:first-child dd {
+  font-family: ui-monospace, monospace;
+}
+
+.sweeto-guest .papu-restore .sweeto-button {
+  width: 100%;
+  justify-content: space-between;
+}
+
+.papu-restore .papu-restore-note {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  margin: 12px 0 0;
+  font-size: 0.75rem;
+  text-align: center;
+}
+
+.papu-restore svg {
+  flex: none;
+}
+
+.papu-restore-replace {
+  margin-block: 16px;
+  padding: 10px 12px;
+  border-inline-start: 3px solid var(--accent);
+  background: var(--surface);
+}

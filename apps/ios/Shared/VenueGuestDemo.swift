@@ -1,7 +1,7 @@
 import Foundation
 
 /// Only the internal TestFlight pipeline supplies an enabled demo resource.
-/// Normal builds carry a disabled placeholder and continue using the venue API.
+/// Physical devices use the venue API unless that resource is enabled.
 struct VenueGuestDemo: Decodable {
   let enabled: Bool
   let venueId: String
@@ -23,6 +23,25 @@ struct VenueGuestDemo: Decodable {
   static func configuration(for venue: VenueGuestLink) -> Self? {
     guard let demo = bundled, venue.slug == demo.venueId else { return nil }
     return demo
+  }
+
+  static func loyaltyConfiguration(for venue: VenueGuestLink) -> Self? {
+    if let provisioned = configuration(for: venue) { return provisioned }
+    #if DEBUG && targetEnvironment(simulator)
+    if venue == .starter && !ProcessInfo.processInfo.arguments.contains("-useLiveLoyalty") {
+      return Self(enabled: true, venueId: venue.slug, cardCode: "SIMDEMO", checkout: "PAPUPAY-SIMULATOR:SWEETO:SIMDEMO", wifi: nil, walletPasses: nil)
+    }
+    #endif
+    return nil
+  }
+
+  func loyaltyNamespace(for venue: VenueGuestLink) -> String {
+    venue.origin.absoluteString + "|" + venue.slug + "|" + cardCode
+  }
+
+  func loyaltyCard(for venue: VenueGuestLink) -> VenueLoyaltyCard? {
+    let ledger = VenueDemoLoyalty.load(namespace: loyaltyNamespace(for: venue))
+    return ledger.created ? VenueLoyaltyCard(code: cardCode, checkout: checkout, stamps: ledger.stamps, goal: VenueDemoLoyalty.goal, rewardAvailable: ledger.rewardAvailable) : nil
   }
 
   func walletPassData(stamps: Int) -> Data? {

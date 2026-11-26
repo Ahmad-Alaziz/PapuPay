@@ -17,5 +17,5 @@
       "permanent": true
     }
   ],
-  "ignoreCommand": "git diff --quiet HEAD^ HEAD -- . ':(exclude)apps/ios' ':(exclude)packages' ':(exclude)scripts' ':(exclude).github' ':(exclude)docs'"
+  "ignoreCommand": "git diff --quiet HEAD^ HEAD -- . ':(exclude)apps/ios' ':(exclude)packages/brand' ':(exclude)scripts' ':(exclude).github' ':(exclude)docs'"
 }

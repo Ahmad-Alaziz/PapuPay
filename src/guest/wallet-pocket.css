@@ -1,0 +1,30 @@
+.papu-wallet-pocket {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 6 / 5;
+  background: center / contain no-repeat url("/assets/wallet-pocket-still.svg");
+  pointer-events: none;
+}
+
+.papu-wallet-pocket:has([data-ready]) {
+  background-image: none;
+}
+
+.papu-wallet-pocket-layer,
+.papu-wallet-pocket-layer > span,
+.papu-wallet-pocket canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.papu-wallet-pocket-layer {
+  visibility: hidden;
+}
+
+.papu-wallet-pocket-layer[data-ready] {
+  visibility: visible;
+}

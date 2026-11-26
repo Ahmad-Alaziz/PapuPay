@@ -43,5 +43,5 @@ export function proxy(request: NextRequest) {
 
 export const config = {
   // Keep the full app and venue invocation URLs outside the marketing locales.
-  matcher: ["/((?!(?:api|app|go|v)(?:/|$)|_next/|.*\\..*).*)"],
+  matcher: ["/((?!(?:api|app|clip|go|v|staff)(?:/|$)|_next/|.*\\..*).*)"],
 };

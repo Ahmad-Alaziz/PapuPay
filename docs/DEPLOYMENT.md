@@ -31,7 +31,7 @@ This is a standard Next.js deployment. `src/proxy.ts` sends `/` to `/en` or `/pl
 
 `public/.well-known/apple-app-site-association` associates `papupay.com` with the App Clip (`5W4JVD497D.com.papupay.app.Clip`) and lists `/app`, `/go/*` and `/v/*` for the installed full app. `next.config.ts` serves it as `application/json`. These URLs bypass the marketing locale redirect.
 
-`/app` is the full app link. The Sweeto table, menu and counter links keep their original URLs and show a browser page with the bundled menu PDF and Google review link. The venue pages include Smart App Banner metadata for the App Clip. Public invocation requires a released App Store experience. The [offline loyalty walkthrough](NATIVE-DEMO.md) uses the internal TestFlight build.
+`/app` opens the installed full app or its guest web experience. The Sweeto table, menu and counter links retain their original QR and NFC destinations. The browser offers the menu, Google review link, bilingual counter list and loyalty card. To enable membership, staff checkout and live Wallet balances, set `PAPUPAY_API_ORIGIN` on the site and configure the persistent service. [Venue service and Wallet setup](VENUES-AND-WALLET.md)
 
 Sweeto's images, menu PDF and Rive file are served from `/assets/sweeto/` and also bundled into the iOS app.
 
@@ -39,7 +39,7 @@ Run `npm run test:routes` against a running local build. Set `PAPUPAY_BASE_URL=h
 
 ## Skipped deploys
 
-`ignoreCommand` in `vercel.json` skips a deployment when the latest commit changes nothing outside `apps/ios`, `packages`, `scripts`, `.github` and `docs`.
+`ignoreCommand` in `vercel.json` skips a deployment when the latest commit changes nothing outside `apps/ios`, `packages/brand`, `scripts`, `.github` and `docs`. Shared Rive runtime changes in `packages/motion` trigger a web build.
 
 ## DNS
 

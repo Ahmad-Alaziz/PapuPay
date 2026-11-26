@@ -19,11 +19,14 @@ entry_group = project.main_group.new_group('PapuPay', 'PapuPay')
 entry = entry_group.new_file('PapuPayApp.swift')
 resources = project.main_group.new_group('Resources', 'Resources')
 resource_refs = Dir.glob(File.join(ios, 'Resources/*')).reject { |p| p.end_with?('.txt') }.map { |p| resources.new_file(File.basename(p)) }
-sweeto_assets = File.join(root, 'public/assets/sweeto')
-motion_posters = Dir.glob(File.join(sweeto_assets, 'motion-*.webp')).map { |path| File.basename(path) }
-resource_refs += (%w[logo-blue.png menu-bowl-cutout.webp matylda-cutout.webp matylda-drip.webp matylda-puddle.webp menu.pdf sweeto-actions.riv] + motion_posters).map do |name|
-  resources.new_file("../../../public/assets/sweeto/#{name}")
+# Web media lives under public/. Motion runtimes have a single canonical source.
+resource_refs << resources.new_file('../../../public/assets/sweeto/menu.pdf')
+action_runtime = 'sweeto-actions/runtime'
+motion_posters = %w[menu loyalty review wifi].flat_map do |kind|
+  %W[motion-#{kind}.webp motion-berry-#{kind}.webp motion-forest-#{kind}.webp]
 end
+motion_refs = (["#{action_runtime}/sweeto-actions.riv"] + motion_posters.map { |name| "#{action_runtime}/#{name}" } + ['sweeto-pass/runtime/sweeto-pass.riv'])
+motion_refs.each { |path| resource_refs << resources.new_file("../../../packages/motion/#{path}") }
 %w[Manrope.ttf BricolageGrotesque.ttf Manrope-OFL.txt BricolageGrotesque-OFL.txt].each do |name|
   resource_refs << resources.new_file("../../../packages/brand/fonts/#{name}")
 end
@@ -55,11 +58,11 @@ ids.each do |target,bundle|
     'CFBundleIdentifier'=>'$(PRODUCT_BUNDLE_IDENTIFIER)', 'CFBundleExecutable'=>'$(EXECUTABLE_NAME)',
     'CFBundlePackageType'=>'APPL',
     'CFBundleShortVersionString'=>'$(MARKETING_VERSION)','CFBundleVersion'=>'$(CURRENT_PROJECT_VERSION)',
-    'UILaunchScreen'=>{},
+    'UILaunchScreen'=>{'UIColorName'=>'GuestLaunchPaper', 'UIImageName'=>'PapuPayLaunchLockup'},
     'UIApplicationSceneManifest'=>{'UIApplicationSupportsMultipleScenes'=>false},
     'UISupportedInterfaceOrientations'=>['UIInterfaceOrientationPortrait'],
     'UIRequiredDeviceCapabilities'=>['arm64'],
-    'UIAppFonts'=>['PapuDisplay-Bold.ttf','PapuDisplay-ExtraBold.ttf','Manrope.ttf','BricolageGrotesque.ttf'],
+    'UIAppFonts'=>['PapuDisplay-Bold.ttf','PapuDisplay-ExtraBold.ttf','PapuPoster.ttf','Manrope.ttf','BricolageGrotesque.ttf'],
     'ITSAppUsesNonExemptEncryption'=>false,
     'PapuPayWebOrigin'=>'$(PAPUPAY_WEB_ORIGIN)'
   }

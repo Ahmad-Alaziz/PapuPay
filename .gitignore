@@ -43,3 +43,17 @@ next-env.d.ts
 
 # local tool config
 .openai/local/
+
+# Local native, service and signing products
+xcuserdata/
+DerivedData/
+*.xcarchive/
+*.xcresult/
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+*.pkpass
+*.p12
+*.mobileprovision
+__pycache__/
+*.pyc

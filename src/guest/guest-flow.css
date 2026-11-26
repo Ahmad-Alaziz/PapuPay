@@ -1,0 +1,25 @@
+.papu-flow-heading {
+  margin: 0 42px 18px 0;
+}
+
+.papu-flow-label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0 0 6px;
+  color: var(--muted, #486253);
+  font-size: 0.6875rem;
+  font-weight: 800;
+  letter-spacing: 0.105em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.papu-wallet .papu-flow-heading h2 {
+  margin: 0;
+  color: var(--ink, #102e24);
+  font: 800 clamp(2.15rem, 9vw, 3.2rem) / 0.98 var(--display, sans-serif);
+  letter-spacing: -0.035em;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}

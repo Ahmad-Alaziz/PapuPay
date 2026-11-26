@@ -1,0 +1,92 @@
+{
+  "venue": {
+    "name": "Sweeto",
+    "address": "Puławska 246/Pawilon 8, 02-684 Warszawa",
+    "coordinates": [52.1720425, 21.0185431],
+    "googlePlaceId": "ChIJZSkE8-IzGUcRewjXh2vCRK8",
+    "googleMaps": "https://www.google.com/maps?cid=12629433022150019195",
+    "googleReview": "https://search.google.com/local/writereview?placeid=ChIJZSkE8-IzGUcRewjXh2vCRK8",
+    "instagram": "https://www.instagram.com/sweeto.pl/",
+    "tiktok": "https://www.tiktok.com/@sweeto.pl"
+  },
+  "menuAndLogo": {
+    "source": "https://www.google.com/maps/contrib/103758049006967410813/photos/@52.1720425,21.0185431,3a,75y,90t/data=!3m7!1e2!3m5!1sCIABIhBL8y3hP04jUv10QIVsh8-g!2e10!6shttps:%2F%2Flh3.googleusercontent.com%2Fgps-cs%2FAAjk-CPHe3G8zVweLSeFIqJ04gM2mOehkkjUuYKRCwgv4PjGeXfEH9tsseEP8Ung1CNHrJatnZKEKeWW8wwWeqo2LnZcHCQWsHik7jflHTzhrIyVQTtDEGMoAxeSQzQbI33S15LzRCITxYYzCZA%3Dw365-h517-k-no!7i1749!8i2481!4m3!8m2!3m1!1e1",
+    "imageSource": "https://lh3.googleusercontent.com/gps-cs/AAjk-CPHe3G8zVweLSeFIqJ04gM2mOehkkjUuYKRCwgv4PjGeXfEH9tsseEP8Ung1CNHrJatnZKEKeWW8wwWeqo2LnZcHCQWsHik7jflHTzhrIyVQTtDEGMoAxeSQzQbI33S15LzRCITxYYzCZA=w1120-h1588-k-no",
+    "files": {
+      "menu-original.jpg": "Complete original Polish menu artwork. No prices are printed on it.",
+      "menu.pdf": "Single-page copy of the original artwork at its natural aspect ratio.",
+      "logo-white.png": "White wordmark extracted from the menu artwork on a transparent background.",
+      "logo-blue.png": "The extracted wordmark, recolored in Sweeto blue for use on a light background."
+    }
+  },
+  "promotionalPhotography": {
+    "file": "menu-scene-v2.webp",
+    "reference": "crunch-bowl.webp",
+    "toolMode": "Built-in image generation with a local product photograph as the reference",
+    "method": "AI-styled promotional image created from the real Sweeto Chrupiący bowl reference. The backdrop is a studio composition.",
+    "artDirection": "Wide 3:2 editorial dessert photograph. Authentic cobalt Sweeto bowl and toppings at right, warm ivory space for live text at left, soft afternoon light, and a natural contact shadow.",
+    "prompt": "Use case: product-mockup. Create a finely art-directed editorial dessert photograph as the promotional background of Sweeto’s primary Menu card on a mobile website. The supplied authentic Sweeto Chrupiący bowl photo is the product identity reference. Retain the exact iconic tapered vivid cobalt-blue paper tub, cream-white rim, and the real bold white SWEETO wordmark on the side, with fresh cut strawberries, glossy pistachio cream, irregular crunchy golden flakes and a little chocolate as shown. Only this one dessert bowl. Wide 3:2 landscape composition. Place the complete bowl prominently on the RIGHT, with its center near x=74%, y=52% and good clearance to the right, top and bottom. The left ~46% of the frame must be uninterrupted clean light warm ivory (#F6EDE0) with no objects and enough contrast for dark live website copy. Build a quiet continuous matte warm ivory studio tabletop and backdrop, with soft late-afternoon directional light from the upper-left and a believable soft contact shadow falling behind/right of the bowl. Richly rendered dessert texture, ripe strawberries, dense pistachio, edible irregularities and sharp visible branded packaging. Premium restrained confectionery editorial style with a satisfying three-quarter overhead angle, not a generic gradient or stock mockup. No text except the real existing white SWEETO mark on the blue bowl. No people, cutlery, props, café interior, prices, labels, badge or watermark."
+  },
+  "productPhotography": {
+    "source": "https://wolt.com/pl/pol/warsaw/venue/sweeto",
+    "files": {
+      "merchant-cover.webp": "https://imageproxy.wolt.com/assets/6ae9efc1573611456e4d17c3?w=800",
+      "matylda.webp": "https://imageproxy.wolt.com/menu/menu-images/6ae09a24d81cde02a5c02af3/63688c24-d6af-11f1-b2d5-be5009f01cdf_3b56097c_ac2d_477f_9711_faa28ac25abf?w=1050",
+      "crunch-bowl.webp": "https://imageproxy.wolt.com/menu/menu-images/6ae09a24d81cde02a5c02af3/636fa716-d6af-11f1-b2d5-be5009f01cdf_5dae31f1_de03_4408_89be_5731b2602f17?w=1050",
+      "forest-cloud.webp": "https://imageproxy.wolt.com/menu/menu-images/6ae09a24d81cde02a5c02af3/636377de-d6af-11f1-b2d5-be5009f01cdf_7e3d36b0_2aeb_4030_9d85_861ec3b4bd6b?w=1050",
+      "san-sebastian.webp": "https://imageproxy.wolt.com/menu/menu-images/6ae09a24d81cde02a5c02af3/636a07fc-d6af-11f1-b2d5-be5009f01cdf_3ef1923d_7d77_48ad_8675_9534d1e5f840?w=1050",
+      "dubai-crepe.webp": "https://imageproxy.wolt.com/menu/menu-images/6ae09a24d81cde02a5c02af3/636b55bc-d6af-11f1-b2d5-be5009f01cdf_66995393_3893_4c20_b153_9961997ba7bc?w=1050"
+    }
+  },
+  "promotionalCutout": {
+    "file": "menu-bowl-cutout.webp",
+    "reference": "menu-scene-v2.webp",
+    "toolMode": "Built-in image generation, transparent-background edit; WebP compression for mobile",
+    "method": "AI cutout for a contained product photograph. The complete bowl is visible at every card width.",
+    "prompt": "Use case: background-extraction. Edit target: supplied Sweeto bowl photograph. Create a precise clean transparent-background product cutout of the complete dessert bowl, preserving its exact cobalt-blue paper tub, white rim, original white SWEETO wordmark, fruit, pistachio cream, crunchy topping, camera angle, natural photographic texture and lighting. Remove only the beige studio background and tabletop. Keep the entire bowl including its full top rim and its base, with a small amount of empty transparent padding on every side. Center the object in a square composition, with the bowl occupying about 85% of the height. Preserve a very restrained soft contact shadow immediately below the bowl with semi-transparent alpha. No new objects, no new lettering, no extra garnish, no colored backdrop. Actual transparency, not a checkerboard."
+  },
+  "matyldaCounterPortrait": {
+    "reference": "Sweeto's Instagram grid supplied by the venue reviewer, showing Matylda in a rounded kraft tub with a cobalt-to-white Sweeto wrap.",
+    "homeMaster": "packages/brand/sweeto/matylda-home-master.png",
+    "homeMasterOriginalName": "exec-8b89937c-b778-4255-8e40-d0fb813e884a.png",
+    "nativeHomeFile": "apps/ios/Resources/Assets.xcassets/sweeto-table-cover.imageset/matylda-table.jpg",
+    "webHomeFile": "public/assets/sweeto/matylda-table.webp",
+    "webExport": "The runtime WebP uses the complete final native image at its exported resolution without cropping or retouching. The original full-resolution PNG is retained separately as the editable master.",
+    "method": "AI-generated editorial reconstruction of the takeaway presentation. The home uses a square, dark-counter composition with warm side light, photographed from a moderate three-quarter angle. Its whole kraft tub spans approximately 60% of the frame width. The upper 30% of the frame is clear counter for the App Clip status, brand and language control.",
+    "retiredStudioOriginalName": "exec-ef707d4f-26ac-45de-8762-2d6b098b95c3.png",
+    "retiredStudioNote": "The alternate packaging composition was removed from app bundles when the menu returned to the merchant’s genuine Matylda cake-layer photograph. Its generated original is archived outside the release tree for provenance.",
+    "menuPhoto": "The menu and expanded product view use the merchant's Matylda product photograph listed in productPhotography."
+  },
+  "legacyGreenPlate": {
+    "originalName": "exec-aeb932f9-647e-4ec7-a53c-709c4baa4ec6.png",
+    "note": "Earlier generated cake photograph on a green plate. This predates the current Sweeto home and menu redesign; its original is archived outside the release tree for provenance."
+  },
+  "matyldaCutout": {
+    "file": "matylda-cutout.webp",
+    "reference": "Two photos of Matylda provided in the design review",
+    "toolMode": "Built-in image generation from product references, with transparent output compressed to WebP",
+    "prompt": "One fully visible, square, two-layer portion of Sweeto’s Matylda chocolate sponge cake, with glossy milk chocolate ganache and dark cookie rubble. Photograph from slightly above and in front with warm side lighting. Leave transparent margins and a single short chocolate tip on the bottom silhouette so the app can animate a separate drop. Omit props and lettering."
+  },
+  "matyldaDrip": {
+    "file": "matylda-drip.webp",
+    "reference": "matylda-cutout.webp",
+    "toolMode": "Built-in image generation, transparent image edit",
+    "prompt": "Preserve the isolated Matylda cake, glossy ganache and crumb. Raise the complete cake within a square frame and extend the existing ganache tip in a slim, continuous vertical stream to the last row of pixels. Leave the surrounding canvas transparent for the separately animated bead.",
+    "seam": {
+      "x": 0.536,
+      "color": "#631f00"
+    }
+  },
+  "matyldaPuddle": {
+    "file": "matylda-puddle.webp",
+    "reference": "matylda-drip.webp, derived from the two user-provided Matylda photos",
+    "toolMode": "Built-in image generation, transparent image edit; compressed to 640 × 640 WebP",
+    "prompt": "Preserve the exact two-layer Matylda cake, crumbs and camera angle. Remove the long narrow vertical strand. Ground the large cake directly in a broad, low, irregular glossy chocolate puddle spreading horizontally to the right. Let a rounded front-right lip reach the bottom edge, with realistic contact shadows and creamy specular highlights. Transparent background; no plate, text, props, water or floating cake.",
+    "seam": {
+      "x": 0.733,
+      "y": 0.99,
+      "width": 0.077,
+      "color": "#581f08"
+    }
+  }
+}

@@ -24,6 +24,7 @@
 	<array>
 		<string>PapuDisplay-Bold.ttf</string>
 		<string>PapuDisplay-ExtraBold.ttf</string>
+		<string>PapuPoster.ttf</string>
 		<string>Manrope.ttf</string>
 		<string>BricolageGrotesque.ttf</string>
 	</array>
@@ -33,7 +34,12 @@
 		<false/>
 	</dict>
 	<key>UILaunchScreen</key>
-	<dict/>
+	<dict>
+		<key>UIColorName</key>
+		<string>GuestLaunchPaper</string>
+		<key>UIImageName</key>
+		<string>PapuPayLaunchLockup</string>
+	</dict>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>arm64</string>

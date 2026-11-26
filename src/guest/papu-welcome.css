@@ -1,0 +1,44 @@
+.papu-welcome {
+  --arrival-size: 48px;
+  --arrival-leading: 5px;
+  --arrival-lift: 27px;
+  --arrival-settled-scale: 0.40;
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  pointer-events: none;
+}
+
+.papu-welcome-art {
+  position: absolute;
+  width: var(--arrival-size);
+  height: var(--arrival-size);
+  top: 50%;
+  left: 50%;
+  transform: translate(calc(-50% - var(--arrival-leading)), calc(-50% - var(--arrival-lift)));
+}
+
+.papu-welcome[data-playing="true"] > svg { opacity: 0; }
+.papu-welcome[data-playing="true"] .papu-welcome-art {
+  animation: papu-fruit-arrival 280ms ease-in-out 720ms both;
+}
+
+@keyframes papu-fruit-arrival {
+  from { transform: translate(calc(-50% - var(--arrival-leading)), calc(-50% - var(--arrival-lift))); }
+  to { transform: translate(-50%, -50%) scale(var(--arrival-settled-scale)); }
+}
+
+/* Keep the one-shot mark entirely in the paper footer on short phones. */
+@media (max-width: 540px) and (max-height: calc(100vw + 380px)) {
+  .papu-welcome {
+    --arrival-size: 34px;
+    --arrival-leading: 2px;
+    --arrival-lift: 5px;
+    --arrival-settled-scale: 0.565;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .papu-welcome-art { display: none; }
+  .papu-welcome[data-playing="true"] > svg { opacity: 1; }
+}

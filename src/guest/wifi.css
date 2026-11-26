@@ -1,0 +1,255 @@
+.papu-wifi {
+  padding: clamp(24px, 6vw, 36px);
+  color: var(--ink);
+}
+
+.papu-wifi-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  padding-inline-end: 45px;
+  margin-block: 4px 24px;
+}
+.papu-wifi-heading > div {
+  flex: 1 1 9rem;
+  min-width: 0;
+}
+
+.papu-wifi-mark {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #ffb789;
+}
+
+.papu-wifi-heading p,
+.papu-wifi-ticket dt {
+  margin: 0 0 6px;
+  font-size: 0.6875rem;
+  font-weight: 750;
+  letter-spacing: 0.09em;
+  line-height: 1.35;
+  text-transform: uppercase;
+}
+
+.papu-wifi-heading p {
+  color: var(--muted);
+}
+
+.papu-wifi-heading h2 {
+  margin: 0;
+  font-family: "Papu Editorial", "Papu Cyrillic", sans-serif;
+  font-size: clamp(1.36rem, 6vw, 2.45rem);
+  font-weight: 800;
+  line-height: 1.06;
+  letter-spacing: -0.035em;
+  overflow-wrap: anywhere;
+}
+
+.papu-wifi-heading h2:lang(ru) {
+  font-weight: 800;
+}
+
+.papu-wifi-ticket {
+  --notch: 7px;
+  margin: 0;
+  border-radius: 14px;
+  background: var(--ink);
+  color: var(--surface);
+}
+
+.papu-wifi-ticket dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.papu-wifi-network {
+  padding: 18px 20px;
+}
+
+.papu-wifi-network dt {
+  color: #e0dfba;
+}
+
+.papu-wifi-network dd {
+  font-size: clamp(1.125rem, 5vw, 1.55rem);
+  font-weight: 750;
+}
+
+.papu-wifi-password {
+  position: relative;
+  margin-inline: var(--notch);
+  padding: 14px calc(20px - var(--notch));
+  border-top: 1px dashed #fff9ee66;
+}
+
+.papu-wifi-password::before,
+.papu-wifi-password::after {
+  content: "";
+  position: absolute;
+  top: calc(-1 * var(--notch));
+  width: calc(2 * var(--notch));
+  height: calc(2 * var(--notch));
+  border-radius: 50%;
+  background: var(--surface);
+}
+
+.papu-wifi-password::before {
+  left: calc(-2 * var(--notch));
+}
+
+.papu-wifi-password::after {
+  right: calc(-2 * var(--notch));
+}
+
+.papu-wifi-password dt {
+  color: #e0dfba;
+}
+
+.papu-wifi-password .papu-wifi-password-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-block-start: -8px;
+}
+
+.papu-wifi .papu-wifi-password-row input {
+  width: 100%;
+  min-width: 0;
+  padding: 8px 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--surface);
+  font:
+    600 1rem/1.3 ui-monospace,
+    monospace;
+}
+
+.papu-wifi-password-row button,
+.papu-wifi-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--ink);
+}
+
+.papu-wifi-password-row button {
+  width: 44px;
+  height: 44px;
+  flex: none;
+  border-color: #fff9ee55;
+  color: var(--surface);
+}
+
+.papu-wifi-password-row button:hover {
+  background: #fff9ee20;
+}
+
+.papu-wifi-password-row :is(input, button):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.papu-wifi-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-block: 12px;
+}
+
+.papu-wifi .papu-wifi-actions > button {
+  flex: 1 1 130px;
+  justify-content: center;
+  min-height: 48px;
+  font-size: 0.8125rem;
+  text-align: center;
+}
+
+.papu-wifi .papu-wifi-secondary {
+  padding: 8px 10px;
+  font-weight: 750;
+}
+
+.papu-wifi-actions svg {
+  flex: none;
+}
+
+.papu-wifi-secondary:hover,
+.papu-wifi-secondary[aria-expanded="true"] {
+  border-color: var(--ink);
+  background: var(--surface);
+}
+
+.papu-wifi-instructions,
+.papu-wifi-empty,
+.papu-wifi-copy-status,
+.papu-wifi-qr figcaption {
+  color: var(--muted);
+  font-size: 0.8125rem;
+  line-height: 1.6;
+}
+
+.papu-wifi-empty {
+  margin: 0;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 0.9375rem;
+}
+
+.papu-wifi-empty p {
+  margin-block: 0 12px;
+}
+
+.papu-wifi-copy-status {
+  display: block;
+  margin-block: 10px;
+}
+
+.papu-wifi-qr {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  margin: 0 0 14px;
+  padding: 18px 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  text-align: center;
+}
+
+.papu-wifi-qr-frame {
+  display: grid;
+  place-items: center;
+  width: min(100%, 210px);
+  aspect-ratio: 1;
+}
+
+.papu-wifi-qr-frame .papu-qr-reveal {
+  width: 100%;
+}
+
+.papu-wifi-qr-frame p {
+  padding-inline: 8px;
+  color: var(--muted);
+  font-size: 0.8125rem;
+}
+
+.papu-wifi-qr figcaption {
+  max-width: 30ch;
+}
+
+.papu-wifi-instructions {
+  margin: 14px 0 0;
+}

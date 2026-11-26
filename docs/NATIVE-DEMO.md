@@ -15,7 +15,7 @@ The copy and controls support Polish, English and Russian. The card and its Wall
 
 ## Homepage motion
 
-The vendor logo is centered in the native navigation bar. The redundant logo row and primary venue-picker button are removed; the full app keeps venue switching as a secondary action. A visible Rive illustration gets a brief replay, followed by a 12–16 second rest before the next illustration. Replays pause away from the homepage, in the background, with Reduce Motion, and in Low Power Mode. The separately composited cake spill remains restrained and respects the same accessibility and app-state constraints.
+The Sweeto home opens directly into its dessert photograph and four venue actions. The PapuPay fruit makes a single Rive entrance at the bottom before settling next to the wordmark. Direct menu and counter links skip the entrance. Reduce Motion shows the settled mark. On the guest card, an observed new stamp makes a single ink impression while the QR stays in place.
 
 ## Private build configuration
 

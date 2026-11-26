@@ -8,14 +8,25 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "next typegen && tsc --noEmit",
-    "test:routes": "node --test scripts/test-web-routes.mjs"
+    "test:guest": "vitest run src/guest",
+    "test:server": "node --test server/*.test.mjs",
+    "test": "npm run test:guest && npm run test:server",
+    "venue:serve": "node server/start.mjs",
+    "test:routes": "node --test scripts/test-web-routes.mjs",
+    "prebuild": "node scripts/embed-launch-brand.mjs",
+    "predev": "node scripts/embed-launch-brand.mjs"
   },
   "dependencies": {
+    "@rive-app/react-canvas": "^4.24.0",
     "class-variance-authority": "^0.7.1",
     "cn": "^0.5.0",
+    "jsqr": "1.4.0",
     "lucide-react": "^1.61.0",
     "motion": "^14.6.0",
     "next": "16.4.3",
+    "papu-guest-icons": "npm:lucide-react@0.468.0",
+    "papu-guest-motion": "npm:motion@12.43.0",
+    "qrcode": "^1.5.4",
     "radix-ui": "^1.8.1",
     "react": "19.3.1",
     "react-dom": "19.3.1",
@@ -26,13 +37,15 @@
   },
   "devDependencies": {
     "@tailwindcss/turbopack": "^4",
-    "@types/node": "^20",
+    "@types/node": "^22",
+    "@types/qrcode": "^1.5.6",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.4.3",
     "tailwindcss": "^4.3.3",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^5.0.5"
   },
   "engines": {
     "node": "22.x"

@@ -1,0 +1,127 @@
+.sweeto-drip {
+  --drip-landing: calc(var(--sweeto-main-gap) + 24px);
+  --drip-light: color-mix(in srgb, var(--drip-color), #f6dcc0 22%);
+  --drip-dark: color-mix(in srgb, var(--drip-color), black 28%);
+  position: absolute;
+  grid-area: 2 / 1;
+  inset-block-start: calc(-1 * var(--sweeto-main-gap) - 2px);
+  inset-inline-start: var(--drip-outlet);
+  z-index: 2;
+  width: 24px;
+  height: calc(var(--drip-landing) + 12px);
+  transform: translateX(-50%);
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.sweeto-drip[data-ready="true"] { visibility: visible; }
+
+.sweeto-drip > span {
+  position: absolute;
+  inset-inline-start: 50%;
+  animation-duration: 6.4s;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  animation-iteration-count: infinite;
+  animation-play-state: paused;
+}
+
+.sweeto-drip[data-running="true"] > span {
+  animation-play-state: running;
+}
+
+/* A shallow lip stays attached to the photographed pool throughout the cycle. */
+.sweeto-drip-lip {
+  top: -1px;
+  width: var(--drip-width, 7px);
+  height: 3px;
+  border-radius: 0 0 48% 45%;
+  background: linear-gradient(180deg, var(--drip-color), var(--drip-dark));
+  transform-origin: center top;
+  animation-name: sweeto-sauce-lip;
+}
+
+.sweeto-drip-sheen {
+  top: -1px;
+  width: calc(var(--drip-width, 7px) * 0.6);
+  height: 1px;
+  border-radius: 50%;
+  background: var(--drip-light);
+  opacity: 0.25;
+  animation-name: sweeto-sauce-sheen;
+}
+
+.sweeto-drip-neck {
+  width: var(--drip-width, 7px);
+  height: 10px;
+  border-radius: 0 0 48% 48%;
+  background: linear-gradient(90deg, var(--drip-dark), var(--drip-light) 28%, var(--drip-color) 58%, var(--drip-dark));
+  transform-origin: center top;
+  animation-name: sweeto-sauce-neck;
+}
+
+.sweeto-drip-drop {
+  width: calc(var(--drip-width, 7px) * 1.15);
+  height: 12px;
+  border-radius: 47% 45% 55% 57% / 34% 38% 62% 64%;
+  background: radial-gradient(ellipse at 33% 35%, var(--drip-light) 0%, var(--drip-color) 34%, var(--drip-dark) 82%);
+  transform-origin: center top;
+  animation-name: sweeto-sauce-drop;
+}
+
+.sweeto-drip-settle {
+  top: calc(var(--drip-landing) + 6px);
+  width: calc(var(--drip-width, 7px) * 1.8);
+  height: 4px;
+  border-radius: 46% 54% 45% 55%;
+  background: radial-gradient(ellipse at 42% 20%, var(--drip-light), var(--drip-color) 42%, var(--drip-dark));
+  transform-origin: center;
+  animation-name: sweeto-sauce-settle;
+}
+
+@keyframes sweeto-sauce-lip {
+  0%, 12%, 100% { transform: translateX(-50%) scale(1, 0.7); }
+  44% { transform: translateX(-50%) scale(1.04, 1.2); }
+  59% { transform: translateX(-50%) scale(0.92, 0.72); }
+  73%, 96% { transform: translateX(-50%) scale(1, 0.7); }
+}
+
+@keyframes sweeto-sauce-sheen {
+  0%, 12%, 100% { opacity: 0.15; transform: translateX(-75%) scaleX(0.7); }
+  45% { opacity: 0.38; transform: translateX(-40%) scaleX(1); }
+  59%, 96% { opacity: 0.15; transform: translateX(-75%) scaleX(0.7); }
+}
+
+@keyframes sweeto-sauce-neck {
+  0%, 12%, 100% { transform: translateX(-50%) scale(0.9, 0.08); opacity: 1; }
+  36% { transform: translateX(-50%) scale(0.86, 0.3); opacity: 1; }
+  53% { transform: translateX(-50%) scale(0.65, 0.74); opacity: 1; }
+  57% { transform: translateX(-50%) scale(0.28, 1.3); opacity: 1; }
+  59% { transform: translateX(-50%) scale(0.15, 1.45); opacity: 0; }
+  63%, 96% { transform: translateX(-50%) scale(0.9, 0.08); opacity: 0; }
+}
+
+@keyframes sweeto-sauce-drop {
+  0%, 12%, 100% { opacity: 0; transform: translate(-50%, 0) scale(0.45, 0.1); }
+  24% { opacity: 1; transform: translate(-50%, 0) scale(0.64, 0.28); }
+  43% { opacity: 1; transform: translate(-50%, 2px) scale(0.98, 0.62); }
+  53% { opacity: 1; transform: translate(-50%, 5px) scale(1.04, 0.9); }
+  59% {
+    opacity: 1;
+    transform: translate(-50%, 10px) scale(0.85, 1.13);
+    animation-timing-function: cubic-bezier(0.55, 0.02, 0.9, 0.45);
+  }
+  68% { opacity: 1; transform: translate(-50%, var(--drip-landing)) scale(0.88, 1.06); }
+  71% { opacity: 0; transform: translate(-50%, calc(var(--drip-landing) + 6px)) scale(1.35, 0.18); }
+  96% { opacity: 0; transform: translate(-50%, calc(var(--drip-landing) + 6px)) scale(1.35, 0.18); }
+}
+
+@keyframes sweeto-sauce-settle {
+  0%, 67%, 100% { opacity: 0; transform: translateX(-50%) scale(0.5, 0.6); }
+  70% { opacity: 0.88; transform: translateX(-50%) scale(0.75, 1); }
+  79% { opacity: 0.68; transform: translateX(-50%) scale(1, 0.7); }
+  96% { opacity: 0; transform: translateX(-50%) scale(1.12, 0.58); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sweeto-drip { display: none; }
+}

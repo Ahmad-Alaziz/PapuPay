@@ -5,6 +5,439 @@ import PDFKit
 import SwiftUI
 import UIKit
 
+struct VenueDessertMenu: View {
+  let original: URL?
+  let language: SweetoLanguage
+  let palette: VenueGuestPalette
+  @Environment(\.dynamicTypeSize) private var typeSize
+  @Environment(\.accessibilityReduceMotion) private var reduceMotion
+  @Environment(\.scenePhase) private var scenePhase
+  @State private var presentation: Presentation?
+  @State private var draft = SweetoCounterDraft()
+  @State private var counterPulse = 0
+
+  private struct Dessert: Identifiable {
+    var id: String { image }
+    let image: String
+    let pl: (String, String)
+    let en: (String, String)
+    let ru: (String, String)
+
+    func text(for language: SweetoLanguage) -> (title: String, description: String) {
+      switch language {
+      case .pl: pl
+      case .en: en
+      case .ru: ru
+      }
+    }
+  }
+
+  private enum Presentation: Identifiable {
+    case original, counter, dessert(Dessert)
+
+    var id: String {
+      switch self {
+      case .original: "original"
+      case .counter: "counter"
+      case .dessert(let value): "dessert-" + value.id
+      }
+    }
+  }
+
+  private static let desserts = [
+    Dessert(
+      image: "menu-matylda",
+      pl: ("Matylda czekoladowa", "Intensywnie czekoladowe ciasto z błyszczącą polewą."),
+      en: ("Matylda chocolate cake", "Rich chocolate cake with glossy chocolate sauce."),
+      ru: ("Шоколадная Матильда", "Насыщенный шоколадный торт с блестящей шоколадной глазурью.")
+    ),
+    Dessert(
+      image: "menu-san-sebastian",
+      pl: ("San Sebastian z czekoladą", "Baskijski sernik z kremowym środkiem i gorącą czekoladą."),
+      en: ("Chocolate San Sebastian cheesecake", "Basque cheesecake with a soft centre and hot chocolate sauce."),
+      ru: ("Сан-Себастьян с шоколадом", "Баскский чизкейк с нежной серединой и горячим шоколадом.")
+    ),
+    Dessert(
+      image: "menu-crunch-bowl",
+      pl: ("Chrupiący bowl", "Krem pistacjowy, świeże truskawki, chrupiący miks i ciemna czekolada."),
+      en: ("Crunchy bowl", "Pistachio cream, fresh strawberries, a crunchy mix and dark chocolate."),
+      ru: ("Хрустящий боул", "Фисташковый крем, свежая клубника, хрустящая смесь и тёмный шоколад.")
+    ),
+    Dessert(
+      image: "menu-forest-cloud",
+      pl: ("Królewska chmurka leśna", "Puszyste ciasto nasączone mlekiem, z serkiem śmietankowym, owocami i płynną czekoladą."),
+      en: ("Forest cloud cake", "Fluffy milk-soaked cake with cream cheese, fruit and chocolate sauce."),
+      ru: ("Королевское лесное облако", "Воздушный торт в молочной пропитке со сливочным сыром, фруктами и шоколадом.")
+    )
+  ]
+
+  private func t(_ pl: String, _ en: String, _ ru: String) -> String { language.text(pl, en, ru) }
+  private static let venue = "sweeto"
+  private static var itemIDs: Set<String> { Set(desserts.map(\.id)) }
+
+  private var selectedLines: [SweetoCounterLine] {
+    Self.desserts.compactMap { dessert in
+      let count = draft.quantity(for: dessert.id)
+      guard count > 0 else { return nil }
+      return SweetoCounterLine(id: dessert.id, quantity: count, polishName: dessert.pl.0,
+                               guestName: dessert.text(for: language).title)
+    }
+  }
+
+  private var selectionSummary: String {
+    let total = draft.total
+    let last = total % 10
+    let teen = (11...14).contains(total % 100)
+    let few = (2...4).contains(last) && !teen
+    let pl = total == 1 ? "porcja" : few ? "porcje" : "porcji"
+    let ru = last == 1 && !teen ? "порция" : few ? "порции" : "порций"
+    return "\(total) " + t(pl, total == 1 ? "portion" : "portions", ru)
+  }
+
+  var body: some View {
+    ScrollView {
+      LazyVStack(alignment: .leading, spacing: 13) {
+        Text(t("Menu deserów", "Dessert menu", "Меню десертов"))
+          .font(palette.display(.largeTitle))
+          .foregroundStyle(palette.forest)
+          .fixedSize(horizontal: false, vertical: true)
+          .accessibilityAddTraits(.isHeader)
+          .padding(.bottom, 5)
+        Text(t("Wybierz desery i pokaż listę przy ladzie.", "Choose desserts and show your list at the counter.", "Выберите десерты и покажите список у стойки."))
+          .font(.footnote)
+          .foregroundStyle(palette.muted)
+          .fixedSize(horizontal: false, vertical: true)
+        ForEach(Self.desserts) { dessert in
+          row(dessert)
+          Rectangle().fill(palette.line).frame(height: 1).accessibilityHidden(true)
+        }
+        Text(t("Zamów przy ladzie. Tam sprawdzisz też ceny i dostępność.", "Order at the counter, where you can check prices and availability.", "Закажите у стойки, там же уточняйте цены и наличие."))
+          .font(.footnote)
+          .foregroundStyle(palette.muted)
+          .fixedSize(horizontal: false, vertical: true)
+        if original != nil {
+          Button { presentation = .original } label: {
+            Label(t("Oryginalne menu (PDF)", "Original Polish menu (PDF)", "Оригинальное меню по-польски (PDF)"), systemImage: "doc.text")
+              .font(.footnote.weight(.semibold))
+              .multilineTextAlignment(.leading)
+              .padding(.horizontal, 12)
+              .frame(minHeight: 44)
+              .background(palette.surface, in: .rect(cornerRadius: 8))
+              .overlay { RoundedRectangle(cornerRadius: 8).strokeBorder(palette.line).accessibilityHidden(true) }
+          }
+          .buttonStyle(.plain)
+        }
+      }
+      .padding(.horizontal, 20)
+      .padding(.vertical, 20)
+      .frame(maxWidth: 620, alignment: .leading)
+      .frame(maxWidth: .infinity)
+    }
+    .background(palette.paper.ignoresSafeArea())
+    .foregroundStyle(palette.ink)
+    .safeAreaInset(edge: .bottom, spacing: 0) {
+      if draft.total > 0 {
+        counterAction
+          .padding(.horizontal, 20).padding(.vertical, 10)
+          .frame(maxWidth: 620)
+          .frame(maxWidth: .infinity)
+          .background(palette.paper)
+          .overlay(alignment: .top) { Rectangle().fill(palette.line).frame(height: 1).accessibilityHidden(true) }
+          .transition(reduceMotion ? .identity : .move(edge: .bottom).combined(with: .opacity))
+      }
+    }
+    .onAppear(perform: restoreDraft)
+    .onChange(of: scenePhase) { _, phase in
+      if phase == .active { restoreDraft() }
+    }
+    .task(id: draft.expiresAt) {
+      guard draft.total > 0 else { return }
+      let delay = max(0, draft.expiresAt.timeIntervalSinceNow)
+      do { try await Task.sleep(for: .seconds(delay)) } catch { return }
+      if !Task.isCancelled { restoreDraft() }
+    }
+    .sensoryFeedback(.selection, trigger: counterPulse)
+    .sheet(item: $presentation) { destination in
+      switch destination {
+      case .counter:
+        SweetoCounterOrder(lines: selectedLines, language: language, palette: palette,
+                           edit: { presentation = nil }, clear: clearDraft)
+      case .dessert(let dessert):
+        dessertDetail(dessert)
+      case .original:
+        NavigationStack {
+          VenuePDFMenu(url: nil, fallback: original, language: language, isPolish: true, palette: palette)
+            .toolbar {
+              ToolbarItem(placement: .topBarTrailing) {
+                Button(t("Zamknij", "Close", "Закрыть")) { presentation = nil }
+              }
+            }
+            .toolbarBackground(palette.paper, for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
+        }
+      }
+    }
+  }
+
+  private func row(_ dessert: Dessert) -> some View {
+    let quantity = draft.quantity(for: dessert.id)
+    let layout = typeSize.isAccessibilitySize ? AnyLayout(VStackLayout(alignment: .leading, spacing: 12))
+      : AnyLayout(HStackLayout(alignment: .top, spacing: 14))
+    return layout {
+      Button { presentation = .dessert(dessert) } label: {
+        Image(dessert.image).resizable().scaledToFit()
+          .frame(width: typeSize.isAccessibilitySize ? 144 : 112)
+          .clipShape(.rect(cornerRadius: 6))
+          .overlay(alignment: .topTrailing) {
+            Image(systemName: "arrow.up.left.and.arrow.down.right")
+              .font(.system(size: 10, weight: .semibold))
+              .foregroundStyle(palette.ink)
+              .frame(width: 23, height: 23)
+              .background(palette.surface.opacity(0.94), in: .circle)
+              .overlay { Circle().strokeBorder(palette.line).allowsHitTesting(false) }
+              .padding(4)
+              .accessibilityHidden(true)
+              .allowsHitTesting(false)
+          }
+          .overlay(alignment: .bottomLeading) {
+            if quantity > 0 && !typeSize.isAccessibilitySize {
+              Text("\(quantity)")
+                .font(.system(.caption, design: .monospaced, weight: .bold))
+                .foregroundStyle(palette.onAccent)
+                .padding(.horizontal, 7).padding(.vertical, 4)
+                .background(palette.primary, in: .capsule)
+                .contentTransition(reduceMotion ? .identity : .numericText())
+                .padding(4)
+                .accessibilityHidden(true)
+                .allowsHitTesting(false)
+            }
+          }
+      }
+      .buttonStyle(.plain)
+      .accessibilityLabel(t("Powiększ zdjęcie: \(dessert.text(for: language).title)", "Enlarge photo: \(dessert.text(for: language).title)", "Увеличить фото: \(dessert.text(for: language).title)"))
+      dessertText(dessert)
+      if typeSize.isAccessibilitySize {
+        quantityPicker(dessert, quantity: quantity)
+      } else {
+        quantityRail(dessert, quantity: quantity)
+      }
+    }
+    .frame(maxWidth: .infinity, alignment: .leading)
+    .contentShape(.rect)
+    .accessibilityElement(children: .contain)
+  }
+
+  private func dessertDetail(_ dessert: Dessert) -> some View {
+    let words = dessert.text(for: language)
+    return NavigationStack {
+      ScrollView {
+        VStack(alignment: .leading, spacing: 16) {
+          Text(words.title)
+            .font(typeSize.isAccessibilitySize ? .headline.weight(.bold) : palette.display(.title2))
+            .accessibilityAddTraits(.isHeader)
+            .fixedSize(horizontal: false, vertical: true)
+          Image(dessert.image).resizable().scaledToFit()
+            .frame(maxWidth: .infinity)
+            .clipShape(.rect(cornerRadius: palette.actionCorner))
+            .accessibilityLabel(words.title)
+          Text(words.description).font(.body).foregroundStyle(palette.muted)
+            .fixedSize(horizontal: false, vertical: true)
+          detailQuantityControl(dessert)
+        }
+        .padding(20)
+        .frame(maxWidth: 540, alignment: .leading)
+        .frame(maxWidth: .infinity)
+      }
+      .background(palette.paper.ignoresSafeArea())
+      .foregroundStyle(palette.ink)
+      .toolbar {
+        ToolbarItem(placement: .topBarTrailing) {
+          Button(t("Gotowe", "Done", "Готово")) { presentation = nil }
+        }
+      }
+      .toolbarBackground(palette.paper, for: .navigationBar)
+      .toolbarBackground(.visible, for: .navigationBar)
+      .tint(palette.ink)
+    }
+    .presentationDragIndicator(.visible)
+  }
+
+  @ViewBuilder private func detailQuantityControl(_ dessert: Dessert) -> some View {
+    let quantity = draft.quantity(for: dessert.id)
+    if quantity > 0 {
+      quantityPicker(dessert, quantity: quantity)
+    } else {
+      Button {
+        changeQuantity(dessert, by: 1)
+      } label: {
+        HStack(spacing: 8) {
+          Image(systemName: "plus").font(.system(size: 16, weight: .semibold)).accessibilityHidden(true)
+          Text(t("Dodaj do listy", "Add to list", "В список"))
+            .font(.body.weight(.semibold))
+            .fixedSize(horizontal: false, vertical: true)
+        }
+        .padding(.horizontal, 16).padding(.vertical, 9)
+        .frame(minHeight: 44)
+        .foregroundStyle(palette.onAccent)
+        .background(palette.primary, in: .capsule)
+      }
+      .buttonStyle(.plain)
+    }
+  }
+
+  private func quantityPicker(_ dessert: Dessert, quantity: Int) -> some View {
+    HStack(spacing: 0) {
+      if quantity > 0 {
+        quantityButton(dessert, quantity: quantity, increment: false)
+        Text("\(quantity)")
+          .font(.system(.body, design: .monospaced, weight: .bold))
+          .contentTransition(reduceMotion ? .identity : .numericText())
+          .frame(minWidth: 30)
+          .accessibilityHidden(true)
+      }
+      quantityButton(dessert, quantity: quantity, increment: true)
+    }
+    .background(palette.surface, in: .capsule)
+    .overlay { Capsule().strokeBorder(palette.line).allowsHitTesting(false) }
+  }
+
+  private func quantityRail(_ dessert: Dessert, quantity: Int) -> some View {
+    VStack(spacing: 0) {
+      quantityButton(dessert, quantity: quantity, increment: true)
+        .background(palette.surface, in: .circle)
+        .overlay { Circle().strokeBorder(palette.line).allowsHitTesting(false) }
+      if quantity > 0 {
+        quantityButton(dessert, quantity: quantity, increment: false)
+      } else {
+        Color.clear.frame(width: 44, height: 44).accessibilityHidden(true)
+      }
+    }
+    .background {
+      if quantity > 0 { Capsule().fill(palette.surface) }
+    }
+    .overlay {
+      if quantity > 0 { Capsule().strokeBorder(palette.line).allowsHitTesting(false) }
+    }
+  }
+
+  private func quantityButton(_ dessert: Dessert, quantity: Int, increment: Bool) -> some View {
+    let name = dessert.text(for: language).title
+    return Button {
+      changeQuantity(dessert, by: increment ? 1 : -1)
+    } label: {
+      Image(systemName: increment ? "plus" : "minus")
+        .font(.system(size: 16, weight: .semibold))
+        .foregroundStyle(palette.ink)
+        .frame(width: 44, height: 44)
+        .background(increment && quantity > 0 ? palette.peach : .clear, in: .circle)
+        .contentShape(.circle)
+        .accessibilityHidden(true)
+    }
+    .buttonStyle(.plain)
+    .disabled(increment ? quantity >= SweetoCounterDraft.quantityLimit : quantity == 0)
+    .accessibilityLabel(increment
+      ? t("Dodaj: \(name)", "Add one: \(name)", "Добавить: \(name)")
+      : t("Usuń porcję: \(name)", "Remove one: \(name)", "Убрать порцию: \(name)"))
+    .accessibilityValue(t("\(quantity) na liście", "\(quantity) on the list", "\(quantity) в списке"))
+  }
+
+  private var counterAction: some View {
+    let title = t("Pokaż przy ladzie", "Show at the counter", "Покажите у стойки")
+    let compact = t("Lista", "My list", "Список") + " • \(draft.total)"
+    return Button {
+      restoreDraft()
+      if draft.total > 0 { presentation = .counter }
+    } label: {
+      GuestActionLabel(title: typeSize.isAccessibilitySize ? compact : title,
+                       arrow: "arrow.right", palette: palette, detail: typeSize.isAccessibilitySize ? nil : selectionSummary, prominent: true)
+    }
+    .buttonStyle(GuestActionPress(prominent: true, palette: palette))
+    .accessibilityLabel(title)
+    .accessibilityValue(selectionSummary)
+  }
+
+  private func restoreDraft() {
+    let restored = SweetoCounterDraft.load(venue: Self.venue, itemIDs: Self.itemIDs)
+    if draft != restored { draft = restored }
+    if draft.total == 0, case .counter? = presentation { presentation = nil }
+  }
+
+  private func changeQuantity(_ dessert: Dessert, by delta: Int) {
+    var next = draft
+    next.adjust(dessert.id, by: delta)
+    guard next != draft else { return }
+    withAnimation(reduceMotion ? nil : .easeOut(duration: 0.22)) {
+      draft = next
+    }
+    draft.save(venue: Self.venue)
+    counterPulse += 1
+    let name = dessert.text(for: language).title
+    let quantity = draft.quantity(for: dessert.id)
+    AccessibilityNotification.Announcement(t("\(quantity) × \(name) na liście", "\(quantity) × \(name) on the list", "\(quantity) × \(name) в списке")).post()
+  }
+
+  private func clearDraft() {
+    withAnimation(reduceMotion ? nil : .easeOut(duration: 0.22)) {
+      draft = SweetoCounterDraft()
+      presentation = nil
+    }
+    draft.save(venue: Self.venue)
+    counterPulse += 1
+  }
+
+  private func dessertText(_ dessert: Dessert) -> some View {
+    let words = dessert.text(for: language)
+    return VStack(alignment: .leading, spacing: 5) {
+      Text(words.title)
+        .font(.headline.weight(.bold))
+        .foregroundStyle(palette.ink)
+        .accessibilityAddTraits(.isHeader)
+      Text(words.description)
+        .font(.subheadline)
+        .foregroundStyle(palette.muted)
+    }
+    .fixedSize(horizontal: false, vertical: true)
+    .frame(maxWidth: .infinity, alignment: .leading)
+  }
+}
+
+struct VenueImageMenu: View {
+  let image: URL
+  let language: SweetoLanguage
+  let palette: VenueGuestPalette
+
+  var body: some View {
+    ScrollView {
+      VStack(alignment: .leading, spacing: 15) {
+        Text(language.text("Menu", "Menu", "Меню"))
+          .font(palette.display(.title))
+          .accessibilityAddTraits(.isHeader)
+        AsyncImage(url: image) { phase in
+          if let picture = phase.image {
+            picture.resizable().scaledToFit()
+              .accessibilityLabel(language.text("Zdjęcie menu", "Menu photograph", "Фотография меню"))
+          } else if phase.error != nil {
+            Text(language.text("Podgląd jest niedostępny.", "Menu preview unavailable.", "Предпросмотр недоступен."))
+              .foregroundStyle(palette.muted)
+          } else {
+            ProgressView(language.text("Wczytywanie menu…", "Loading menu…", "Загрузка меню…"))
+          }
+        }
+        Link(destination: image) {
+          Label(language.text("Otwórz oryginał", "Open original", "Открыть оригинал"), systemImage: "arrow.up.right")
+            .font(.footnote.weight(.semibold))
+            .frame(minHeight: 44)
+        }
+      }
+      .padding(20)
+      .frame(maxWidth: 750, alignment: .leading)
+      .frame(maxWidth: .infinity)
+    }
+    .foregroundStyle(palette.ink)
+    .background(palette.paper.ignoresSafeArea())
+  }
+}
+
 struct VenuePDFMenu: View {
   let url: URL?
   let fallback: URL?
@@ -18,13 +451,21 @@ struct VenuePDFMenu: View {
   var body: some View {
     VStack(spacing: 0) {
       if let document {
+        HStack {
+          Text(language.text("Menu", "Menu", "Меню"))
+            .font(palette.display(.title))
+            .accessibilityAddTraits(.isHeader)
+          Spacer(minLength: 0)
+        }
+        .padding(.horizontal, 18)
+        .padding(.vertical, 10)
         if shownInPolish && language != .pl {
           HStack(spacing: 7) {
-            VenueActionArt(kind: .menu, theme: palette.motionTheme, animated: true)
-              .frame(width: 27, height: 27)
+            Image(systemName: "doc.text").accessibilityHidden(true)
             Text(language.text("Menu po polsku", "Menu in Polish", "Меню на польском языке"))
               .font(.footnote)
           }
+          .accessibilityElement(children: .combine)
           .padding(.vertical, 5)
         }
         VenuePDFPresentation(document: document)
@@ -89,17 +530,9 @@ struct VenueNativeButton: View {
 
   var body: some View {
     Button(action: action) {
-      HStack(spacing: 9) {
-        Text(title).font(.headline)
-        Spacer()
-        Image(systemName: systemImage).accessibilityHidden(true)
-      }
-      .foregroundStyle(.white)
-      .padding(15)
-      .frame(minHeight: 50)
-      .background(palette.primary, in: .rect(cornerRadius: 15))
+      GuestActionLabel(title: title, arrow: systemImage, palette: palette, prominent: true)
     }
-    .buttonStyle(PressStyle())
+    .buttonStyle(GuestActionPress(prominent: true))
   }
 }
 
@@ -110,17 +543,32 @@ struct VenueLoyaltyView: View {
   let palette: VenueGuestPalette
   let showPreview: Bool
   @Environment(\.scenePhase) private var scenePhase
+  @Environment(\.dynamicTypeSize) private var typeSize
   @Environment(\.accessibilityReduceMotion) private var reduceMotion
+  @AccessibilityFocusState private var checkoutTitleFocused: Bool
   @State private var card: VenueLoyaltyCard?
   @State private var ready = false
   @State private var creating = false
+  @State private var issuanceFailed = false
+  @State private var readGeneration = 0
   @State private var failed = false
   @State private var walletBusy = false
   @State private var walletFailed = false
   @State private var wallet: NativeWalletPass?
+  @State private var pendingWalletCheck: NativeWalletPass?
+  @State private var installedPass: PKPass?
+  @State private var walletUpdates = false
+  @State private var walletSaveMotion = 0
+  @AppStorage("papupay-last-verified-wallet-membership-v1") private var previouslyInstalled = Data()
   @State private var preview = false
   @State private var walletAvailable = false
+  @State private var walletChecked = false
   @State private var cardMotion = 0
+  @State private var stampMotion = 0
+  @State private var stampPlayback: SweetoStampPlayback?
+  @State private var rewardArrival = false
+  @State private var receivedStamps = 0
+  @State private var focusCheckoutOnCreate = false
   @State private var demoLedger = VenueDemoLoyalty()
   @State private var demoPresented = false
   @State private var demoStage: DemoStage = .ready
@@ -128,53 +576,72 @@ struct VenueLoyaltyView: View {
   @State private var confirmRedeem = false
   @State private var confirmReset = false
 
-  private enum DemoStage: Equatable { case ready, scanning, stamped, redeemed }
-  private var demo: VenueGuestDemo? { VenueGuestDemo.configuration(for: api.venue) }
-  private var demoNamespace: String { api.venue.origin.absoluteString + "|" + api.venue.slug + "|" + (demo?.cardCode ?? "") }
+  private enum DemoStage: Equatable { case ready, scanning, stamped(Int), redeemed }
+  private var stampConfirmed: Bool {
+    guard case .stamped(let count) = demoStage, count > 0 else { return false }
+    return card?.stamps == count && demoLedger.stamps == count
+  }
+  private var demo: VenueGuestDemo? { VenueGuestDemo.loyaltyConfiguration(for: api.venue) }
+  private var isSweeto: Bool { api.venue.slug == "sweeto" }
+  private var cream: Color { isSweeto ? palette.frosting : palette.surface }
+  private var receiptInk: Color { isSweeto ? palette.forest : palette.ink }
+  private var stampStock: Color { isSweeto ? Papu.butter : palette.surface }
+  private var receiptSeam: some View {
+    GuestPerforation(color: receiptInk.opacity(0.35), cutout: palette.paper)
+  }
   private func t(_ pl: String, _ en: String, _ ru: String) -> String { language.text(pl, en, ru) }
 
   var body: some View {
     ScrollView {
-      VStack(alignment: .leading, spacing: 20) {
-        Text(t("Twoja karta", "Your loyalty card", "Ваша карта"))
-          .font(palette.display(.largeTitle)).accessibilityAddTraits(.isHeader)
+      VStack(alignment: .leading, spacing: 15) {
         if let card {
           checkout(card)
-          walletSection
+            .transition(reduceMotion ? .identity : .offset(y: 12).combined(with: .opacity))
           if demo != nil { demoEntry }
-          if failed {
-            Text(t("Nie udało się odświeżyć pieczątek.", "Couldn’t refresh your stamps.", "Не удалось обновить отметки."))
-              .font(.footnote)
-          }
         } else if ready {
           if failed {
-            Text(t("Nie udało się pobrać karty. Spróbuj ponownie.", "Couldn’t load your card. Try again.", "Не удалось загрузить карту. Попробуйте ещё раз."))
+            Text(t("Twoja karta", "Your card", "Ваша карта"))
+              .font(palette.display(.title)).accessibilityAddTraits(.isHeader)
+            Text(t("Nie udało się pobrać karty. Sprawdź połączenie i spróbuj ponownie.", "We couldn’t load your card. Check the connection and try again.", "Не удалось загрузить карту. Проверьте соединение и повторите попытку."))
+              .font(.body).foregroundStyle(palette.muted)
             VenueNativeButton(title: t("Spróbuj ponownie", "Try again", "Повторить"), systemImage: "arrow.clockwise", palette: palette) {
               Task { await refresh() }
             }
           } else {
             firstCard
-            VenueNativeButton(
-              title: creating ? t("Tworzenie karty…", "Creating your card…", "Создаём карту…") : t("Utwórz kartę", "Create my card", "Создать карту"),
-              systemImage: "plus", palette: palette
-            ) { Task { await createCard() } }
-              .disabled(creating)
-            if demo != nil { demoNotice }
+              .transition(reduceMotion ? .identity : .opacity)
+            if issuanceFailed {
+              Label(t("Nie udało się utworzyć karty. Spróbuj ponownie.", "Couldn’t create your card. Please try again.", "Не удалось создать карту. Попробуйте ещё раз."), systemImage: "exclamationmark.circle")
+                .font(.footnote).foregroundStyle(palette.ink)
+            }
           }
         } else {
           ProgressView(t("Wczytywanie karty…", "Loading your card…", "Загрузка карты…"))
         }
       }
-      .padding(20)
-      .frame(maxWidth: 530, alignment: .leading)
+      .padding(.horizontal, 20)
+      .padding(.top, 14)
+      .padding(.bottom, 20)
+      .frame(maxWidth: 474, alignment: .leading)
       .frame(maxWidth: .infinity)
     }
     .refreshable { await refresh() }
     .background(palette.paper.ignoresSafeArea())
     .foregroundStyle(palette.ink)
     .sensoryFeedback(.success, trigger: cardMotion)
+    .sensoryFeedback(.success, trigger: walletSaveMotion)
+    .sensoryFeedback(trigger: stampMotion) { _, _ in
+      isSweeto && !rewardArrival ? .impact(weight: .light) : .success
+    }
+    .task(id: reduceMotion) {
+      if isSweeto && !reduceMotion { await SweetoStampMotionSource.prepare() }
+    }
     .task(id: scenePhase) {
       guard scenePhase == .active else { return }
+      if let installedPass, !passIsInstalled(installedPass) {
+        self.installedPass = nil
+        if let card, previouslyInstalled == card.fingerprint(in: api.venue) { previouslyInstalled = Data() }
+      }
       if demo != nil {
         await refresh()
       } else {
@@ -186,15 +653,53 @@ struct VenueLoyaltyView: View {
     }
     .task(id: card?.code) {
       walletAvailable = false
+      walletChecked = false
+      walletUpdates = false
+      installedPass = nil
+      pendingWalletCheck = nil
+      defer { if !Task.isCancelled { walletChecked = true } }
+      guard let membership = card else { return }
       if let demo {
-        walletAvailable = card != nil && demo.walletPassData(stamps: card?.stamps ?? 0) != nil
-        return
+        walletAvailable = demo.walletPassData(stamps: membership.stamps) != nil
+      } else {
+        guard let response = try? await api.wallet(), !Task.isCancelled else { return }
+        walletAvailable = response.status == .ready && response.passUrl != nil
+        walletUpdates = response.updatesEnabled == true
       }
-      guard card != nil, let response = try? await api.wallet(), !Task.isCancelled else { return }
-      walletAvailable = response.status == .ready && response.passUrl != nil
+      // The persisted fingerprint only requests a fresh check. PassKit is authoritative.
+      guard walletAvailable, previouslyInstalled == membership.fingerprint(in: api.venue),
+        let pass = try? await signedPass(for: membership), !Task.isCancelled,
+        card?.checkout == membership.checkout else { return }
+      if passIsInstalled(pass) { installedPass = pass }
+      else { previouslyInstalled = Data() }
+    }
+    .task(id: wallet == nil ? pendingWalletCheck?.id : nil) {
+      guard wallet == nil, let review = pendingWalletCheck else { return }
+      // PassKit signals dismissal for both Add and Cancel. Confirm the specific pass after dismissal.
+      for delay in [0, 150, 350, 650] {
+        if delay > 0 {
+          do { try await Task.sleep(for: .milliseconds(delay)) } catch { return }
+        }
+        guard !Task.isCancelled, pendingWalletCheck?.id == review.id, card?.checkout == review.membership else { return }
+        if passIsInstalled(review.pass) {
+          installedPass = review.pass
+          if let card { previouslyInstalled = card.fingerprint(in: api.venue) }
+          if !review.wasInstalled && scenePhase == .active {
+            walletSaveMotion += 1
+            AccessibilityNotification.Announcement(t("Karta dodana do Wallet.", "Pass added to Wallet.", "Карта добавлена в Wallet.")).post()
+          }
+          break
+        }
+        installedPass = nil
+      }
+      pendingWalletCheck = nil
     }
     .onChange(of: scenePhase) { _, phase in
-      if phase != .active { cancelDemoScan() }
+      if phase != .active {
+        cancelDemoScan()
+        stampPlayback?.settle()
+        receivedStamps = 0
+      }
     }
     .onDisappear { cancelDemoScan() }
     .sheet(item: $wallet) { pass in
@@ -208,92 +713,222 @@ struct VenueLoyaltyView: View {
   }
 
   private var firstCard: some View {
-    VStack(alignment: .leading, spacing: 20) {
-      HStack(alignment: .top) {
-        Text(venueName).font(palette.display(.title2))
-        Spacer()
-        VenueActionArt(kind: .loyalty, theme: palette.motionTheme, animated: true)
-          .frame(width: 68, height: 68)
+    VStack(alignment: .leading, spacing: 0) {
+      VStack(alignment: .leading, spacing: 8) {
+        Text(demo == nil ? venueName : t("Karta demo", "Demo card", "Демо-карта"))
+          .font(.system(.caption, design: .monospaced, weight: .semibold))
+          .textCase(.uppercase)
+          .foregroundStyle(palette.peach)
+        HStack(alignment: .center, spacing: 14) {
+          Text(t("Karta na pieczątki", "Stamp card", "Карта отметок"))
+            .font(palette.display(.largeTitle))
+            .fixedSize(horizontal: false, vertical: true)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .accessibilityAddTraits(.isHeader)
+          if !typeSize.isAccessibilitySize {
+            printedSeal()
+              .frame(width: 60, height: 60)
+          }
+        }
       }
-      Text(t("Małe przyjemności.\nDobre powroty.", "Little treats.\nGood reasons to return.", "Маленькие радости.\nПриятно возвращаться."))
-        .font(palette.display(.title2))
-      stampRow(count: 0, goal: 6, light: true)
-      Text(t("Zbieraj pieczątki przy każdej wizycie.", "Collect stamps when you visit.", "Собирайте отметки при каждом визите."))
-        .font(.subheadline)
-        .foregroundStyle(.white.opacity(0.84))
+      .padding(20).frame(maxWidth: .infinity, alignment: .leading)
+      .foregroundStyle(cream).background(receiptInk)
+      .overlay { GuestPaperGrain(ink: cream).opacity(0.45) }
+      if isSweeto {
+        stampRow(count: 0, goal: VenueDemoLoyalty.goal)
+          .accessibilityHidden(true)
+          .padding(.horizontal, 15).padding(.vertical, 11)
+          .background(stampStock)
+      }
+      receiptSeam
+      VStack(alignment: .leading, spacing: 15) {
+        Text(t("Pokaż kod przy kasie, żeby zebrać pieczątkę. Pełna karta to nagroda.", "Show your code at the counter to collect a stamp. Fill the card to claim your reward.", "Показывайте код на кассе и собирайте отметки. Заполните карту, чтобы получить награду."))
+          .font(.body).fixedSize(horizontal: false, vertical: true)
+        cardEntryButton(
+          title: creating ? t("Tworzenie karty…", "Creating your card…", "Создаём карту…")
+            : demo != nil ? t("Utwórz kartę demo", "Create a demo card", "Создать демо-карту")
+            : t("Utwórz kartę", "Create my card", "Создать карту"),
+          systemImage: "arrow.right"
+        ) { Task { await createCard() } }
+          .disabled(creating)
+        if demo != nil { demoNotice }
+      }
+      .padding(.horizontal, 17).padding(.bottom, 17).padding(.top, 7)
     }
-    .foregroundStyle(.white)
-    .padding(24)
-    .frame(maxWidth: .infinity, alignment: .leading)
-    .background(palette.ink, in: .rect(cornerRadius: 24))
+    .background(palette.surface, in: .rect(cornerRadius: palette.actionCorner))
+    .clipShape(.rect(cornerRadius: palette.actionCorner))
+    .shadow(color: palette.ink.opacity(0.09), radius: 11, x: 0, y: 4)
+  }
+
+  private func cardEntryButton(title: String, systemImage: String, action: @escaping () -> Void) -> some View {
+    VenueNativeButton(title: title, systemImage: systemImage, palette: palette, action: action)
+  }
+
+  private func remainingStamps(_ card: VenueLoyaltyCard) -> String {
+    let n = max(0, card.goal - card.stamps)
+    let last = n % 10
+    let teen = (11...14).contains(n % 100)
+    let few = (2...4).contains(last) && !teen
+    let pl = n == 1 ? "pieczątka" : few ? "pieczątki" : "pieczątek"
+    let ru = last == 1 && !teen ? "отметка" : few ? "отметки" : "отметок"
+    return "\(n) " + t(pl, n == 1 ? "stamp" : "stamps", ru)
   }
 
   private func checkout(_ card: VenueLoyaltyCard) -> some View {
-    VStack(spacing: 16) {
-      VStack(alignment: .leading, spacing: 20) {
-        HStack {
-          Text(venueName).font(palette.display(.title2))
-          Spacer()
-          VenueActionArt(kind: .loyalty, theme: palette.motionTheme, animated: cardMotion > 0, replay: cardMotion)
-            .frame(width: 48, height: 48)
-        }
-        HStack(alignment: .firstTextBaseline, spacing: 8) {
-          Text("\(card.stamps)/\(card.goal)")
-            .font(.system(.largeTitle, design: .rounded, weight: .semibold))
-            .contentTransition(.numericText())
-          Text(t("pieczątek", "stamps", "отметок")).font(.subheadline)
-        }
-        stampRow(count: card.stamps, goal: card.goal, light: true)
-        Text(card.rewardAvailable
-          ? t("Nagroda czeka na Ciebie", "Your reward is ready", "Ваша награда готова")
-          : t("Każda pieczątka przybliża do nagrody", "Every stamp brings your reward closer", "Каждая отметка приближает награду"))
-          .font(.subheadline.weight(.medium))
-          .foregroundStyle(.white.opacity(0.86))
-      }
-      .foregroundStyle(.white)
-      .padding(24)
-      .frame(maxWidth: .infinity, alignment: .leading)
-      .background(palette.ink, in: .rect(cornerRadius: 24))
-
-      VStack(spacing: 12) {
+    let remainder = remainingStamps(card)
+    return VStack(alignment: .leading, spacing: 0) {
+      VStack(alignment: .leading, spacing: 6) {
+        Text(demo == nil
+          ? t("Karta na pieczątki", "Stamp card", "Карта отметок")
+          : t("Karta demo", "Demo card", "Демо-карта"))
+          .font(.system(.caption, design: .monospaced, weight: .semibold)).textCase(.uppercase)
+          .foregroundStyle(palette.peach)
         Text(t("Pokaż przy kasie", "Show at the counter", "Покажите на кассе"))
-          .font(.headline)
-        if let code = CheckoutQR.image(card.checkout) {
-          Image(uiImage: code)
-            .interpolation(.none).resizable().scaledToFit()
-            .frame(width: 164, height: 164)
-            .padding(12)
-            .background(.white)
-            .accessibilityLabel(t("Kod QR karty", "Card QR code", "QR-код карты"))
-        }
-        Text(card.code).font(.system(.subheadline, design: .monospaced, weight: .semibold)).textSelection(.enabled)
-        if demo != nil { demoNotice }
+          .font(palette.display(.largeTitle))
+          .fixedSize(horizontal: false, vertical: true)
+          .accessibilityAddTraits(.isHeader)
+          .accessibilityFocused($checkoutTitleFocused)
+          .task {
+            guard focusCheckoutOnCreate else { return }
+            await Task.yield()
+            guard !Task.isCancelled else { return }
+            checkoutTitleFocused = true
+            focusCheckoutOnCreate = false
+          }
       }
-      .padding(20)
+      .padding(.horizontal, 19).padding(.vertical, 15)
+      .frame(maxWidth: .infinity, alignment: .leading)
+      .foregroundStyle(cream).background(receiptInk)
+      .overlay { GuestPaperGrain(ink: cream).opacity(0.45) }
+      VStack(spacing: 2) {
+        ZStack {
+          GuestCheckoutCode(value: card.checkout, unavailable: t("Użyj kodu poniżej", "Use the code below", "Используйте код ниже"), side: 174)
+            .accessibilityLabel(t("Kod QR karty", "Card QR code", "QR-код карты"))
+          GuestScanCorners(color: receiptInk.opacity(0.56))
+            .frame(width: 177, height: 177)
+        }
+        .frame(height: 180)
+        Text(card.code)
+          .font(.system(.footnote, design: .monospaced, weight: .semibold))
+          .tracking(1.2).foregroundStyle(palette.ink).textSelection(.enabled)
+          .accessibilityLabel(t("Numer karty \(card.code)", "Card number \(card.code)", "Номер карты \(card.code)"))
+      }
+      .padding(.horizontal, 16).padding(.top, 10).padding(.bottom, 4)
       .frame(maxWidth: .infinity)
-      .background(.white, in: .rect(cornerRadius: 20))
-      .overlay(RoundedRectangle(cornerRadius: 20).strokeBorder(palette.ink.opacity(0.09)))
+      .background(.white)
+      receiptSeam
+      VStack(alignment: .leading, spacing: 12) {
+        ViewThatFits(in: .horizontal) {
+          HStack(alignment: .firstTextBaseline, spacing: 12) {
+            progressTitle(card, remainder: remainder).fixedSize()
+            Spacer(minLength: 0)
+            progressFraction(card)
+          }
+          VStack(alignment: .leading, spacing: 4) {
+            progressTitle(card, remainder: remainder)
+            progressFraction(card)
+          }
+        }
+        stampRow(count: card.stamps, goal: card.goal, animateNewest: demo == nil && (!isSweeto || receivedStamps > 0))
+        if receivedStamps > 0 && !failed {
+          Label(stampReceipt(receivedStamps), systemImage: "checkmark.seal.fill")
+            .font(.footnote.weight(.semibold))
+            .accessibilityElement(children: .combine)
+        }
+        if failed {
+          Label(t("Ostatnie znane saldo. Pociągnij w dół, aby odświeżyć.", "Showing your last known balance. Pull down to refresh.", "Показан последний известный баланс. Потяните вниз, чтобы обновить."), systemImage: "arrow.clockwise")
+            .font(.footnote)
+        }
+      }
+      .frame(maxWidth: .infinity, alignment: .leading)
+      .foregroundStyle(receiptInk).padding(.horizontal, 16).padding(.vertical, 12)
+      .background(rewardBand(available: card.rewardAvailable, animateArrival: demo == nil))
+      walletSection
+    }
+    .background(palette.surface, in: .rect(cornerRadius: palette.actionCorner))
+    .clipShape(.rect(cornerRadius: palette.actionCorner))
+    .shadow(color: palette.ink.opacity(0.09), radius: 11, x: 0, y: 4)
+  }
+
+  private func progressTitle(_ card: VenueLoyaltyCard, remainder: String) -> some View {
+    Text(card.rewardAvailable
+      ? t("Nagroda do odbioru", "Reward ready to claim", "Награда готова")
+      : t("\(remainder) do nagrody", "\(remainder) to your reward", "\(remainder) до награды"))
+      .font(palette.display(.headline))
+      .fixedSize(horizontal: false, vertical: true)
+      .accessibilityAddTraits(.isHeader)
+  }
+
+  private func progressFraction(_ card: VenueLoyaltyCard) -> some View {
+    Text("\(card.stamps) / \(card.goal)")
+      .font(.system(.footnote, design: .monospaced, weight: .semibold))
+      .foregroundStyle(receiptInk)
+      .fixedSize()
+      .contentTransition(reduceMotion ? .identity : .numericText())
+      .animation(reduceMotion ? nil : .easeOut(duration: 0.22), value: card.stamps)
+      .accessibilityHidden(true)
+  }
+
+  private func rewardBand(available: Bool, animateArrival: Bool) -> some View {
+    let animation: Animation? = animateArrival && isSweeto && rewardArrival && available && !reduceMotion && scenePhase == .active
+      ? .timingCurve(0.22, 0.68, 0.26, 1, duration: 0.40).delay(0.24)
+      : nil
+    return ZStack {
+      stampStock
+      ZStack {
+        isSweeto ? palette.primary.opacity(0.24) : palette.peach
+        if isSweeto {
+          GuestPaperGrain(ink: receiptInk).opacity(0.42)
+          VStack {
+            Spacer(minLength: 0)
+            GuestPerforation(color: receiptInk.opacity(0.31))
+              .padding(.horizontal, 14).padding(.bottom, 2)
+          }
+        }
+      }
+      .mask(GuestRewardPaper(progress: available ? 1 : 0).fill(.white))
+      .animation(animation, value: available)
+    }
+    .allowsHitTesting(false)
+    .accessibilityHidden(true)
+  }
+
+  @ViewBuilder private func printedSeal(playback: SweetoStampPlayback? = nil) -> some View {
+    let fallback = GuestPrintedSeal(palette: palette, fill: isSweeto ? palette.primary : palette.peach, ink: palette.ink)
+    if isSweeto {
+      SweetoStampImprint(playback: playback, guideInk: receiptInk) { fallback.rotationEffect(.degrees(-11)) }
+    } else {
+      fallback
     }
   }
 
-  private func stampRow(count: Int, goal: Int, light: Bool) -> some View {
-    let ink: Color = light ? .white : palette.ink
-    return HStack(spacing: 8) {
-      ForEach(0..<max(1, min(goal, 12)), id: \.self) { index in
+  private func stampRow(count: Int, goal: Int, animateNewest: Bool = false, diameter: CGFloat = 41) -> some View {
+    let visible = max(1, min(goal, 12))
+    let columns = Array(repeating: GridItem(.flexible(), spacing: 6), count: min(visible, typeSize.isAccessibilitySize ? 3 : 6))
+    return LazyVGrid(columns: columns, alignment: .center, spacing: 8) {
+      ForEach(0..<visible, id: \.self) { index in
+        let stamped = index < count
+        let isReward = index == goal - 1
         ZStack {
-          Circle().fill(index < count ? ink : ink.opacity(0.08))
-          Circle().strokeBorder(ink.opacity(index < count ? 0 : 0.36), style: StrokeStyle(lineWidth: 1, dash: [2, 3]))
-          Image(systemName: index < count ? "checkmark" : index == goal - 1 ? "gift" : "plus")
-            .font(.system(size: 15, weight: .semibold))
-            .foregroundStyle(index < count ? (light ? palette.ink : .white) : ink.opacity(0.78))
-            .contentTransition(reduceMotion ? .identity : .symbolEffect(.replace))
+          if stamped {
+            printedSeal(playback: animateNewest && index == count - 1 ? stampPlayback : nil)
+          } else if isReward {
+            Circle().fill(cream)
+            Circle().strokeBorder(receiptInk, lineWidth: 1.5)
+            Image(systemName: "gift").font(.system(size: 15, weight: .semibold)).foregroundStyle(receiptInk)
+          } else {
+            Circle().strokeBorder(receiptInk.opacity(0.64), style: StrokeStyle(lineWidth: 1, dash: [2, 3]))
+          }
         }
+        .frame(maxWidth: diameter)
         .aspectRatio(1, contentMode: .fit)
-        .accessibilityLabel(t("Pieczątka", "Stamp", "Отметка") + " \(index + 1)")
-        .accessibilityValue(index < count ? t("Zebrana", "Collected", "Получена") : t("Do zebrania", "To collect", "Не получена"))
+        .accessibilityHidden(true)
       }
     }
-    .animation(reduceMotion ? nil : .smooth(duration: 0.32), value: count)
+    .accessibilityElement(children: .ignore)
+    .accessibilityLabel(t("Pieczątki", "Stamps", "Отметки"))
+    .accessibilityValue(t("\(count) z \(goal)", "\(count) of \(goal)", "\(count) из \(goal)"))
+    .animation(reduceMotion ? nil : .easeOut(duration: 0.22), value: count)
   }
 
   private var demoNotice: some View {
@@ -305,53 +940,137 @@ struct VenueLoyaltyView: View {
 
   private var demoEntry: some View {
     Button {
+      rewardArrival = false
       demoStage = .ready
       demoPresented = true
     } label: {
       HStack(spacing: 12) {
-        Image(systemName: "viewfinder").font(.title3)
-        VStack(alignment: .leading, spacing: 4) {
-          Text(t("Wypróbuj skanowanie", "Try the scanning flow", "Попробовать сканирование"))
-            .font(.subheadline.weight(.semibold))
-          Text(t("Pieczątka i odbiór nagrody", "Stamp and redeem a reward", "Отметка и получение награды"))
-            .font(.caption).foregroundStyle(palette.muted)
-        }
+        Image(systemName: "viewfinder").frame(width: 20)
+        Text(t("Wypróbuj symulację kasy", "Try the counter simulation", "Попробовать симуляцию кассы"))
+          .font(.subheadline.weight(.medium))
         Spacer(minLength: 4)
-        Image(systemName: "arrow.right").font(.subheadline)
+        Image(systemName: "chevron.right").font(.footnote.weight(.semibold))
       }
-      .padding(16)
-      .frame(maxWidth: .infinity, minHeight: 60, alignment: .leading)
-      .background(palette.line, in: .rect(cornerRadius: 16))
-      .contentShape(.rect(cornerRadius: 16))
+      .foregroundStyle(palette.muted)
+      .frame(minHeight: 48).padding(.horizontal, 12)
+      .contentShape(.rect)
+      .accessibilityElement(children: .combine)
     }
     .buttonStyle(PressStyle())
   }
 
   @ViewBuilder private var walletSection: some View {
-    if walletAvailable && PKAddPassesViewController.canAddPasses() {
-      VStack(alignment: .leading, spacing: 8) {
-        WalletAddButton { Task { await prepareWallet() } }
-          .frame(height: 48)
-          .disabled(walletBusy)
-        if demo != nil {
-          Text(t("Po zebraniu pieczątek dodaj kartę ponownie, żeby odświeżyć ją w Wallet.", "After collecting stamps, add the card again to update it in Wallet.", "После получения отметок добавьте карту повторно, чтобы обновить её в Wallet."))
-            .font(.caption).foregroundStyle(palette.muted)
+    if walletChecked {
+      receiptSeam
+      VStack(spacing: 11) {
+        if walletAvailable && PKAddPassesViewController.canAddPasses() {
+          if let installedPass {
+            if let url = installedPass.passURL {
+              Link(destination: url) {
+                Label(t("Otwórz w Wallet", "Open in Wallet", "Открыть в Wallet"), systemImage: "wallet.pass.fill")
+                  .font(.headline).frame(maxWidth: .infinity, minHeight: 44)
+              }
+            } else {
+              Label(t("Karta w Wallet", "Pass in Wallet", "Карта в Wallet"), systemImage: "checkmark.circle.fill")
+                .font(.headline)
+            }
+            if !walletUpdates {
+              Button(t("Uaktualnij kartę w Wallet", "Refresh Wallet pass", "Обновить карту в Wallet")) {
+                Task { await prepareWallet(refreshExisting: true) }
+              }
+              .font(.subheadline.weight(.semibold)).frame(minHeight: 44)
+              .disabled(walletBusy)
+            }
+          } else {
+            WalletAddButton(enabled: !walletBusy) { Task { await prepareWallet() } }
+              .frame(height: 60)
+              .frame(maxWidth: 350)
+              .frame(maxWidth: .infinity)
+          }
+          if walletBusy {
+            HStack(spacing: 8) {
+              ProgressView()
+                .controlSize(.small)
+              Text(t("Przygotowujemy kartę…", "Preparing your pass…", "Подготавливаем карту…"))
+            }
+            .font(.footnote).foregroundStyle(palette.ink)
+            .accessibilityElement(children: .combine)
+          } else if installedPass != nil && walletUpdates {
+            Text(t("Karta jest w Wallet. Pieczątki aktualizują się automatycznie.", "Your pass is in Wallet. Stamps update automatically.", "Карта уже в Wallet. Отметки обновляются автоматически."))
+              .font(.footnote).foregroundStyle(palette.muted).multilineTextAlignment(.center)
+          } else if demo != nil {
+            Text(t("Dodaj kartę ponownie, by uaktualnić pieczątki w Wallet.", "Add the demo card again to refresh the stamps in Wallet.", "Добавьте демо-карту ещё раз, чтобы обновить отметки в Wallet."))
+              .font(.footnote).foregroundStyle(palette.ink).multilineTextAlignment(.center)
+              .fixedSize(horizontal: false, vertical: true)
+          } else {
+            Text(t("Przy następnej wizycie pokaż kartę bezpośrednio z Wallet.", "Show your pass from Wallet on your next visit.", "При следующем визите покажите карту из Wallet."))
+              .font(.footnote).foregroundStyle(palette.muted).multilineTextAlignment(.center)
+              .fixedSize(horizontal: false, vertical: true)
+          }
+        } else if showPreview || demo != nil {
+          cardEntryButton(
+            title: demo != nil
+              ? t("Podgląd karty demo w Wallet", "Preview demo Wallet pass", "Предпросмотр демо-карты Wallet")
+              : t("Podgląd karty w Wallet", "Preview Wallet pass", "Предпросмотр карты Wallet"),
+            systemImage: "wallet.pass"
+          ) { preview = true }
+        } else {
+          Label(
+            t("Dodanie do Apple Wallet jest niedostępne.", "Adding to Apple Wallet is unavailable.", "Добавление в Apple Wallet недоступно."),
+            systemImage: "wallet.pass"
+          )
+          .font(.footnote)
+          .foregroundStyle(palette.ink)
         }
-        if walletBusy { ProgressView() }
       }
-    } else if showPreview || demo != nil {
-      VenueNativeButton(
-        title: t("Podgląd karty", "Preview card", "Предпросмотр карты"),
-        systemImage: "creditcard", palette: palette
-      ) { preview = true }
-    } else {
-      Label(
-        t("Dodanie do Apple Wallet jest niedostępne.", "Adding to Apple Wallet is unavailable.", "Добавление в Apple Wallet недоступно."),
-        systemImage: "wallet.pass"
-      )
-      .font(.footnote)
-      .foregroundStyle(palette.muted)
+      .padding(.horizontal, 19).padding(.vertical, 12)
+      .frame(maxWidth: .infinity)
     }
+  }
+
+  private func previewField(_ label: String, value: String) -> some View {
+    VStack(alignment: .leading, spacing: 3) {
+      Text(label).font(.system(.caption, design: .monospaced, weight: .semibold))
+        .textCase(.uppercase).foregroundStyle(isSweeto ? palette.primary : palette.peach)
+      Text(value).font(.headline.weight(.semibold)).foregroundStyle(cream)
+        .fixedSize(horizontal: false, vertical: true)
+    }
+    .frame(maxWidth: .infinity, alignment: .leading)
+    .accessibilityElement(children: .combine)
+  }
+
+  private func previewStampBand(_ card: VenueLoyaltyCard) -> some View {
+    VStack(alignment: .leading, spacing: 10) {
+      progressTitle(card, remainder: remainingStamps(card))
+      stampRow(count: card.stamps, goal: card.goal)
+    }
+    .foregroundStyle(receiptInk)
+    .padding(.horizontal, 18).padding(.vertical, 14)
+    .background(rewardBand(available: isSweeto && card.rewardAvailable, animateArrival: false))
+  }
+
+  private var walletIdentity: some View {
+    let layout = typeSize.isAccessibilitySize
+      ? AnyLayout(VStackLayout(alignment: .leading, spacing: 9))
+      : AnyLayout(HStackLayout(alignment: .firstTextBaseline, spacing: 16))
+    return layout {
+      HStack(spacing: 5) {
+        GuestPapayaMark(palette: palette).frame(width: 23, height: 25)
+        HStack(spacing: 0) {
+          Text("Papu").foregroundStyle(cream)
+          Text("Pay").foregroundStyle(palette.primary)
+        }
+        .font(Papu.wordmark(22))
+      }
+      .accessibilityElement(children: .ignore)
+      .accessibilityLabel("PapuPay")
+      Text(venueName)
+        .font(.subheadline.weight(.semibold))
+        .foregroundStyle(cream)
+        .frame(maxWidth: .infinity, alignment: typeSize.isAccessibilitySize ? .leading : .trailing)
+        .fixedSize(horizontal: false, vertical: true)
+    }
+    .padding(.horizontal, 18).padding(.vertical, 16)
   }
 
   private var cardPreview: some View {
@@ -359,33 +1078,77 @@ struct VenueLoyaltyView: View {
       ScrollView {
         if let card {
           VStack(alignment: .leading, spacing: 16) {
-            Text(t("Podgląd projektu karty", "Card design preview", "Предпросмотр карты"))
+            Text(t("Podgląd w Wallet", "Wallet preview", "Предпросмотр Wallet"))
               .font(palette.display(.title))
-            Text(t("Podgląd nie dodaje karty do Apple Wallet.", "This preview does not add a card to Apple Wallet.", "Предпросмотр не добавляет карту в Apple Wallet."))
-              .font(.footnote)
-            checkout(card)
-          }.padding(20)
+              .foregroundStyle(receiptInk)
+              .accessibilityAddTraits(.isHeader)
+            VStack(alignment: .leading, spacing: 0) {
+              walletIdentity
+              previewStampBand(card)
+              previewField(
+                t("Przy kasie", "At checkout", "На кассе"),
+                value: t("Pokaż ten kod", "Show this code", "Покажите код")
+              )
+              .padding(.horizontal, 18).padding(.top, 15)
+              VStack(spacing: 5) {
+                GuestCheckoutCode(value: card.checkout, unavailable: t("Kod QR niedostępny", "QR code unavailable", "QR-код недоступен"))
+                  .accessibilityLabel(t("Kod QR karty", "Card QR code", "QR-код карты"))
+                Text(card.code)
+                  .font(.system(.caption, design: .monospaced, weight: .semibold))
+                  .tracking(1.5).foregroundStyle(palette.ink).textSelection(.enabled)
+                  .accessibilityLabel(t("Numer karty \(card.code)", "Card number \(card.code)", "Номер карты \(card.code)"))
+              }
+              .padding(8)
+              .background(.white, in: .rect(cornerRadius: 8))
+              .frame(maxWidth: .infinity)
+              .padding(16)
+            }
+            .background(receiptInk, in: .rect(cornerRadius: palette.actionCorner))
+            .clipShape(.rect(cornerRadius: palette.actionCorner))
+            .shadow(color: receiptInk.opacity(0.14), radius: 12, x: 0, y: 6)
+            Text(demo != nil
+              ? t("Karta demonstracyjna. Kod działa tylko w symulacji kasy.", "Demo pass. This code works in the counter simulation.", "Демо-карта. Код предназначен для симуляции кассы.")
+              : t("To podgląd karty. Przy kasie pokaż ten kod QR.", "This is a pass preview. You can show this QR code at the counter.", "Это предварительный просмотр. Покажите этот QR-код на кассе."))
+              .font(.footnote).foregroundStyle(palette.muted)
+              .fixedSize(horizontal: false, vertical: true)
+          }
+          .padding(18)
+          .frame(maxWidth: 510)
+          .frame(maxWidth: .infinity)
         }
       }
       .foregroundStyle(palette.ink)
       .background(palette.paper.ignoresSafeArea())
       .toolbar { Button(t("Gotowe", "Done", "Готово")) { preview = false } }
+      .tint(receiptInk)
     }
+    .presentationDragIndicator(.visible)
   }
 
   private var demoScanner: some View {
     NavigationStack {
       ScrollView {
-        VStack(alignment: .leading, spacing: 24) {
-          HStack(spacing: 8) {
-            Image(systemName: "viewfinder")
-            Text(t("Symulacja kasy", "Counter simulation", "Симуляция кассы"))
-          }.font(.footnote).foregroundStyle(palette.muted)
-          Text(demoTitle).font(palette.display(.largeTitle))
-          demoScannerArt
-          Text(demoDescription).font(.subheadline).foregroundStyle(palette.muted)
+        VStack(alignment: .leading, spacing: 16) {
+          Text(t("Symulacja kasy", "Counter simulation", "Симуляция кассы"))
+            .font(palette.display(.largeTitle))
+            .foregroundStyle(receiptInk)
             .fixedSize(horizontal: false, vertical: true)
-          if let card { stampRow(count: card.stamps, goal: card.goal, light: false) }
+            .accessibilityAddTraits(.isHeader)
+          if let card { demoPunchCard(card) }
+          VStack(alignment: .leading, spacing: 5) {
+            HStack(alignment: .firstTextBaseline, spacing: 7) {
+              if demoStage == .redeemed {
+                Image(systemName: "checkmark.circle.fill").accessibilityHidden(true)
+              }
+              Text(demoTitle)
+                .fixedSize(horizontal: false, vertical: true)
+                .accessibilityAddTraits(.isHeader)
+            }
+            .font(palette.display(.title2))
+            .foregroundStyle(demoStage == .redeemed ? Papu.green : receiptInk)
+            Text(demoDescription).font(.subheadline).foregroundStyle(palette.muted)
+              .fixedSize(horizontal: false, vertical: true)
+          }
           demoAction
           Text(t("To demonstracja. Żadna prawdziwa nagroda nie zostanie wydana.", "This is a demo. No real reward will be issued.", "Это демонстрация. Настоящая награда не выдаётся."))
             .font(.caption).foregroundStyle(palette.muted)
@@ -396,6 +1159,7 @@ struct VenueLoyaltyView: View {
       }
       .background(palette.paper.ignoresSafeArea())
       .foregroundStyle(palette.ink)
+      .tint(receiptInk)
       .toolbar {
         ToolbarItem(placement: .topBarLeading) {
           Button(t("Gotowe", "Done", "Готово")) { cancelDemoScan(); demoPresented = false }
@@ -424,10 +1188,10 @@ struct VenueLoyaltyView: View {
     switch demoStage {
     case .scanning: t("Odczytujemy kartę…", "Reading your card…", "Считываем карту…")
     case .redeemed: t("Nagroda odebrana", "Reward redeemed", "Награда получена")
-    case .stamped where card?.rewardAvailable != true: t("Pieczątka dodana", "Stamp collected", "Отметка получена")
+    case .stamped where stampConfirmed && card?.rewardAvailable != true: t("Pieczątka dodana", "Stamp collected", "Отметка получена")
     default: card?.rewardAvailable == true
       ? t("Nagroda czeka", "Your reward is ready", "Ваша награда готова")
-      : t("Pokaż kod przy kasie", "Show your code at the counter", "Покажите код на кассе")
+      : t("Zeskanuj kartę", "Scan the card", "Отсканируйте карту")
     }
   }
 
@@ -435,99 +1199,154 @@ struct VenueLoyaltyView: View {
     switch demoStage {
     case .scanning: t("Chwila na potwierdzenie wizyty", "Confirming your visit", "Подтверждаем ваш визит")
     case .redeemed: t("Nowa runda, ta sama karta. Zbieraj kolejne pieczątki.", "A new round, the same card. Collect your next stamps.", "Новый круг, та же карта. Собирайте следующие отметки.")
-    case .stamped where card?.rewardAvailable != true: t("Tak wygląda potwierdzenie po zeskanowaniu karty przez obsługę.", "This is the confirmation after staff scan your card.", "Так выглядит подтверждение после сканирования карты сотрудником.")
+    case .stamped where stampConfirmed && card?.rewardAvailable != true: t("Pieczątka jest już na Twojej karcie.", "The stamp is now on your card.", "Отметка уже на вашей карте.")
     default: card?.rewardAvailable == true
       ? t("Obsługa potwierdza odbiór, a karta zaczyna kolejną rundę.", "Staff confirm redemption, then your card starts a new round.", "Сотрудник подтверждает получение, и карта начинает новый круг.")
-      : t("Naciśnij przycisk, żeby zasymulować skan obsługi i dodać jedną pieczątkę.", "Tap below to simulate a staff scan and add one stamp.", "Нажмите кнопку, чтобы имитировать сканирование и добавить одну отметку.")
+      : t("Każdy testowy skan dodaje jedną pieczątkę.", "Each test scan adds one stamp.", "Каждое тестовое сканирование добавляет одну отметку.")
     }
   }
 
-  private var demoScannerArt: some View {
-    ZStack {
-      RoundedRectangle(cornerRadius: 24).fill(.white)
-      if demoStage == .redeemed || demoStage == .stamped || card?.rewardAvailable == true {
-        VStack(spacing: 12) {
-          Image(systemName: demoStage == .redeemed ? "checkmark.seal.fill" : card?.rewardAvailable == true ? "gift.fill" : "checkmark.circle.fill")
-            .font(.system(size: 60, weight: .medium))
-            .foregroundStyle(palette.primary)
-          if demoStage != .redeemed, let card {
-            Text("\(card.stamps) / \(card.goal)").font(.title2.weight(.semibold)).monospacedDigit()
+  private func demoPunchCard(_ card: VenueLoyaltyCard) -> some View {
+    VStack(alignment: .leading, spacing: 0) {
+      HStack(spacing: 9) {
+        GuestPapayaMark(palette: palette).frame(width: 22, height: 24)
+        Text(t("Karta demo", "Demo card", "Демо-карта"))
+          .font(.system(.subheadline, design: .monospaced, weight: .semibold))
+          .fixedSize(horizontal: false, vertical: true)
+      }
+      .padding(.horizontal, 16).padding(.vertical, 11)
+      .frame(maxWidth: .infinity, alignment: .leading)
+      .foregroundStyle(cream).background(receiptInk)
+      VStack(spacing: 3) {
+        ZStack {
+          GuestCheckoutCode(value: card.checkout, unavailable: t("Kod QR niedostępny", "QR code unavailable", "QR-код недоступен"), side: 122)
+            .accessibilityLabel(t("Kod QR karty demo", "Demo card QR code", "QR-код демо-карты"))
+          GuestScanCorners(color: receiptInk.opacity(0.58)).frame(width: 132, height: 132)
+          if demoStage == .scanning && !reduceMotion {
+            GuestScanSweep(color: palette.primary).frame(width: 116, height: 116)
           }
         }
-        .transition(.scale(scale: reduceMotion ? 1 : 0.92).combined(with: .opacity))
-      } else if let card, let image = CheckoutQR.image(card.checkout) {
-        Image(uiImage: image).interpolation(.none).resizable().scaledToFit()
-          .frame(width: 132, height: 132)
-          .padding(12)
-          .background(.white)
-        RoundedRectangle(cornerRadius: 12)
-          .strokeBorder(palette.primary.opacity(0.4), lineWidth: 2)
-          .frame(width: 172, height: 172)
-        if demoStage == .scanning && !reduceMotion {
-          Rectangle().fill(palette.primary).frame(width: 156, height: 2)
-            .offset(y: 60)
-            .transition(.offset(y: -120).combined(with: .opacity))
-        }
+        .frame(height: 136)
+        Text(card.code)
+          .font(.system(.caption, design: .monospaced, weight: .semibold))
+          .tracking(0.9)
+          .accessibilityLabel(t("Numer karty \(card.code)", "Card number \(card.code)", "Номер карты \(card.code)"))
       }
+      .padding(.vertical, 8)
+      .frame(maxWidth: .infinity)
+      .background(.white)
+      receiptSeam
+      VStack(alignment: .leading, spacing: 8) {
+        ViewThatFits(in: .horizontal) {
+          HStack(spacing: 8) {
+            Text(t("Pieczątki", "Stamps", "Отметки")).fixedSize()
+            Spacer(minLength: 0)
+            progressFraction(card)
+          }
+          VStack(alignment: .leading, spacing: 4) {
+            Text(t("Pieczątki", "Stamps", "Отметки"))
+            progressFraction(card)
+          }
+        }
+        .font(palette.display(.headline))
+        .accessibilityHidden(true)
+        stampRow(count: card.stamps, goal: card.goal, animateNewest: stampConfirmed, diameter: 44)
+      }
+      .padding(.horizontal, 16).padding(.vertical, 11)
+      .background(rewardBand(available: isSweeto && card.rewardAvailable, animateArrival: true))
     }
-    .frame(maxWidth: .infinity, minHeight: 224, maxHeight: 224)
-    .overlay(RoundedRectangle(cornerRadius: 24).strokeBorder(palette.ink.opacity(0.09)))
-    .accessibilityHidden(true)
-    .animation(reduceMotion ? nil : .easeInOut(duration: 0.36), value: demoStage)
+    .background(palette.surface, in: .rect(cornerRadius: palette.actionCorner))
+    .clipShape(.rect(cornerRadius: palette.actionCorner))
+    .shadow(color: palette.ink.opacity(0.09), radius: 11, x: 0, y: 4)
   }
 
   @ViewBuilder private var demoAction: some View {
     if demoStage == .redeemed {
-      VenueNativeButton(title: t("Wróć do karty", "Back to my card", "Вернуться к карте"), systemImage: "arrow.right", palette: palette) {
+      cardEntryButton(title: t("Wróć do karty", "Back to my card", "Вернуться к карте"), systemImage: "arrow.right") {
         demoPresented = false
       }
     } else if card?.rewardAvailable == true {
-      VenueNativeButton(title: t("Odbierz nagrodę", "Redeem reward", "Получить награду"), systemImage: "gift", palette: palette) { confirmRedeem = true }
+      cardEntryButton(title: t("Odbierz nagrodę", "Redeem reward", "Получить награду"), systemImage: "gift") { confirmRedeem = true }
     } else {
-      VenueNativeButton(
-        title: demoStage == .scanning ? t("Skanowanie…", "Scanning…", "Сканирование…") : demoStage == .stamped ? t("Zasymuluj kolejny skan", "Simulate another scan", "Повторить сканирование") : t("Zasymuluj skan", "Simulate a scan", "Имитировать сканирование"),
-        systemImage: "viewfinder", palette: palette, action: scanDemo
+      cardEntryButton(
+        title: demoStage == .scanning ? t("Skanowanie…", "Scanning…", "Сканирование…") : stampConfirmed ? t("Zasymuluj kolejny skan", "Simulate another scan", "Повторить сканирование") : t("Zasymuluj skan", "Simulate a scan", "Имитировать сканирование"),
+        systemImage: "viewfinder", action: scanDemo
       ).disabled(demoStage == .scanning)
     }
   }
 
   @MainActor private func refresh() async {
     guard !creating else { return }
-    if demo != nil {
-      demoLedger = VenueDemoLoyalty.load(namespace: demoNamespace)
+    if let demo {
+      demoLedger = VenueDemoLoyalty.load(namespace: demo.loyaltyNamespace(for: api.venue))
       applyDemoCard()
       failed = false
       ready = true
       return
     }
+    readGeneration += 1
+    let generation = readGeneration
     do {
       let found = try await api.card()
-      guard !Task.isCancelled, !creating else { return }
-      if let card, let found, found.stamps > card.stamps { cardMotion += 1 }
+      guard !Task.isCancelled, !creating, generation == readGeneration else { return }
+      guard scenePhase == .active, wallet == nil, !preview else { return }
+      if isSweeto {
+        let change = VenueStampObservation.record(found, venue: api.venue)
+        if change == .stale {
+          failed = true
+          ready = true
+          return
+        }
+        if case .earned(let count) = change, let found {
+          receivedStamps = count
+          rewardArrival = found.rewardAvailable
+          confirmStampMotion()
+          let reward = t("Nagroda do odbioru.", "Your reward is ready.", "Награда готова.")
+          AccessibilityNotification.Announcement(stampReceipt(count) + (rewardArrival ? " " + reward : "")).post()
+        } else if card?.checkout != found?.checkout || card?.stamps != found?.stamps {
+          receivedStamps = 0
+          rewardArrival = false
+        }
+      } else if let card, let found, card.code == found.code, found.stamps > card.stamps {
+        rewardArrival = found.rewardAvailable && !card.rewardAvailable
+        confirmStampMotion()
+        announceStamp(rewardAvailable: found.rewardAvailable)
+      } else if found?.code != card?.code || found?.rewardAvailable != true {
+        rewardArrival = false
+      }
       if found != card { card = found }
       failed = false
     } catch {
-      if !Task.isCancelled { failed = true }
+      if !Task.isCancelled, generation == readGeneration { failed = true }
     }
     if !Task.isCancelled { ready = true }
   }
 
   @MainActor private func createCard() async {
     guard !creating else { return }
+    readGeneration += 1
+    issuanceFailed = false
     if demo != nil {
-      demoLedger.create()
-      saveDemoCard()
-      cardMotion += 1
+      withAnimation(reduceMotion ? nil : .spring(response: 0.37, dampingFraction: 0.85)) {
+        focusCheckoutOnCreate = true
+        demoLedger.create()
+        saveDemoCard()
+        cardMotion += 1
+      }
       return
     }
     creating = true
     defer { creating = false }
     do {
       guard let created = try await api.card(create: true) else { throw URLError(.badServerResponse) }
-      card = created
-      cardMotion += 1
-      failed = false
-    } catch { failed = true }
+      if isSweeto { _ = VenueStampObservation.record(created, venue: api.venue) }
+      withAnimation(reduceMotion ? nil : .spring(response: 0.37, dampingFraction: 0.85)) {
+        focusCheckoutOnCreate = true
+        card = created
+        cardMotion += 1
+        failed = false
+      }
+    } catch { issuanceFailed = true }
   }
 
   @MainActor private func scanDemo() {
@@ -535,13 +1354,15 @@ struct VenueLoyaltyView: View {
     demoStage = .scanning
     let scanID = UUID()
     demoScanTask = Task { @MainActor in
-      do { try await Task.sleep(for: .milliseconds(680)) } catch { return }
-      guard !Task.isCancelled, demoPresented, scenePhase == .active, demoLedger.scan(scanID) else { return }
-      withAnimation(reduceMotion ? nil : .easeOut(duration: 0.32)) {
-        saveDemoCard()
-        demoStage = .stamped
-        cardMotion += 1
+      if !reduceMotion {
+        do { try await Task.sleep(for: .milliseconds(680)) } catch { return }
       }
+      guard !Task.isCancelled, demoPresented, scenePhase == .active, demoLedger.scan(scanID) else { return }
+      rewardArrival = demoLedger.rewardAvailable
+      saveDemoCard()
+      demoStage = .stamped(demoLedger.stamps)
+      confirmStampMotion()
+      announceStamp(rewardAvailable: demoLedger.rewardAvailable)
       demoScanTask = nil
     }
   }
@@ -552,25 +1373,44 @@ struct VenueLoyaltyView: View {
     if demoStage == .scanning { demoStage = .ready }
   }
 
+  @MainActor private func confirmStampMotion() {
+    stampPlayback = isSweeto && !reduceMotion && scenePhase == .active ? SweetoStampPlayback() : nil
+    stampMotion += 1
+  }
+
+  private func stampReceipt(_ count: Int) -> String {
+    if count == 1 { return t("Pieczątka dodana.", "Stamp collected.", "Отметка получена.") }
+    return t("Nowe pieczątki: \(count).", "\(count) stamps collected.", "Новых отметок: \(count).")
+  }
+
+  private func announceStamp(rewardAvailable: Bool) {
+    let message = rewardAvailable
+      ? t("Pieczątka dodana. Nagroda do odbioru.", "Stamp collected. Your reward is ready.", "Отметка получена. Награда готова.")
+      : t("Pieczątka dodana.", "Stamp collected.", "Отметка получена.")
+    AccessibilityNotification.Announcement(message).post()
+  }
+
   @MainActor private func redeemDemo() {
     guard demo != nil, demoLedger.redeem() else { return }
-    withAnimation(reduceMotion ? nil : .easeOut(duration: 0.32)) {
-      saveDemoCard()
-      demoStage = .redeemed
-      cardMotion += 1
-    }
+    rewardArrival = false
+    saveDemoCard()
+    demoStage = .redeemed
+    cardMotion += 1
+    AccessibilityNotification.Announcement(t("Nagroda odebrana.", "Reward redeemed.", "Награда получена.")).post()
   }
 
   @MainActor private func resetDemo() {
     guard demo != nil else { return }
     cancelDemoScan()
+    rewardArrival = false
     demoLedger = VenueDemoLoyalty()
     saveDemoCard()
     demoPresented = false
   }
 
   @MainActor private func saveDemoCard() {
-    demoLedger.save(namespace: demoNamespace)
+    guard let demo else { return }
+    demoLedger.save(namespace: demo.loyaltyNamespace(for: api.venue))
     applyDemoCard()
     failed = false
     ready = true
@@ -584,22 +1424,181 @@ struct VenueLoyaltyView: View {
     ) : nil
   }
 
-  @MainActor private func prepareWallet() async {
-    guard !walletBusy else { return }
+  private func passIsInstalled(_ pass: PKPass) -> Bool {
+    PKPassLibrary.isPassLibraryAvailable() && PKPassLibrary().containsPass(pass)
+  }
+
+  private func signedPass(for membership: VenueLoyaltyCard) async throws -> PKPass {
+    if let demo {
+      guard let data = demo.walletPassData(stamps: membership.stamps) else { throw URLError(.fileDoesNotExist) }
+      return try PKPass(data: data)
+    }
+    return try await PKPass(data: api.applePass(language: language))
+  }
+
+  @MainActor private func prepareWallet(refreshExisting: Bool = false) async {
+    guard let membership = card, !walletBusy else { return }
     walletBusy = true
     defer { walletBusy = false }
     do {
-      let data: Data
-      if let demo {
-        guard let demoPass = demo.walletPassData(stamps: card?.stamps ?? 0) else { throw URLError(.fileDoesNotExist) }
-        data = demoPass
+      let pass = try await signedPass(for: membership)
+      guard !Task.isCancelled, card?.checkout == membership.checkout, scenePhase == .active else { return }
+      let alreadyInstalled = passIsInstalled(pass)
+      if alreadyInstalled {
+        installedPass = pass
+        previouslyInstalled = membership.fingerprint(in: api.venue)
+        if !refreshExisting { return }
       } else {
-        data = try await api.applePass(language: language)
+        installedPass = nil
+        if previouslyInstalled == membership.fingerprint(in: api.venue) { previouslyInstalled = Data() }
       }
-      let pass = try PKPass(data: data)
       guard let controller = PKAddPassesViewController(pass: pass) else { throw URLError(.cannotDecodeContentData) }
-      wallet = NativeWalletPass(controller: controller)
-    } catch { walletFailed = true }
+      let review = NativeWalletPass(controller: controller, pass: pass, membership: membership.checkout, wasInstalled: alreadyInstalled)
+      pendingWalletCheck = review
+      wallet = review
+    } catch is CancellationError {
+      return
+    } catch {
+      walletFailed = true
+    }
+  }
+}
+
+/// Reveals the earned reward stock with a perforated paper edge, in place.
+private struct GuestRewardPaper: Shape {
+  var progress: CGFloat
+  var animatableData: CGFloat {
+    get { progress }
+    set { progress = newValue }
+  }
+
+  func path(in rect: CGRect) -> Path {
+    let fraction = min(max(0, progress), 1)
+    guard fraction > 0 else { return Path() }
+    guard fraction < 1 else { return Path(rect) }
+    let edge = rect.minX + rect.width * fraction
+    let toothDepth = min(3, edge - rect.minX)
+    let teeth = max(1, Int((rect.height / 6).rounded(.up)))
+    var path = Path()
+    path.move(to: CGPoint(x: rect.minX, y: rect.minY))
+    for index in 0...teeth {
+      path.addLine(to: CGPoint(
+        x: edge - (index.isMultiple(of: 2) ? 0 : toothDepth),
+        y: rect.minY + rect.height * CGFloat(index) / CGFloat(teeth)
+      ))
+    }
+    path.addLine(to: CGPoint(x: rect.minX, y: rect.maxY))
+    path.closeSubpath()
+    return path
+  }
+}
+
+/// A scalloped, two-colour ink impression for the membership and individual punches.
+private struct GuestPrintedSeal: View {
+  let palette: VenueGuestPalette
+  let fill: Color
+  let ink: Color
+
+  var body: some View {
+    GeometryReader { geometry in
+      let side = min(geometry.size.width, geometry.size.height)
+      ZStack {
+        Canvas { context, size in
+          let center = CGPoint(x: size.width / 2, y: size.height / 2)
+          let radius = min(center.x, center.y)
+          var rim = Path()
+          for step in 0..<192 {
+            let angle = CGFloat(step) * .pi / 96
+            let tooth = radius * (0.965 + 0.035 * cos(angle * 16))
+            let point = CGPoint(x: center.x + tooth * cos(angle), y: center.y + tooth * sin(angle))
+            if step == 0 { rim.move(to: point) } else { rim.addLine(to: point) }
+          }
+          rim.closeSubpath()
+          context.fill(rim, with: .color(fill))
+        }
+        Circle().strokeBorder(ink, lineWidth: max(0.75, side / 80))
+          .padding(side * 0.10)
+        GuestPapayaMark(palette: palette)
+          .frame(width: side * 0.57, height: side * 0.64)
+          .rotationEffect(.degrees(11))
+      }
+      .frame(width: side, height: side)
+    }
+    .aspectRatio(1, contentMode: .fit)
+    .accessibilityHidden(true)
+  }
+}
+
+private struct GuestCheckoutCode: View {
+  let value: String
+  let unavailable: String
+  var side: CGFloat = 168
+  @State private var rendered: (value: String, bitmap: UIImage?)?
+
+  var body: some View {
+    ZStack {
+      RoundedRectangle(cornerRadius: 8).fill(.white)
+      if let rendered, rendered.value == value {
+        if let bitmap = rendered.bitmap {
+          Image(uiImage: bitmap)
+            .interpolation(.none).resizable().scaledToFit()
+            .padding(4)
+            .accessibilityHidden(true)
+        } else {
+          Text(unavailable).font(.footnote.weight(.medium))
+            .multilineTextAlignment(.center).foregroundStyle(.black).padding(8)
+        }
+      }
+    }
+    .frame(width: side, height: side)
+    .accessibilityElement(children: .ignore)
+    .accessibilityValue(rendered?.value == value && rendered?.bitmap == nil ? unavailable : "")
+    .task(id: value) { rendered = (value, CheckoutQR.image(value)) }
+    .transaction { $0.animation = nil }
+  }
+}
+
+private struct GuestScanCorners: View {
+  let color: Color
+
+  var body: some View {
+    Canvas { context, size in
+      let length = 13.0
+      let positions = [
+        (CGPoint(x: 0, y: 0), 1.0, 1.0),
+        (CGPoint(x: size.width, y: 0), -1.0, 1.0),
+        (CGPoint(x: 0, y: size.height), 1.0, -1.0),
+        (CGPoint(x: size.width, y: size.height), -1.0, -1.0)
+      ]
+      var path = Path()
+      for (point, dx, dy) in positions {
+        path.move(to: CGPoint(x: point.x + length * dx, y: point.y))
+        path.addLine(to: point)
+        path.addLine(to: CGPoint(x: point.x, y: point.y + length * dy))
+      }
+      context.stroke(path, with: .color(color), style: StrokeStyle(lineWidth: 1.4, lineCap: .round, lineJoin: .round))
+    }
+    .allowsHitTesting(false)
+    .accessibilityHidden(true)
+  }
+}
+
+private struct GuestScanSweep: View {
+  let color: Color
+  @State private var scanned = false
+
+  var body: some View {
+    GeometryReader { layout in
+      Rectangle()
+        .fill(color)
+        .frame(height: 2)
+        .shadow(color: color.opacity(0.70), radius: 5)
+        .offset(y: scanned ? layout.size.height - 2 : 0)
+    }
+    .onAppear {
+      withAnimation(.easeInOut(duration: 0.62)) { scanned = true }
+    }
+    .accessibilityHidden(true)
   }
 }
 
@@ -610,9 +1609,10 @@ private enum CheckoutQR {
     let filter = CIFilter.qrCodeGenerator()
     filter.message = Data(checkout.utf8)
     filter.correctionLevel = "M"
-    guard let output = filter.outputImage?.transformed(by: .init(scaleX: 12, y: 12)),
-      let bitmap = context.createCGImage(output, from: output.extent)
-    else { return nil }
+    guard let pattern = filter.outputImage else { return nil }
+    let white = CIImage(color: CIColor.white).cropped(to: pattern.extent.insetBy(dx: -4, dy: -4))
+    let output = pattern.composited(over: white).transformed(by: .init(scaleX: 10, y: 10))
+    guard let bitmap = context.createCGImage(output, from: output.extent) else { return nil }
     return UIImage(cgImage: bitmap)
   }
 }
@@ -620,9 +1620,13 @@ private enum CheckoutQR {
 private struct NativeWalletPass: Identifiable {
   let id = UUID()
   let controller: PKAddPassesViewController
+  let pass: PKPass
+  let membership: String
+  let wasInstalled: Bool
 }
 
 private struct WalletAddButton: UIViewRepresentable {
+  let enabled: Bool
   let action: () -> Void
 
   func makeUIView(context: Context) -> PKAddPassButton {
@@ -630,7 +1634,14 @@ private struct WalletAddButton: UIViewRepresentable {
     button.addAction(UIAction { _ in context.coordinator.action() }, for: .touchUpInside)
     return button
   }
-  func updateUIView(_ view: PKAddPassButton, context: Context) { context.coordinator.action = action }
+  func updateUIView(_ view: PKAddPassButton, context: Context) {
+    context.coordinator.action = action
+    view.isEnabled = enabled
+  }
+  func sizeThatFits(_ proposal: ProposedViewSize, uiView: PKAddPassButton, context: Context) -> CGSize? {
+    guard let width = proposal.width, let height = proposal.height else { return nil }
+    return CGSize(width: width, height: height)
+  }
   func makeCoordinator() -> Coordinator { Coordinator(action) }
 
   final class Coordinator {
@@ -687,6 +1698,8 @@ struct VenueWiFiHelp: View {
   var busy = false
   var isDemo = false
   let connect: () -> Void
+  @Environment(\.dynamicTypeSize) private var typeSize
+  @Environment(\.accessibilityReduceMotion) private var reduceMotion
   @State private var revealed = false
   @State private var copied = false
   @State private var copyCount = 0
@@ -695,64 +1708,37 @@ struct VenueWiFiHelp: View {
 
   var body: some View {
     ScrollView {
-      VStack(alignment: .leading, spacing: 24) {
-        HStack(spacing: 12) {
-          VenueActionArt(kind: .wifi, theme: palette.motionTheme, animated: true)
-            .frame(width: 48, height: 48)
+      VStack(alignment: .leading, spacing: 20) {
+        let heading = typeSize.isAccessibilitySize
+          ? AnyLayout(VStackLayout(alignment: .leading, spacing: 10))
+          : AnyLayout(HStackLayout(alignment: .center, spacing: 12))
+        heading {
+          Image(systemName: "wifi")
+            .font(.system(size: 24, weight: .semibold))
+            .foregroundStyle(palette.forest)
+            .frame(width: 50, height: 50)
+            .background(palette.peach, in: .rect(cornerRadius: 9))
+            .accessibilityHidden(true)
           Text(t("Wi-Fi dla gości", "Guest Wi-Fi", "Гостевой Wi-Fi"))
             .font(palette.display(.largeTitle))
+            .foregroundStyle(palette.forest)
+            .fixedSize(horizontal: false, vertical: true)
             .accessibilityAddTraits(.isHeader)
         }
         if let details {
-          VStack(alignment: .leading, spacing: 20) {
-            VStack(alignment: .leading, spacing: 6) {
-              Text(t("Sieć", "Network", "Сеть")).font(.caption).foregroundStyle(palette.muted)
-              Text(details.ssid).font(.headline).textSelection(.enabled)
-                .fixedSize(horizontal: false, vertical: true)
-              if isDemo {
-                Text(t("Sieć testowa do demonstracji", "Test network for this demo", "Тестовая сеть для демонстрации"))
-                  .font(.caption).foregroundStyle(palette.muted)
-              }
-            }
-            if let password = details.password {
-              Rectangle().fill(palette.ink.opacity(0.09)).frame(height: 1)
-              VStack(alignment: .leading, spacing: 8) {
-                Text(t("Hasło", "Password", "Пароль")).font(.caption).foregroundStyle(palette.muted)
-                Text(revealed ? password : "••••••••••••")
-                  .font(.body.monospaced()).textSelection(.enabled)
-                  .fixedSize(horizontal: false, vertical: true)
-                  .accessibilityLabel(revealed ? password : t("Hasło ukryte", "Password hidden", "Пароль скрыт"))
-                HStack(spacing: 16) {
-                  Button { revealed.toggle() } label: {
-                    Label(revealed ? t("Ukryj", "Hide", "Скрыть") : t("Pokaż", "Show", "Показать"), systemImage: revealed ? "eye.slash" : "eye")
-                      .font(.subheadline.weight(.medium)).frame(minHeight: 44)
-                  }
-                  Button {
-                    UIPasteboard.general.setItems([["public.utf8-plain-text": password]], options: [
-                      .localOnly: true, .expirationDate: Date().addingTimeInterval(60)
-                    ])
-                    copied = true
-                    copyCount += 1
-                  } label: {
-                    Label(copied ? t("Skopiowano", "Copied", "Скопировано") : t("Kopiuj", "Copy", "Копировать"), systemImage: copied ? "checkmark" : "doc.on.doc")
-                      .font(.subheadline.weight(.medium)).frame(minHeight: 44)
-                  }
-                  .accessibilityLabel(t("Kopiuj hasło", "Copy password", "Скопировать пароль"))
-                }
-                .buttonStyle(.plain)
-              }
-            }
-          }
-          .padding(20)
-          .frame(maxWidth: .infinity, alignment: .leading)
-          .background(.white, in: .rect(cornerRadius: 20))
-          .overlay(RoundedRectangle(cornerRadius: 20).strokeBorder(palette.ink.opacity(0.09)))
+          networkTicket(details)
           if failed {
             Text(t("Wybierz tę sieć w ustawieniach Wi-Fi.", "Choose this network in Wi-Fi settings.", "Выберите эту сеть в настройках Wi-Fi."))
               .font(.subheadline).foregroundStyle(palette.muted)
           }
         } else {
-          Text(t("Zapytaj obsługę o dostęp do sieci.", "Ask staff for the Wi-Fi details.", "Уточните данные Wi-Fi у сотрудников."))
+          Text(t("Poproś obsługę o nazwę sieci dla gości i hasło.", "Ask staff for the guest network name and password.", "Узнайте у сотрудников название гостевой сети и пароль."))
+            .font(.body)
+            .fixedSize(horizontal: false, vertical: true)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(20)
+            .background(palette.surface, in: .rect(cornerRadius: palette.actionCorner))
+            .overlay { RoundedRectangle(cornerRadius: palette.actionCorner).strokeBorder(palette.line).allowsHitTesting(false) }
         }
         if failed || details != nil {
           VenueNativeButton(
@@ -771,10 +1757,84 @@ struct VenueWiFiHelp: View {
     .foregroundStyle(palette.ink)
     .background(palette.paper.ignoresSafeArea())
     .sensoryFeedback(.success, trigger: copyCount)
+    .onChange(of: details?.ssid) {
+      revealed = false
+      copied = false
+    }
     .task(id: copyCount) {
       guard copied else { return }
       do { try await Task.sleep(for: .seconds(2)) } catch { return }
       copied = false
     }
+  }
+
+  private func networkTicket(_ details: VenueGuestWiFi) -> some View {
+    VStack(alignment: .leading, spacing: 0) {
+      VStack(alignment: .leading, spacing: 6) {
+        Text(t("Nazwa sieci", "Network name", "Название сети"))
+          .font(.system(.caption, design: .monospaced, weight: .semibold))
+          .textCase(.uppercase).foregroundStyle(Color.white.opacity(0.80))
+        Text(details.ssid).font(palette.display(.title2)).textSelection(.enabled)
+          .fixedSize(horizontal: false, vertical: true)
+        if details.security == .nopass {
+          Text(t("Sieć bez hasła", "No password required", "Пароль не нужен"))
+            .font(.footnote)
+        }
+        if isDemo {
+          Text(t("Sieć testowa do demonstracji", "Test network for this demo", "Тестовая сеть для демонстрации"))
+            .font(.caption).foregroundStyle(Color.white.opacity(0.84))
+        }
+      }
+      .padding(.horizontal, 17).padding(.vertical, 16)
+      .frame(maxWidth: .infinity, alignment: .leading)
+      .foregroundStyle(.white).background(palette.forest)
+      if let password = details.password, details.security != .nopass {
+        GuestPerforation(color: palette.forest.opacity(0.36), cutout: palette.paper)
+        passwordSection(password)
+      }
+    }
+    .background(palette.surface, in: .rect(cornerRadius: palette.actionCorner))
+    .clipShape(.rect(cornerRadius: palette.actionCorner))
+    .shadow(color: palette.ink.opacity(0.09), radius: 11, x: 0, y: 4)
+  }
+
+  private func passwordSection(_ password: String) -> some View {
+    VStack(alignment: .leading, spacing: 7) {
+      Text(t("Hasło", "Password", "Пароль"))
+        .font(.system(.caption, design: .monospaced, weight: .semibold))
+        .textCase(.uppercase).foregroundStyle(palette.muted)
+      Text(revealed ? password : "••••••••••••")
+        .font(.body.monospaced()).textSelection(.enabled)
+        .fixedSize(horizontal: false, vertical: true)
+        .accessibilityLabel(revealed ? password : t("Hasło ukryte", "Password hidden", "Пароль скрыт"))
+      let actions = typeSize.isAccessibilitySize
+        ? AnyLayout(VStackLayout(alignment: .leading, spacing: 0))
+        : AnyLayout(HStackLayout(spacing: 21))
+      actions {
+        Button { revealed.toggle() } label: {
+          Label(revealed ? t("Ukryj", "Hide", "Скрыть") : t("Pokaż", "Show", "Показать"), systemImage: revealed ? "eye.slash" : "eye")
+            .font(.subheadline.weight(.semibold)).frame(minHeight: 44)
+        }
+        .accessibilityLabel(revealed ? t("Ukryj hasło", "Hide password", "Скрыть пароль") : t("Pokaż hasło", "Show password", "Показать пароль"))
+        Button {
+          UIPasteboard.general.setItems([["public.utf8-plain-text": password]], options: [
+            .localOnly: true, .expirationDate: Date().addingTimeInterval(60)
+          ])
+          copied = true
+          copyCount += 1
+          AccessibilityNotification.Announcement(t("Hasło skopiowane.", "Password copied.", "Пароль скопирован.")).post()
+        } label: {
+          Label(copied ? t("Skopiowano", "Copied", "Скопировано") : t("Kopiuj", "Copy", "Копировать"), systemImage: copied ? "checkmark" : "doc.on.doc")
+            .font(.subheadline.weight(.semibold)).frame(minHeight: 44)
+            .contentTransition(reduceMotion ? .identity : .symbolEffect(.replace))
+            .animation(reduceMotion ? nil : .easeInOut(duration: 0.18), value: copied)
+        }
+        .accessibilityLabel(t("Kopiuj hasło", "Copy password", "Скопировать пароль"))
+        .accessibilityValue(copied ? t("Skopiowano", "Copied", "Скопировано") : "")
+      }
+      .buttonStyle(.plain)
+      .foregroundStyle(palette.forest)
+    }
+    .padding(.horizontal, 17).padding(.top, 7).padding(.bottom, 11)
   }
 }

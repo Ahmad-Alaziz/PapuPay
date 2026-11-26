@@ -1,0 +1,1233 @@
+@font-face {
+  font-family: "Papu Editorial";
+  src: url("/fonts/BricolageGrotesque.woff2") format("woff2");
+  font-weight: 200 800;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Papu Condensed";
+  src: url("/fonts/Anton.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Papu Sans";
+  src: url("/fonts/DMSans.woff2") format("woff2");
+  font-weight: 100 1000;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Papu Cyrillic";
+  src: url("/fonts/Manrope.woff2") format("woff2");
+  font-weight: 200 800;
+  font-display: swap;
+}
+
+body:has(.sweeto-guest, .sweeto-venue-status) {
+  margin: 0;
+  background: #f7f0e2;
+}
+body:has(.sweeto-guest) {
+  background: #102e24;
+}
+.sweeto-guest,
+.sweeto-venue-status {
+  --ink: #102e24;
+  --blue: var(--ink);
+  --pine: #0b241c;
+  --accent: #ff7a38;
+  --paper: #f7f0e2;
+  --surface: #fff9ee;
+  --muted: #486253;
+  --line: #d8d0bc;
+  --display: "Papu Condensed", "Papu Cyrillic", sans-serif;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --texture: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='grain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.81' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23grain)' opacity='.34'/%3E%3C/svg%3E");
+  color-scheme: light;
+  color: var(--ink);
+  font-family: "Papu Sans", "Papu Cyrillic", Arial, sans-serif;
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+}
+.sweeto-guest *,
+.sweeto-guest *::before,
+.sweeto-guest *::after,
+.sweeto-venue-status *,
+.sweeto-venue-status *::before,
+.sweeto-venue-status *::after {
+  box-sizing: border-box;
+}
+.sweeto-guest :is(a, button, input):focus-visible,
+.sweeto-venue-status :is(a, button, input):focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 4px;
+}
+.sweeto-guest a {
+  color: inherit;
+  text-decoration: none;
+}
+.sweeto-guest :is(button, input),
+.sweeto-venue-status button {
+  font: inherit;
+}
+.sweeto-guest button,
+.sweeto-venue-status button {
+  cursor: pointer;
+}
+.sweeto-guest button:disabled {
+  cursor: default;
+}
+.sweeto-guest img,
+.sweeto-venue-status img {
+  display: block;
+  max-width: 100%;
+}
+.sweeto-guest {
+  --home-gutter: clamp(18px, 5vw, 42px);
+  --home-width: 75rem;
+  --guest-cream: #fff5e3;
+  --guest-orange: #ff7d43;
+  --guest-green: #102e24;
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: env(safe-area-inset-bottom);
+  background: var(--paper);
+}
+.papu-home-width,
+.papu-header {
+  width: min(100%, var(--home-width));
+  margin-inline: auto;
+  padding-left: max(var(--home-gutter), env(safe-area-inset-left));
+  padding-right: max(var(--home-gutter), env(safe-area-inset-right));
+}
+.papu-header {
+  position: absolute;
+  z-index: 1;
+  inset-inline: 0;
+  inset-block-start: env(safe-area-inset-top);
+  min-height: clamp(66px, 9.5vw, 92px);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  color: var(--guest-cream);
+}
+.sweeto-venue-brand-link {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  min-height: 44px;
+}
+.sweeto-venue-mark {
+  width: clamp(122px, 24vw, 170px);
+  height: auto;
+}
+.sweeto-venue-wordmark {
+  font-size: clamp(1.2rem, 3vw, 1.65rem);
+  font-weight: 780;
+  line-height: 1.1;
+  overflow-wrap: anywhere;
+}
+.papu-language {
+  display: inline-flex;
+  flex: none;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 44px;
+  padding-inline: 12px;
+  border: 1px solid #fff3dc66;
+  border-radius: 999px;
+  background: #102e24b3;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.025em;
+}
+.papu-language select {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  font-size: 1rem;
+}
+.papu-language:focus-within {
+  outline: 2px solid var(--guest-cream);
+  outline-offset: 3px;
+}
+.papu-cover {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: end;
+  min-height: clamp(30rem, 66svh, 42rem);
+  padding-top: calc(86px + env(safe-area-inset-top));
+  background: #10251c;
+}
+.papu-cover-photo,
+.papu-cover::before {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.papu-cover-photo {
+  z-index: -2;
+  left: auto;
+  width: max(72%, 56rem);
+  object-fit: cover;
+  object-position: 72% 54%;
+  mask-image: linear-gradient(90deg, transparent, #000 23%);
+}
+.papu-cover::before {
+  content: "";
+  z-index: -1;
+  background:
+    linear-gradient(180deg, #0c180fa8, transparent 26%),
+    linear-gradient(
+      90deg,
+      #12251b 15%,
+      #12251bf2 24%,
+      #12251b8c 39%,
+      #12251b00 65%
+    ),
+    linear-gradient(0deg, #0b1c14e0, transparent 28%);
+}
+.papu-cover-copy {
+  position: relative;
+  padding-bottom: clamp(33px, 6vw, 78px);
+  color: var(--guest-cream);
+}
+.papu-cover h1 {
+  max-width: 11ch;
+  margin: 0 0 clamp(22px, 4vw, 42px);
+  font:
+    760 clamp(5.3rem, 8.5vw, 9rem) / 0.79 "Papu Editorial",
+    "Papu Cyrillic",
+    sans-serif;
+  letter-spacing: -0.055em;
+  overflow-wrap: anywhere;
+}
+.papu-cover h1 em {
+  display: block;
+  margin-left: -0.027em;
+  font:
+    italic 400 0.86em / 1.01 Georgia,
+    "Times New Roman",
+    serif;
+  letter-spacing: -0.046em;
+}
+[lang="ru"] .papu-cover h1 {
+  font-size: clamp(4.5rem, 7.7vw, 8rem);
+  letter-spacing: -0.055em;
+}
+.papu-cover-dish {
+  position: absolute;
+  right: max(var(--home-gutter), env(safe-area-inset-right));
+  bottom: clamp(24px, 4vw, 48px);
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0;
+  color: var(--guest-cream);
+  font-size: 0.8rem;
+  font-weight: 620;
+  line-height: 1.4;
+}
+.papu-cover-dish::before {
+  flex: none;
+  width: 16px;
+  height: 1px;
+  background: var(--guest-orange);
+  content: "";
+}
+.papu-home-actions {
+  margin-block: clamp(17px, 3vw, 34px) 0;
+}
+.papu-home-action-group {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0 clamp(9px, 1.8vw, 20px);
+}
+.sweeto-guest .papu-home-action {
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr) 44px;
+  align-items: center;
+  position: relative;
+  min-width: 0;
+  min-height: 76px;
+  gap: clamp(10px, 1.5vw, 18px);
+  padding: 8px clamp(13px, 2vw, 21px);
+  color: var(--guest-green);
+  background: var(--surface);
+  border: 1px solid #d5c9b0;
+  border-radius: 15px;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background-color 140ms ease-out,
+    border-color 140ms ease-out;
+}
+.sweeto-guest .papu-home-action-primary {
+  width: min(100%, 19rem);
+  min-height: 60px;
+  background: var(--guest-orange);
+  border-color: var(--guest-orange);
+}
+.papu-action-symbol {
+  width: 23px;
+  height: 23px;
+}
+.papu-action-copy {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.papu-action-label {
+  font-size: clamp(0.9375rem, 1.6vw, 1.0625rem);
+  font-weight: 780;
+  line-height: 1.18;
+}
+.papu-action-detail {
+  color: var(--muted);
+  font-size: 0.79rem;
+  font-weight: 540;
+  line-height: 1.24;
+  font-variant-numeric: tabular-nums;
+}
+.papu-action-tail {
+  display: grid;
+  place-items: center;
+  align-self: stretch;
+}
+.papu-action-arrow {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--guest-green);
+  background: #f0eadc;
+  transition: transform 160ms var(--ease);
+}
+.papu-home-action-primary .papu-action-arrow {
+  color: var(--guest-cream);
+  background: var(--guest-green);
+}
+.papu-home-action:has(.papu-ticket-stub) .papu-action-arrow {
+  background: var(--guest-orange);
+}
+.papu-ticket-stub {
+  touch-action: pan-y pinch-zoom;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.sweeto-guest .papu-home-action:focus-visible {
+  z-index: 1;
+  outline: 2px solid var(--guest-green);
+  outline-offset: -4px;
+}
+.sweeto-guest .papu-home-action-primary:focus-visible {
+  outline-color: var(--guest-cream);
+  outline-offset: 3px;
+}
+@media (hover: hover) {
+  .sweeto-guest .papu-home-action:hover {
+    background: #fff1d8;
+    border-color: #aea389;
+  }
+  .sweeto-guest .papu-home-action-primary:hover {
+    background: #ff935e;
+    border-color: #ff935e;
+  }
+  .papu-home-action:hover .papu-action-arrow {
+    transform: translateX(3px);
+  }
+}
+.sweeto-guest .papu-home-action:active,
+.sweeto-guest .papu-home-action[data-pulling] {
+  background: #f0dfc4;
+}
+.sweeto-guest .papu-home-action-primary:active {
+  background: #e9713d;
+}
+.papu-home-action:active .papu-action-arrow {
+  transform: scale(0.91);
+}
+.papu-home-action[data-pulling] .papu-action-arrow {
+  transform: translateX(calc(var(--ticket-pull, 0) * 8px));
+  transition-duration: 0ms;
+}
+.papu-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2px 18px;
+  margin-top: clamp(7px, 1.2vw, 15px);
+  padding-top: clamp(10px, 2.8vw, 33px);
+  padding-bottom: clamp(7px, 2.5vw, 25px);
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+.papu-footer-location,
+.papu-footer-location a,
+.papu-footer-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 44px;
+}
+.papu-footer-location svg {
+  flex: none;
+}
+.papu-footer-location a:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.papu-footer-brand {
+  gap: 3px;
+  margin-inline-start: auto;
+  opacity: 0.82;
+}
+.papu-footer-fruit {
+  width: 17px;
+  height: 19px;
+  flex: none;
+}
+.papu-footer-brand img {
+  width: 64px;
+  height: auto;
+}
+.papu-action-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  background: var(--paper);
+  border-radius: 50%;
+}
+.papu-home-action .papu-action-icon {
+  width: 36px;
+  height: 36px;
+  background: #efeadd;
+}
+.papu-home-action-primary .papu-action-icon {
+  background: #102e2414;
+}
+.papu-home-action:has(.papu-ticket-stub) .papu-action-icon {
+  background: #ffdbc4;
+}
+.sweeto-dialog {
+  width: min(100% - 32px, 514px);
+  max-width: none;
+  max-height: min(90svh, 960px);
+  padding: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid #e0d5c0;
+  border-radius: 20px;
+  box-shadow: 0 28px 95px #071a1266;
+}
+.sweeto-dialog::backdrop {
+  background: #071a1288;
+  backdrop-filter: blur(5px);
+}
+.sweeto-dialog-wide {
+  width: min(100% - 48px, 840px);
+  overflow: hidden;
+}
+.sweeto-close {
+  position: sticky;
+  top: 16px;
+  z-index: 5;
+  float: right;
+  margin: 16px 16px -60px 0;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--ink);
+  transition:
+    background 180ms ease,
+    transform 180ms ease;
+}
+.sweeto-close:hover {
+  background: #f1e7d3;
+}
+.sweeto-close:active {
+  transform: scale(0.93);
+}
+.sweeto-detail,
+.sweeto-loyalty {
+  padding: 51px 30px 30px;
+}
+.sweeto-detail h2,
+.sweeto-loyalty h2 {
+  font-family: var(--display);
+  font-size: clamp(31px, 7vw, 44px);
+  line-height: 1.05;
+  font-weight: 400;
+  text-transform: uppercase;
+  margin: 10px 0;
+}
+.sweeto-detail > p,
+.sweeto-subtle {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.6;
+}
+.sweeto-guest .sweeto-button,
+.sweeto-venue-status .sweeto-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 49px;
+  padding: 11px 17px;
+  border: 0;
+  border-radius: 9px;
+  background: var(--ink);
+  color: var(--surface);
+  font-size: 14px;
+  font-weight: 750;
+  transition:
+    background 180ms var(--ease),
+    transform 180ms var(--ease);
+}
+.sweeto-guest .sweeto-button:focus-visible {
+  outline-color: var(--ink);
+}
+.sweeto-guest .sweeto-button:hover,
+.sweeto-venue-status .sweeto-button:hover {
+  background: #244b3a;
+}
+.sweeto-guest .sweeto-button:active {
+  transform: scale(0.98);
+}
+.sweeto-guest .sweeto-button:disabled {
+  opacity: 0.72;
+}
+.sweeto-eyebrow {
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.sweeto-error {
+  font-size: 14px;
+  color: #8c3323;
+  line-height: 1.5;
+}
+.sweeto-loading {
+  font-size: 14px;
+  color: var(--muted);
+  min-height: 44px;
+}
+.sweeto-spinning {
+  animation: sweeto-spin 0.7s linear infinite;
+}
+@keyframes sweeto-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.papu-qr {
+  display: block;
+  width: min(192px, 100%);
+  height: auto;
+  aspect-ratio: 1;
+}
+.sweeto-stamps {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 8px;
+  padding: 0;
+  list-style: none;
+}
+.sweeto-stamps li {
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border: 1px dashed currentColor;
+  border-radius: 50%;
+  font-size: 12px;
+}
+.sweeto-stamps li.earned {
+  background: var(--accent);
+  border: 0;
+  color: var(--ink);
+}
+.sweeto-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.sweeto-venue-status {
+  margin: 15svh auto 0;
+  padding: 24px;
+  max-width: 420px;
+}
+.sweeto-venue-status h1 {
+  font-family: var(--display);
+  font-size: 40px;
+  font-weight: 400;
+}
+.sweeto-venue-status p {
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+@media (780px < width <= 1040px) {
+  .papu-home-action-group {
+    gap: 9px;
+  }
+  .sweeto-guest .papu-home-actions .papu-home-action {
+    grid-template-columns: 31px minmax(0, 1fr) 32px;
+    gap: 8px;
+    padding-inline: 9px;
+  }
+  .papu-home-actions :is(.papu-action-icon, .papu-action-arrow) {
+    width: 31px;
+    height: 31px;
+  }
+}
+@media (max-width: 780px) {
+  .papu-cover {
+    min-height: clamp(21rem, calc(100vw + 2rem), 32rem);
+  }
+  .papu-cover-photo {
+    width: 100%;
+    object-position: 89% 46%;
+    mask-image: linear-gradient(180deg, #000 68%, transparent);
+  }
+  .papu-cover::before {
+    background:
+      linear-gradient(180deg, #0d1d15cf, transparent 24%),
+      linear-gradient(0deg, #10271de8 12%, #10271dbe 32%, #10271d00 64%),
+      linear-gradient(90deg, #10271d60, #10271d00 70%);
+  }
+  .papu-cover-copy {
+    padding-top: 21px;
+    padding-bottom: clamp(21px, 4vw, 36px);
+  }
+  .papu-cover h1,
+  [lang="ru"] .papu-cover h1 {
+    max-width: none;
+    margin-bottom: 6px;
+    font: 400 clamp(2.35rem, 10.1vw, 4.7rem) / 1.1 var(--display);
+    letter-spacing: -0.025em;
+  }
+  [lang="ru"] .papu-cover h1 {
+    font-size: clamp(1.95rem, 8.3vw, 4.7rem);
+    font-weight: 850;
+    letter-spacing: -0.048em;
+  }
+  .papu-cover h1 em {
+    display: inline;
+    margin-left: 0;
+    font: inherit;
+    letter-spacing: inherit;
+  }
+  .papu-cover-dish {
+    position: static;
+    margin-bottom: 16px;
+    font-size: 0.85rem;
+  }
+  .papu-cover-dish::before {
+    display: none;
+  }
+  .papu-home-actions {
+    margin-top: 18px;
+  }
+  .papu-home-action-group {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+    padding: 0 11px;
+    background: var(--surface);
+    border: 1px solid #d5c9b0;
+    border-radius: 17px;
+  }
+  .sweeto-guest .papu-home-action {
+    min-height: 57px;
+  }
+  .sweeto-guest .papu-home-action-primary {
+    width: min(100%, 22rem);
+    min-height: 56px;
+  }
+  .sweeto-guest .papu-home-actions .papu-home-action {
+    background: transparent;
+    border-width: 0 0 1px;
+    border-radius: 0;
+    padding-inline: 0;
+  }
+  .sweeto-guest .papu-home-actions .papu-home-action:last-child {
+    border-bottom-width: 0;
+  }
+  .sweeto-guest .papu-home-actions .papu-home-action:active,
+  .sweeto-guest .papu-home-actions .papu-home-action[data-pulling] {
+    background: #f3e5cd;
+  }
+  .papu-action-arrow {
+    width: 34px;
+    height: 34px;
+  }
+  .papu-footer {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 5px;
+    padding-top: 0;
+  }
+  .papu-footer-brand {
+    width: 100%;
+    justify-content: center;
+    margin-inline-start: 0;
+  }
+  .sweeto-dialog {
+    width: 100%;
+    max-height: 94svh;
+    margin: auto auto 0;
+    border-radius: 20px 20px 0 0;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .sweeto-dialog-wide {
+    width: 100%;
+    max-height: 100svh;
+    height: 100svh;
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+  }
+  .sweeto-detail,
+  .sweeto-loyalty {
+    padding-inline: 23px;
+  }
+}
+@media (max-width: 360px) {
+  .sweeto-guest {
+    --home-gutter: 14px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sweeto-guest .papu-home-action .papu-action-arrow {
+    transform: none;
+  }
+  .sweeto-guest *,
+  .sweeto-guest *::before,
+  .sweeto-guest *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Sweeto home follows the same PapuPay poster and paper actions as the App Clip. */
+body:has(.sweeto-guest[data-venue="sweeto"]) {
+  background: #faf6ed;
+}
+
+.sweeto-guest[data-venue="sweeto"] {
+  --ink: #123c2d;
+  --blue: var(--ink);
+  --pine: #123c2d;
+  --accent: #ff7837;
+  --paper: #faf6ed;
+  --surface: #fffcf6;
+  --muted: #536451;
+  --line: #dfe6d2;
+  --guest-cream: #faf6ed;
+  --guest-orange: #ff7837;
+  --guest-green: #123c2d;
+  --home-gutter: 20px;
+  --home-width: 35rem;
+  --home-row-height: clamp(52px, calc((100svh - max(300px, min(97vw, 530px)) - 110px) / 4), 64px);
+  --paper-edge: rgb(18 60 45 / 16%);
+  container: sweeto-home / inline-size;
+}
+
+.sweeto-guest[data-venue="sweeto"] .papu-header {
+  min-height: 64px;
+}
+
+.sweeto-guest[data-venue="sweeto"] .sweeto-venue-mark {
+  width: clamp(118px, 36vw, 142px);
+}
+
+.sweeto-guest[data-venue="sweeto"] .papu-header .papu-language {
+  background: #123c2dd9;
+}
+
+.sweeto-guest[data-venue="sweeto"] .papu-cover {
+  min-height: max(300px, min(97vw, 530px));
+  padding-top: calc(72px + env(safe-area-inset-top));
+  background: #1a1711;
+  overflow: hidden;
+  border-radius: 0 0 22px 22px;
+}
+
+.sweeto-guest[data-venue="sweeto"] .papu-cover-photo {
+  inset: 0;
+  width: min(100%, 540px);
+  height: 100%;
+  margin-inline: auto;
+  object-fit: cover;
+  object-position: center;
+  mask-image: none;
+}
+
+.sweeto-guest[data-venue="sweeto"] .papu-cover-photo[data-fallback] {
+  object-fit: contain;
+}
+
+.sweeto-guest[data-venue="sweeto"] .papu-cover::before {
+  background:
+    linear-gradient(180deg, rgb(0 0 0 / 35%), transparent 49%),
+    linear-gradient(0deg, #1a1711, rgb(0 0 0 / 10%) 23%, transparent 38%),
+    linear-gradient(
+      to top right,
+      rgb(0 0 0 / 85%),
+      rgb(0 0 0 / 40%) 35%,
+      transparent 65%
+    );
+}
+
+.sweeto-guest[data-venue="sweeto"] .papu-cover-copy {
+  padding-top: 12px;
+  padding-bottom: 19px;
+}
+
+.sweeto-guest[data-venue="sweeto"] .papu-cover-dish {
+  position: static;
+  margin: 0 0 5px;
+  color: #fff2d6;
+  font-size: 0.8125rem;
+  font-weight: 680;
+  overflow-wrap: anywhere;
+}
+
+.sweeto-guest[data-venue="sweeto"] .papu-cover-dish::before {
+  display: block;
+  width: 17px;
+  height: 2px;
+  background: var(--accent);
+}
+
+.sweeto-guest[data-venue="sweeto"] .papu-cover h1 {
+  max-width: none;
+  margin: 0 0 6px;
+  font: 400 clamp(2.35rem, 11.7vw, 3.4rem) / 1.04 var(--display);
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+
+.sweeto-guest[data-venue="sweeto"] .papu-cover h1:lang(ru) {
+  font-size: clamp(1.85rem, 9.25vw, 2.7rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+}
+
+.sweeto-guest[data-venue="sweeto"] .papu-cover-order {
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.43;
+}
+
+.sweeto-guest[data-venue="sweeto"] .papu-home-actions {
+  margin-block: 14px 0;
+}
+
+.sweeto-guest[data-venue="sweeto"] .papu-home-action-group {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 9px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+}
+
+.sweeto-guest[data-venue="sweeto"] .papu-home-actions .papu-home-action {
+  grid-template-columns: 24px minmax(0, 1fr) 60px;
+  gap: 10px;
+  width: 100%;
+  min-height: var(--home-row-height);
+  padding: 8px 0 8px 14px;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid rgb(18 60 45 / 17%);
+  border-radius: 13px;
+  box-shadow: 0 2.5px 0 var(--paper-edge);
+  transition: background-color 140ms ease-out, border-color 140ms ease-out,
+    transform 150ms var(--ease), box-shadow 150ms var(--ease);
+}
+
+.sweeto-guest[data-venue="sweeto"]
+  .papu-home-actions
+  .papu-home-action:focus-visible {
+  outline-color: var(--ink);
+  outline-offset: -4px;
+}
+
+.sweeto-guest[data-venue="sweeto"] .papu-home-action .papu-action-icon {
+  width: 24px;
+  height: 24px;
+  background: transparent;
+}
+
+.sweeto-guest[data-venue="sweeto"] .papu-action-symbol {
+  width: 21px;
+  height: 21px;
+}
+
+.sweeto-guest[data-venue="sweeto"] .papu-action-label {
+  font-size: 1rem;
+  font-weight: 670;
+  line-height: 1.2;
+}
+
+.sweeto-guest[data-venue="sweeto"] .papu-action-detail {
+  font-size: 0.8125rem;
+  line-height: 1.24;
+  font-weight: 550;
+}
+
+.sweeto-guest[data-venue="sweeto"] .papu-action-copy {
+  gap: 2px;
+}
+
+.sweeto-guest[data-venue="sweeto"] .papu-action-tail {
+  position: relative;
+  margin-block: -8px;
+  min-height: 50px;
+}
+
+.sweeto-guest[data-venue="sweeto"] .papu-home-action .papu-action-arrow {
+  width: 34px;
+  height: 34px;
+  color: var(--ink);
+  background: var(--accent);
+}
+
+.sweeto-guest[data-venue="sweeto"] .papu-ticket-stub::before,
+.sweeto-guest[data-venue="sweeto"] .papu-ticket-stub::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+
+/* The physical stub is the pointer target, including its decorative arrow. */
+.sweeto-guest[data-venue="sweeto"] .papu-ticket-stub .papu-action-arrow {
+  pointer-events: none;
+}
+
+.sweeto-guest[data-venue="sweeto"] .papu-ticket-stub {
+  border-radius: 0 12px 12px 0;
+  transition: transform 160ms var(--ease);
+}
+
+.sweeto-guest[data-venue="sweeto"] .papu-ticket-stub::before {
+  inset-block: 3px;
+  left: 0;
+  border-left: 1px dashed rgb(18 60 45 / 36%);
+}
+
+.sweeto-guest[data-venue="sweeto"] .papu-ticket-stub::after {
+  inset-block: -1px;
+  left: -3px;
+  width: 6px;
+  background:
+    radial-gradient(circle at center top, var(--paper) 2.5px, transparent 3px)
+      center top / 6px 6px no-repeat,
+    radial-gradient(
+        circle at center bottom,
+        var(--paper) 2.5px,
+        transparent 3px
+      )
+      center bottom / 6px 6px no-repeat;
+}
+
+@media (hover: hover) {
+  .sweeto-guest[data-venue="sweeto"]
+    .papu-home-actions
+    .papu-home-action:hover {
+    background: #fff2d6;
+    border-color: rgb(18 60 45 / 32%);
+  }
+  .sweeto-guest[data-venue="sweeto"]
+    .papu-home-action:hover
+    .papu-action-arrow {
+    transform: none;
+  }
+}
+
+.sweeto-guest[data-venue="sweeto"] .papu-home-actions .papu-home-action:active,
+.sweeto-guest[data-venue="sweeto"]
+  .papu-home-actions
+  .papu-home-action[data-pulling] {
+  background: #fff2d6;
+  border-color: rgb(18 60 45 / 28%);
+}
+
+.sweeto-guest[data-venue="sweeto"]
+  .papu-home-actions
+  .papu-home-action:active:not([data-pulling]) {
+  transform: translateY(2.5px);
+  box-shadow: 0 0 0 var(--paper-edge);
+  transition-duration: 70ms;
+}
+
+.sweeto-guest[data-venue="sweeto"] .papu-home-action[data-pulling] .papu-ticket-stub {
+  transform: translateX(calc(var(--ticket-pull, 0) * 7px));
+  background: #fff2d6;
+  box-shadow: -2px 1px 4px rgb(18 60 45 / 10%);
+  transition: none;
+}
+
+.sweeto-guest[data-venue="sweeto"] .papu-home-action[data-pulling] .papu-action-arrow {
+  transform: none;
+}
+
+.sweeto-guest[data-venue="sweeto"] .papu-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0 8px;
+  padding-top: 14px;
+  padding-bottom: 12px;
+  margin-top: auto;
+}
+
+.sweeto-guest[data-venue="sweeto"] .papu-footer-location {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.sweeto-guest[data-venue="sweeto"] .papu-footer-brand {
+  width: auto;
+  justify-content: flex-end;
+  margin-inline-start: auto;
+  opacity: 1;
+}
+
+@media (560px <= width < 800px) {
+  .sweeto-guest[data-venue="sweeto"] .papu-cover-photo {
+    mask-image: linear-gradient(
+      90deg,
+      transparent,
+      #000 12%,
+      #000 89%,
+      transparent
+    );
+  }
+}
+
+/* On shorter phones the full ticket list takes priority. Retain the whole tub. */
+@media (max-width: 360px) and (max-height: 650px) {
+  .sweeto-guest[data-venue="sweeto"] {
+    --home-gutter: 14px;
+  }
+  .sweeto-guest[data-venue="sweeto"] .papu-cover {
+    min-height: 90vw;
+  }
+  .sweeto-guest[data-venue="sweeto"] .papu-cover-photo {
+    inset: -28px 0 auto auto;
+    width: 91%;
+    height: auto;
+    aspect-ratio: 1;
+    margin: 0;
+    object-fit: contain;
+    mask-image: linear-gradient(90deg, transparent, #000 12%), linear-gradient(180deg, #000 84%, transparent);
+    mask-composite: intersect;
+  }
+  .sweeto-guest[data-venue="sweeto"] .papu-cover-copy {
+    padding-bottom: 12px;
+  }
+  .sweeto-guest[data-venue="sweeto"] .papu-home-actions {
+    margin-top: 8px;
+  }
+  .sweeto-guest[data-venue="sweeto"] .papu-home-action-group {
+    gap: 6px;
+  }
+  .sweeto-guest[data-venue="sweeto"] .papu-home-actions .papu-home-action {
+    min-height: 48px;
+    padding: 6px 0 6px 10px;
+    gap: 8px;
+  }
+  .sweeto-guest[data-venue="sweeto"] .papu-action-tail {
+    margin-block: -6px;
+    min-height: 46px;
+  }
+  .sweeto-guest[data-venue="sweeto"] .papu-home-action .papu-action-arrow {
+    width: 32px;
+    height: 32px;
+  }
+  .sweeto-guest[data-venue="sweeto"] .papu-footer {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    font-size: 0.72rem;
+    gap: 0 6px;
+  }
+}
+
+@media (min-width: 800px) {
+  .sweeto-guest[data-venue="sweeto"] {
+    --home-gutter: 36px;
+    --home-width: 67.5rem;
+  }
+  .sweeto-guest[data-venue="sweeto"] .papu-header {
+    min-height: 80px;
+  }
+  .sweeto-guest[data-venue="sweeto"] .papu-cover {
+    min-height: clamp(410px, 42vw, 490px);
+    background: #1b1c13;
+  }
+  .sweeto-guest[data-venue="sweeto"] .papu-cover-photo {
+    inset: 50% max(0px, calc((100% - var(--home-width)) / 2)) auto auto;
+    width: min(58vw, 500px);
+    height: auto;
+    aspect-ratio: 1;
+    margin: 0;
+    object-fit: contain;
+    transform: translateY(-50%);
+    mask-image: linear-gradient(
+      90deg,
+      transparent,
+      #000 19%,
+      #000 80%,
+      transparent
+    );
+  }
+  .sweeto-guest[data-venue="sweeto"] .papu-cover::before {
+    background:
+      linear-gradient(180deg, rgb(0 0 0 / 35%), transparent 35%),
+      linear-gradient(90deg, #15271be0, transparent 60%),
+      linear-gradient(0deg, #1a1711, transparent 29%);
+  }
+  .sweeto-guest[data-venue="sweeto"] .papu-cover-copy {
+    padding-bottom: 46px;
+  }
+  .sweeto-guest[data-venue="sweeto"] .papu-cover h1 {
+    max-width: 52%;
+    font-size: clamp(3.6rem, 5.3vw, 5rem);
+    text-wrap: balance;
+  }
+  .sweeto-guest[data-venue="sweeto"] .papu-cover h1:lang(ru) {
+    font-size: clamp(3rem, 4.2vw, 4.15rem);
+  }
+  .sweeto-guest[data-venue="sweeto"] .papu-cover-dish,
+  .sweeto-guest[data-venue="sweeto"] .papu-cover-order {
+    font-size: 0.9375rem;
+  }
+  .sweeto-guest[data-venue="sweeto"] .papu-home-action-group {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+  .sweeto-guest[data-venue="sweeto"] .papu-home-actions {
+    margin-top: 20px;
+  }
+  .sweeto-guest[data-venue="sweeto"] .papu-home-actions .papu-home-action {
+    min-height: 64px;
+  }
+}
+
+/* Scale the authored food scene, never the food proportions, on wide screens. */
+@media (min-width: 1280px) {
+  .sweeto-guest[data-venue="sweeto"] .papu-cover {
+    min-height: clamp(490px, 39vw, 580px);
+  }
+  .sweeto-guest[data-venue="sweeto"] .papu-cover-photo {
+    top: 0;
+    right: max(0px, calc((100% - var(--home-width)) / 2 - 80px));
+    width: min(44.5vw, 760px);
+    transform: none;
+    mask-image: linear-gradient(90deg, transparent, #000 19%, #000 94%, transparent);
+  }
+}
+
+/* Keep the actual photograph and the title separate on narrow, enlarged-text layouts. */
+@container sweeto-home ((max-width: 20rem) and (min-width: 321px)) or (max-width: 18rem) {
+  .sweeto-guest[data-venue="sweeto"] .papu-header {
+    position: static;
+    background: var(--pine);
+  }
+  .sweeto-guest[data-venue="sweeto"] .papu-cover {
+    flex-direction: column;
+    align-items: stretch;
+    min-height: 0;
+    padding-top: 0;
+    background: #1a1711;
+  }
+  .sweeto-guest[data-venue="sweeto"] .papu-cover-photo {
+    position: static;
+    width: 100%;
+    height: min(64vw, 300px);
+    aspect-ratio: auto;
+    object-fit: cover;
+    object-position: 50% 52%;
+    mask-image: none;
+    mask-composite: add;
+    z-index: auto;
+    margin: 0;
+    transform: none;
+  }
+  .sweeto-guest[data-venue="sweeto"] .papu-cover::before {
+    content: none;
+  }
+  .sweeto-guest[data-venue="sweeto"] .papu-cover-copy {
+    background: var(--pine);
+    padding-block: 16px;
+  }
+  .sweeto-guest[data-venue="sweeto"] .papu-cover h1,
+  .sweeto-guest[data-venue="sweeto"] .papu-cover h1:lang(ru) {
+    font-size: max(1.55rem, 11vw);
+    text-transform: none;
+    line-height: 1.12;
+    overflow-wrap: break-word;
+  }
+  .sweeto-guest[data-venue="sweeto"] .sweeto-venue-mark {
+    width: min(140px, 34vw);
+  }
+  .sweeto-guest[data-venue="sweeto"] .papu-footer {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .sweeto-guest[data-venue="sweeto"] .papu-footer-brand {
+    margin: 0;
+    justify-content: flex-start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sweeto-guest[data-venue="sweeto"] .papu-home-action .papu-action-arrow,
+  .sweeto-guest[data-venue="sweeto"]
+    .papu-home-action[data-pulling]
+    .papu-action-arrow,
+  .sweeto-guest[data-venue="sweeto"]
+    .papu-home-action[data-pulling]
+    .papu-ticket-stub {
+    transform: none;
+  }
+  .sweeto-guest[data-venue="sweeto"] .papu-home-actions .papu-home-action:active:not([data-pulling]) {
+    transform: none;
+    box-shadow: 0 1px 0 var(--paper-edge);
+  }
+}

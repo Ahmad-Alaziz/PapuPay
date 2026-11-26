@@ -1,0 +1,750 @@
+<Rive version="1" kind="fragment">
+  <Artboard id="0:1" name="LoyaltySeal" defaultStateMachineId="0:30" width="96" height="96">
+    <Node id="0:12" name="Ink flecks" x="48" y="48" rotation="0">
+      <Shape name="Loose ink" x="-27" y="-20">
+        <Ellipse width="2.8" height="2.8" />
+        <Fill>
+          <SolidColor colorValue="FFFF7938" />
+        </Fill>
+      </Shape>
+      <Shape name="Loose ink" x="-20" y="-28">
+        <Ellipse width="2" height="2" />
+        <Fill>
+          <SolidColor colorValue="FF14392B" />
+        </Fill>
+      </Shape>
+      <Shape name="Loose ink" x="29" y="17">
+        <Ellipse width="2.6" height="2.6" />
+        <Fill>
+          <SolidColor colorValue="FFFF7938" />
+        </Fill>
+      </Shape>
+      <Shape name="Loose ink" x="27" y="24">
+        <Ellipse width="1.6" height="1.6" />
+        <Fill>
+          <SolidColor colorValue="FF14392B" />
+        </Fill>
+      </Shape>
+    </Node>
+    <Node id="0:10" name="Ink impression" x="48" y="48" rotation="-0.135">
+      <Shape name="Unprinted seed centre">
+        <PointsPath isClosed="true">
+          <StraightVertex x="-1.37094" y="1.76877" />
+          <StraightVertex x="-1.24843" y="1.83203" />
+          <StraightVertex x="-1.15903" y="1.93718" />
+          <StraightVertex x="-1.11723" y="2.06872" />
+          <StraightVertex x="-1.1285" y="2.20613" />
+          <StraightVertex x="-1.5069" y="3.52575" />
+          <StraightVertex x="-1.57015" y="3.64826" />
+          <StraightVertex x="-1.67531" y="3.73766" />
+          <StraightVertex x="-1.80685" y="3.77946" />
+          <StraightVertex x="-1.94426" y="3.76819" />
+          <StraightVertex x="-3.26388" y="3.3898" />
+          <StraightVertex x="-3.38639" y="3.32654" />
+          <StraightVertex x="-3.47579" y="3.22138" />
+          <StraightVertex x="-3.51759" y="3.08984" />
+          <StraightVertex x="-3.50632" y="2.95243" />
+          <StraightVertex x="-3.12792" y="1.63281" />
+          <StraightVertex x="-3.06467" y="1.5103" />
+          <StraightVertex x="-2.95951" y="1.4209" />
+          <StraightVertex x="-2.82797" y="1.3791" />
+          <StraightVertex x="-2.69056" y="1.39037" />
+        </PointsPath>
+        <Fill>
+          <SolidColor colorValue="FFFFF1D3" />
+        </Fill>
+      </Shape>
+      <Shape name="Papaya seed">
+        <PointsPath isClosed="true">
+          <StraightVertex x="0.28539" y="0.350366" />
+          <StraightVertex x="0.622934" y="0.523971" />
+          <StraightVertex x="0.867654" y="0.813771" />
+          <StraightVertex x="0.983737" y="1.17488" />
+          <StraightVertex x="0.952091" y="1.55313" />
+          <StraightVertex x="-0.0884949" y="5.18208" />
+          <StraightVertex x="-0.2621" y="5.51963" />
+          <StraightVertex x="-0.5519" y="5.76435" />
+          <StraightVertex x="-0.913006" y="5.88043" />
+          <StraightVertex x="-1.29126" y="5.84878" />
+          <StraightVertex x="-4.92021" y="4.8082" />
+          <StraightVertex x="-5.25775" y="4.63459" />
+          <StraightVertex x="-5.50247" y="4.34479" />
+          <StraightVertex x="-5.61856" y="3.98369" />
+          <StraightVertex x="-5.58691" y="3.60544" />
+          <StraightVertex x="-4.54633" y="-0.0235192" />
+          <StraightVertex x="-4.37272" y="-0.361063" />
+          <StraightVertex x="-4.08292" y="-0.605783" />
+          <StraightVertex x="-3.72182" y="-0.721866" />
+          <StraightVertex x="-3.34357" y="-0.69022" />
+        </PointsPath>
+        <Fill>
+          <SolidColor colorValue="FF14392B" />
+        </Fill>
+      </Shape>
+      <Shape name="Unprinted seed centre">
+        <PointsPath isClosed="true">
+          <StraightVertex x="6.3401" y="5.06178" />
+          <StraightVertex x="6.46261" y="5.12504" />
+          <StraightVertex x="6.552" y="5.2302" />
+          <StraightVertex x="6.59381" y="5.36173" />
+          <StraightVertex x="6.58253" y="5.49915" />
+          <StraightVertex x="6.20414" y="6.81877" />
+          <StraightVertex x="6.14088" y="6.94128" />
+          <StraightVertex x="6.03573" y="7.03068" />
+          <StraightVertex x="5.90419" y="7.07248" />
+          <StraightVertex x="5.76677" y="7.06121" />
+          <StraightVertex x="4.44715" y="6.68281" />
+          <StraightVertex x="4.32464" y="6.61955" />
+          <StraightVertex x="4.23524" y="6.5144" />
+          <StraightVertex x="4.19344" y="6.38286" />
+          <StraightVertex x="4.20471" y="6.24544" />
+          <StraightVertex x="4.58311" y="4.92582" />
+          <StraightVertex x="4.64637" y="4.80331" />
+          <StraightVertex x="4.75152" y="4.71392" />
+          <StraightVertex x="4.88306" y="4.67211" />
+          <StraightVertex x="5.02048" y="4.68339" />
+        </PointsPath>
+        <Fill>
+          <SolidColor colorValue="FFFFF1D3" />
+        </Fill>
+      </Shape>
+      <Shape name="Papaya seed">
+        <PointsPath isClosed="true">
+          <StraightVertex x="7.99642" y="3.64338" />
+          <StraightVertex x="8.33397" y="3.81699" />
+          <StraightVertex x="8.57869" y="4.10679" />
+          <StraightVertex x="8.69477" y="4.46789" />
+          <StraightVertex x="8.66313" y="4.84614" />
+          <StraightVertex x="7.62254" y="8.4751" />
+          <StraightVertex x="7.44893" y="8.81264" />
+          <StraightVertex x="7.15913" y="9.05736" />
+          <StraightVertex x="6.79803" y="9.17344" />
+          <StraightVertex x="6.41978" y="9.1418" />
+          <StraightVertex x="2.79082" y="8.10121" />
+          <StraightVertex x="2.45328" y="7.92761" />
+          <StraightVertex x="2.20856" y="7.63781" />
+          <StraightVertex x="2.09248" y="7.2767" />
+          <StraightVertex x="2.12412" y="6.89845" />
+          <StraightVertex x="3.16471" y="3.2695" />
+          <StraightVertex x="3.33831" y="2.93195" />
+          <StraightVertex x="3.62811" y="2.68723" />
+          <StraightVertex x="3.98922" y="2.57115" />
+          <StraightVertex x="4.36747" y="2.60279" />
+        </PointsPath>
+        <Fill>
+          <SolidColor colorValue="FF14392B" />
+        </Fill>
+      </Shape>
+      <Shape name="Unprinted seed centre">
+        <PointsPath isClosed="true">
+          <StraightVertex x="-6.38032" y="11.6924" />
+          <StraightVertex x="-6.25781" y="11.7557" />
+          <StraightVertex x="-6.16841" y="11.8608" />
+          <StraightVertex x="-6.12661" y="11.9924" />
+          <StraightVertex x="-6.13788" y="12.1298" />
+          <StraightVertex x="-6.51628" y="13.4494" />
+          <StraightVertex x="-6.57954" y="13.5719" />
+          <StraightVertex x="-6.68469" y="13.6613" />
+          <StraightVertex x="-6.81623" y="13.7031" />
+          <StraightVertex x="-6.95365" y="13.6918" />
+          <StraightVertex x="-8.27327" y="13.3134" />
+          <StraightVertex x="-8.39578" y="13.2502" />
+          <StraightVertex x="-8.48518" y="13.145" />
+          <StraightVertex x="-8.52698" y="13.0135" />
+          <StraightVertex x="-8.5157" y="12.8761" />
+          <StraightVertex x="-8.13731" y="11.5565" />
+          <StraightVertex x="-8.07405" y="11.434" />
+          <StraightVertex x="-7.9689" y="11.3446" />
+          <StraightVertex x="-7.83736" y="11.3027" />
+          <StraightVertex x="-7.69994" y="11.314" />
+        </PointsPath>
+        <Fill>
+          <SolidColor colorValue="FFFFF1D3" />
+        </Fill>
+      </Shape>
+      <Shape name="Papaya seed">
+        <PointsPath isClosed="true">
+          <StraightVertex x="-4.72399" y="10.274" />
+          <StraightVertex x="-4.38645" y="10.4476" />
+          <StraightVertex x="-4.14173" y="10.7374" />
+          <StraightVertex x="-4.02565" y="11.0985" />
+          <StraightVertex x="-4.05729" y="11.4768" />
+          <StraightVertex x="-5.09788" y="15.1057" />
+          <StraightVertex x="-5.27148" y="15.4433" />
+          <StraightVertex x="-5.56128" y="15.688" />
+          <StraightVertex x="-5.92239" y="15.8041" />
+          <StraightVertex x="-6.30064" y="15.7724" />
+          <StraightVertex x="-9.92959" y="14.7318" />
+          <StraightVertex x="-10.2671" y="14.5582" />
+          <StraightVertex x="-10.5119" y="14.2684" />
+          <StraightVertex x="-10.6279" y="13.9073" />
+          <StraightVertex x="-10.5963" y="13.5291" />
+          <StraightVertex x="-9.55571" y="9.90013" />
+          <StraightVertex x="-9.38211" y="9.56259" />
+          <StraightVertex x="-9.0923" y="9.31787" />
+          <StraightVertex x="-8.7312" y="9.20179" />
+          <StraightVertex x="-8.35295" y="9.23343" />
+        </PointsPath>
+        <Fill>
+          <SolidColor colorValue="FF14392B" />
+        </Fill>
+      </Shape>
+      <Shape name="Papaya seed">
+        <PointsPath isClosed="true">
+          <StraightVertex x="3.58479" y="-3.57215" />
+          <StraightVertex x="3.73793" y="-3.49307" />
+          <StraightVertex x="3.84952" y="-3.36154" />
+          <StraightVertex x="3.90193" y="-3.19721" />
+          <StraightVertex x="3.88784" y="-3.02544" />
+          <StraightVertex x="3.41485" y="-1.37591" />
+          <StraightVertex x="3.33577" y="-1.22278" />
+          <StraightVertex x="3.20424" y="-1.11119" />
+          <StraightVertex x="3.03991" y="-1.05877" />
+          <StraightVertex x="2.86814" y="-1.07287" />
+          <StraightVertex x="1.21861" y="-1.54586" />
+          <StraightVertex x="1.06548" y="-1.62493" />
+          <StraightVertex x="0.953888" y="-1.75647" />
+          <StraightVertex x="0.901474" y="-1.9208" />
+          <StraightVertex x="0.915566" y="-2.09257" />
+          <StraightVertex x="1.38856" y="-3.74209" />
+          <StraightVertex x="1.46763" y="-3.89523" />
+          <StraightVertex x="1.59917" y="-4.00682" />
+          <StraightVertex x="1.7635" y="-4.05923" />
+          <StraightVertex x="1.93527" y="-4.04514" />
+        </PointsPath>
+        <Fill>
+          <SolidColor colorValue="FF14392B" />
+        </Fill>
+      </Shape>
+      <Shape name="Papaya seed">
+        <PointsPath isClosed="true">
+          <StraightVertex x="7.73848" y="-0.758229" />
+          <StraightVertex x="7.86099" y="-0.69497" />
+          <StraightVertex x="7.95039" y="-0.589815" />
+          <StraightVertex x="7.99219" y="-0.458277" />
+          <StraightVertex x="7.98092" y="-0.320862" />
+          <StraightVertex x="7.60252" y="0.998758" />
+          <StraightVertex x="7.53926" y="1.12127" />
+          <StraightVertex x="7.43411" y="1.21067" />
+          <StraightVertex x="7.30257" y="1.25247" />
+          <StraightVertex x="7.16515" y="1.2412" />
+          <StraightVertex x="5.84553" y="0.8628" />
+          <StraightVertex x="5.72303" y="0.799542" />
+          <StraightVertex x="5.63363" y="0.694386" />
+          <StraightVertex x="5.59182" y="0.562849" />
+          <StraightVertex x="5.6031" y="0.425433" />
+          <StraightVertex x="5.98149" y="-0.894187" />
+          <StraightVertex x="6.04475" y="-1.0167" />
+          <StraightVertex x="6.14991" y="-1.1061" />
+          <StraightVertex x="6.28144" y="-1.1479" />
+          <StraightVertex x="6.41886" y="-1.13662" />
+        </PointsPath>
+        <Fill>
+          <SolidColor colorValue="FF14392B" />
+        </Fill>
+      </Shape>
+      <Shape name="Papaya seed">
+        <PointsPath isClosed="true">
+          <StraightVertex x="1.57455" y="7.21149" />
+          <StraightVertex x="1.72768" y="7.29057" />
+          <StraightVertex x="1.83927" y="7.4221" />
+          <StraightVertex x="1.89168" y="7.58643" />
+          <StraightVertex x="1.87759" y="7.7582" />
+          <StraightVertex x="1.4046" y="9.40773" />
+          <StraightVertex x="1.32553" y="9.56087" />
+          <StraightVertex x="1.19399" y="9.67245" />
+          <StraightVertex x="1.02966" y="9.72487" />
+          <StraightVertex x="0.85789" y="9.71077" />
+          <StraightVertex x="-0.791636" y="9.23778" />
+          <StraightVertex x="-0.944772" y="9.15871" />
+          <StraightVertex x="-1.05636" y="9.02717" />
+          <StraightVertex x="-1.10877" y="8.86284" />
+          <StraightVertex x="-1.09468" y="8.69107" />
+          <StraightVertex x="-0.621688" y="7.04155" />
+          <StraightVertex x="-0.542614" y="6.88841" />
+          <StraightVertex x="-0.411081" y="6.77682" />
+          <StraightVertex x="-0.246748" y="6.72441" />
+          <StraightVertex x="-0.0749784" y="6.7385" />
+        </PointsPath>
+        <Fill>
+          <SolidColor colorValue="FF14392B" />
+        </Fill>
+      </Shape>
+      <Shape name="Papaya seed">
+        <PointsPath isClosed="true">
+          <StraightVertex x="-3.56735" y="6.27804" />
+          <StraightVertex x="-3.41421" y="6.35711" />
+          <StraightVertex x="-3.30262" y="6.48864" />
+          <StraightVertex x="-3.25021" y="6.65298" />
+          <StraightVertex x="-3.2643" y="6.82475" />
+          <StraightVertex x="-3.73729" y="8.47427" />
+          <StraightVertex x="-3.81637" y="8.62741" />
+          <StraightVertex x="-3.9479" y="8.73899" />
+          <StraightVertex x="-4.11223" y="8.79141" />
+          <StraightVertex x="-4.284" y="8.77732" />
+          <StraightVertex x="-5.93353" y="8.30432" />
+          <StraightVertex x="-6.08666" y="8.22525" />
+          <StraightVertex x="-6.19825" y="8.09372" />
+          <StraightVertex x="-6.25067" y="7.92938" />
+          <StraightVertex x="-6.23657" y="7.75761" />
+          <StraightVertex x="-5.76358" y="6.10809" />
+          <StraightVertex x="-5.68451" y="5.95495" />
+          <StraightVertex x="-5.55297" y="5.84336" />
+          <StraightVertex x="-5.38864" y="5.79095" />
+          <StraightVertex x="-5.21687" y="5.80504" />
+        </PointsPath>
+        <Fill>
+          <SolidColor colorValue="FF14392B" />
+        </Fill>
+      </Shape>
+      <Shape name="Papaya seed">
+        <PointsPath isClosed="true">
+          <StraightVertex x="1.14094" y="12.4967" />
+          <StraightVertex x="1.29408" y="12.5758" />
+          <StraightVertex x="1.40567" y="12.7073" />
+          <StraightVertex x="1.45808" y="12.8717" />
+          <StraightVertex x="1.44399" y="13.0434" />
+          <StraightVertex x="0.970997" y="14.693" />
+          <StraightVertex x="0.891923" y="14.8461" />
+          <StraightVertex x="0.76039" y="14.9577" />
+          <StraightVertex x="0.596057" y="15.0101" />
+          <StraightVertex x="0.424287" y="14.996" />
+          <StraightVertex x="-1.22524" y="14.523" />
+          <StraightVertex x="-1.37837" y="14.4439" />
+          <StraightVertex x="-1.48996" y="14.3124" />
+          <StraightVertex x="-1.54238" y="14.1481" />
+          <StraightVertex x="-1.52828" y="13.9763" />
+          <StraightVertex x="-1.05529" y="12.3268" />
+          <StraightVertex x="-0.976217" y="12.1736" />
+          <StraightVertex x="-0.844684" y="12.062" />
+          <StraightVertex x="-0.68035" y="12.0096" />
+          <StraightVertex x="-0.50858" y="12.0237" />
+        </PointsPath>
+        <Fill>
+          <SolidColor colorValue="FF14392B" />
+        </Fill>
+      </Shape>
+      <Shape name="Papaya seed">
+        <PointsPath isClosed="true">
+          <StraightVertex x="5.08505" y="10.3819" />
+          <StraightVertex x="5.20755" y="10.4452" />
+          <StraightVertex x="5.29695" y="10.5503" />
+          <StraightVertex x="5.33876" y="10.6819" />
+          <StraightVertex x="5.32748" y="10.8193" />
+          <StraightVertex x="4.94909" y="12.1389" />
+          <StraightVertex x="4.88583" y="12.2614" />
+          <StraightVertex x="4.78067" y="12.3508" />
+          <StraightVertex x="4.64914" y="12.3926" />
+          <StraightVertex x="4.51172" y="12.3814" />
+          <StraightVertex x="3.1921" y="12.003" />
+          <StraightVertex x="3.06959" y="11.9397" />
+          <StraightVertex x="2.98019" y="11.8346" />
+          <StraightVertex x="2.93839" y="11.703" />
+          <StraightVertex x="2.94966" y="11.5656" />
+          <StraightVertex x="3.32806" y="10.246" />
+          <StraightVertex x="3.39132" y="10.1235" />
+          <StraightVertex x="3.49647" y="10.0341" />
+          <StraightVertex x="3.62801" y="9.99227" />
+          <StraightVertex x="3.76543" y="10.0035" />
+        </PointsPath>
+        <Fill>
+          <SolidColor colorValue="FF14392B" />
+        </Fill>
+      </Shape>
+      <Shape name="Seed bed">
+        <PointsPath isClosed="true">
+          <StraightVertex x="4.68" y="-8.84" />
+          <StraightVertex x="6.19907" y="-9.64653" />
+          <StraightVertex x="7.59988" y="-9.88" />
+          <StraightVertex x="8.82787" y="-9.60408" />
+          <StraightVertex x="9.82845" y="-8.88245" />
+          <StraightVertex x="10.5471" y="-7.77878" />
+          <StraightVertex x="10.9291" y="-6.35673" />
+          <StraightVertex x="10.92" y="-4.68" />
+          <StraightVertex x="10.6183" y="-2.72886" />
+          <StraightVertex x="10.544" y="-0.850496" />
+          <StraightVertex x="10.6062" y="1.00968" />
+          <StraightVertex x="10.7138" y="2.90624" />
+          <StraightVertex x="10.776" y="4.89376" />
+          <StraightVertex x="10.7017" y="7.02682" />
+          <StraightVertex x="10.4" y="9.36" />
+          <StraightVertex x="9.48583" y="12.0919" />
+          <StraightVertex x="8.11685" y="14.469" />
+          <StraightVertex x="6.34764" y="16.455" />
+          <StraightVertex x="4.23277" y="18.0135" />
+          <StraightVertex x="1.82682" y="19.1081" />
+          <StraightVertex x="-0.815627" y="19.7024" />
+          <StraightVertex x="-3.64" y="19.76" />
+          <StraightVertex x="-5.76397" y="19.5735" />
+          <StraightVertex x="-7.64233" y="19.0323" />
+          <StraightVertex x="-9.22052" y="18.1636" />
+          <StraightVertex x="-10.444" y="16.9948" />
+          <StraightVertex x="-11.2581" y="15.553" />
+          <StraightVertex x="-11.6083" y="13.8657" />
+          <StraightVertex x="-11.44" y="11.96" />
+          <StraightVertex x="-10.4379" y="8.78845" />
+          <StraightVertex x="-8.83545" y="5.56233" />
+          <StraightVertex x="-6.73271" y="2.3544" />
+          <StraightVertex x="-4.22974" y="-0.762566" />
+          <StraightVertex x="-1.42659" y="-3.7158" />
+          <StraightVertex x="1.57668" y="-6.43254" />
+          <StraightVertex x="4.68" y="-8.84" />
+        </PointsPath>
+        <Fill>
+          <SolidColor colorValue="FFFFF1D3" />
+        </Fill>
+      </Shape>
+      <Shape name="Papaya flesh">
+        <PointsPath isClosed="true">
+          <StraightVertex x="2.6" y="-15.6" />
+          <StraightVertex x="5.86554" y="-17.0766" />
+          <StraightVertex x="8.92187" y="-17.5436" />
+          <StraightVertex x="11.6871" y="-17.0736" />
+          <StraightVertex x="14.0794" y="-15.7395" />
+          <StraightVertex x="16.0169" y="-13.614" />
+          <StraightVertex x="17.4177" y="-10.7699" />
+          <StraightVertex x="18.2" y="-7.28" />
+          <StraightVertex x="18.3076" y="-5.29854" />
+          <StraightVertex x="18.2334" y="-3.33528" />
+          <StraightVertex x="18.0499" y="-1.34472" />
+          <StraightVertex x="17.8301" y="0.718601" />
+          <StraightVertex x="17.6466" y="2.90017" />
+          <StraightVertex x="17.5724" y="5.24548" />
+          <StraightVertex x="17.68" y="7.8" />
+          <StraightVertex x="17.4966" y="11.9994" />
+          <StraightVertex x="16.5308" y="15.6713" />
+          <StraightVertex x="14.8283" y="18.7973" />
+          <StraightVertex x="12.4345" y="21.3594" />
+          <StraightVertex x="9.39487" y="23.3394" />
+          <StraightVertex x="5.75487" y="24.719" />
+          <StraightVertex x="1.56" y="25.48" />
+          <StraightVertex x="-3.25644" y="25.6104" />
+          <StraightVertex x="-7.8091" y="25.1222" />
+          <StraightVertex x="-11.9615" y="24.0337" />
+          <StraightVertex x="-15.5773" y="22.363" />
+          <StraightVertex x="-18.5199" y="20.1284" />
+          <StraightVertex x="-20.6529" y="17.348" />
+          <StraightVertex x="-21.84" y="14.04" />
+          <StraightVertex x="-22.1569" y="10.1559" />
+          <StraightVertex x="-21.4458" y="6.52653" />
+          <StraightVertex x="-19.8889" y="3.15184" />
+          <StraightVertex x="-17.6679" y="0.0318367" />
+          <StraightVertex x="-14.9648" y="-2.83347" />
+          <StraightVertex x="-11.9615" y="-5.44408" />
+          <StraightVertex x="-8.84" y="-7.8" />
+          <StraightVertex x="-6.92373" y="-9.10531" />
+          <StraightVertex x="-5.1621" y="-10.3469" />
+          <StraightVertex x="-3.51872" y="-11.5249" />
+          <StraightVertex x="-1.9572" y="-12.6392" />
+          <StraightVertex x="-0.441166" y="-13.6898" />
+          <StraightVertex x="1.06577" y="-14.6767" />
+          <StraightVertex x="2.6" y="-15.6" />
+        </PointsPath>
+        <Fill>
+          <SolidColor colorValue="FFFF7938" />
+        </Fill>
+      </Shape>
+      <Shape name="Leaf">
+        <PointsPath isClosed="true">
+          <StraightVertex x="11.44" y="-11.44" />
+          <StraightVertex x="11.3399" y="-14.4539" />
+          <StraightVertex x="11.913" y="-17.2131" />
+          <StraightVertex x="13.1319" y="-19.6539" />
+          <StraightVertex x="14.9693" y="-21.7127" />
+          <StraightVertex x="17.398" y="-23.3257" />
+          <StraightVertex x="20.3907" y="-24.4294" />
+          <StraightVertex x="23.92" y="-24.96" />
+          <StraightVertex x="23.7745" y="-21.4003" />
+          <StraightVertex x="22.9467" y="-18.3228" />
+          <StraightVertex x="21.5186" y="-15.7637" />
+          <StraightVertex x="19.572" y="-13.7595" />
+          <StraightVertex x="17.1888" y="-12.3466" />
+          <StraightVertex x="14.4508" y="-11.5613" />
+          <StraightVertex x="11.44" y="-11.44" />
+        </PointsPath>
+        <Fill>
+          <SolidColor colorValue="FF33734F" />
+        </Fill>
+      </Shape>
+      <Shape name="Unprinted paper" x="0" y="0">
+        <Ellipse width="60.6" height="60.6" />
+        <Fill>
+          <SolidColor colorValue="FFFFB78A" />
+        </Fill>
+      </Shape>
+      <Shape name="Ink rim" x="0" y="0">
+        <Ellipse width="63.9" height="63.9" />
+        <Fill>
+          <SolidColor colorValue="FF14392B" />
+        </Fill>
+      </Shape>
+      <Shape name="Die cut scallops">
+        <PointsPath isClosed="true">
+          <StraightVertex x="40" y="0" />
+          <StraightVertex x="39.566" y="1.944" />
+          <StraightVertex x="38.494" y="3.791" />
+          <StraightVertex x="37.338" y="5.539" />
+          <StraightVertex x="36.642" y="7.289" />
+          <StraightVertex x="36.615" y="9.172" />
+          <StraightVertex x="37.014" y="11.228" />
+          <StraightVertex x="37.298" y="13.345" />
+          <StraightVertex x="36.955" y="15.307" />
+          <StraightVertex x="35.81" y="16.937" />
+          <StraightVertex x="34.113" y="18.234" />
+          <StraightVertex x="32.376" y="19.406" />
+          <StraightVertex x="31.064" y="20.756" />
+          <StraightVertex x="30.318" y="22.486" />
+          <StraightVertex x="29.9" y="24.538" />
+          <StraightVertex x="29.352" y="26.603" />
+          <StraightVertex x="28.284" y="28.284" />
+          <StraightVertex x="26.603" y="29.352" />
+          <StraightVertex x="24.538" y="29.9" />
+          <StraightVertex x="22.486" y="30.318" />
+          <StraightVertex x="20.756" y="31.064" />
+          <StraightVertex x="19.406" y="32.376" />
+          <StraightVertex x="18.234" y="34.113" />
+          <StraightVertex x="16.937" y="35.81" />
+          <StraightVertex x="15.307" y="36.955" />
+          <StraightVertex x="13.345" y="37.298" />
+          <StraightVertex x="11.228" y="37.014" />
+          <StraightVertex x="9.172" y="36.615" />
+          <StraightVertex x="7.289" y="36.642" />
+          <StraightVertex x="5.539" y="37.338" />
+          <StraightVertex x="3.791" y="38.494" />
+          <StraightVertex x="1.944" y="39.566" />
+          <StraightVertex x="0" y="40" />
+          <StraightVertex x="-1.944" y="39.566" />
+          <StraightVertex x="-3.791" y="38.494" />
+          <StraightVertex x="-5.539" y="37.338" />
+          <StraightVertex x="-7.289" y="36.642" />
+          <StraightVertex x="-9.172" y="36.615" />
+          <StraightVertex x="-11.228" y="37.014" />
+          <StraightVertex x="-13.345" y="37.298" />
+          <StraightVertex x="-15.307" y="36.955" />
+          <StraightVertex x="-16.937" y="35.81" />
+          <StraightVertex x="-18.234" y="34.113" />
+          <StraightVertex x="-19.406" y="32.376" />
+          <StraightVertex x="-20.756" y="31.064" />
+          <StraightVertex x="-22.486" y="30.318" />
+          <StraightVertex x="-24.538" y="29.9" />
+          <StraightVertex x="-26.603" y="29.352" />
+          <StraightVertex x="-28.284" y="28.284" />
+          <StraightVertex x="-29.352" y="26.603" />
+          <StraightVertex x="-29.9" y="24.538" />
+          <StraightVertex x="-30.318" y="22.486" />
+          <StraightVertex x="-31.064" y="20.756" />
+          <StraightVertex x="-32.376" y="19.406" />
+          <StraightVertex x="-34.113" y="18.234" />
+          <StraightVertex x="-35.81" y="16.937" />
+          <StraightVertex x="-36.955" y="15.307" />
+          <StraightVertex x="-37.298" y="13.345" />
+          <StraightVertex x="-37.014" y="11.228" />
+          <StraightVertex x="-36.615" y="9.172" />
+          <StraightVertex x="-36.642" y="7.289" />
+          <StraightVertex x="-37.338" y="5.539" />
+          <StraightVertex x="-38.494" y="3.791" />
+          <StraightVertex x="-39.566" y="1.944" />
+          <StraightVertex x="-40" y="0" />
+          <StraightVertex x="-39.566" y="-1.944" />
+          <StraightVertex x="-38.494" y="-3.791" />
+          <StraightVertex x="-37.338" y="-5.539" />
+          <StraightVertex x="-36.642" y="-7.289" />
+          <StraightVertex x="-36.615" y="-9.172" />
+          <StraightVertex x="-37.014" y="-11.228" />
+          <StraightVertex x="-37.298" y="-13.345" />
+          <StraightVertex x="-36.955" y="-15.307" />
+          <StraightVertex x="-35.81" y="-16.937" />
+          <StraightVertex x="-34.113" y="-18.234" />
+          <StraightVertex x="-32.376" y="-19.406" />
+          <StraightVertex x="-31.064" y="-20.756" />
+          <StraightVertex x="-30.318" y="-22.486" />
+          <StraightVertex x="-29.9" y="-24.538" />
+          <StraightVertex x="-29.352" y="-26.603" />
+          <StraightVertex x="-28.284" y="-28.284" />
+          <StraightVertex x="-26.603" y="-29.352" />
+          <StraightVertex x="-24.538" y="-29.9" />
+          <StraightVertex x="-22.486" y="-30.318" />
+          <StraightVertex x="-20.756" y="-31.064" />
+          <StraightVertex x="-19.406" y="-32.376" />
+          <StraightVertex x="-18.234" y="-34.113" />
+          <StraightVertex x="-16.937" y="-35.81" />
+          <StraightVertex x="-15.307" y="-36.955" />
+          <StraightVertex x="-13.345" y="-37.298" />
+          <StraightVertex x="-11.228" y="-37.014" />
+          <StraightVertex x="-9.172" y="-36.615" />
+          <StraightVertex x="-7.289" y="-36.642" />
+          <StraightVertex x="-5.539" y="-37.338" />
+          <StraightVertex x="-3.791" y="-38.494" />
+          <StraightVertex x="-1.944" y="-39.566" />
+          <StraightVertex x="-0" y="-40" />
+          <StraightVertex x="1.944" y="-39.566" />
+          <StraightVertex x="3.791" y="-38.494" />
+          <StraightVertex x="5.539" y="-37.338" />
+          <StraightVertex x="7.289" y="-36.642" />
+          <StraightVertex x="9.172" y="-36.615" />
+          <StraightVertex x="11.228" y="-37.014" />
+          <StraightVertex x="13.345" y="-37.298" />
+          <StraightVertex x="15.307" y="-36.955" />
+          <StraightVertex x="16.937" y="-35.81" />
+          <StraightVertex x="18.234" y="-34.113" />
+          <StraightVertex x="19.406" y="-32.376" />
+          <StraightVertex x="20.756" y="-31.064" />
+          <StraightVertex x="22.486" y="-30.318" />
+          <StraightVertex x="24.538" y="-29.9" />
+          <StraightVertex x="26.603" y="-29.352" />
+          <StraightVertex x="28.284" y="-28.284" />
+          <StraightVertex x="29.352" y="-26.603" />
+          <StraightVertex x="29.9" y="-24.538" />
+          <StraightVertex x="30.318" y="-22.486" />
+          <StraightVertex x="31.064" y="-20.756" />
+          <StraightVertex x="32.376" y="-19.406" />
+          <StraightVertex x="34.113" y="-18.234" />
+          <StraightVertex x="35.81" y="-16.937" />
+          <StraightVertex x="36.955" y="-15.307" />
+          <StraightVertex x="37.298" y="-13.345" />
+          <StraightVertex x="37.014" y="-11.228" />
+          <StraightVertex x="36.615" y="-9.172" />
+          <StraightVertex x="36.642" y="-7.289" />
+          <StraightVertex x="37.338" y="-5.539" />
+          <StraightVertex x="38.494" y="-3.791" />
+          <StraightVertex x="39.566" y="-1.944" />
+        </PointsPath>
+        <Fill>
+          <SolidColor colorValue="FFFFB78A" />
+        </Fill>
+      </Shape>
+    </Node>
+    <LinearAnimation id="0:20" name="InkPress" duration="34" fps="60" loopValue="oneShot">
+      <KeyedObject objectId="0:10">
+        <KeyedProperty property="y">
+          <KeyFrameDouble frame="0" value="35" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.2" y1="0.72" x2="0.27" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="6" value="37" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.2" y1="0.72" x2="0.27" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="12" value="49" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.2" y1="0.72" x2="0.27" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="16" value="47.8" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.2" y1="0.72" x2="0.27" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="23" value="48" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.2" y1="0.72" x2="0.27" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+        <KeyedProperty property="scaleX">
+          <KeyFrameDouble frame="0" value="1.13" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.2" y1="0.72" x2="0.27" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="6" value="1.16" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.2" y1="0.72" x2="0.27" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="12" value="1.075" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.2" y1="0.72" x2="0.27" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="17" value="0.98" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.2" y1="0.72" x2="0.27" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="25" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.2" y1="0.72" x2="0.27" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+        <KeyedProperty property="scaleY">
+          <KeyFrameDouble frame="0" value="1.13" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.2" y1="0.72" x2="0.27" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="6" value="1.12" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.2" y1="0.72" x2="0.27" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="12" value="0.92" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.2" y1="0.72" x2="0.27" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="17" value="1.026" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.2" y1="0.72" x2="0.27" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="25" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.2" y1="0.72" x2="0.27" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+        <KeyedProperty property="rotation">
+          <KeyFrameDouble frame="0" value="-0.22" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.2" y1="0.72" x2="0.27" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="6" value="-0.23" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.2" y1="0.72" x2="0.27" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="12" value="-0.108" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.2" y1="0.72" x2="0.27" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="18" value="-0.14" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.2" y1="0.72" x2="0.27" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="25" value="-0.135" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.2" y1="0.72" x2="0.27" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+        <KeyedProperty property="opacity">
+          <KeyFrameDouble frame="0" value="0.1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.2" y1="0.72" x2="0.27" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="6" value="0.28" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.2" y1="0.72" x2="0.27" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="12" value="1" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.2" y1="0.72" x2="0.27" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:12">
+        <KeyedProperty property="scaleX">
+          <KeyFrameDouble frame="0" value="0.93" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.2" y1="0.72" x2="0.27" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="11" value="0.93" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.2" y1="0.72" x2="0.27" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="32" value="1.49" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.2" y1="0.72" x2="0.27" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+        <KeyedProperty property="scaleY">
+          <KeyFrameDouble frame="0" value="0.93" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.2" y1="0.72" x2="0.27" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="11" value="0.93" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.2" y1="0.72" x2="0.27" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="32" value="1.49" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.2" y1="0.72" x2="0.27" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+        <KeyedProperty property="opacity">
+          <KeyFrameDouble frame="0" value="0" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.2" y1="0.72" x2="0.27" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="10" value="0" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.2" y1="0.72" x2="0.27" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="14" value="0.9" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.2" y1="0.72" x2="0.27" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="20" value="0.65" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.2" y1="0.72" x2="0.27" y2="1" />
+          </KeyFrameDouble>
+          <KeyFrameDouble frame="33" value="0" interpolationType="cubic">
+            <CubicEaseInterpolator x1="0.2" y1="0.72" x2="0.27" y2="1" />
+          </KeyFrameDouble>
+        </KeyedProperty>
+      </KeyedObject>
+    </LinearAnimation>
+    <StateMachine id="0:30" name="Feedback">
+      <StateMachineLayer name="Play once">
+        <EntryState x="0" y="0">
+          <StateTransition stateToId="0:31" />
+        </EntryState>
+        <AnimationState id="0:31" animationId="0:20" x="220" y="0" />
+      </StateMachineLayer>
+    </StateMachine>
+  </Artboard>
+</Rive>

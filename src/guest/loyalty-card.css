@@ -1,0 +1,622 @@
+.sweeto-loyalty.papu-loyalty {
+  --pass-accent: #ff7d43;
+  --pass-cream: #fff6e6;
+  --pass-tint: #f5e5d2;
+  --pass-ink: #102e24;
+  --pass-meta: #496052;
+  --pass-score: #244b3a;
+  padding: clamp(12px, 3vw, 24px);
+  color: var(--pass-ink);
+}
+
+.sweeto-guest .papu-loyalty[data-papu-paper] {
+  --pass-accent: #ff7837;
+  --pass-cream: #faf6ed;
+  --pass-tint: #fff2d6;
+  --pass-ink: #123c2d;
+  --pass-meta: #536451;
+  --pass-score: #123c2d;
+  color: var(--pass-ink);
+}
+
+.papu-member-pass {
+  overflow: hidden;
+  background: var(--pass-cream);
+  border: 1px solid #102e2433;
+  border-radius: 14px;
+}
+
+.papu-loyalty[data-papu-paper] .papu-member-pass {
+  border-color: #123c2d22;
+  border-radius: 24px;
+  background: #fffcf6;
+  box-shadow: 0 4px 12px #123c2d14;
+}
+
+.papu-pass-heading {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  align-content: end;
+  justify-items: start;
+  gap: 9px;
+  min-height: 108px;
+  padding: 18px 62px 20px 20px;
+  background: var(--pass-ink);
+  color: var(--pass-cream);
+}
+
+.papu-pass-heading::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+  background: var(--texture);
+  mix-blend-mode: soft-light;
+  opacity: 0.32;
+}
+
+.sweeto-guest .papu-pass-identity {
+  display: block;
+  width: auto;
+  font-size: 0.875rem;
+  font-weight: 750;
+  letter-spacing: 0.025em;
+}
+
+.sweeto-guest img.papu-pass-identity {
+  max-width: min(96px, 100%);
+  height: 18px;
+  object-fit: contain;
+}
+
+.papu-loyalty .papu-pass-heading h2 {
+  margin: 0;
+  color: inherit;
+  font: 400 clamp(1.9rem, 8.5vw, 2.85rem) / 1.08 var(--display, sans-serif);
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+.papu-loyalty .papu-pass-heading h2:lang(ru) {
+  font-weight: 850;
+}
+
+.papu-loyalty[data-papu-paper] .papu-pass-heading {
+  min-height: 0;
+  gap: 6px;
+  padding: 15px 19px;
+}
+
+.papu-loyalty[data-papu-paper] .papu-pass-heading h2 {
+  font:
+    750 clamp(1.7rem, 8.4vw, 2.25rem) / 1.08 "Papu Editorial",
+    "Papu Cyrillic",
+    sans-serif;
+  text-align: start;
+  text-wrap: wrap;
+  text-transform: none;
+}
+
+.papu-loyalty[data-papu-paper] .papu-pass-identity {
+  color: var(--pass-tint);
+  font:
+    650 0.75rem / 1.35 ui-monospace,
+    monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.015em;
+}
+
+.papu-loyalty[data-papu-paper] .papu-pass-heading:has(.papu-join-seal) {
+  grid-template-columns: minmax(0, 1fr) 58px;
+  column-gap: 14px;
+}
+
+.papu-pass-heading:has(.papu-join-seal) .papu-pass-identity,
+.papu-pass-heading:has(.papu-join-seal) h2 {
+  grid-column: 1;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.papu-pass-heading:has(.papu-join-seal) h2 {
+  overflow-wrap: anywhere;
+}
+
+.papu-join-seal {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: center;
+  width: 58px;
+  height: 58px;
+  pointer-events: none;
+}
+.papu-loyalty .papu-pass-heading h2[tabindex="-1"]:focus {
+  outline: none;
+}
+
+.papu-checkout-stub {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  padding: 12px 16px 16px;
+  background: #fff;
+}
+
+.papu-checkout-prompt {
+  margin: 0;
+  color: var(--pass-meta);
+  font-size: 0.875rem;
+  line-height: 1.35;
+  text-align: center;
+  text-wrap: balance;
+}
+
+.papu-qr-mount {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: clamp(0px, 52vw, 204px);
+  max-width: 100%;
+  padding: 7px;
+  aspect-ratio: 1;
+  color: var(--pass-meta);
+  font-size: 0.8125rem;
+  text-align: center;
+}
+
+.papu-qr-mount::before {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+  --corner: #73877a;
+  background:
+    linear-gradient(var(--corner), var(--corner)) left top / 12px 1.5px,
+    linear-gradient(var(--corner), var(--corner)) left top / 1.5px 12px,
+    linear-gradient(var(--corner), var(--corner)) right top / 12px 1.5px,
+    linear-gradient(var(--corner), var(--corner)) right top / 1.5px 12px,
+    linear-gradient(var(--corner), var(--corner)) left bottom / 12px 1.5px,
+    linear-gradient(var(--corner), var(--corner)) left bottom / 1.5px 12px,
+    linear-gradient(var(--corner), var(--corner)) right bottom / 12px 1.5px,
+    linear-gradient(var(--corner), var(--corner)) right bottom / 1.5px 12px;
+  background-repeat: no-repeat;
+}
+
+.papu-qr-mount[data-unavailable] {
+  width: auto;
+  aspect-ratio: auto;
+}
+
+.papu-qr-mount .papu-qr {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+}
+
+.papu-checkout-number {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: center;
+  gap: 4px 8px;
+  margin: 0;
+  color: var(--pass-meta);
+  font-size: 0.75rem;
+}
+
+.papu-checkout-number code,
+.papu-earned-total {
+  color: var(--pass-score);
+  font:
+    650 0.875rem / 1.35 ui-monospace,
+    monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+.papu-checkout-number code {
+  overflow-wrap: anywhere;
+  letter-spacing: 0.05em;
+  user-select: all;
+}
+
+.papu-member-face,
+.papu-join-illustration {
+  position: relative;
+  padding: 15px 19px;
+  background: var(--pass-tint);
+  color: var(--pass-score);
+}
+
+.papu-member-face::before,
+.papu-loyalty-wallet::before,
+.papu-join-actions::before {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 10px;
+  transform: translateY(-50%);
+  background:
+    radial-gradient(
+      circle at 0% 50%,
+      var(--surface, #fff9ee) 4px,
+      transparent 4.5px
+    ),
+    radial-gradient(
+      circle at 100% 50%,
+      var(--surface, #fff9ee) 4px,
+      transparent 4.5px
+    ),
+    repeating-linear-gradient(90deg, #244b3a53 0 3px, transparent 3px 7px)
+      center / calc(100% - 24px) 1px no-repeat;
+  pointer-events: none;
+  content: "";
+}
+
+.papu-stamp-count {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.papu-stamp-count > strong {
+  font-size: clamp(1.025rem, 4vw, 1.28rem);
+  font-weight: 750;
+  line-height: 1.24;
+  text-wrap: balance;
+}
+
+.papu-earned-total {
+  flex: none;
+  white-space: nowrap;
+}
+
+.papu-member-stamps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(27px, 1fr));
+  gap: clamp(3px, 1.7vw, 8px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.papu-member-stamps li {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  max-width: 49px;
+  justify-self: center;
+  aspect-ratio: 1;
+  border: 1px dashed #778676;
+  border-radius: 50%;
+}
+
+.papu-member-stamps li:last-child:not(.earned) {
+  border-style: solid;
+  border-color: #ac4a20;
+  background: #fff1e0;
+}
+
+.papu-member-stamps li.earned {
+  border: 0;
+}
+
+.papu-stamp-motion {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.papu-imprint-guide,
+.papu-imprint-press {
+  position: absolute;
+  inset: 0;
+}
+
+.papu-imprint-guide {
+  border: 1px dashed #123c2d88;
+  border-radius: 50%;
+}
+
+.papu-imprint-press {
+  animation: papu-ink-contact 520ms both;
+}
+
+@keyframes papu-ink-contact {
+  0% {
+    opacity: 0;
+    transform: translateY(-8px) rotate(-8deg) scale(1.12);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1.12, 0.88);
+    animation-timing-function: ease-out;
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.papu-stamp-receipt {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--pass-ink);
+  font-size: 0.875rem;
+  font-weight: 650;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .papu-imprint-press {
+    animation: none;
+  }
+}
+
+.papu-member-pass[data-reward] .papu-member-face {
+  background: #ffb078;
+}
+
+.papu-member-face[data-reward] {
+  background: #ffb078;
+}
+
+.papu-loyalty[data-papu-paper] .papu-member-face {
+  isolation: isolate;
+  padding-block: 12px;
+  background: var(--pass-tint);
+}
+
+.papu-loyalty[data-papu-paper] .papu-member-face::before {
+  z-index: 1;
+}
+
+.papu-loyalty[data-papu-paper] .papu-stamp-count > strong {
+  font-family: "Papu Editorial", "Papu Cyrillic", sans-serif;
+}
+
+.papu-loyalty[data-papu-paper] .papu-member-stamps li {
+  max-width: 44px;
+  border-color: #123c2d88;
+}
+
+.papu-loyalty[data-papu-paper] .papu-member-stamps li:last-child:not(.earned) {
+  border-color: var(--pass-ink);
+  background: var(--pass-cream);
+}
+
+.papu-reward-band {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.papu-reward-band::before {
+  position: absolute;
+  inset: 0;
+  content: "";
+  background:
+    repeating-linear-gradient(90deg, #123c2d50 0 2px, transparent 2px 6px)
+      center calc(100% - 2px) / calc(100% - 28px) 1px no-repeat,
+    var(--texture) center,
+    #ffd5b0;
+  background-blend-mode: normal, soft-light, normal;
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    calc(100% - 3px) 8%,
+    100% 16%,
+    calc(100% - 3px) 24%,
+    100% 32%,
+    calc(100% - 3px) 40%,
+    100% 48%,
+    calc(100% - 3px) 56%,
+    100% 64%,
+    calc(100% - 3px) 72%,
+    100% 80%,
+    calc(100% - 3px) 88%,
+    100% 100%,
+    0 100%
+  );
+}
+
+.papu-member-face[data-reward-arrival] .papu-reward-band::before {
+  animation: papu-reward-paper 400ms cubic-bezier(0.22, 0.68, 0.26, 1) 240ms
+    both;
+}
+
+@keyframes papu-reward-paper {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.papu-join-actions,
+.papu-loyalty-wallet {
+  position: relative;
+  display: grid;
+  gap: 8px;
+  padding: 16px 20px;
+}
+
+.papu-loyalty-wallet {
+  justify-items: stretch;
+  text-align: center;
+}
+
+.papu-loyalty-wallet > p,
+.papu-loyalty .sweeto-join-description,
+.papu-loyalty .sweeto-loading {
+  margin: 0;
+  color: var(--pass-meta);
+  font-size: 0.875rem;
+  line-height: 1.45;
+}
+
+.papu-loyalty .sweeto-loading {
+  padding: 20px;
+}
+
+.sweeto-guest .papu-loyalty-save,
+.sweeto-guest .papu-loyalty .sweeto-button.sweeto-join {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 54px;
+  padding: 9px 13px 9px 16px;
+  border: 0;
+  border-radius: 14px;
+  background: var(--pass-accent);
+  color: var(--pass-ink);
+  font-size: 1rem;
+  font-weight: 750;
+  text-align: start;
+  transition:
+    background-color 140ms ease,
+    transform 140ms ease;
+}
+
+.papu-loyalty-save .papu-action-arrow,
+.papu-loyalty .sweeto-join .papu-action-arrow {
+  background: var(--pass-ink);
+  color: var(--pass-cream);
+  flex: none;
+}
+
+.papu-loyalty-save svg,
+.papu-loyalty .sweeto-join svg {
+  flex: none;
+}
+
+.sweeto-guest .papu-loyalty-save:focus-visible,
+.sweeto-guest .papu-loyalty .sweeto-button.sweeto-join:focus-visible {
+  outline-color: var(--pass-score);
+}
+
+.sweeto-guest .papu-loyalty-save:hover {
+  background: #ffa270;
+}
+
+.sweeto-guest .papu-loyalty .sweeto-button.sweeto-join:hover {
+  background: #ffa270;
+}
+
+.papu-loyalty-save:active {
+  transform: scale(0.98);
+}
+
+.sweeto-guest .papu-loyalty-wallet-details {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 44px;
+  color: var(--pass-meta);
+  font-size: 0.75rem;
+  line-height: 1.35;
+  text-decoration: underline;
+  text-decoration-color: #49605268;
+  text-underline-offset: 3px;
+}
+
+.papu-loyalty-wallet-details svg {
+  flex: none;
+}
+
+.papu-loyalty .sweeto-no-account {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  color: var(--pass-meta);
+  font-size: 0.75rem;
+}
+
+.papu-loyalty .sweeto-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  column-gap: 8px;
+  margin-top: 4px;
+  color: var(--pass-meta);
+  font-size: 0.75rem;
+}
+
+.papu-member-face .sweeto-card-meta {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  margin: 2px 0 -9px;
+}
+
+.papu-stamp-receipt svg {
+  flex: none;
+}
+
+.papu-loyalty .sweeto-refresh {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--pass-ink);
+  font-size: 0.75rem;
+  font-weight: 750;
+}
+
+.papu-loyalty .sweeto-refresh:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.papu-loyalty .sweeto-refresh:disabled {
+  color: var(--pass-meta);
+}
+
+.papu-loyalty .sweeto-card-terms {
+  margin: 8px 0 0;
+  color: var(--pass-meta);
+  font-size: 0.75rem;
+  line-height: 1.45;
+}
+.sweeto-guest .papu-loyalty .sweeto-test-link {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 10px;
+  margin: 8px 0 0;
+  padding: 0 8px;
+  border-top: 1px solid var(--line);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .papu-member-face[data-reward-arrival] .papu-reward-band::before {
+    animation: none;
+  }
+  .papu-loyalty-save:active {
+    transform: none;
+  }
+}
+
+@media (max-width: 340px) {
+  .papu-loyalty[data-papu-paper] .papu-pass-heading:has(.papu-join-seal) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .papu-join-seal {
+    display: none;
+  }
+}

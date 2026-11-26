@@ -2,7 +2,9 @@ import SwiftUI
 
 /// PapuPay's own brand, shown alongside each venue's theme.
 enum Papu {
-  static let ink = Color(hex: "123C2D"), orange = Color(hex: "FF7837")
+  static let ink = Color(hex: "123C2D"), orange = Color(hex: "FF7837"),
+    green = Color(hex: "2B744B"), cream = Color(hex: "FAF6ED"), butter = Color(hex: "FFF2D6"),
+    muted = Color(hex: "536451"), line = Color(hex: "DFE6D2")
   static func wordmark(_ size: CGFloat) -> Font {
     .custom("PapuDisplay-ExtraBold", fixedSize: size)
   }

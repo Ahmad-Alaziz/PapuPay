@@ -23,7 +23,7 @@ This repository’s authored Rive assets support offline vector export with Rive
 RIVE_ANALYTICS=off rive packages/motion/sweeto-actions --verify
 RIVE_ANALYTICS=off rive inspect packages/motion/sweeto-actions --summary
 RIVE_ANALYTICS=off rive packages/motion/sweeto-actions --once
-cp packages/motion/sweeto-actions/build/sweeto-actions.riv apps/web/public/assets/sweeto/sweeto-actions.riv
+cp packages/motion/sweeto-actions/build/sweeto-actions.riv packages/motion/sweeto-actions/runtime/sweeto-actions.riv
 ```
 
-For fallback artwork, capture the artboards at their last frames at 256×256 pixels, preserve transparency and export lossless WebP as `motion-menu.webp`, `motion-loyalty.webp`, `motion-review.webp` and `motion-wifi.webp` for Sweeto. Prefix the illustration name with `berry-` or `forest-` for the other two palettes, such as `motion-forest-menu.webp`.
+For fallback artwork, capture the artboards at their last frames at 256×256 pixels, preserve transparency and export lossless WebP into `runtime/` as `motion-menu.webp`, `motion-loyalty.webp`, `motion-review.webp` and `motion-wifi.webp` for Sweeto. Prefix the illustration name with `berry-` or `forest-` for the other two palettes, such as `motion-forest-menu.webp`.

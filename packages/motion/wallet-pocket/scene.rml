@@ -1,0 +1,618 @@
+<Rive version="1" kind="fragment">
+  <Artboard id="0:1" name="Pocket" defaultStateMachineId="0:30" width="120" height="100">
+    <Node id="0:11" name="Stitched leather lip" x="60" y="68" rotation="0">
+      <Shape name="Saddle stitch">
+        <PointsPath isClosed="true">
+          <StraightVertex x="-25.9" y="12.5" />
+          <StraightVertex x="-25.709" y="12.538" />
+          <StraightVertex x="-25.546" y="12.646" />
+          <StraightVertex x="-25.438" y="12.809" />
+          <StraightVertex x="-25.4" y="13" />
+          <StraightVertex x="-25.4" y="13.1" />
+          <StraightVertex x="-25.438" y="13.291" />
+          <StraightVertex x="-25.546" y="13.454" />
+          <StraightVertex x="-25.709" y="13.562" />
+          <StraightVertex x="-25.9" y="13.6" />
+          <StraightVertex x="-30.5" y="13.6" />
+          <StraightVertex x="-30.691" y="13.562" />
+          <StraightVertex x="-30.854" y="13.454" />
+          <StraightVertex x="-30.962" y="13.291" />
+          <StraightVertex x="-31" y="13.1" />
+          <StraightVertex x="-31" y="13" />
+          <StraightVertex x="-30.962" y="12.809" />
+          <StraightVertex x="-30.854" y="12.646" />
+          <StraightVertex x="-30.691" y="12.538" />
+          <StraightVertex x="-30.5" y="12.5" />
+        </PointsPath>
+        <Fill>
+          <SolidColor colorValue="FFBFCCA4" />
+        </Fill>
+      </Shape>
+      <Shape name="Saddle stitch">
+        <PointsPath isClosed="true">
+          <StraightVertex x="-16.8" y="12.5" />
+          <StraightVertex x="-16.609" y="12.538" />
+          <StraightVertex x="-16.446" y="12.646" />
+          <StraightVertex x="-16.338" y="12.809" />
+          <StraightVertex x="-16.3" y="13" />
+          <StraightVertex x="-16.3" y="13.1" />
+          <StraightVertex x="-16.338" y="13.291" />
+          <StraightVertex x="-16.446" y="13.454" />
+          <StraightVertex x="-16.609" y="13.562" />
+          <StraightVertex x="-16.8" y="13.6" />
+          <StraightVertex x="-21.4" y="13.6" />
+          <StraightVertex x="-21.591" y="13.562" />
+          <StraightVertex x="-21.754" y="13.454" />
+          <StraightVertex x="-21.862" y="13.291" />
+          <StraightVertex x="-21.9" y="13.1" />
+          <StraightVertex x="-21.9" y="13" />
+          <StraightVertex x="-21.862" y="12.809" />
+          <StraightVertex x="-21.754" y="12.646" />
+          <StraightVertex x="-21.591" y="12.538" />
+          <StraightVertex x="-21.4" y="12.5" />
+        </PointsPath>
+        <Fill>
+          <SolidColor colorValue="FFBFCCA4" />
+        </Fill>
+      </Shape>
+      <Shape name="Saddle stitch">
+        <PointsPath isClosed="true">
+          <StraightVertex x="-7.7" y="12.5" />
+          <StraightVertex x="-7.509" y="12.538" />
+          <StraightVertex x="-7.346" y="12.646" />
+          <StraightVertex x="-7.238" y="12.809" />
+          <StraightVertex x="-7.2" y="13" />
+          <StraightVertex x="-7.2" y="13.1" />
+          <StraightVertex x="-7.238" y="13.291" />
+          <StraightVertex x="-7.346" y="13.454" />
+          <StraightVertex x="-7.509" y="13.562" />
+          <StraightVertex x="-7.7" y="13.6" />
+          <StraightVertex x="-12.3" y="13.6" />
+          <StraightVertex x="-12.491" y="13.562" />
+          <StraightVertex x="-12.654" y="13.454" />
+          <StraightVertex x="-12.762" y="13.291" />
+          <StraightVertex x="-12.8" y="13.1" />
+          <StraightVertex x="-12.8" y="13" />
+          <StraightVertex x="-12.762" y="12.809" />
+          <StraightVertex x="-12.654" y="12.646" />
+          <StraightVertex x="-12.491" y="12.538" />
+          <StraightVertex x="-12.3" y="12.5" />
+        </PointsPath>
+        <Fill>
+          <SolidColor colorValue="FFBFCCA4" />
+        </Fill>
+      </Shape>
+      <Shape name="Saddle stitch">
+        <PointsPath isClosed="true">
+          <StraightVertex x="1.4" y="12.5" />
+          <StraightVertex x="1.591" y="12.538" />
+          <StraightVertex x="1.754" y="12.646" />
+          <StraightVertex x="1.862" y="12.809" />
+          <StraightVertex x="1.9" y="13" />
+          <StraightVertex x="1.9" y="13.1" />
+          <StraightVertex x="1.862" y="13.291" />
+          <StraightVertex x="1.754" y="13.454" />
+          <StraightVertex x="1.591" y="13.562" />
+          <StraightVertex x="1.4" y="13.6" />
+          <StraightVertex x="-3.2" y="13.6" />
+          <StraightVertex x="-3.391" y="13.562" />
+          <StraightVertex x="-3.554" y="13.454" />
+          <StraightVertex x="-3.662" y="13.291" />
+          <StraightVertex x="-3.7" y="13.1" />
+          <StraightVertex x="-3.7" y="13" />
+          <StraightVertex x="-3.662" y="12.809" />
+          <StraightVertex x="-3.554" y="12.646" />
+          <StraightVertex x="-3.391" y="12.538" />
+          <StraightVertex x="-3.2" y="12.5" />
+        </PointsPath>
+        <Fill>
+          <SolidColor colorValue="FFBFCCA4" />
+        </Fill>
+      </Shape>
+      <Shape name="Saddle stitch">
+        <PointsPath isClosed="true">
+          <StraightVertex x="10.5" y="12.5" />
+          <StraightVertex x="10.691" y="12.538" />
+          <StraightVertex x="10.854" y="12.646" />
+          <StraightVertex x="10.962" y="12.809" />
+          <StraightVertex x="11" y="13" />
+          <StraightVertex x="11" y="13.1" />
+          <StraightVertex x="10.962" y="13.291" />
+          <StraightVertex x="10.854" y="13.454" />
+          <StraightVertex x="10.691" y="13.562" />
+          <StraightVertex x="10.5" y="13.6" />
+          <StraightVertex x="5.9" y="13.6" />
+          <StraightVertex x="5.709" y="13.562" />
+          <StraightVertex x="5.546" y="13.454" />
+          <StraightVertex x="5.438" y="13.291" />
+          <StraightVertex x="5.4" y="13.1" />
+          <StraightVertex x="5.4" y="13" />
+          <StraightVertex x="5.438" y="12.809" />
+          <StraightVertex x="5.546" y="12.646" />
+          <StraightVertex x="5.709" y="12.538" />
+          <StraightVertex x="5.9" y="12.5" />
+        </PointsPath>
+        <Fill>
+          <SolidColor colorValue="FFBFCCA4" />
+        </Fill>
+      </Shape>
+      <Shape name="Saddle stitch">
+        <PointsPath isClosed="true">
+          <StraightVertex x="19.6" y="12.5" />
+          <StraightVertex x="19.791" y="12.538" />
+          <StraightVertex x="19.954" y="12.646" />
+          <StraightVertex x="20.062" y="12.809" />
+          <StraightVertex x="20.1" y="13" />
+          <StraightVertex x="20.1" y="13.1" />
+          <StraightVertex x="20.062" y="13.291" />
+          <StraightVertex x="19.954" y="13.454" />
+          <StraightVertex x="19.791" y="13.562" />
+          <StraightVertex x="19.6" y="13.6" />
+          <StraightVertex x="15" y="13.6" />
+          <StraightVertex x="14.809" y="13.562" />
+          <StraightVertex x="14.646" y="13.454" />
+          <StraightVertex x="14.538" y="13.291" />
+          <StraightVertex x="14.5" y="13.1" />
+          <StraightVertex x="14.5" y="13" />
+          <StraightVertex x="14.538" y="12.809" />
+          <StraightVertex x="14.646" y="12.646" />
+          <StraightVertex x="14.809" y="12.538" />
+          <StraightVertex x="15" y="12.5" />
+        </PointsPath>
+        <Fill>
+          <SolidColor colorValue="FFBFCCA4" />
+        </Fill>
+      </Shape>
+      <Shape name="Saddle stitch">
+        <PointsPath isClosed="true">
+          <StraightVertex x="28.7" y="12.5" />
+          <StraightVertex x="28.891" y="12.538" />
+          <StraightVertex x="29.054" y="12.646" />
+          <StraightVertex x="29.162" y="12.809" />
+          <StraightVertex x="29.2" y="13" />
+          <StraightVertex x="29.2" y="13.1" />
+          <StraightVertex x="29.162" y="13.291" />
+          <StraightVertex x="29.054" y="13.454" />
+          <StraightVertex x="28.891" y="13.562" />
+          <StraightVertex x="28.7" y="13.6" />
+          <StraightVertex x="24.1" y="13.6" />
+          <StraightVertex x="23.909" y="13.562" />
+          <StraightVertex x="23.746" y="13.454" />
+          <StraightVertex x="23.638" y="13.291" />
+          <StraightVertex x="23.6" y="13.1" />
+          <StraightVertex x="23.6" y="13" />
+          <StraightVertex x="23.638" y="12.809" />
+          <StraightVertex x="23.746" y="12.646" />
+          <StraightVertex x="23.909" y="12.538" />
+          <StraightVertex x="24.1" y="12.5" />
+        </PointsPath>
+        <Fill>
+          <SolidColor colorValue="FFBFCCA4" />
+        </Fill>
+      </Shape>
+      <Shape name="Brass rivet" x="29.5" y="-4">
+        <Ellipse width="5.2" height="5.2" />
+        <Fill>
+          <SolidColor colorValue="FFDFBC78" />
+        </Fill>
+      </Shape>
+      <Shape name="Rivet rim" x="29.5" y="-4">
+        <Ellipse width="7.2" height="7.2" />
+        <Fill>
+          <SolidColor colorValue="FF153C30" />
+        </Fill>
+      </Shape>
+      <Shape name="Curved pocket mouth">
+        <PointsPath isClosed="true">
+          <StraightVertex x="-39" y="-14" />
+          <StraightVertex x="-37" y="-16" />
+          <StraightVertex x="-33" y="-16" />
+          <StraightVertex x="-20" y="-12" />
+          <StraightVertex x="-7" y="-8" />
+          <StraightVertex x="1" y="-7" />
+          <StraightVertex x="9" y="-8" />
+          <StraightVertex x="20" y="-13" />
+          <StraightVertex x="32" y="-19" />
+          <StraightVertex x="37" y="-19" />
+          <StraightVertex x="39" y="-17" />
+          <StraightVertex x="39" y="13" />
+          <StraightVertex x="38" y="17" />
+          <StraightVertex x="34" y="19" />
+          <StraightVertex x="-33" y="19" />
+          <StraightVertex x="-37" y="17" />
+          <StraightVertex x="-39" y="14" />
+        </PointsPath>
+        <Fill>
+          <SolidColor colorValue="FF3E7054" />
+        </Fill>
+      </Shape>
+      <Shape name="Leather edge">
+        <PointsPath isClosed="true">
+          <StraightVertex x="-39" y="-13" />
+          <StraightVertex x="39" y="-17" />
+          <StraightVertex x="39" y="14" />
+          <StraightVertex x="38" y="18" />
+          <StraightVertex x="34" y="21" />
+          <StraightVertex x="-33" y="21" />
+          <StraightVertex x="-37" y="19" />
+          <StraightVertex x="-39" y="16" />
+        </PointsPath>
+        <Fill>
+          <SolidColor colorValue="FF153C30" />
+        </Fill>
+      </Shape>
+    </Node>
+    <Node id="0:12" name="Pass" x="57" y="38" rotation="-0.15">
+      <Shape name="Papaya seed" x="-20" y="-1">
+        <Ellipse width="1.54" height="1.96" />
+        <Fill>
+          <SolidColor colorValue="FF153C30" />
+        </Fill>
+      </Shape>
+      <Shape name="Papaya seed" x="-18" y="2">
+        <Ellipse width="1.54" height="1.96" />
+        <Fill>
+          <SolidColor colorValue="FF153C30" />
+        </Fill>
+      </Shape>
+      <Shape name="Papaya seed" x="-22" y="2">
+        <Ellipse width="1.54" height="1.96" />
+        <Fill>
+          <SolidColor colorValue="FF153C30" />
+        </Fill>
+      </Shape>
+      <Shape name="Papaya seed" x="-21" y="4">
+        <Ellipse width="1.54" height="1.96" />
+        <Fill>
+          <SolidColor colorValue="FF153C30" />
+        </Fill>
+      </Shape>
+      <Shape name="Papaya flesh">
+        <PointsPath isClosed="true">
+          <StraightVertex x="-25" y="1" />
+          <StraightVertex x="-24" y="-1" />
+          <StraightVertex x="-19" y="-6" />
+          <StraightVertex x="-17" y="-7" />
+          <StraightVertex x="-16" y="-6" />
+          <StraightVertex x="-16" y="-3" />
+          <StraightVertex x="-17" y="2" />
+          <StraightVertex x="-19" y="6" />
+          <StraightVertex x="-22" y="7" />
+          <StraightVertex x="-24" y="6" />
+          <StraightVertex x="-25" y="4" />
+        </PointsPath>
+        <Fill>
+          <SolidColor colorValue="FFFFF2D8" />
+        </Fill>
+      </Shape>
+      <Shape name="Papaya leaf">
+        <PointsPath isClosed="true">
+          <StraightVertex x="-18" y="-7" />
+          <StraightVertex x="-17" y="-10" />
+          <StraightVertex x="-14" y="-12" />
+          <StraightVertex x="-12" y="-12" />
+          <StraightVertex x="-12" y="-10" />
+          <StraightVertex x="-14" y="-8" />
+        </PointsPath>
+        <Fill>
+          <SolidColor colorValue="FF153C30" />
+        </Fill>
+      </Shape>
+      <Shape name="Letterpress rule">
+        <PointsPath isClosed="true">
+          <StraightVertex x="18.15" y="-5" />
+          <StraightVertex x="18.475" y="-4.935" />
+          <StraightVertex x="18.751" y="-4.751" />
+          <StraightVertex x="18.935" y="-4.475" />
+          <StraightVertex x="19" y="-4.15" />
+          <StraightVertex x="19" y="-4.05" />
+          <StraightVertex x="18.935" y="-3.725" />
+          <StraightVertex x="18.751" y="-3.449" />
+          <StraightVertex x="18.475" y="-3.265" />
+          <StraightVertex x="18.15" y="-3.2" />
+          <StraightVertex x="-6.15" y="-3.2" />
+          <StraightVertex x="-6.475" y="-3.265" />
+          <StraightVertex x="-6.751" y="-3.449" />
+          <StraightVertex x="-6.935" y="-3.725" />
+          <StraightVertex x="-7" y="-4.05" />
+          <StraightVertex x="-7" y="-4.15" />
+          <StraightVertex x="-6.935" y="-4.475" />
+          <StraightVertex x="-6.751" y="-4.751" />
+          <StraightVertex x="-6.475" y="-4.935" />
+          <StraightVertex x="-6.15" y="-5" />
+        </PointsPath>
+        <Fill>
+          <SolidColor colorValue="FF153C30" />
+        </Fill>
+      </Shape>
+      <Shape name="Letterpress rule">
+        <PointsPath isClosed="true">
+          <StraightVertex x="7.15" y="1" />
+          <StraightVertex x="7.475" y="1.065" />
+          <StraightVertex x="7.751" y="1.249" />
+          <StraightVertex x="7.935" y="1.525" />
+          <StraightVertex x="8" y="1.85" />
+          <StraightVertex x="8" y="1.95" />
+          <StraightVertex x="7.935" y="2.275" />
+          <StraightVertex x="7.751" y="2.551" />
+          <StraightVertex x="7.475" y="2.735" />
+          <StraightVertex x="7.15" y="2.8" />
+          <StraightVertex x="-6.15" y="2.8" />
+          <StraightVertex x="-6.475" y="2.735" />
+          <StraightVertex x="-6.751" y="2.551" />
+          <StraightVertex x="-6.935" y="2.275" />
+          <StraightVertex x="-7" y="1.95" />
+          <StraightVertex x="-7" y="1.85" />
+          <StraightVertex x="-6.935" y="1.525" />
+          <StraightVertex x="-6.751" y="1.249" />
+          <StraightVertex x="-6.475" y="1.065" />
+          <StraightVertex x="-6.15" y="1" />
+        </PointsPath>
+        <Fill>
+          <SolidColor colorValue="FF153C30" />
+        </Fill>
+      </Shape>
+      <Shape name="Perforation">
+        <PointsPath isClosed="true">
+          <StraightVertex x="26.7" y="10" />
+          <StraightVertex x="26.815" y="10.023" />
+          <StraightVertex x="26.912" y="10.088" />
+          <StraightVertex x="26.977" y="10.185" />
+          <StraightVertex x="27" y="10.3" />
+          <StraightVertex x="27" y="10.5" />
+          <StraightVertex x="26.977" y="10.615" />
+          <StraightVertex x="26.912" y="10.712" />
+          <StraightVertex x="26.815" y="10.777" />
+          <StraightVertex x="26.7" y="10.8" />
+          <StraightVertex x="-30.7" y="10.8" />
+          <StraightVertex x="-30.815" y="10.777" />
+          <StraightVertex x="-30.912" y="10.712" />
+          <StraightVertex x="-30.977" y="10.615" />
+          <StraightVertex x="-31" y="10.5" />
+          <StraightVertex x="-31" y="10.3" />
+          <StraightVertex x="-30.977" y="10.185" />
+          <StraightVertex x="-30.912" y="10.088" />
+          <StraightVertex x="-30.815" y="10.023" />
+          <StraightVertex x="-30.7" y="10" />
+        </PointsPath>
+        <Fill>
+          <SolidColor colorValue="FFDE5426" />
+        </Fill>
+      </Shape>
+      <Shape name="Pass stock">
+        <PointsPath isClosed="true">
+          <StraightVertex x="27.5" y="-19" />
+          <StraightVertex x="29.222" y="-18.657" />
+          <StraightVertex x="30.682" y="-17.682" />
+          <StraightVertex x="31.657" y="-16.222" />
+          <StraightVertex x="32" y="-14.5" />
+          <StraightVertex x="32" y="16.5" />
+          <StraightVertex x="31.657" y="18.222" />
+          <StraightVertex x="30.682" y="19.682" />
+          <StraightVertex x="29.222" y="20.657" />
+          <StraightVertex x="27.5" y="21" />
+          <StraightVertex x="-27.5" y="21" />
+          <StraightVertex x="-29.222" y="20.657" />
+          <StraightVertex x="-30.682" y="19.682" />
+          <StraightVertex x="-31.657" y="18.222" />
+          <StraightVertex x="-32" y="16.5" />
+          <StraightVertex x="-32" y="-14.5" />
+          <StraightVertex x="-31.657" y="-16.222" />
+          <StraightVertex x="-30.682" y="-17.682" />
+          <StraightVertex x="-29.222" y="-18.657" />
+          <StraightVertex x="-27.5" y="-19" />
+        </PointsPath>
+        <Fill>
+          <SolidColor colorValue="FFFF783B" />
+        </Fill>
+      </Shape>
+      <Shape name="Pass edge">
+        <PointsPath isClosed="true">
+          <StraightVertex x="27.5" y="-18" />
+          <StraightVertex x="29.222" y="-17.657" />
+          <StraightVertex x="30.682" y="-16.682" />
+          <StraightVertex x="31.657" y="-15.222" />
+          <StraightVertex x="32" y="-13.5" />
+          <StraightVertex x="32" y="18.5" />
+          <StraightVertex x="31.657" y="20.222" />
+          <StraightVertex x="30.682" y="21.682" />
+          <StraightVertex x="29.222" y="22.657" />
+          <StraightVertex x="27.5" y="23" />
+          <StraightVertex x="-27.5" y="23" />
+          <StraightVertex x="-29.222" y="22.657" />
+          <StraightVertex x="-30.682" y="21.682" />
+          <StraightVertex x="-31.657" y="20.222" />
+          <StraightVertex x="-32" y="18.5" />
+          <StraightVertex x="-32" y="-13.5" />
+          <StraightVertex x="-31.657" y="-15.222" />
+          <StraightVertex x="-30.682" y="-16.682" />
+          <StraightVertex x="-29.222" y="-17.657" />
+          <StraightVertex x="-27.5" y="-18" />
+        </PointsPath>
+        <Fill>
+          <SolidColor colorValue="FFDE5426" />
+        </Fill>
+      </Shape>
+    </Node>
+    <Node id="0:13" name="Wallet lining" x="60" y="65" rotation="0">
+      <Shape name="Lining highlight">
+        <PointsPath isClosed="true">
+          <StraightVertex x="32" y="-23" />
+          <StraightVertex x="34.296" y="-22.543" />
+          <StraightVertex x="36.243" y="-21.243" />
+          <StraightVertex x="37.543" y="-19.296" />
+          <StraightVertex x="38" y="-17" />
+          <StraightVertex x="38" y="10" />
+          <StraightVertex x="37.543" y="12.296" />
+          <StraightVertex x="36.243" y="14.243" />
+          <StraightVertex x="34.296" y="15.543" />
+          <StraightVertex x="32" y="16" />
+          <StraightVertex x="-32" y="16" />
+          <StraightVertex x="-34.296" y="15.543" />
+          <StraightVertex x="-36.243" y="14.243" />
+          <StraightVertex x="-37.543" y="12.296" />
+          <StraightVertex x="-38" y="10" />
+          <StraightVertex x="-38" y="-17" />
+          <StraightVertex x="-37.543" y="-19.296" />
+          <StraightVertex x="-36.243" y="-21.243" />
+          <StraightVertex x="-34.296" y="-22.543" />
+          <StraightVertex x="-32" y="-23" />
+        </PointsPath>
+        <Fill>
+          <SolidColor colorValue="FF77916D" />
+        </Fill>
+      </Shape>
+      <Shape name="Wallet back">
+        <PointsPath isClosed="true">
+          <StraightVertex x="33" y="-25" />
+          <StraightVertex x="35.679" y="-24.467" />
+          <StraightVertex x="37.95" y="-22.95" />
+          <StraightVertex x="39.467" y="-20.679" />
+          <StraightVertex x="40" y="-18" />
+          <StraightVertex x="40" y="15" />
+          <StraightVertex x="39.467" y="17.679" />
+          <StraightVertex x="37.95" y="19.95" />
+          <StraightVertex x="35.679" y="21.467" />
+          <StraightVertex x="33" y="22" />
+          <StraightVertex x="-33" y="22" />
+          <StraightVertex x="-35.679" y="21.467" />
+          <StraightVertex x="-37.95" y="19.95" />
+          <StraightVertex x="-39.467" y="17.679" />
+          <StraightVertex x="-40" y="15" />
+          <StraightVertex x="-40" y="-18" />
+          <StraightVertex x="-39.467" y="-20.679" />
+          <StraightVertex x="-37.95" y="-22.95" />
+          <StraightVertex x="-35.679" y="-24.467" />
+          <StraightVertex x="-33" y="-25" />
+        </PointsPath>
+        <Fill>
+          <SolidColor colorValue="FF153C30" />
+        </Fill>
+      </Shape>
+    </Node>
+    <LinearAnimation id="0:20" name="Tuck" duration="40" fps="60" loopValue="oneShot">
+      <KeyedObject objectId="0:12">
+        <KeyedProperty property="x">
+          <KeyFrameDouble frame="0" value="57" interpolationType="linear" />
+          <KeyFrameDouble frame="6" value="56" interpolationType="linear" />
+          <KeyFrameDouble frame="10" value="55" interpolationType="linear" />
+          <KeyFrameDouble frame="17" value="57" interpolationType="linear" />
+          <KeyFrameDouble frame="23" value="60" interpolationType="linear" />
+          <KeyFrameDouble frame="30" value="61" interpolationType="linear" />
+          <KeyFrameDouble frame="38" value="60" interpolationType="linear" />
+        </KeyedProperty>
+        <KeyedProperty property="y">
+          <KeyFrameDouble frame="0" value="38" interpolationType="linear" />
+          <KeyFrameDouble frame="4" value="36" interpolationType="linear" />
+          <KeyFrameDouble frame="7" value="32" interpolationType="linear" />
+          <KeyFrameDouble frame="10" value="31" interpolationType="linear" />
+          <KeyFrameDouble frame="13" value="33" interpolationType="linear" />
+          <KeyFrameDouble frame="17" value="41" interpolationType="linear" />
+          <KeyFrameDouble frame="20" value="49" interpolationType="linear" />
+          <KeyFrameDouble frame="23" value="58" interpolationType="linear" />
+          <KeyFrameDouble frame="26" value="61" interpolationType="linear" />
+          <KeyFrameDouble frame="29" value="60" interpolationType="linear" />
+          <KeyFrameDouble frame="33" value="58" interpolationType="linear" />
+          <KeyFrameDouble frame="39" value="58" interpolationType="linear" />
+        </KeyedProperty>
+        <KeyedProperty property="rotation">
+          <KeyFrameDouble frame="0" value="-0.15" interpolationType="linear" />
+          <KeyFrameDouble frame="8" value="-0.21" interpolationType="linear" />
+          <KeyFrameDouble frame="12" value="-0.2" interpolationType="linear" />
+          <KeyFrameDouble frame="19" value="-0.09" interpolationType="linear" />
+          <KeyFrameDouble frame="25" value="0.047" interpolationType="linear" />
+          <KeyFrameDouble frame="31" value="-0.025" interpolationType="linear" />
+          <KeyFrameDouble frame="39" value="-0.017" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:11">
+        <KeyedProperty property="y">
+          <KeyFrameDouble frame="0" value="68" interpolationType="linear" />
+          <KeyFrameDouble frame="18" value="68" interpolationType="linear" />
+          <KeyFrameDouble frame="22" value="69.5" interpolationType="linear" />
+          <KeyFrameDouble frame="26" value="72" interpolationType="linear" />
+          <KeyFrameDouble frame="30" value="68.6" interpolationType="linear" />
+          <KeyFrameDouble frame="33" value="67.4" interpolationType="linear" />
+          <KeyFrameDouble frame="38" value="68" interpolationType="linear" />
+        </KeyedProperty>
+        <KeyedProperty property="scaleY">
+          <KeyFrameDouble frame="0" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="18" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="25" value="0.9" interpolationType="linear" />
+          <KeyFrameDouble frame="30" value="1.03" interpolationType="linear" />
+          <KeyFrameDouble frame="38" value="1" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+    </LinearAnimation>
+    <LinearAnimation id="0:21" name="Present" duration="40" fps="60" loopValue="oneShot">
+      <KeyedObject objectId="0:12">
+        <KeyedProperty property="x">
+          <KeyFrameDouble frame="2" value="60" interpolationType="linear" />
+          <KeyFrameDouble frame="10" value="61" interpolationType="linear" />
+          <KeyFrameDouble frame="17" value="60" interpolationType="linear" />
+          <KeyFrameDouble frame="23" value="57" interpolationType="linear" />
+          <KeyFrameDouble frame="30" value="55" interpolationType="linear" />
+          <KeyFrameDouble frame="34" value="56" interpolationType="linear" />
+          <KeyFrameDouble frame="40" value="57" interpolationType="linear" />
+        </KeyedProperty>
+        <KeyedProperty property="y">
+          <KeyFrameDouble frame="1" value="58" interpolationType="linear" />
+          <KeyFrameDouble frame="7" value="58" interpolationType="linear" />
+          <KeyFrameDouble frame="11" value="60" interpolationType="linear" />
+          <KeyFrameDouble frame="14" value="61" interpolationType="linear" />
+          <KeyFrameDouble frame="17" value="58" interpolationType="linear" />
+          <KeyFrameDouble frame="20" value="49" interpolationType="linear" />
+          <KeyFrameDouble frame="23" value="41" interpolationType="linear" />
+          <KeyFrameDouble frame="27" value="33" interpolationType="linear" />
+          <KeyFrameDouble frame="30" value="31" interpolationType="linear" />
+          <KeyFrameDouble frame="33" value="32" interpolationType="linear" />
+          <KeyFrameDouble frame="36" value="36" interpolationType="linear" />
+          <KeyFrameDouble frame="40" value="38" interpolationType="linear" />
+        </KeyedProperty>
+        <KeyedProperty property="rotation">
+          <KeyFrameDouble frame="1" value="-0.017" interpolationType="linear" />
+          <KeyFrameDouble frame="9" value="-0.025" interpolationType="linear" />
+          <KeyFrameDouble frame="15" value="0.047" interpolationType="linear" />
+          <KeyFrameDouble frame="21" value="-0.09" interpolationType="linear" />
+          <KeyFrameDouble frame="28" value="-0.2" interpolationType="linear" />
+          <KeyFrameDouble frame="32" value="-0.21" interpolationType="linear" />
+          <KeyFrameDouble frame="40" value="-0.15" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+      <KeyedObject objectId="0:11">
+        <KeyedProperty property="y">
+          <KeyFrameDouble frame="2" value="68" interpolationType="linear" />
+          <KeyFrameDouble frame="7" value="67.4" interpolationType="linear" />
+          <KeyFrameDouble frame="10" value="68.6" interpolationType="linear" />
+          <KeyFrameDouble frame="14" value="72" interpolationType="linear" />
+          <KeyFrameDouble frame="18" value="69.5" interpolationType="linear" />
+          <KeyFrameDouble frame="22" value="68" interpolationType="linear" />
+          <KeyFrameDouble frame="40" value="68" interpolationType="linear" />
+        </KeyedProperty>
+        <KeyedProperty property="scaleY">
+          <KeyFrameDouble frame="2" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="10" value="1.03" interpolationType="linear" />
+          <KeyFrameDouble frame="15" value="0.9" interpolationType="linear" />
+          <KeyFrameDouble frame="22" value="1" interpolationType="linear" />
+          <KeyFrameDouble frame="40" value="1" interpolationType="linear" />
+        </KeyedProperty>
+      </KeyedObject>
+    </LinearAnimation>
+    <StateMachine id="0:30" name="Preview">
+      <StateMachineLayer name="Play once">
+        <EntryState>
+          <StateTransition stateToId="0:31" />
+        </EntryState>
+        <AnimationState id="0:31" animationId="0:21" x="180" />
+      </StateMachineLayer>
+    </StateMachine>
+    <StateMachine id="0:32" name="Handoff">
+      <StateMachineLayer name="Play once">
+        <EntryState>
+          <StateTransition stateToId="0:33" />
+        </EntryState>
+        <AnimationState id="0:33" animationId="0:20" x="180" />
+      </StateMachineLayer>
+    </StateMachine>
+  </Artboard>
+</Rive>

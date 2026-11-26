@@ -1,5 +1,6 @@
 import Foundation
 import Security
+import CryptoKit
 
 enum VenueGuestScreen: String, Hashable {
   case menu, card, reviews, wifi
@@ -142,6 +143,7 @@ struct VenueGuestConfig: Decodable {
   let photoMotion: String?
   let photoDrip: VenueGuestPhotoDrip?
   let menuFallback: String?
+  let menuImageUrl: String?
   let theme: VenueGuestTheme?
   let reviewUrl: URL?
   let mapUrl: URL?
@@ -159,6 +161,50 @@ struct VenueLoyaltyCard: Decodable, Equatable {
   let stamps: Int
   let goal: Int
   let rewardAvailable: Bool
+  var visits: Int?
+  var updatedAt: String?
+
+  func fingerprint(in venue: VenueGuestLink) -> Data {
+    Data(SHA256.hash(data: Data((venue.origin.absoluteString + "|" + venue.slug + "|" + checkout).utf8)))
+  }
+}
+
+/// A checkpoint of progress actually shown at checkout. No barcode or session token is stored.
+struct VenueStampObservation: Codable, Equatable {
+  let membership: Data
+  let visits: Int
+  let stamps: Int
+  let goal: Int
+  let updated: Date
+
+  enum Change: Equatable { case quiet, stale, earned(Int) }
+
+  @MainActor static func record(
+    _ card: VenueLoyaltyCard?, venue: VenueGuestLink, defaults: UserDefaults = .standard
+  ) -> Change {
+    let key = "papupay.observed-stamps.v1." + venue.origin.absoluteString + "/" + venue.slug
+    guard let card else {
+      defaults.removeObject(forKey: key)
+      return .quiet
+    }
+    guard let visits = card.visits, let timestamp = card.updatedAt,
+      let updated = try? Date(timestamp, strategy: .iso8601.year().month().day().time(includingFractionalSeconds: true).timeZone(separator: .omitted)),
+      visits >= 0, !card.checkout.isEmpty, card.goal > 0, (0...card.goal).contains(card.stamps), card.stamps <= visits,
+      card.rewardAvailable == (card.stamps == card.goal)
+    else { return .quiet }
+    let current = Self(membership: card.fingerprint(in: venue),
+                       visits: visits, stamps: card.stamps, goal: card.goal, updated: updated)
+    let previous = defaults.data(forKey: key).flatMap { try? JSONDecoder().decode(Self.self, from: $0) }
+    if previous == current { return .quiet }
+    if let previous, previous.membership == current.membership, current.updated < previous.updated { return .stale }
+    guard let data = try? JSONEncoder().encode(current) else { return .quiet }
+    defaults.set(data, forKey: key)
+    guard let previous, previous.membership == current.membership, previous.goal == current.goal else { return .quiet }
+    let gained = current.stamps - previous.stamps
+    // Redemptions and reversed redemptions can move the displayed balance without a new stamp.
+    guard gained > 0, current.visits - previous.visits == gained else { return .quiet }
+    return .earned(gained)
+  }
 }
 
 struct VenueGuestAPI {
@@ -169,6 +215,7 @@ struct VenueGuestAPI {
     enum Status: String, Decodable { case unconfigured, requires_card, ready }
     let status: Status
     let passUrl: String?
+    let updatesEnabled: Bool?
   }
   let venue: VenueGuestLink
 

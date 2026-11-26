@@ -12,7 +12,8 @@ def compact(font):
  return font
 for family,axes,filename,postscript in [
  ('DMSans',{'wght':800,'opsz':32},'PapuDisplay-Bold.ttf','PapuDisplay-Bold'),
- ('Fredoka',{'wght':650,'wdth':100},'PapuDisplay-ExtraBold.ttf','PapuDisplay-ExtraBold')]:
+ ('Fredoka',{'wght':650,'wdth':100},'PapuDisplay-ExtraBold.ttf','PapuDisplay-ExtraBold'),
+ ('Anton',{},'PapuPoster.ttf','PapuPoster-Regular')]:
  font=TTFont(source/(family+'.ttf'))
  if axes: font=instantiateVariableFont(font,axes,inplace=True)
  for record in font['name'].names:
@@ -21,9 +22,9 @@ for family,axes,filename,postscript in [
    record.string=value.encode(record.getEncoding())
  # Native text uses font metrics for leading.
  # Preserve Windows glyph bounds so accents are not clipped; normalize only layout metrics.
- if family == 'DMSans':
-  ascent,descent = 900,-200
+ if family in ['DMSans','Anton']:
+  ascent,descent = (900,-200) if family == 'DMSans' else (2000,-200)
   font['hhea'].ascent=ascent; font['hhea'].descent=descent; font['hhea'].lineGap=0
   font['OS/2'].sTypoAscender=ascent; font['OS/2'].sTypoDescender=descent; font['OS/2'].sTypoLineGap=0
  compact(font).save(ios/filename)
-print('Prepared DM Sans 800 and Fredoka 650 wordmark fonts, with Polish glyphs.')
+print('Prepared DM Sans 800, Fredoka 650 wordmark and Anton poster fonts, with Polish glyphs.')

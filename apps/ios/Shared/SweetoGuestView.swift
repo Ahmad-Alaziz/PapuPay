@@ -23,53 +23,57 @@ enum SweetoLanguage: String, CaseIterable {
 }
 
 struct VenueGuestPalette {
-  let paper: Color
-  let ink: Color
-  let primary: Color
-  let muted: Color
-  let line: Color
   let language: SweetoLanguage
-  let font: String
-  let motionTheme: String
+  let posterScale: CGFloat
+  var isSweeto = false
 
-  init(_ theme: VenueGuestTheme?, language: SweetoLanguage) {
-    paper = Color(hex: theme?.background ?? "FFFCF7")
-    ink = Color(hex: theme?.ink ?? "0C477B")
-    primary = Color(hex: theme?.accent ?? "1765A8")
-    muted = Color(hex: theme?.muted ?? "526273")
-    line = Color(hex: theme?.surface ?? "E8F0F8")
-    self.language = language
-    font = theme?.font ?? "bricolage"
-    motionTheme = theme?.motionTheme ?? "sweeto"
-  }
+  var paper: Color { isSweeto ? Papu.cream : Color(hex: "F7F0E2") }
+  var surface: Color { Color(hex: isSweeto ? "FFFCF6" : "FFF9EE") }
+  var frosting: Color { isSweeto ? Papu.cream : Color(hex: "FFF6E6") }
+  var ink: Color { isSweeto ? Papu.ink : Color(hex: "102E24") }
+  var forest: Color { isSweeto ? Papu.ink : Color(hex: "0B241C") }
+  var primary: Color { isSweeto ? Papu.orange : Color(hex: "FF7A38") }
+  var peach: Color { isSweeto ? Papu.butter : Color(hex: "FFB78D") }
+  var muted: Color { isSweeto ? Papu.muted : Color(hex: "486253") }
+  var line: Color { isSweeto ? Papu.line : Color(hex: "E6D8C1") }
+  var onAccent: Color { ink }
+  var actionCorner: CGFloat { isSweeto ? 24 : 16 }
 
   func display(_ style: Font.TextStyle) -> Font {
     let size: CGFloat = switch style {
-    case .largeTitle: 33
-    case .title: 27
-    case .title2: 30
+    case .largeTitle: 36
+    case .title: 29
+    case .title2: 24
     default: 18
     }
-    return switch font {
-    case "serif": .system(style, design: .serif, weight: .semibold)
-    case "system": .system(style, weight: .semibold)
-    case "dm-sans" where language != .ru: .custom("PapuDisplay-Bold", size: size, relativeTo: style)
-    case "bricolage" where language != .ru: .custom("BricolageGrotesque-96ptExtraBold", size: size, relativeTo: style)
-    default:
-      .custom("Manrope-ExtraLight", size: size, relativeTo: style)
-        .weight(.semibold)
+    return language == .ru
+      ? .system(style, weight: .heavy)
+      : .custom(isSweeto ? "PapuDisplay-Bold" : "PapuDisplay-ExtraBold", size: size, relativeTo: style)
+  }
+
+  func poster(_ size: CGFloat) -> Font {
+    if language == .ru {
+      return isSweeto
+        ? .system(size: size * posterScale, weight: .black).width(.condensed)
+        : .system(.largeTitle, weight: .black).width(.condensed)
     }
+    return .custom("PapuPoster-Regular", size: size, relativeTo: .largeTitle)
   }
 }
 
-struct SweetoGuestView: View {
+struct PapupayGuestView: View {
   @AppStorage("papupay-native-language") private var language: SweetoLanguage = .pl
+  @Namespace private var paperTransition
   @Environment(\.accessibilityReduceMotion) private var reduceMotion
+  @Environment(\.scenePhase) private var scenePhase
   @Environment(\.dynamicTypeSize) private var dynamicTypeSize
   @Environment(\.openURL) private var openURL
-  @Environment(\.scenePhase) private var scenePhase
+  @ScaledMetric(relativeTo: .largeTitle) private var posterScale: CGFloat = 1
   @State private var path: [VenueGuestScreen] = []
   @State private var link = VenueGuestLink.starter
+  @State private var homeStamps: VenueLoyaltyCard?
+  @State private var ticketPull: CGFloat = 0
+  @State private var welcome = PapuGuestArrival()
   @State private var config: VenueGuestConfig?
   @State private var configFailed = false
   @State private var badLink = false
@@ -77,25 +81,19 @@ struct SweetoGuestView: View {
   @State private var wifiAccepted = false
   @State private var wifiFailed = false
   @State private var wifiDetails: VenueGuestWiFi?
-  @State private var activeHomeArt: VenueActionArt.Kind?
-  @State private var visibleHomeArt = Set<VenueActionArt.Kind>()
-  @State private var homeArtReplay = 0
-  @State private var lowPowerMode = ProcessInfo.processInfo.isLowPowerModeEnabled
-  @State private var menuVisible = false
 #if !PAPUPAY_APP_CLIP
   @AppStorage("papupay-native-resumed-clip-on-launch") private var resumedClipOnLaunch = false
   @State private var showVenues = false
   @State private var handledInvocation = false
 #endif
 
-  private var palette: VenueGuestPalette { VenueGuestPalette(config?.theme, language: language) }
+  private var palette: VenueGuestPalette {
+    VenueGuestPalette(language: language, posterScale: posterScale, isSweeto: isSweeto)
+  }
   private var api: VenueGuestAPI { VenueGuestAPI(venue: link) }
   private var isSweeto: Bool { link.slug == "sweeto" }
-  private var venueName: String { config?.name ?? (isSweeto ? "Sweeto" : "PapuPay") }
+  private var venueName: String { config?.name ?? (isSweeto ? "Sweeto" : link.slug) }
   private var address: String { config?.address ?? (isSweeto ? "Puławska 246/8, Warszawa" : "") }
-  private var homeMotionKey: String? {
-    !reduceMotion && !lowPowerMode && scenePhase == .active && path.isEmpty && (config != nil || isSweeto) ? link.slug : nil
-  }
   private var maps: URL? {
     link.googleMapsURL(config?.mapUrl) ?? (isSweeto ? URL(string: "https://www.google.com/maps?cid=12629433022150019195") : nil)
   }
@@ -104,6 +102,27 @@ struct SweetoGuestView: View {
     guard isSweeto else { return nil }
     return URL(string: "https://search.google.com/local/writereview?placeid=ChIJZSkE8-IzGUcRewjXh2vCRK8")
   }
+  private var guestWiFiDetails: VenueGuestWiFi? {
+    wifiDetails ?? config?.wifi ?? VenueGuestDemo.configuration(for: link)?.wifi
+  }
+  private var wifiAvailabilityHint: String? {
+    guard guestWiFiDetails == nil,
+          config != nil || configFailed || VenueGuestDemo.configuration(for: link) != nil else { return nil }
+    return t("Zapytaj obsługę", "Ask staff for access", "Уточните у сотрудников")
+  }
+  private var standardSweetoMenu: Bool {
+    let fallback = config?.menuFallback
+    return isSweeto && (fallback == nil || fallback == "/assets/sweeto/menu.pdf")
+  }
+  private var translatedMenuURL: URL? { link.imageURL(config?.menuPdf?[language.rawValue] ?? nil) }
+  private var venueMenuPDF: URL? {
+    translatedMenuURL ?? link.imageURL(config?.menuPdf?["pl"] ?? nil)
+      ?? (standardSweetoMenu ? nil : link.imageURL(config?.menuFallback))
+  }
+  private var showsDessertCatalog: Bool {
+    let image = config?.menuImageUrl
+    return standardSweetoMenu && venueMenuPDF == nil && (image == nil || image == "/assets/sweeto/menu-original.jpg")
+  }
 
   private func t(_ pl: String, _ en: String, _ ru: String) -> String { language.text(pl, en, ru) }
 
@@ -111,28 +130,29 @@ struct SweetoGuestView: View {
     NavigationStack(path: $path) {
       home
         .navigationBarTitleDisplayMode(.inline)
-        .toolbarBackground(palette.paper, for: .navigationBar)
-        .toolbarBackground(.visible, for: .navigationBar)
-        .toolbar { header }
+        .toolbar(.hidden, for: .navigationBar)
         .navigationDestination(for: VenueGuestScreen.self) { screen in
-          destination(screen)
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbarBackground(palette.paper, for: .navigationBar)
-            .toolbarBackground(.visible, for: .navigationBar)
-            .toolbar { header }
+          guestDestination(screen)
+            .modifier(GuestPaperNavigation(
+              screen: screen, namespace: paperTransition, isDestination: true,
+              reduceMotion: reduceMotion || (isSweeto && screen == .menu)
+            ))
         }
     }
-    .tint(palette.primary)
-    .preferredColorScheme(.light)
+    .tint(palette.ink)
+    .preferredColorScheme(path.isEmpty ? .dark : .light)
     .environment(\.locale, Locale(identifier: language.rawValue))
     .onOpenURL(perform: follow)
     .onContinueUserActivity(NSUserActivityTypeBrowsingWeb) { activity in
       if let url = activity.webpageURL { follow(url) }
     }
     .task(id: link) { await load() }
-    .onReceive(NotificationCenter.default.publisher(for: .NSProcessInfoPowerStateDidChange)) { _ in
-      lowPowerMode = ProcessInfo.processInfo.isLowPowerModeEnabled
+    .task(id: path.isEmpty && scenePhase == .active && isSweeto && !reduceMotion) {
+      if !path.isEmpty || !isSweeto || reduceMotion { welcome.finish(); return }
+      guard scenePhase == .active else { return }
+      await welcome.play()
     }
+    .task(id: path.isEmpty && scenePhase == .active ? link : nil) { await refreshHomeStamps() }
     .alert(t("Sprawdź kod", "Check your QR code", "Проверьте QR-код"), isPresented: $badLink) {
       Button("OK", role: .cancel) {}
     } message: {
@@ -150,403 +170,643 @@ struct SweetoGuestView: View {
         choose(VenueGuestLink(origin: link.origin, slug: slug))
         showVenues = false
       }
+      .environment(\.colorScheme, .light)
     }
 #endif
   }
 
-  @ToolbarContentBuilder private var header: some ToolbarContent {
-    ToolbarItem(placement: .principal) {
-      venueLogo
-    }
-    ToolbarItem(placement: .topBarTrailing) {
-      Menu {
-        Picker(t("Język", "Language", "Язык"), selection: $language) {
-          ForEach(SweetoLanguage.allCases, id: \.self) { value in Text(value.label).tag(value) }
-        }
-      } label: {
-        Text(language.rawValue.uppercased())
-          .font(.system(.footnote, design: .monospaced, weight: .bold))
-          .frame(minWidth: 44, minHeight: 44)
+  private func guestDestination(_ screen: VenueGuestScreen) -> some View {
+#if PAPUPAY_APP_CLIP
+    destination(screen)
+      .safeAreaInset(edge: .top, spacing: 0) { destinationHeader }
+      .toolbar(.hidden, for: .navigationBar)
+      .accessibilityAction(.escape, popGuestScreen)
+#else
+    destination(screen)
+      .navigationBarTitleDisplayMode(.inline)
+      .toolbarBackground(palette.paper, for: .navigationBar)
+      .toolbarBackground(.visible, for: .navigationBar)
+      .toolbar(.visible, for: .navigationBar)
+      .toolbar {
+        ToolbarItem(placement: .principal) { destinationIdentity }
+        ToolbarItem(placement: .topBarTrailing) { languagePicker(ink: palette.ink) }
       }
-      .accessibilityLabel(t("Język", "Language", "Язык"))
+#endif
+  }
+
+  @ViewBuilder private var destinationIdentity: some View {
+    if isSweeto {
+      VenueIdentityMark(
+        name: venueName, isSweeto: true, logo: nil, ink: palette.ink,
+        width: dynamicTypeSize.isAccessibilitySize ? 83 : 113
+      )
+    } else {
+      VenueIdentityMark(
+        name: venueName, isSweeto: false, logo: link.imageURL(config?.logoUrl),
+        ink: palette.ink, width: 100
+      )
     }
   }
 
-  private var home: some View {
-    ScrollView {
-      VStack(alignment: .leading, spacing: 12) {
-        if config != nil || isSweeto {
-          NavigationLink(value: VenueGuestScreen.menu) { menuCard }
-            .accessibilityLabel(t("Menu", "Menu", "Меню"))
-            .overlayPreferenceValue(MenuPhotoFrame.self) { anchor in
-              if let anchor, let drip = menuDrip, shouldAnimateMenuDrip {
-                GeometryReader { card in
-                  let photo = card[anchor]
-                  MenuLiquidDrip(
-                    color: Color(hex: drip.color),
-                    source: CGPoint(x: photo.minX + photo.width * drip.x, y: photo.minY + photo.height * (drip.y ?? 1) - 1),
-                    landingY: card.size.height + 40,
-                    mouthWidth: max(3, photo.width * (drip.width ?? 0.04))
-                  )
-                  .frame(width: card.size.width, height: card.size.height + 44)
-                }
-                .allowsHitTesting(false)
-                .accessibilityHidden(true)
-              }
-            }
-            .onGeometryChange(for: Bool.self) { proxy in
-              let frame = proxy.frame(in: .scrollView)
-              guard let bounds = proxy.bounds(of: .scrollView) else { return false }
-              return frame.maxY > 0 && frame.minY < bounds.height
-            } action: { isVisible in
-              menuVisible = isVisible
-            }
-            .zIndex(1)
-          NavigationLink(value: VenueGuestScreen.card) {
-            option(
-              t("Twoja karta", "Loyalty card", "Ваша карта"),
-              subtitle: t("Zbieraj pieczątki", "Collect stamps", "Собирайте отметки"),
-              art: .loyalty
-            )
-          }
-          if let reviewURL {
-            Button { review(reviewURL) } label: { reviewOption(outbound: true) }
-          } else {
-            NavigationLink(value: VenueGuestScreen.reviews) { reviewOption(outbound: false) }
-          }
-          wifiButton
-          footer
-        } else if configFailed {
-          ContentUnavailableView(
-            t("Nie znaleziono lokalu", "Venue unavailable", "Заведение недоступно"),
-            systemImage: "mappin.slash",
-            description: Text(t("Sprawdź adres lub kod QR.", "Check the link or QR code.", "Проверьте ссылку или QR-код."))
-          )
-        } else {
-          ProgressView(t("Wczytywanie lokalu…", "Loading venue…", "Загрузка заведения…"))
-            .frame(maxWidth: .infinity, minHeight: 240)
-        }
-      }
-      .buttonStyle(PressStyle())
-      .padding(.horizontal, 18)
-      .padding(.vertical, 10)
-      .frame(maxWidth: 530, alignment: .leading)
-      .frame(maxWidth: .infinity)
-    }
-    .background(palette.paper.ignoresSafeArea())
-    .foregroundStyle(palette.ink)
-    .task(id: homeMotionKey) { await animateHomeArt() }
+#if PAPUPAY_APP_CLIP
+  private func popGuestScreen() {
+    if !path.isEmpty { path.removeLast() }
   }
 
-  @MainActor private func animateHomeArt() async {
-    activeHomeArt = nil
-    guard homeMotionKey != nil else { return }
-    do {
-      await VenueActionArt.prepare()
-      try Task.checkCancellation()
-      try await Task.sleep(for: .milliseconds(900))
-      let sequence: [VenueActionArt.Kind] = [.loyalty, .review, .menu, .wifi]
-      let rests = [12, 15, 13, 16]
-      var index = 0
-      while !Task.isCancelled {
-        if let art = (0..<sequence.count).map({ sequence[(index + $0) % sequence.count] }).first(where: visibleHomeArt.contains) {
-          activeHomeArt = art
-          homeArtReplay += 1
-          // Completion comes from the ready Rive player. A slow first load
-          // can no longer consume the illustration's entire playback window.
-          while activeHomeArt != nil {
-            try await Task.sleep(for: .milliseconds(100))
-          }
-          index = (sequence.firstIndex(of: art)! + 1) % sequence.count
-          try await Task.sleep(for: .seconds(rests[index]))
-        } else {
-          try await Task.sleep(for: .seconds(1))
-        }
-      }
-    } catch {
-      activeHomeArt = nil
-    }
-  }
-
-  private func setArtVisibility(_ art: VenueActionArt.Kind, visible: Bool) {
-    if visible { visibleHomeArt.insert(art) }
-    else {
-      visibleHomeArt.remove(art)
-      if activeHomeArt == art { activeHomeArt = nil }
-    }
-  }
-
-  private func finishHomeArt(_ art: VenueActionArt.Kind) {
-    if activeHomeArt == art { activeHomeArt = nil }
-  }
-
-  private var venueLogo: some View {
-    VenueImage(
-      url: link.imageURL(config?.logoUrl),
-      bundled: isSweeto ? "logo-blue.png" : nil
-    ) {
-      Text(venueName).font(palette.display(.headline)).lineLimit(1).minimumScaleFactor(0.7)
-    }
-    .frame(width: 142, height: 32)
-    .accessibilityLabel(venueName)
-    .accessibilityAddTraits(.isHeader)
-  }
-
-  private var menuCard: some View {
+  private var destinationHeader: some View {
     Group {
       if dynamicTypeSize.isAccessibilitySize {
-        VStack(alignment: .leading, spacing: 10) {
-          menuCopy
-          menuPhoto.frame(width: 188, height: 188)
-            .offset(y: 188 * (1 - (menuDrip?.y ?? 1)))
-            .frame(maxWidth: .infinity, alignment: .trailing)
+        HStack(spacing: 8) {
+          destinationBack
+          destinationIdentity.frame(maxWidth: .infinity, alignment: .leading)
+          languagePicker(ink: palette.ink, outlined: isSweeto)
         }
-        .padding(.horizontal, 16)
-        .padding(.top, 16)
-        .padding(.bottom, menuDrip == nil ? 16 : 0)
       } else {
-        GeometryReader { geometry in
-          let photoWidth = geometry.size.width * (geometry.size.width < 330 ? 0.46 : 0.58)
-          let photoHeight = geometry.size.height + 6
-          ZStack(alignment: .bottomTrailing) {
-            menuPhoto
-              .frame(width: photoWidth, height: photoHeight)
-              .offset(y: min(photoWidth, photoHeight) * (1 - (menuDrip?.y ?? 1)))
-              .padding(.trailing, 8)
-            menuCopy
-              .frame(width: geometry.size.width * 0.46, alignment: .leading)
-              .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
-              .padding(.leading, 16)
+        ZStack {
+          destinationIdentity
+          HStack {
+            destinationBack
+            Spacer(minLength: 0)
+            languagePicker(ink: palette.ink, outlined: isSweeto)
           }
-          .frame(width: geometry.size.width, height: geometry.size.height, alignment: .bottomTrailing)
         }
-        .frame(height: 164)
       }
     }
-    .frame(maxWidth: .infinity, alignment: .leading)
-    .background {
-      if bundledMenuPhoto != nil {
-        LinearGradient(
-          colors: [Color(hex: "FBEDD8"), Color(hex: "EAD2BA")],
-          startPoint: .topLeading, endPoint: .bottomTrailing
-        )
-      } else {
-        palette.line
-      }
-    }
-    .clipShape(.rect(cornerRadius: 21))
-    .overlay(RoundedRectangle(cornerRadius: 21).strokeBorder(palette.ink.opacity(0.10)))
-    .contentShape(.rect(cornerRadius: 21))
-  }
-
-  private var menuCopy: some View {
-    VStack(alignment: .leading, spacing: 8) {
-      Text(t("Menu", "Menu", "Меню"))
-        .font(palette.display(.largeTitle))
-        .lineLimit(1)
-        .minimumScaleFactor(0.78)
-      Text(t("Zobacz, co podajemy", "See what’s on the menu", "Посмотрите наше меню"))
-        .font(.footnote.weight(.medium))
-        .fixedSize(horizontal: false, vertical: true)
-      HStack(spacing: 6) {
-        VenueActionArt(kind: .menu, theme: palette.motionTheme, animated: activeHomeArt == .menu, replay: homeArtReplay) {
-          finishHomeArt(.menu)
-        }
-          .frame(width: 44, height: 44)
-          .modifier(HomeArtVisibility { setArtVisibility(.menu, visible: $0) })
-        Text(t("Otwórz", "Open", "Открыть"))
-          .font(.footnote.weight(.semibold))
-        homeArrow()
-      }
+    .foregroundStyle(palette.ink)
+    .padding(.horizontal, isSweeto ? 20 : 18)
+    .padding(.vertical, 5)
+    .background(isSweeto ? palette.surface : palette.paper)
+    .overlay(alignment: .bottom) {
+      Rectangle().fill(palette.line).frame(height: 1)
+        .allowsHitTesting(false)
         .accessibilityHidden(true)
     }
   }
 
-  private var menuPhoto: some View {
-    VenueImage(
-      url: bundledMenuPhoto == nil ? link.imageURL(config?.photoUrl) : nil,
-      bundled: bundledMenuPhoto,
-      alignment: menuDrip == nil ? .trailing : .bottomTrailing,
-      reportsPhotoFrame: menuDrip != nil
-    ) {
-      VenueActionArt(kind: .menu, theme: palette.motionTheme)
-        .padding(12)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+  private var destinationBack: some View {
+    Button(action: popGuestScreen) {
+      Image(systemName: "chevron.left")
+        .font(.system(size: 16, weight: .semibold))
+        .frame(width: 44, height: 44)
+        .foregroundStyle(palette.ink)
+        .background(isSweeto ? palette.peach : palette.surface, in: .circle)
+        .overlay {
+          if !isSweeto { Circle().strokeBorder(palette.line).allowsHitTesting(false) }
+        }
+        .contentShape(.circle)
     }
-    .rotationEffect(bundledMenuPhoto == "menu-bowl-cutout.webp" ? .degrees(-6) : .zero)
-    .background(alignment: .bottom) {
-      if bundledMenuPhoto != nil {
-        Ellipse()
-          .fill(Color(hex: "583628").opacity(0.20))
-          .frame(width: 128, height: 12)
-          .blur(radius: 5)
-          .offset(x: 8, y: menuDrip == nil ? -9 : -2)
+    .buttonStyle(.plain)
+    .accessibilityLabel(t("Wstecz", "Back", "Назад"))
+    .accessibilitySortPriority(1)
+  }
+#endif
+
+  private func languagePicker(ink: Color, onPhoto: Bool = false, outlined: Bool = false) -> some View {
+    Menu {
+      Picker(t("Język", "Language", "Язык"), selection: $language) {
+        ForEach(SweetoLanguage.allCases, id: \.self) { value in Text(value.label).tag(value) }
       }
+    } label: {
+      HStack(spacing: 5) {
+        Image(systemName: "globe").font(.system(size: 15, weight: .medium))
+        Text(language.rawValue.uppercased()).font(.system(.footnote, design: .monospaced, weight: .semibold))
+        Image(systemName: "chevron.down").font(.system(size: 9, weight: .bold))
+      }
+      .foregroundStyle(ink)
+      .padding(.leading, isSweeto ? (onPhoto || outlined ? 11 : 4) : 8)
+      .padding(.trailing, isSweeto ? (onPhoto || outlined ? 11 : 4) : 0)
+      .frame(minWidth: 44, minHeight: 44)
+      .background(onPhoto ? palette.forest.opacity(0.82) : outlined ? palette.surface : .clear, in: .capsule)
+      .overlay {
+        if onPhoto || outlined {
+          Capsule().strokeBorder(onPhoto ? ink.opacity(0.32) : palette.line)
+            .allowsHitTesting(false)
+        }
+      }
+      .contentShape(.capsule)
+    }
+    .accessibilityLabel(t("Język", "Language", "Язык"))
+    .accessibilityValue(language.label)
+  }
+
+  private var home: some View {
+    GeometryReader { viewport in
+      let statusInset = viewport.safeAreaInsets.top
+      let venueIsReady = config != nil || isSweeto
+      let availableHeight = viewport.size.height + statusInset
+      ScrollView {
+        VStack(spacing: 0) {
+          if venueIsReady {
+            let posterHeight = isSweeto ? min(460, max(280, viewport.size.width * 0.97))
+              : min(470, max(345, viewport.size.width * 0.94))
+            let actionHeight = isSweeto ? min(64, max(52, (availableHeight - posterHeight - 100) / 4)) : 56
+            // The poster copy is close to the tabletop at regular sizes. Move
+            // it onto opaque stock before larger text reaches the food or logo.
+            let separatesCopy = isSweeto && (dynamicTypeSize >= .xxLarge ||
+              (dynamicTypeSize == .xLarge && viewport.size.width <= 375))
+            menuHero(topInset: statusInset, height: posterHeight, separatesCopy: separatesCopy)
+
+            VStack(spacing: 8) {
+              guestActions(rowHeight: actionHeight)
+                .buttonStyle(GuestActionPress(palette: palette, cornerRadius: 13, tactileEdge: isSweeto))
+              if !isSweeto { venueDetails }
+            }
+            .padding(.horizontal, 20)
+            .padding(.top, isSweeto ? 14 : 16)
+            .padding(.bottom, isSweeto ? 3 : 0)
+            .frame(maxWidth: 560)
+            .frame(maxWidth: .infinity)
+            .background(palette.paper)
+
+            if isSweeto {
+              Spacer(minLength: 12)
+              homeFooter
+                .padding(.horizontal, 20)
+                .frame(maxWidth: 560)
+                .padding(.bottom, 10)
+                .frame(maxWidth: .infinity)
+            } else {
+              Spacer(minLength: 16)
+              GuestWordmark(palette: palette, size: 15)
+                .padding(.bottom, 12)
+            }
+          } else {
+            venueStatus(topInset: statusInset)
+          }
+        }
+        .frame(minHeight: venueIsReady ? availableHeight : nil, alignment: .top)
+      }
+      .scrollBounceBehavior(.basedOnSize)
+      .overlay(alignment: .top) {
+        if statusInset > 0 {
+          LinearGradient(
+            stops: [
+              .init(color: .black.opacity(0.60), location: 0),
+              .init(color: .black.opacity(0.42), location: 0.62),
+              .init(color: .clear, location: 1)
+            ],
+            startPoint: .top, endPoint: .bottom
+          )
+          .frame(height: statusInset + 8)
+          .allowsHitTesting(false)
+          .accessibilityHidden(true)
+        }
+      }
+      .ignoresSafeArea(.container, edges: .top)
+    }
+    .background(alignment: .top) {
+      palette.forest.frame(height: 110).ignoresSafeArea(.container, edges: .top)
+    }
+    .background(palette.paper.ignoresSafeArea())
+    .foregroundStyle(palette.ink)
+  }
+
+  @ViewBuilder private func menuHero(topInset: CGFloat, height: CGFloat, separatesCopy: Bool) -> some View {
+    if separatesCopy {
+      VStack(spacing: 0) {
+        heroHeader(topInset: topInset)
+          .padding(.horizontal, 20)
+          .padding(.bottom, 6)
+          .frame(maxWidth: 560)
+          .frame(maxWidth: .infinity)
+        heroPhotograph(withText: false)
+          .frame(height: min(244, max(174, height * 0.50)))
+        heroCopy
+          .padding(.horizontal, 20)
+          .padding(.vertical, 16)
+          .frame(maxWidth: 560)
+          .frame(maxWidth: .infinity, alignment: .leading)
+      }
+      .background(palette.forest)
+      .clipShape(.rect(bottomLeadingRadius: 22, bottomTrailingRadius: 22))
+    } else {
+      VStack(alignment: .leading, spacing: 0) {
+        heroHeader(topInset: topInset)
+        Spacer(minLength: isSweeto ? 20 : 30).accessibilityHidden(true)
+        heroCopy
+      }
+      .padding(.horizontal, isSweeto ? 20 : 22)
+      .padding(.bottom, isSweeto ? 18 : 22)
+      .frame(maxWidth: 560)
+      .frame(height: isSweeto && !dynamicTypeSize.isAccessibilitySize ? height : nil)
+      .frame(maxWidth: .infinity, minHeight: height)
+      .background { heroPhotograph(withText: true) }
+      .background(palette.forest)
+      .clipShape(.rect(bottomLeadingRadius: isSweeto ? 22 : 0,
+                       bottomTrailingRadius: isSweeto ? 22 : 0))
     }
   }
 
-  private var bundledMenuPhoto: String? {
-    guard isSweeto else { return nil }
-    switch config?.photoUrl {
-    case nil, "/assets/sweeto/matylda-puddle.webp", "/assets/sweeto/matylda-drip.webp": return "matylda-puddle.webp"
-    case "/assets/sweeto/matylda-cutout.webp":
-      return config?.animatesMenuSauce == true && config?.photoDrip == nil
-        ? "matylda-puddle.webp" : "matylda-cutout.webp"
-    case "/assets/sweeto/menu-scene-v2.webp", "/assets/sweeto/menu-bowl-cutout.webp": return "menu-bowl-cutout.webp"
-    default: return nil
+  private func heroHeader(topInset: CGFloat) -> some View {
+    HStack {
+      VenueIdentityMark(name: venueName, isSweeto: isSweeto, logo: link.imageURL(config?.logoUrl),
+                        ink: palette.frosting, width: isSweeto ? 142 : 145)
+      Spacer(minLength: 12)
+      languagePicker(ink: palette.frosting, onPhoto: isSweeto)
     }
+    .padding(.top, topInset + 3)
   }
 
-  private var menuDrip: VenueGuestPhotoDrip? {
-    guard config?.animatesMenuSauce == true || (config == nil && isSweeto) else { return nil }
-    if bundledMenuPhoto == "matylda-puddle.webp",
-      config == nil || config?.photoUrl == "/assets/sweeto/matylda-drip.webp"
-        || config?.photoUrl == "/assets/sweeto/matylda-cutout.webp" {
-      return VenueGuestPhotoDrip(x: 0.733, color: "#581f08", y: 0.99, width: 0.077)
-    }
-    if let drip = config?.photoDrip, drip.isValid { return drip }
-    guard bundledMenuPhoto == "matylda-puddle.webp" else { return nil }
-    return VenueGuestPhotoDrip(x: 0.733, color: "#581f08", y: 0.99, width: 0.077)
-  }
-
-  private var shouldAnimateMenuDrip: Bool {
-    !reduceMotion && !lowPowerMode && scenePhase == .active && path.isEmpty && menuVisible
-  }
-
-  private func reviewOption(outbound: Bool) -> some View {
-    option(
-      t("Oceń w Google", "Google reviews", "Отзыв в Google"),
-      subtitle: t("Podziel się wrażeniami", "Share your experience", "Поделитесь впечатлениями"),
-      art: .review, outbound: outbound
-    )
-  }
-
-  private func option(_ title: String, subtitle: String, art: VenueActionArt.Kind, outbound: Bool = false) -> some View {
-    let isLoyalty = art == .loyalty
-    let arrow = Text(Image(systemName: outbound ? "arrow.up.right" : "arrow.right"))
-      .font(.system(size: 16, weight: .medium))
-    let copy = VStack(alignment: .leading, spacing: 6) {
-      Text("\(title)\u{00a0}\(arrow)")
-        .font(palette.display(.title2))
-        .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 2)
-        .minimumScaleFactor(0.74)
-        .foregroundStyle(isLoyalty ? Color.white : palette.ink)
-        .accessibilityLabel(title)
-      Text(subtitle)
-        .font(.footnote.weight(.medium))
-        .foregroundStyle(isLoyalty ? Color.white.opacity(0.87) : palette.muted)
+  private var heroCopy: some View {
+    VStack(alignment: .leading, spacing: 5) {
+      if isSweeto {
+        HStack(spacing: 8) {
+          Rectangle().fill(palette.primary).frame(width: 17, height: 2)
+            .accessibilityHidden(true)
+          Text(t("Matylda czekoladowa", "Matylda chocolate cake", "Шоколадная Матильда"))
+            .font(.footnote.weight(.semibold))
+            .foregroundStyle(palette.peach)
+            .fixedSize(horizontal: false, vertical: true)
+        }
+      }
+      Text(isSweeto ? t("Menu deserów", "Dessert menu", "Меню десертов") : t("Menu", "Menu", "Меню"))
+        .font(dynamicTypeSize.isAccessibilitySize ? .title.weight(.bold) : palette.poster(47))
+        .textCase(isSweeto && !dynamicTypeSize.isAccessibilitySize ? .uppercase : nil)
+        .tracking(-0.4)
         .fixedSize(horizontal: false, vertical: true)
+        .accessibilityAddTraits(.isHeader)
+      if isSweeto {
+        Text(t("Zamów przy ladzie", "Order at the counter", "Заказ у стойки"))
+          .font(.footnote)
+          .fixedSize(horizontal: false, vertical: true)
+      }
     }
     .multilineTextAlignment(.leading)
+    .foregroundStyle(palette.frosting)
     .frame(maxWidth: .infinity, alignment: .leading)
+  }
 
-    let illustration = VenueActionArt(kind: art, theme: palette.motionTheme, animated: activeHomeArt == art, replay: homeArtReplay) {
-      finishHomeArt(art)
-    }
-      .frame(width: 102, height: 102)
-      .padding(isLoyalty ? 6 : 0)
-      .background(isLoyalty ? palette.line : Color.clear, in: .rect(cornerRadius: 15))
-      .rotationEffect(isLoyalty ? .degrees(5) : .zero)
-      .modifier(HomeArtVisibility { setArtVisibility(art, visible: $0) })
-
-    return Group {
-      if dynamicTypeSize.isAccessibilitySize {
-        VStack(alignment: .leading, spacing: 10) {
-          copy
-          illustration.frame(maxWidth: .infinity, alignment: .trailing)
+  private func heroPhotograph(withText: Bool) -> some View {
+    GeometryReader { photo in
+      let isTableScene = isSweeto && UIImage(named: "sweeto-table-cover") != nil
+      // Preserve the photographed square and limit the centre crop to its margins.
+      let photoWidth = isTableScene ? min(photo.size.width, photo.size.height / 0.88) : photo.size.width
+      let photoHeight = isTableScene ? min(photo.size.height, photoWidth / 0.88) : photo.size.height
+      GuestCoverArt(palette: palette, isSweeto: isSweeto, remotePhoto: link.imageURL(config?.photoUrl))
+        .frame(width: photoWidth, height: photoHeight)
+        .clipped()
+        .accessibilityHidden(true)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .overlay {
+          if withText && isTableScene {
+            ZStack {
+              LinearGradient(
+                colors: [.black.opacity(0.35), .clear, .clear],
+                startPoint: .top, endPoint: .bottom
+              )
+              LinearGradient(stops: [
+                .init(color: .clear, location: 0.62),
+                .init(color: .black.opacity(0.10), location: 0.77),
+                .init(color: Color(hex: "1A1711"), location: 1)
+              ], startPoint: .top, endPoint: .bottom)
+              LinearGradient(stops: [
+                .init(color: .clear, location: 0.48),
+                .init(color: .black.opacity(0.65), location: 0.74),
+                .init(color: .black.opacity(0.85), location: 1)
+              ], startPoint: .top, endPoint: .bottom)
+              .mask {
+                LinearGradient(stops: [
+                  .init(color: .white, location: 0),
+                  .init(color: .white.opacity(0.94), location: 0.34),
+                  .init(color: .white.opacity(0.24), location: 0.73),
+                  .init(color: .clear, location: 1)
+                ], startPoint: .leading, endPoint: .trailing)
+              }
+            }
+          } else if withText {
+            LinearGradient(stops: [
+              .init(color: .black.opacity(isSweeto ? 0.80 : 0.35), location: 0),
+              .init(color: .clear, location: 0.35),
+              .init(color: .black.opacity(0.16), location: 0.5),
+              .init(color: .black.opacity(0.76), location: 0.79),
+              .init(color: Color(hex: "1A1711"), location: 1)
+            ], startPoint: .top, endPoint: .bottom)
+          }
         }
+    }
+    .background(withText ? palette.forest : Color(hex: "1A1711"))
+    .accessibilityHidden(true)
+  }
+
+  private func venueStatus(topInset: CGFloat) -> some View {
+    VStack(spacing: 0) {
+      HStack {
+        VenueIdentityMark(name: venueName, isSweeto: false, logo: nil, ink: palette.frosting, width: 145)
+        Spacer()
+        languagePicker(ink: palette.frosting)
+      }
+      .padding(.top, topInset + 3)
+      .padding(.bottom, 8)
+      .padding(.horizontal, 20)
+      .background(palette.forest)
+      if configFailed {
+        ContentUnavailableView(
+          t("Nie znaleziono lokalu", "Venue unavailable", "Заведение недоступно"),
+          systemImage: "mappin.slash",
+          description: Text(t("Sprawdź adres lub kod QR.", "Check the link or QR code.", "Проверьте ссылку или QR-код."))
+        )
+        Button(t("Spróbuj ponownie", "Try again", "Повторить")) { Task { await load() } }
+          .font(.subheadline.weight(.semibold)).frame(maxWidth: .infinity, minHeight: 44)
       } else {
-        HStack(spacing: 10) {
-          copy
-          illustration
+        ProgressView(t("Wczytywanie lokalu…", "Loading venue…", "Загрузка заведения…"))
+          .tint(palette.ink)
+          .frame(maxWidth: .infinity, minHeight: 240)
+      }
+    }
+  }
+
+  @ViewBuilder private func guestActions(rowHeight: CGFloat) -> some View {
+    let actions = VStack(spacing: isSweeto ? 9 : 0) {
+      NavigationLink(value: VenueGuestScreen.menu) {
+        guestAction(t("Zobacz menu", "View menu", "Открыть меню"), symbol: "book", rowHeight: rowHeight)
+      }
+      .modifier(GuestPaperNavigation(screen: .menu, namespace: paperTransition, reduceMotion: reduceMotion || isSweeto))
+
+      venueActionDivider
+      Button { openTicket() } label: {
+        guestAction(
+          isSweeto && homeStamps == nil ? t("Otwórz kartę", "Open your card", "Открыть карту")
+            : t("Twoja karta", "Your stamp card", "Ваша карта"),
+          symbol: "wallet.pass", detail: isSweeto ? ticketCaption : compactTicketProgress,
+          pull: ticketPull, ticket: isSweeto, rowHeight: rowHeight
+        )
+      }
+      .accessibilityValue(ticketCaption)
+      .overlay(alignment: .trailing) {
+        GuestTicketPull(opensOnRelease: isSweeto, pull: { ticketPull = $0 }, release: { releaseTicket(open: $0) }, tap: { openTicket() })
+          .frame(width: 60)
+          .frame(maxHeight: .infinity)
+          .accessibilityHidden(true)
+      }
+      .modifier(GuestPaperNavigation(screen: .card, namespace: paperTransition, reduceMotion: reduceMotion))
+
+      venueActionDivider
+      NavigationLink(value: VenueGuestScreen.wifi) {
+        guestAction(t("Wi-Fi dla gości", "Guest Wi-Fi", "Гостевой Wi-Fi"),
+                    symbol: "wifi", detail: isSweeto ? wifiAvailabilityHint : nil, rowHeight: rowHeight)
+      }
+      .accessibilityHint(wifiAvailabilityHint ?? "")
+
+      venueActionDivider
+      if let reviewURL {
+        Button { review(reviewURL) } label: {
+          guestAction(t("Oceń w Google", "Review on Google", "Оценить в Google"), symbol: "star", outbound: true, rowHeight: rowHeight)
+        }
+        .accessibilityHint(isSweeto ? t("Otwiera Google", "Opens Google", "Открывает Google") : "")
+      } else {
+        NavigationLink(value: VenueGuestScreen.reviews) {
+          guestAction(t("Opinie Google", "Google reviews", "Отзывы Google"), symbol: "star", rowHeight: rowHeight)
         }
       }
     }
-    .padding(16)
-    .frame(maxWidth: .infinity, minHeight: 164, alignment: .leading)
-    .background(isLoyalty ? palette.ink : Color.white, in: .rect(cornerRadius: 21))
-    .overlay(RoundedRectangle(cornerRadius: 21).strokeBorder(isLoyalty ? Color.clear : palette.line))
-    .contentShape(.rect(cornerRadius: 21))
-    .accessibilityElement(children: .combine)
+    if isSweeto {
+      actions
+    } else {
+      actions
+        .background(palette.surface)
+        .clipShape(.rect(cornerRadius: 14))
+        .overlay {
+          RoundedRectangle(cornerRadius: 14)
+            .strokeBorder(palette.ink.opacity(0.16))
+            .allowsHitTesting(false)
+        }
+    }
   }
 
-  private func homeArrow(outbound: Bool = false) -> some View {
+  @ViewBuilder private var venueActionDivider: some View {
+    if !isSweeto {
+      Rectangle().fill(palette.ink.opacity(0.14))
+        .frame(height: 1)
+        .padding(.horizontal, 16)
+        .accessibilityHidden(true)
+    }
+  }
+
+  @ViewBuilder private func guestAction(
+    _ title: String, symbol: String, detail: String? = nil, pull: CGFloat = 0, outbound: Bool = false,
+    ticket: Bool = false, rowHeight: CGFloat
+  ) -> some View {
+    let row = HStack(spacing: 12) {
+      Image(systemName: symbol)
+        .font(.system(size: 18, weight: .medium))
+        .frame(width: 22)
+        .accessibilityHidden(true)
+
+      actionCopy(title, detail: detail)
+      .font(.body.weight(.semibold))
+      .multilineTextAlignment(.leading)
+      .frame(maxWidth: .infinity, alignment: .leading)
+
+      actionArrow(outbound: outbound)
+        .opacity(isSweeto && ticket ? 0 : 1)
+        .rotationEffect(.degrees(reduceMotion ? 0 : 4 * Double(pull)))
+        .offset(x: reduceMotion ? 0 : 6 * pull)
+    }
+    .padding(.horizontal, isSweeto ? 14 : 16)
+    .padding(.vertical, isSweeto ? 8 : 9)
+    .frame(maxWidth: .infinity, minHeight: rowHeight)
+    .foregroundStyle(palette.ink)
+    if isSweeto {
+      row
+        .background(palette.surface, in: .rect(cornerRadius: 13))
+        .overlay {
+          RoundedRectangle(cornerRadius: 13)
+            .strokeBorder(palette.ink.opacity(0.16))
+            .allowsHitTesting(false)
+        }
+        .overlay(alignment: .trailing) {
+          if ticket {
+            ticketStub(pull: pull)
+          }
+        }
+        .contentShape(.rect(cornerRadius: 13))
+    } else {
+      row.contentShape(.rect)
+    }
+  }
+
+  private func actionArrow(outbound: Bool = false) -> some View {
     Image(systemName: outbound ? "arrow.up.right" : "arrow.right")
-      .font(.system(size: 16, weight: .medium))
+      .font(.system(size: 15, weight: .semibold))
+      .frame(width: 34, height: 34)
+      .foregroundStyle(palette.ink)
+      .background(palette.primary, in: .circle)
       .accessibilityHidden(true)
   }
 
-  private var wifiButton: some View {
-    Button {
-      path = [.wifi]
-    } label: {
-      HStack(spacing: 10) {
-        VenueActionArt(kind: .wifi, theme: palette.motionTheme, animated: activeHomeArt == .wifi, replay: homeArtReplay) {
-          finishHomeArt(.wifi)
-        }
-          .frame(width: 42, height: 42)
-          .modifier(HomeArtVisibility { setArtVisibility(.wifi, visible: $0) })
-        Text(wifiBusy
-          ? t("Łączenie…", "Connecting…", "Подключение…")
-          : t("Połącz z Wi-Fi", "Connect to Wi-Fi", "Подключиться к Wi-Fi"))
-          .font(.subheadline.weight(.semibold))
-        Spacer()
-        Image(systemName: "arrow.right").font(.footnote.weight(.semibold)).accessibilityHidden(true)
+  private func ticketStub(pull: CGFloat) -> some View {
+    let travel = reduceMotion ? 0 : 6 * min(pull, 1.25)
+    let stock = UnevenRoundedRectangle(bottomTrailingRadius: 13, topTrailingRadius: 13)
+    return ZStack {
+      if travel > 0 {
+        stock.fill(palette.surface)
+          .overlay {
+            stock.strokeBorder(palette.ink.opacity(0.16))
+              .mask { LinearGradient(colors: [.clear, .black], startPoint: .leading, endPoint: .trailing) }
+          }
+          .shadow(color: palette.ink.opacity(0.10), radius: 2, x: -2, y: 1)
       }
-      .padding(.horizontal, 13)
-      .frame(minHeight: 49)
-      .background(palette.line.opacity(0.48), in: .rect(cornerRadius: 13))
+      actionArrow()
     }
-    .disabled(wifiBusy)
+    .frame(width: 60)
+    .frame(maxHeight: .infinity)
+    .overlay(alignment: .leading) {
+      GuestPerforation(color: palette.ink.opacity(0.34), vertical: true, cutout: palette.paper, notchRadius: 2.5)
+    }
+    .offset(x: travel)
+    .allowsHitTesting(false)
+    .accessibilityHidden(true)
   }
 
-  private var footer: some View {
-    VStack(spacing: 7) {
-      Text(t("Zamówienia przyjmujemy przy ladzie", "Order with us at the counter", "Заказ можно сделать у стойки"))
-      ViewThatFits {
-        HStack(spacing: 9) { addressLine; poweredBy }
-        VStack(spacing: 7) { addressLine; poweredBy }
-      }
-#if !PAPUPAY_APP_CLIP
-      Button(t("Zmień lokal", "Change venue", "Сменить заведение")) { showVenues = true }
-        .font(.caption)
-        .frame(minHeight: 44)
+  @ViewBuilder private func actionCopy(_ title: String, detail: String?) -> some View {
+    let description = detail.map {
+      Text($0)
+        .font(.footnote.weight(isSweeto ? .medium : .semibold))
         .foregroundStyle(palette.muted)
+        .monospacedDigit()
+        .contentTransition(.numericText())
+        .accessibilityHidden(true)
+    }
+    if isSweeto {
+      VStack(alignment: .leading, spacing: 2) {
+        Text(title)
+        if let description { description }
+      }
+      .fixedSize(horizontal: false, vertical: true)
+    } else {
+      ViewThatFits(in: .horizontal) {
+        HStack(spacing: 8) {
+          Text(title).fixedSize()
+          if let description { description.fixedSize() }
+        }
+        VStack(alignment: .leading, spacing: 3) {
+          Text(title)
+          if let description { description }
+        }
+        .fixedSize(horizontal: false, vertical: true)
+      }
+    }
+  }
+
+  private var compactTicketProgress: String? {
+    guard let card = homeStamps else { return nil }
+    if card.rewardAvailable { return t("Nagroda", "Reward ready", "Есть награда") }
+    let count = min(max(0, card.stamps), card.goal)
+    return t("\(count) z \(card.goal)", "\(count) of \(card.goal)", "\(count) из \(card.goal)")
+  }
+
+  private var ticketCaption: String {
+    guard let card = homeStamps else {
+      return t("Zbieraj pieczątki za wizyty", "Collect stamps when you visit", "Собирайте отметки за визиты")
+    }
+    if card.rewardAvailable { return t("Nagroda do odbioru", "Your reward is ready", "Награда доступна") }
+    let count = min(max(0, card.stamps), card.goal)
+    return t("\(count) z \(card.goal) " + (card.goal == 1 ? "pieczątki" : "pieczątek"),
+             "\(count) of \(card.goal) " + (card.goal == 1 ? "stamp" : "stamps"),
+             "\(count) из \(card.goal) " + (card.goal == 1 ? "отметки" : "отметок"))
+  }
+
+  private func openTicket() {
+    guard path.isEmpty else { return }
+    path.append(.card)
+  }
+
+  private func releaseTicket(open: Bool) {
+    if open { openTicket() }
+    let returnAnimation: Animation = isSweeto ? .spring(response: 0.29, dampingFraction: 0.77) : .easeOut(duration: 0.2)
+    withAnimation(reduceMotion ? nil : returnAnimation) { ticketPull = 0 }
+  }
+
+  private var homeFooter: some View {
+    ViewThatFits(in: .horizontal) {
+      HStack(spacing: 8) {
+        venueDetails.fixedSize(horizontal: true, vertical: false)
+        Spacer(minLength: 0)
+        GuestWordmark(palette: palette, size: 14, welcome: welcome)
+      }
+      VStack(alignment: .leading, spacing: 4) {
+        venueDetails
+        GuestWordmark(palette: palette, size: 14)
+          .padding(.horizontal, 2)
+      }
+    }
+    .frame(maxWidth: .infinity, alignment: .leading)
+  }
+
+  private var venueDetails: some View {
+    Group {
+#if PAPUPAY_APP_CLIP
+      addressLink
+#else
+      ViewThatFits(in: .horizontal) {
+        HStack(spacing: 12) {
+          addressLink.fixedSize(horizontal: true, vertical: false)
+          Spacer(minLength: 0)
+          venuePicker.fixedSize(horizontal: true, vertical: false)
+        }
+        VStack(alignment: .leading, spacing: 0) {
+          addressLink
+          venuePicker
+        }
+      }
 #endif
     }
-    .frame(maxWidth: .infinity)
-    .padding(.vertical, 8)
-    .font(.caption)
+    .font(.footnote.weight(.medium))
     .foregroundStyle(palette.muted)
+    .frame(maxWidth: .infinity, alignment: .leading)
+    .padding(.horizontal, 2)
   }
 
-  @ViewBuilder private var addressLine: some View {
+  @ViewBuilder private var addressLink: some View {
     if !address.isEmpty {
-      if let maps { Link(address, destination: maps) }
-      else { Text(address) }
+      if let maps {
+        Link(destination: maps) {
+          HStack(spacing: 6) {
+            Image(systemName: "mappin.and.ellipse").accessibilityHidden(true)
+            Text(address).multilineTextAlignment(.leading)
+            Image(systemName: "arrow.up.right").font(.caption2).accessibilityHidden(true)
+          }
+          .frame(minHeight: 44)
+        }
+      } else { Label(address, systemImage: "mappin.and.ellipse") }
     }
   }
 
-  private var poweredBy: some View {
-    HStack(spacing: 4) {
-      Text(t("Obsługiwane przez", "Powered by", "На платформе"))
-      BrandView(size: 13.5)
+#if !PAPUPAY_APP_CLIP
+  private var venuePicker: some View {
+    Button(t("Zmień lokal", "Change venue", "Сменить заведение")) { showVenues = true }
+      .frame(minHeight: 44)
+  }
+#endif
+
+  @MainActor private func refreshHomeStamps() async {
+    guard path.isEmpty, scenePhase == .active else { return }
+    let venue = link
+    if let demo = VenueGuestDemo.loyaltyConfiguration(for: venue) {
+      homeStamps = demo.loyaltyCard(for: venue)
+      return
     }
-    .accessibilityElement(children: .combine)
+    do {
+      let card = try await api.card()
+      guard !Task.isCancelled, link == venue else { return }
+      homeStamps = card.flatMap { $0.goal > 0 ? $0 : nil }
+    } catch {
+      // A temporarily unavailable service can leave the last confirmed count on screen.
+    }
   }
 
   @ViewBuilder private func destination(_ screen: VenueGuestScreen) -> some View {
     switch screen {
     case .menu:
-      let translated = link.imageURL(config?.menuPdf?[language.rawValue] ?? nil)
-      let polish = link.imageURL(config?.menuPdf?["pl"] ?? nil)
-      let configuredFallback = config?.menuFallback
-      let isStandardSweetoMenu = isSweeto && (configuredFallback == nil || configuredFallback == "/assets/sweeto/menu.pdf")
-      let backup = isStandardSweetoMenu ? Bundle.main.url(forResource: "menu", withExtension: "pdf") : nil
-      VenuePDFMenu(
-        url: translated ?? polish ?? (isStandardSweetoMenu ? nil : link.imageURL(configuredFallback)),
-        fallback: backup, language: language, isPolish: translated == nil, palette: palette
-      )
+      let backup = standardSweetoMenu ? Bundle.main.url(forResource: "menu", withExtension: "pdf") : nil
+      if showsDessertCatalog {
+        VenueDessertMenu(original: backup, language: language, palette: palette)
+      } else if venueMenuPDF == nil, let imageURL = link.imageURL(config?.menuImageUrl) {
+        VenueImageMenu(image: imageURL, language: language, palette: palette)
+      } else {
+        VenuePDFMenu(url: venueMenuPDF, fallback: backup, language: language,
+                     isPolish: translatedMenuURL == nil, palette: palette)
+      }
     case .card:
       VenueLoyaltyView(
         api: api, venueName: venueName, language: language,
@@ -554,29 +814,32 @@ struct SweetoGuestView: View {
       )
       .id(link)
     case .reviews:
-      VStack(alignment: .leading, spacing: 14) {
-        VenueActionArt(kind: .review, theme: palette.motionTheme, animated: true)
-          .frame(width: 61, height: 61)
-        Text(t("Opinie Google", "Google reviews", "Отзывы Google"))
-          .font(palette.display(.largeTitle))
-        if let reviewURL {
-          Text(t("Podziel się opinią po wizycie.", "Share how your visit went.", "Поделитесь впечатлениями."))
-          VenueNativeButton(
-            title: t("Dodaj opinię", "Leave a review", "Оставить отзыв"),
-            systemImage: "arrow.up.right", palette: palette
-          ) { review(reviewURL) }
-        } else {
-          Text(t("Link do opinii jest niedostępny.", "The review link is unavailable.", "Ссылка на отзывы недоступна."))
+      ScrollView {
+        VStack(alignment: .leading, spacing: 14) {
+          GuestFeatureIcon(symbol: "star", palette: palette)
+          Text(t("Opinie Google", "Google reviews", "Отзывы Google"))
+            .font(palette.display(.largeTitle)).accessibilityAddTraits(.isHeader)
+          if let reviewURL {
+            Text(t("Podziel się opinią po wizycie.", "Share how your visit went.", "Поделитесь впечатлениями."))
+              .foregroundStyle(palette.muted)
+            VenueNativeButton(
+              title: t("Dodaj opinię", "Leave a review", "Оставить отзыв"),
+              systemImage: "arrow.up.right", palette: palette
+            ) { review(reviewURL) }
+          } else {
+            Text(t("Link do opinii jest niedostępny.", "The review link is unavailable.", "Ссылка на отзывы недоступна."))
+              .foregroundStyle(palette.muted)
+          }
         }
-        Spacer()
+        .padding(20)
+        .frame(maxWidth: 520, alignment: .leading)
+        .frame(maxWidth: .infinity)
       }
-      .frame(maxWidth: .infinity, alignment: .leading)
-      .padding(20)
       .foregroundStyle(palette.ink)
       .background(palette.paper.ignoresSafeArea())
     case .wifi:
       VenueWiFiHelp(
-        details: wifiDetails ?? config?.wifi ?? VenueGuestDemo.configuration(for: link)?.wifi,
+        details: guestWiFiDetails,
         failed: wifiFailed, language: language, palette: palette, busy: wifiBusy,
         isDemo: VenueGuestDemo.configuration(for: link) != nil
       ) {
@@ -595,6 +858,7 @@ struct SweetoGuestView: View {
 
   private func follow(_ url: URL) {
     guard let (location, screen, preferredLanguage) = VenueGuestLink.parse(url) else { badLink = true; return }
+    if screen != nil || location.slug != "sweeto" { welcome.finish() }
 #if !PAPUPAY_APP_CLIP
     handledInvocation = true
 #endif
@@ -614,6 +878,7 @@ struct SweetoGuestView: View {
   private func choose(_ location: VenueGuestLink, screen: VenueGuestScreen? = nil) {
     if location != link {
       config = nil
+      homeStamps = nil
       configFailed = false
       wifiDetails = nil
       wifiFailed = false
@@ -671,163 +936,486 @@ struct SweetoGuestView: View {
   }
 }
 
-private struct HomeArtVisibility: ViewModifier {
-  let update: (Bool) -> Void
-
-  func body(content: Content) -> some View {
-    content.onGeometryChange(for: Bool.self) { proxy in
-      guard let bounds = proxy.bounds(of: .scrollView) else { return false }
-      let frame = proxy.frame(in: .scrollView)
-      // bounds(of:) is expressed in this icon's local coordinates, while
-      // frame(in:) uses the scroll view's coordinates. Compare like spaces.
-      let viewport = CGRect(origin: .zero, size: bounds.size)
-      let overlap = frame.intersection(viewport)
-      return !overlap.isNull && overlap.height >= frame.height * 0.5
-    } action: { update($0) }
-  }
-}
-
-private struct MenuPhotoFrame: PreferenceKey {
-  static let defaultValue: Anchor<CGRect>? = nil
-
-  static func reduce(value: inout Anchor<CGRect>?, nextValue: () -> Anchor<CGRect>?) {
-    value = nextValue() ?? value
-  }
-}
-
-private struct MenuLiquidDrip: View {
-  let color: Color
-  let source: CGPoint
-  let landingY: CGFloat
-  let mouthWidth: CGFloat
-
-  @State private var startedAt = Date()
-  private let cycle = 6.4
+struct VenueIdentityMark: View {
+  let name: String
+  let isSweeto: Bool
+  let logo: URL?
+  let ink: Color
+  let width: CGFloat
 
   var body: some View {
-    TimelineView(.animation(minimumInterval: 1.0 / 30)) { timeline in
-      Canvas { context, _ in
-        let elapsed = max(0, timeline.date.timeIntervalSince(startedAt))
-        let phase = elapsed.truncatingRemainder(dividingBy: cycle) / cycle
-        draw(phase, in: context)
-      }
+    Group {
+      if isSweeto {
+        Image("SweetoWordmark")
+          .renderingMode(.template)
+          .resizable()
+          .scaledToFit()
+          .frame(width: width)
+          .foregroundStyle(ink)
+      } else if let logo {
+        AsyncImage(url: logo) { phase in
+          if let image = phase.image {
+            image.resizable().scaledToFit().frame(maxWidth: width, maxHeight: 28)
+          } else { venueName }
+        }
+      } else { venueName }
     }
+    .accessibilityElement(children: .ignore)
+    .accessibilityLabel(name)
   }
 
-  private func draw(_ phase: Double, in context: GraphicsContext) {
-    switch phase {
-    case 0.12..<0.53:
-      let growth = smooth((phase - 0.12) / 0.41)
-      let length = 2 + 11 * growth
-      drawDrop(in: context, top: source.y - 1, length: length, width: mouthWidth * (0.65 + 0.35 * growth), neck: mouthWidth * (1 - 0.30 * growth))
-    case 0.53..<0.59:
-      let pinch = (phase - 0.53) / 0.06
-      drawDrop(
-        in: context, top: source.y - 1, length: 13 + 7 * pinch * pinch,
-        width: mouthWidth * (1 - 0.07 * pinch), neck: mouthWidth * 0.70 * pow(1 - pinch, 2)
-      )
-    case 0.59..<0.68:
-      let fall = (phase - 0.59) / 0.09
-      let bottom = source.y + 20 + (landingY - source.y - 20) * fall * fall
-      let length = 14 + 2 * fall
-      drawDrop(in: context, top: bottom - length, length: length, width: mouthWidth * (0.93 - 0.07 * fall), neck: 0)
-      let retract = max(0, 1 - fall * 4)
-      let tail = CGRect(x: source.x - mouthWidth / 2, y: source.y - 1, width: mouthWidth, height: 3 * retract)
-      context.fill(Path(ellipseIn: tail), with: .color(color.opacity(retract)))
-    case 0.68..<0.96:
-      let settle = min(1, (phase - 0.68) / 0.055)
-      let flatten = 1 - pow(1 - settle, 3)
-      let width = mouthWidth * (0.86 + 1.9 * flatten)
-      let height = 15 - 11.7 * flatten
-      let pool = CGRect(x: source.x - width / 2, y: landingY - height, width: width, height: height)
-      let opacity = phase < 0.77 ? 1 : 1 - smooth((phase - 0.77) / 0.19)
-      var settling = context
-      settling.opacity = opacity
-      fillLiquid(Path(ellipseIn: pool), bounds: pool, in: settling)
-    default:
-      break
-    }
-  }
-
-  private func drawDrop(in context: GraphicsContext, top: CGFloat, length: CGFloat, width: CGFloat, neck: CGFloat) {
-    guard length > 0, width > 0 else { return }
-    let x = source.x
-    let center = top + length * 0.62
-    let bottom = top + length
-    var shape = Path()
-    shape.move(to: CGPoint(x: x - neck / 2, y: top))
-    shape.addCurve(
-      to: CGPoint(x: x, y: bottom),
-      control1: CGPoint(x: x - neck / 2, y: center),
-      control2: CGPoint(x: x - width, y: bottom - length * 0.16)
-    )
-    shape.addCurve(
-      to: CGPoint(x: x + neck / 2, y: top),
-      control1: CGPoint(x: x + width, y: bottom - length * 0.16),
-      control2: CGPoint(x: x + neck / 2, y: center)
-    )
-    shape.closeSubpath()
-    let bounds = CGRect(x: x - width / 2, y: top, width: width, height: length)
-    fillLiquid(shape, bounds: bounds, in: context)
-    let glint = CGRect(x: x - width * 0.20, y: top + length * 0.59, width: width * 0.15, height: length * 0.23)
-    context.fill(Path(ellipseIn: glint), with: .color(.white.opacity(0.18)))
-  }
-
-  private func fillLiquid(_ shape: Path, bounds: CGRect, in context: GraphicsContext) {
-    context.fill(shape, with: .color(color))
-    context.fill(shape, with: .linearGradient(
-      Gradient(stops: [
-        .init(color: .black.opacity(0.22), location: 0),
-        .init(color: .white.opacity(0.10), location: 0.32),
-        .init(color: .clear, location: 0.55),
-        .init(color: .black.opacity(0.28), location: 1)
-      ]),
-      startPoint: CGPoint(x: bounds.minX, y: bounds.midY),
-      endPoint: CGPoint(x: bounds.maxX, y: bounds.midY)
-    ))
-  }
-
-  private func smooth(_ progress: Double) -> Double {
-    progress * progress * (3 - 2 * progress)
+  private var venueName: some View {
+    Text(name)
+      .font(.headline.weight(.heavy))
+      .foregroundStyle(ink)
+      .lineLimit(1)
+      .minimumScaleFactor(0.72)
   }
 }
 
-private struct VenueImage<Fallback: View>: View {
-  let url: URL?
-  let bundled: String?
-  var alignment: Alignment = .leading
-  var reportsPhotoFrame = false
-  @ViewBuilder let fallback: () -> Fallback
+private struct GuestWordmark: View {
+  let palette: VenueGuestPalette
+  let size: CGFloat
+  var welcome: PapuGuestArrival? = nil
 
   var body: some View {
-    GeometryReader { geometry in
-      Group {
-        if let url {
-          AsyncImage(url: url) { phase in
-            if let image = phase.image { rendered(image) }
-            else { local }
-          }
-        } else { local }
+    HStack(spacing: 4) {
+      palette.muted
+        .mask { GuestPapayaMark(palette: palette) }
+        .frame(width: size * 1.05, height: size * 1.13)
+        .opacity(welcome?.player == nil ? 1 : 0)
+        .overlay {
+          if let welcome { PapuGuestArrivalMark(welcome: welcome) }
+        }
+      Text("papupay")
+        .font(Papu.wordmark(size))
+        .tracking(-0.7)
+    }
+    .foregroundStyle(palette.muted)
+    .fixedSize(horizontal: true, vertical: false)
+    .accessibilityElement(children: .ignore)
+    .accessibilityLabel("Papupay")
+  }
+}
+
+struct GuestPapayaMark: View {
+  let palette: VenueGuestPalette
+
+  var body: some View {
+    Canvas { context, size in
+      var art = context
+      art.scaleBy(x: size.width / 80, y: size.height / 88)
+
+      var leaf = Path()
+      leaf.move(to: CGPoint(x: 55, y: 23))
+      leaf.addQuadCurve(to: CGPoint(x: 75, y: 3), control: CGPoint(x: 57, y: 6))
+      leaf.addQuadCurve(to: CGPoint(x: 55, y: 23), control: CGPoint(x: 77, y: 20))
+      leaf.closeSubpath()
+      art.fill(leaf, with: .color(Color(hex: "38845A")))
+
+      var rind = Path()
+      rind.move(to: CGPoint(x: 49, y: 18))
+      rind.addCurve(to: CGPoint(x: 67, y: 44), control1: CGPoint(x: 63, y: 12), control2: CGPoint(x: 70, y: 24))
+      rind.addCurve(to: CGPoint(x: 42, y: 83), control1: CGPoint(x: 66, y: 66), control2: CGPoint(x: 66, y: 79))
+      rind.addCurve(to: CGPoint(x: 8, y: 63), control1: CGPoint(x: 21, y: 88), control2: CGPoint(x: 6, y: 78))
+      rind.addCurve(to: CGPoint(x: 49, y: 18), control1: CGPoint(x: 9, y: 43), control2: CGPoint(x: 34, y: 28))
+      rind.closeSubpath()
+      art.fill(rind, with: .color(palette.primary))
+
+      var flesh = Path()
+      flesh.move(to: CGPoint(x: 50, y: 29))
+      flesh.addCurve(to: CGPoint(x: 55, y: 51), control1: CGPoint(x: 59, y: 24), control2: CGPoint(x: 57, y: 38))
+      flesh.addCurve(to: CGPoint(x: 38, y: 73), control1: CGPoint(x: 53, y: 62), control2: CGPoint(x: 53, y: 70))
+      flesh.addCurve(to: CGPoint(x: 20, y: 62), control1: CGPoint(x: 27, y: 75), control2: CGPoint(x: 19, y: 70))
+      flesh.addCurve(to: CGPoint(x: 50, y: 29), control1: CGPoint(x: 22, y: 50), control2: CGPoint(x: 38, y: 37))
+      flesh.closeSubpath()
+      art.fill(flesh, with: .color(palette.surface))
+
+      for (x, y) in [(34.0, 45.0), (45, 50), (25, 58)] {
+        let outer = CGRect(x: x, y: y, width: 7, height: 7)
+        let inner = outer.insetBy(dx: 2, dy: 2)
+        art.fill(Path(roundedRect: outer, cornerRadius: 2), with: .color(palette.ink))
+        art.fill(Path(roundedRect: inner, cornerRadius: 0.6), with: .color(palette.surface))
       }
-      .frame(width: geometry.size.width, height: geometry.size.height, alignment: alignment)
-      .clipped()
+      for (x, y) in [(43.0, 39.0), (49, 44), (39, 54), (35, 59), (42, 63), (34, 66)] {
+        let seed = CGRect(x: x, y: y, width: 3.5, height: 3.5)
+        art.fill(Path(roundedRect: seed, cornerRadius: 0.9), with: .color(palette.ink))
+      }
     }
+    .accessibilityHidden(true)
   }
+}
 
-  @ViewBuilder private var local: some View {
-    if let bundled,
-      let path = Bundle.main.url(forResource: bundled, withExtension: nil)?.path,
-      let image = UIImage(contentsOfFile: path) {
-      rendered(Image(uiImage: image))
-    } else {
-      fallback()
-    }
-  }
+struct GuestFeatureIcon: View {
+  let symbol: String
+  let palette: VenueGuestPalette
 
-  private func rendered(_ image: Image) -> some View {
-    image.resizable().scaledToFit()
-      .anchorPreference(key: MenuPhotoFrame.self, value: .bounds) { reportsPhotoFrame ? $0 : nil }
+  var body: some View {
+    Image(systemName: symbol)
+      .font(.system(size: 26, weight: .medium))
+      .foregroundStyle(palette.ink)
+      .frame(width: 60, height: 60)
+      .background(palette.peach, in: .circle)
       .accessibilityHidden(true)
+  }
+}
+
+struct GuestArrow: View {
+  let outbound: Bool
+
+  var body: some View {
+    Image(systemName: outbound ? "arrow.up.right" : "arrow.right")
+      .font(.system(size: 16, weight: .semibold))
+      .accessibilityHidden(true)
+  }
+}
+
+struct GuestPerforation: View {
+  let color: Color
+  var vertical = false
+  var cutout: Color?
+  var notchRadius: CGFloat = 7
+
+  var body: some View {
+    Canvas { context, size in
+      let length = vertical ? size.height : size.width
+      let inset = cutout == nil ? 0 : notchRadius
+      var rule = Path()
+      if vertical {
+        rule.move(to: CGPoint(x: size.width / 2, y: inset))
+        rule.addLine(to: CGPoint(x: size.width / 2, y: length - inset))
+      } else {
+        rule.move(to: CGPoint(x: inset, y: size.height / 2))
+        rule.addLine(to: CGPoint(x: length - inset, y: size.height / 2))
+      }
+      context.stroke(rule, with: .color(color), style: StrokeStyle(lineWidth: 1, dash: [2, 4]))
+      if let cutout {
+        let center = vertical ? size.width / 2 : size.height / 2
+        let first = vertical
+          ? CGRect(x: center - inset, y: -inset, width: inset * 2, height: inset * 2)
+          : CGRect(x: -inset, y: center - inset, width: inset * 2, height: inset * 2)
+        let second = first.offsetBy(dx: vertical ? 0 : length, dy: vertical ? length : 0)
+        context.fill(Path(ellipseIn: first), with: .color(cutout))
+        context.fill(Path(ellipseIn: second), with: .color(cutout))
+      }
+    }
+    .frame(width: vertical ? (cutout == nil ? 1 : notchRadius * 2) : nil,
+           height: vertical ? nil : (cutout == nil ? 1 : notchRadius * 2))
+    .accessibilityHidden(true)
+    .allowsHitTesting(false)
+  }
+}
+
+struct GuestPaperGrain: View {
+  let ink: Color
+
+  var body: some View {
+    Canvas { context, size in
+      guard size.width > 0, size.height > 0 else { return }
+      let count = min(2100, Int(size.width * size.height / 38))
+      var light = Path()
+      var dark = Path()
+      for index in 0..<count {
+        let x = Double((index * 4373 + 113) % 14741) / 14741 * size.width
+        let y = Double((index * 7841 + 577) % 17449) / 17449 * size.height
+        let mark = CGRect(x: x, y: y, width: index.isMultiple(of: 7) ? 1.15 : 0.65, height: 0.65)
+        if index.isMultiple(of: 3) { dark.addEllipse(in: mark) }
+        else { light.addEllipse(in: mark) }
+      }
+      context.fill(light, with: .color(ink.opacity(0.13)))
+      context.fill(dark, with: .color(ink.opacity(0.26)))
+    }
+    .allowsHitTesting(false)
+    .accessibilityHidden(true)
+  }
+}
+
+struct GuestActionLabel: View {
+  let title: String
+  var symbol: String? = nil
+  let arrow: String
+  let palette: VenueGuestPalette
+  var detail: String?
+  var prominent = false
+  var ticket = false
+  var pull: CGFloat = 0
+
+  @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+  var body: some View {
+    HStack(spacing: 12) {
+      if let symbol {
+        Image(systemName: symbol)
+          .font(.system(size: 17, weight: .semibold))
+          .frame(width: 34, height: 34)
+          .background(ticket ? palette.peach.opacity(0.58) : palette.ink.opacity(0.07), in: .circle)
+          .accessibilityHidden(true)
+      }
+
+      VStack(alignment: .leading, spacing: 3) {
+        Text(title).font(.body.weight(.semibold))
+        if let detail {
+          Text(detail)
+            .font(.footnote.weight(.medium))
+            .foregroundStyle(prominent ? palette.onAccent : palette.muted)
+            .monospacedDigit()
+            .contentTransition(.numericText())
+            .accessibilityHidden(true)
+        }
+      }
+      .multilineTextAlignment(.leading)
+      .fixedSize(horizontal: false, vertical: true)
+      .frame(maxWidth: .infinity, alignment: .leading)
+
+      Image(systemName: arrow)
+        .font(.system(size: 14, weight: .semibold))
+        .frame(width: 34, height: 34)
+        .foregroundStyle(prominent ? palette.frosting : palette.ink)
+        .background(prominent ? palette.ink : ticket ? palette.primary : palette.paper, in: .circle)
+        .rotationEffect(.degrees(reduceMotion ? 0 : 7 * Double(pull)))
+        .offset(x: reduceMotion ? 0 : 8 * pull)
+        .accessibilityHidden(true)
+    }
+    .padding(.leading, symbol == nil ? 16 : 12)
+    .padding(.trailing, 12)
+    .padding(.vertical, 11)
+    .frame(maxWidth: .infinity, minHeight: 56)
+    .foregroundStyle(prominent ? palette.onAccent : palette.ink)
+    .background(prominent ? palette.primary : .clear, in: .rect(cornerRadius: palette.actionCorner))
+    .contentShape(.rect(cornerRadius: prominent ? palette.actionCorner : 0))
+  }
+}
+
+struct GuestActionPress: ButtonStyle {
+  @Environment(\.accessibilityReduceMotion) private var reduceMotion
+  var prominent = false
+  var palette: VenueGuestPalette? = nil
+  var cornerRadius: CGFloat? = nil
+  var tactileEdge = false
+
+  func makeBody(configuration: Configuration) -> some View {
+    if let palette, !palette.isSweeto {
+      configuration.label
+        .scaleEffect(configuration.isPressed && !reduceMotion ? 0.995 : 1)
+        .background(configuration.isPressed ? Color(hex: "F3E2C8") : .clear)
+        .animation(reduceMotion ? nil : .easeOut(duration: configuration.isPressed ? 0.09 : 0.16), value: configuration.isPressed)
+    } else if tactileEdge, let palette {
+      paperPress(configuration, palette: palette)
+    } else {
+      sweetoPress(configuration)
+    }
+  }
+
+  private func paperPress(_ configuration: Configuration, palette: VenueGuestPalette) -> some View {
+    let shape = RoundedRectangle(cornerRadius: cornerRadius ?? 13)
+    let edgeDepth: CGFloat = 2.5
+    let pressed = configuration.isPressed
+    return configuration.label
+      .overlay {
+        shape.strokeBorder(palette.ink.opacity(pressed ? 0.34 : 0))
+          .allowsHitTesting(false)
+          .accessibilityHidden(true)
+      }
+      .offset(y: pressed && !reduceMotion ? edgeDepth : 0)
+      .background {
+        shape.fill(palette.ink.opacity(pressed && reduceMotion ? 0.06 : 0.14))
+          .offset(y: edgeDepth)
+          .allowsHitTesting(false)
+          .accessibilityHidden(true)
+      }
+      .animation(reduceMotion ? nil : .easeOut(duration: pressed ? 0.07 : 0.16), value: pressed)
+  }
+
+  private func sweetoPress(_ configuration: Configuration) -> some View {
+    configuration.label
+      .overlay {
+        if configuration.isPressed {
+          let shape = RoundedRectangle(cornerRadius: cornerRadius ?? (prominent ? (palette?.actionCorner ?? 16) : 0))
+          Group {
+            if let palette, palette.isSweeto {
+              shape.strokeBorder(palette.ink.opacity(0.32))
+            } else {
+              shape.fill(Color(hex: "102E24").opacity(0.10))
+            }
+          }
+            .allowsHitTesting(false)
+            .accessibilityHidden(true)
+        }
+      }
+      .scaleEffect(configuration.isPressed && !reduceMotion ? 0.985 : 1)
+      .animation(reduceMotion ? nil : .easeOut(duration: configuration.isPressed ? 0.09 : 0.16), value: configuration.isPressed)
+  }
+}
+
+private struct GuestTicketPull: UIViewRepresentable {
+  let opensOnRelease: Bool
+  let pull: (CGFloat) -> Void
+  let release: (Bool) -> Void
+  let tap: () -> Void
+
+  func makeUIView(context: Context) -> TouchRegion {
+    let view = TouchRegion()
+    view.isAccessibilityElement = false
+    view.isOpaque = false
+    return view
+  }
+
+  func sizeThatFits(_ proposal: ProposedViewSize, uiView: TouchRegion, context: Context) -> CGSize? {
+    guard let w = proposal.width, let h = proposal.height else { return nil }
+    return CGSize(width: w, height: h)
+  }
+
+  func updateUIView(_ view: TouchRegion, context: Context) {
+    view.opensOnRelease = opensOnRelease
+    view.pull = pull
+    view.release = release
+    view.tap = tap
+  }
+
+  final class TouchRegion: UIView, UIGestureRecognizerDelegate {
+    var pull: (CGFloat) -> Void = { _ in }
+    var release: (Bool) -> Void = { _ in }
+    var tap: () -> Void = {}
+    private let thresholdFeedback = UIImpactFeedbackGenerator(style: .light)
+    private var signalledThreshold = false
+    var opensOnRelease = true {
+      didSet { gesture.opensOnRelease = opensOnRelease }
+    }
+    private lazy var gesture = PullGesture(target: self, action: #selector(track(_:)))
+
+    override func didMoveToWindow() {
+      super.didMoveToWindow()
+      gesture.view?.removeGestureRecognizer(gesture)
+      guard let window else { return }
+      var parent = superview
+      while let view = parent, !(view is UIScrollView) { parent = view.superview }
+      gesture.delegate = self
+      gesture.cancelsTouchesInView = false
+      (parent ?? window).addGestureRecognizer(gesture)
+    }
+
+    func gestureRecognizer(_ gesture: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+      window != nil && bounds.contains(touch.location(in: self))
+    }
+
+    func gestureRecognizer(_ gesture: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith other: UIGestureRecognizer) -> Bool {
+      true
+    }
+
+    @objc private func track(_ gesture: PullGesture) {
+      switch gesture.state {
+      case .began, .changed:
+        if gesture.state == .began { thresholdFeedback.prepare() }
+        signalThreshold(for: gesture)
+        pull(min(gesture.outwardDistance / gesture.threshold, opensOnRelease ? 1.25 : 1))
+      case .ended:
+        signalThreshold(for: gesture)
+        signalledThreshold = false
+        if gesture.isTap { tap() }
+        else { release(gesture.outwardDistance >= gesture.threshold) }
+      case .cancelled:
+        signalledThreshold = false
+        release(false)
+      default: break
+      }
+    }
+
+    private func signalThreshold(for gesture: PullGesture) {
+      guard !signalledThreshold, gesture.outwardDistance >= gesture.threshold else { return }
+      signalledThreshold = true
+      thresholdFeedback.impactOccurred()
+    }
+  }
+
+  // Measure displacement in window coordinates. A slow drag can begin at zero velocity.
+  final class PullGesture: UIGestureRecognizer {
+    var opensOnRelease = true
+    var threshold: CGFloat { opensOnRelease ? 36 : 30 }
+    private var start: CGPoint = .zero
+    private(set) var outwardDistance: CGFloat = 0
+    private(set) var isTap = false
+
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
+      guard touches.count == 1, numberOfTouches <= 1, let touch = touches.first else { state = .failed; return }
+      start = touch.location(in: nil)
+    }
+
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent) {
+      guard let touch = touches.first else { return }
+      update(at: touch.location(in: nil), finished: false)
+    }
+
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent) {
+      guard let touch = touches.first else { return }
+      update(at: touch.location(in: nil), finished: true)
+    }
+
+    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent) {
+      state = state == .possible ? .failed : .cancelled
+    }
+
+    override func reset() {
+      super.reset()
+      outwardDistance = 0
+      isTap = false
+    }
+
+    private func update(at point: CGPoint, finished: Bool) {
+      guard state == .possible || state == .began || state == .changed else { return }
+      let dx = point.x - start.x
+      let dy = abs(point.y - start.y)
+      outwardDistance = max(0, dx)
+      if state == .possible {
+        if max(abs(dx), dy) <= 5 {
+          if finished { isTap = true; state = .recognized }
+          return
+        }
+        guard dx > dy * 1.3 else { state = .failed; return }
+      }
+      if opensOnRelease && dy > outwardDistance + 24 {
+        state = .cancelled
+      } else if finished || (!opensOnRelease && outwardDistance >= threshold) {
+        state = .ended
+      } else {
+        state = state == .possible ? .began : .changed
+      }
+    }
+  }
+}
+
+private struct GuestPaperNavigation: ViewModifier {
+  let screen: VenueGuestScreen
+  let namespace: Namespace.ID
+  var isDestination = false
+  let reduceMotion: Bool
+
+  @ViewBuilder func body(content: Content) -> some View {
+    if #available(iOS 18.0, *), !reduceMotion, screen == .menu || screen == .card {
+      if isDestination {
+        content.navigationTransition(.zoom(sourceID: screen, in: namespace))
+      } else {
+        content.matchedTransitionSource(id: screen, in: namespace)
+      }
+    } else {
+      content
+    }
+  }
+}
+
+private struct GuestCoverArt: View {
+  let palette: VenueGuestPalette
+  let isSweeto: Bool
+  let remotePhoto: URL?
+
+  @ViewBuilder var body: some View {
+    if isSweeto, let art = UIImage(named: "sweeto-table-cover") ?? UIImage(named: "menu-matylda") {
+      Image(uiImage: art).resizable().scaledToFill()
+    } else if let remotePhoto {
+      AsyncImage(url: remotePhoto) { phase in
+        if let image = phase.image { image.resizable().scaledToFill() }
+        else { palette.forest }
+      }
+    } else { palette.forest }
   }
 }
 
@@ -841,6 +1429,8 @@ private struct VenueDirectory: View {
   @State private var venues: [VenueGuestConfig]?
   @State private var failed = false
 
+  private var palette: VenueGuestPalette { VenueGuestPalette(language: language, posterScale: 1) }
+
   var body: some View {
     NavigationStack {
       Group {
@@ -851,15 +1441,21 @@ private struct VenueDirectory: View {
                 VStack(alignment: .leading, spacing: 4) {
                   Text(entry.venue.name ?? entry.id).font(.headline)
                   if let address = entry.venue.address, !address.isEmpty {
-                    Text(address).font(.footnote).foregroundStyle(.secondary)
+                    Text(address).font(.footnote).foregroundStyle(palette.muted)
                   }
                 }
                 Spacer()
-                if current == entry.id { Image(systemName: "checkmark") }
+                if current == entry.id { Image(systemName: "checkmark").accessibilityHidden(true) }
               }
               .frame(minHeight: 44)
+              .contentShape(.rect)
             }
+            .accessibilityAddTraits(current == entry.id ? .isSelected : [])
+            .listRowBackground(palette.surface)
+            .listRowSeparatorTint(palette.line)
           }
+          .listStyle(.plain)
+          .scrollContentBackground(.hidden)
         } else if failed {
           VStack(spacing: 12) {
             Text(language.text("Nie udało się pobrać listy.", "Couldn’t load the venue list.", "Не удалось загрузить список заведений."))
@@ -869,6 +1465,9 @@ private struct VenueDirectory: View {
           ProgressView(language.text("Wczytywanie lokali…", "Loading venues…", "Загрузка заведений…"))
         }
       }
+      .frame(maxWidth: .infinity, maxHeight: .infinity)
+      .background(palette.paper.ignoresSafeArea())
+      .foregroundStyle(palette.ink)
       .navigationTitle(language.text("Lokale", "Venues", "Заведения"))
       .toolbar { Button(language.text("Gotowe", "Done", "Готово")) { dismiss() } }
       .task { await load() }
