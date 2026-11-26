@@ -844,10 +844,11 @@ struct PapupayGuestView: View {
         VenuePDFMenu(url: venueMenuPDF, fallback: backup, language: language,
                      isPolish: translatedMenuURL == nil, palette: palette)
       }
-    case .card:
+    case .card, .checkout:
       VenueLoyaltyView(
         api: api, venueName: venueName, language: language,
-        palette: palette, showPreview: Self.walletPreviewEnabled
+        palette: palette, showPreview: Self.walletPreviewEnabled,
+        logo: venueLogo(onPhoto: true), showingCheckout: screen == .checkout
       )
       .id(link)
       .id(membershipRevision)
@@ -915,6 +916,7 @@ struct PapupayGuestView: View {
     handledInvocation = true
 #endif
     if let preferredLanguage { language = preferredLanguage }
+    if screen == .checkout { membershipRevision = UUID() }
     choose(location, screen: screen)
   }
 
@@ -1057,18 +1059,23 @@ private struct GuestWordmark: View {
 
 struct GuestPapayaMark: View {
   let palette: VenueGuestPalette
+  var outline: Color? = nil
 
   var body: some View {
     Canvas { context, size in
       var art = context
       art.scaleBy(x: size.width / 80, y: size.height / 88)
 
+      func printShape(_ path: Path, _ fill: Color) {
+        if let outline { art.stroke(path, with: .color(outline), lineWidth: 0.8) }
+        else { art.fill(path, with: .color(fill)) }
+      }
       var leaf = Path()
       leaf.move(to: CGPoint(x: 55, y: 23))
       leaf.addQuadCurve(to: CGPoint(x: 75, y: 3), control: CGPoint(x: 57, y: 6))
       leaf.addQuadCurve(to: CGPoint(x: 55, y: 23), control: CGPoint(x: 77, y: 20))
       leaf.closeSubpath()
-      art.fill(leaf, with: .color(Color(hex: "38845A")))
+      printShape(leaf, Color(hex: "38845A"))
 
       var rind = Path()
       rind.move(to: CGPoint(x: 49, y: 18))
@@ -1077,7 +1084,7 @@ struct GuestPapayaMark: View {
       rind.addCurve(to: CGPoint(x: 8, y: 63), control1: CGPoint(x: 21, y: 88), control2: CGPoint(x: 6, y: 78))
       rind.addCurve(to: CGPoint(x: 49, y: 18), control1: CGPoint(x: 9, y: 43), control2: CGPoint(x: 34, y: 28))
       rind.closeSubpath()
-      art.fill(rind, with: .color(palette.primary))
+      printShape(rind, palette.primary)
 
       var flesh = Path()
       flesh.move(to: CGPoint(x: 50, y: 29))
@@ -1086,17 +1093,17 @@ struct GuestPapayaMark: View {
       flesh.addCurve(to: CGPoint(x: 20, y: 62), control1: CGPoint(x: 27, y: 75), control2: CGPoint(x: 19, y: 70))
       flesh.addCurve(to: CGPoint(x: 50, y: 29), control1: CGPoint(x: 22, y: 50), control2: CGPoint(x: 38, y: 37))
       flesh.closeSubpath()
-      art.fill(flesh, with: .color(palette.surface))
+      printShape(flesh, palette.surface)
 
       for (x, y) in [(34.0, 45.0), (45, 50), (25, 58)] {
         let outer = CGRect(x: x, y: y, width: 7, height: 7)
         let inner = outer.insetBy(dx: 2, dy: 2)
-        art.fill(Path(roundedRect: outer, cornerRadius: 2), with: .color(palette.ink))
-        art.fill(Path(roundedRect: inner, cornerRadius: 0.6), with: .color(palette.surface))
+        printShape(Path(roundedRect: outer, cornerRadius: 2), palette.ink)
+        if outline == nil { art.fill(Path(roundedRect: inner, cornerRadius: 0.6), with: .color(palette.surface)) }
       }
       for (x, y) in [(43.0, 39.0), (49, 44), (39, 54), (35, 59), (42, 63), (34, 66)] {
         let seed = CGRect(x: x, y: y, width: 3.5, height: 3.5)
-        art.fill(Path(roundedRect: seed, cornerRadius: 0.9), with: .color(palette.ink))
+        art.fill(Path(roundedRect: seed, cornerRadius: 0.9), with: .color(outline ?? palette.ink))
       }
     }
     .accessibilityHidden(true)

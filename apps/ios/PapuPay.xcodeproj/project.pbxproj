@@ -28,6 +28,8 @@
 		3F16D17B46478FA19C477175 /* SweetoCounterOrder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 710B2E8F4C4E333B30D6F2CD /* SweetoCounterOrder.swift */; };
 		457C083B3D68D27A9AB5D0B4 /* SweetoGuestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F66940B8F78C981AF279FAB /* SweetoGuestView.swift */; };
 		46B067E336ECB6F3918B9B79 /* sweeto-pass.riv in Resources */ = {isa = PBXBuildFile; fileRef = 37F453062DB69621D9F352B6 /* sweeto-pass.riv */; };
+		A1971F76880B480CAE7BD701 /* sweeto-reward-foil-strip.png in Resources */ = {isa = PBXBuildFile; fileRef = A1971F76880B480CAE7BD705 /* sweeto-reward-foil-strip.png */; };
+		A1971F76880B480CAE7BD702 /* sweeto-reward-foil.png in Resources */ = {isa = PBXBuildFile; fileRef = A1971F76880B480CAE7BD706 /* sweeto-reward-foil.png */; };
 		477CE07AB6832E69F2D9925C /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 9AA5E521D7FA9AD35A274C58 /* PrivacyInfo.xcprivacy */; };
 		4AF901359CA6AD6D0D39E3F8 /* DesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF1930A6830A1BA344ACB386 /* DesignSystem.swift */; };
 		4E12F1753A8F8E9D5CDE362F /* PapuDisplay-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 076A356B453B63C34D23BDD6 /* PapuDisplay-Bold.ttf */; };
@@ -39,6 +41,8 @@
 		5CA492FFF6674979F4027A5F /* motion-menu.webp in Resources */ = {isa = PBXBuildFile; fileRef = 79607959A6CD09A4DCF35B82 /* motion-menu.webp */; };
 		5EC2B26F2415C4AD9662084D /* motion-berry-loyalty.webp in Resources */ = {isa = PBXBuildFile; fileRef = 30909D509D38B5E7732CF72D /* motion-berry-loyalty.webp */; };
 		604F38DC6D6EBB1D605BF3B7 /* sweeto-pass.riv in Resources */ = {isa = PBXBuildFile; fileRef = 37F453062DB69621D9F352B6 /* sweeto-pass.riv */; };
+		A1971F76880B480CAE7BD703 /* sweeto-reward-foil-strip.png in Resources */ = {isa = PBXBuildFile; fileRef = A1971F76880B480CAE7BD705 /* sweeto-reward-foil-strip.png */; };
+		A1971F76880B480CAE7BD704 /* sweeto-reward-foil.png in Resources */ = {isa = PBXBuildFile; fileRef = A1971F76880B480CAE7BD706 /* sweeto-reward-foil.png */; };
 		61F299DBDE853011966C0236 /* PapuPayApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14400E5F381C3F5F02F6B96 /* PapuPayApp.swift */; };
 		6535E8E3C0558106E2FF24C1 /* motion-loyalty.webp in Resources */ = {isa = PBXBuildFile; fileRef = 38FFC62259B2B010A0A4C1D2 /* motion-loyalty.webp */; };
 		6ADB203C89C4C59DE89C78B1 /* motion-berry-wifi.webp in Resources */ = {isa = PBXBuildFile; fileRef = 75D496FBBE7576F8EA3B029E /* motion-berry-wifi.webp */; };
@@ -116,6 +120,8 @@
 		22A47D44243CDD2C6F2ABEF8 /* VenueGuestFeatures.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VenueGuestFeatures.swift; sourceTree = "<group>"; };
 		30909D509D38B5E7732CF72D /* motion-berry-loyalty.webp */ = {isa = PBXFileReference; includeInIndex = 1; name = "motion-berry-loyalty.webp"; path = "../../../packages/motion/sweeto-actions/runtime/motion-berry-loyalty.webp"; sourceTree = "<group>"; };
 		37F453062DB69621D9F352B6 /* sweeto-pass.riv */ = {isa = PBXFileReference; includeInIndex = 1; name = "sweeto-pass.riv"; path = "../../../packages/motion/sweeto-pass/runtime/sweeto-pass.riv"; sourceTree = "<group>"; };
+		A1971F76880B480CAE7BD705 /* sweeto-reward-foil-strip.png */ = {isa = PBXFileReference; includeInIndex = 1; name = "sweeto-reward-foil-strip.png"; path = "../../../packages/motion/sweeto-reward-foil/runtime/sweeto-reward-foil-strip.png"; sourceTree = "<group>"; };
+		A1971F76880B480CAE7BD706 /* sweeto-reward-foil.png */ = {isa = PBXFileReference; includeInIndex = 1; name = "sweeto-reward-foil.png"; path = "../../../packages/motion/sweeto-reward-foil/runtime/sweeto-reward-foil.png"; sourceTree = "<group>"; };
 		38FFC62259B2B010A0A4C1D2 /* motion-loyalty.webp */ = {isa = PBXFileReference; includeInIndex = 1; name = "motion-loyalty.webp"; path = "../../../packages/motion/sweeto-actions/runtime/motion-loyalty.webp"; sourceTree = "<group>"; };
 		3E2F8274E49B16570697D55B /* PapuPayClip.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PapuPayClip.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3F66940B8F78C981AF279FAB /* SweetoGuestView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SweetoGuestView.swift; sourceTree = "<group>"; };
@@ -212,6 +218,8 @@
 				75D496FBBE7576F8EA3B029E /* motion-berry-wifi.webp */,
 				58E5253080D590477E6782CF /* motion-forest-wifi.webp */,
 				37F453062DB69621D9F352B6 /* sweeto-pass.riv */,
+				A1971F76880B480CAE7BD705 /* sweeto-reward-foil-strip.png */,
+				A1971F76880B480CAE7BD706 /* sweeto-reward-foil.png */,
 				7F97E0C5610ABCCE24860437 /* Manrope.ttf */,
 				6F913D5FB5CE41B527F7C589 /* BricolageGrotesque.ttf */,
 				D2AD1C7CD81BFD69A5A27290 /* Manrope-OFL.txt */,
@@ -370,6 +378,8 @@
 				3ED960E43BAAD63A4D69AFF8 /* motion-berry-wifi.webp in Resources */,
 				C805203BC4D5FBA8B4A992B9 /* motion-forest-wifi.webp in Resources */,
 				604F38DC6D6EBB1D605BF3B7 /* sweeto-pass.riv in Resources */,
+				A1971F76880B480CAE7BD703 /* sweeto-reward-foil-strip.png in Resources */,
+				A1971F76880B480CAE7BD704 /* sweeto-reward-foil.png in Resources */,
 				5BA5A24BD159054E9C2846AD /* Manrope.ttf in Resources */,
 				021DA4C9F20140EAFD19E2E2 /* BricolageGrotesque.ttf in Resources */,
 				8D0D86E72B97BDAD9CE98C91 /* Manrope-OFL.txt in Resources */,
@@ -402,6 +412,8 @@
 				6ADB203C89C4C59DE89C78B1 /* motion-berry-wifi.webp in Resources */,
 				587A9185211B3D80DFD16DD7 /* motion-forest-wifi.webp in Resources */,
 				46B067E336ECB6F3918B9B79 /* sweeto-pass.riv in Resources */,
+				A1971F76880B480CAE7BD701 /* sweeto-reward-foil-strip.png in Resources */,
+				A1971F76880B480CAE7BD702 /* sweeto-reward-foil.png in Resources */,
 				576CFC1FEC921EC09A709633 /* Manrope.ttf in Resources */,
 				2D8DF91C21ADB62A3C0CDD90 /* BricolageGrotesque.ttf in Resources */,
 				F05AA2FC442B9C1C20C6907C /* Manrope-OFL.txt in Resources */,

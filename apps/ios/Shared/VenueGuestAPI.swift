@@ -3,7 +3,7 @@ import Security
 import CryptoKit
 
 enum VenueGuestScreen: String, Hashable {
-  case menu, card, reviews, wifi
+  case menu, card, checkout, reviews, wifi
 }
 
 struct VenueGuestLink: Hashable {
@@ -39,10 +39,10 @@ struct VenueGuestLink: Hashable {
       slug = path[1] == "maka-maslo" ? "sweeto" : path[1]
       switch (path[0], path.count == 3 ? path[2] : nil) {
       case ("go", "table"), ("v", nil): screen = nil
-      case ("go", "counter"): screen = .card
+      case ("go", "counter"): screen = .checkout
       case ("go", "menu"): screen = .menu
       case ("v", let destination?):
-        guard let value = VenueGuestScreen(rawValue: destination) else { return nil }
+        guard let value = VenueGuestScreen(rawValue: destination), value != .checkout else { return nil }
         screen = value
       default: return nil
       }

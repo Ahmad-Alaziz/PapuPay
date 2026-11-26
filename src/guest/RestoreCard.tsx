@@ -4,6 +4,7 @@ import type { Language } from "./catalog";
 import { guestRequest, type LoyaltyCard } from "./api";
 import { useVenue } from "./VenueContext";
 import QRCode from "./QRCode";
+import { SweetoMemberCard } from "./SweetoCard";
 import { browserDemo, saveDemo, savedDemoChanged, savedDemoFragment, subscribeDemo } from "./saved-demo-card";
 import "./restore.css";
 
@@ -225,10 +226,10 @@ export function DemoPassSnapshot({ language, stamps }: { language: Language; sta
         <div><p>TestFlight</p><h2 id={heading} ref={title} tabIndex={-1}>{stamps === null ? t.savedDemo : t.demoTitle}</h2></div>
       </header>
       <p>{count === null ? t.emptyDemo : stamps === null ? t.savedNote : t.demoNote}</p>
-      {count !== null && <>
-        <CardSummary language={language} preview={{ code: "DEMO2026", stamps: count, goal: 6 }} />
-        <QRCode value="PAPUPAY-DEMO:SWEETO:DEMO2026" label={t.demoQr} />
-      </>}
+      {count !== null && (
+        <SweetoMemberCard key={stamps === null ? "saved" : stamps} language={language} demo stamps={count} goal={6} code="DEMO2026"
+          qr={<QRCode value="PAPUPAY-DEMO:SWEETO:DEMO2026" label={t.demoQr} />} />
+      )}
       {stamps !== null && saved === null && (
         <button className="sweeto-button papu-demo-save" type="button" onClick={() => void save(null)}>
           {t.saveDemo}<ArrowRight size={18} aria-hidden="true" />

@@ -25,7 +25,7 @@ action_runtime = 'sweeto-actions/runtime'
 motion_posters = %w[menu loyalty review wifi].flat_map do |kind|
   %W[motion-#{kind}.webp motion-berry-#{kind}.webp motion-forest-#{kind}.webp]
 end
-motion_refs = (["#{action_runtime}/sweeto-actions.riv"] + motion_posters.map { |name| "#{action_runtime}/#{name}" } + %w[sweeto-pass/runtime/sweeto-pass.riv])
+motion_refs = (["#{action_runtime}/sweeto-actions.riv"] + motion_posters.map { |name| "#{action_runtime}/#{name}" } + %w[sweeto-pass/runtime/sweeto-pass.riv sweeto-reward-foil/runtime/sweeto-reward-foil.png sweeto-reward-foil/runtime/sweeto-reward-foil-strip.png])
 motion_refs.each { |path| resource_refs << resources.new_file("../../../packages/motion/#{path}") }
 %w[Manrope.ttf BricolageGrotesque.ttf Manrope-OFL.txt BricolageGrotesque-OFL.txt].each do |name|
   resource_refs << resources.new_file("../../../packages/brand/fonts/#{name}")

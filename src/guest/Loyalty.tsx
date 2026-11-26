@@ -12,6 +12,8 @@ import {
 import type { Language } from "./catalog";
 import { copy } from "./copy";
 import GuestMotion from "../GuestMotion";
+import { SweetoCardFace, SweetoMemberCard } from "./SweetoCard";
+import { guestRoute } from "./route";
 import { observeStampBalance } from "./stampObservation";
 import {
   guestRequest,
@@ -157,7 +159,7 @@ export default function Loyalty({ language }: { language: Language }) {
   const [receipt, setReceipt] = useState<{ count: number; key: string } | null>(
     null,
   );
-  const [rewardArrival, setRewardArrival] = useState(false);
+  const [earnedRevision, setEarnedRevision] = useState("");
   const [testAvailable, setTestAvailable] = useState(false);
   const [wallet, setWallet] = useState<{
     path: string;
@@ -243,7 +245,6 @@ export default function Loyalty({ language }: { language: Language }) {
           setStatus("ready");
           setError(true);
           setReceipt(null);
-          setRewardArrival(false);
           return;
         }
         const gained = isSweeto
@@ -261,14 +262,13 @@ export default function Loyalty({ language }: { language: Language }) {
             count: gained,
             key: next.visits + "-" + next.updatedAt,
           });
-          setRewardArrival(next.rewardAvailable && !previous?.rewardAvailable);
+          setEarnedRevision(next.code + "-" + next.visits);
         } else if (
           !next ||
           next.checkout !== previous?.checkout ||
           next.stamps !== previous.stamps
         ) {
           setReceipt(null);
-          setRewardArrival(false);
         }
         current.current = next;
         setCard(next);
@@ -278,7 +278,6 @@ export default function Loyalty({ language }: { language: Language }) {
         if (id === request.current && !controller.signal.aborted) {
           if (current.current) {
             setReceipt(null);
-            setRewardArrival(false);
             setError(true);
           } else if (!silent)
             setStatus(
@@ -297,7 +296,6 @@ export default function Loyalty({ language }: { language: Language }) {
     setCard(null);
     setStatus("loading");
     setReceipt(null);
-    setRewardArrival(false);
     setSaving(false);
     setError(false);
     void load();
@@ -307,7 +305,6 @@ export default function Loyalty({ language }: { language: Language }) {
     function visibilityChanged() {
       if (document.hidden && isSweeto) {
         setReceipt(null);
-        setRewardArrival(false);
       } else if (!document.hidden && (isSweeto || current.current)) void load();
     }
     document.addEventListener("visibilitychange", visibilityChanged);
@@ -362,7 +359,6 @@ export default function Loyalty({ language }: { language: Language }) {
     if (isSweeto || !receipt) return;
     const id = window.setTimeout(() => {
       setReceipt(null);
-      setRewardArrival(false);
     }, 4200);
     return () => window.clearTimeout(id);
   }, [isSweeto, receipt]);
@@ -394,6 +390,15 @@ export default function Loyalty({ language }: { language: Language }) {
       if (id === request.current) setSaving(false);
     }
   }
+  const qr =
+    card &&
+    (typeof QRCode === "function" ? (
+      <QRCode value={card.checkout} label={t.qr} />
+    ) : (
+      <span role="status">
+        {QRCode === "unavailable" ? labels.useNumber : t.loadingCode}
+      </span>
+    ));
   const cardMeta = (
     <div className="sweeto-card-meta">
       <span
@@ -432,7 +437,16 @@ export default function Loyalty({ language }: { language: Language }) {
     <section
       className="sweeto-loyalty papu-loyalty"
       data-papu-paper={isSweeto || undefined}
-      aria-labelledby="papu-loyalty-title"
+      aria-labelledby={
+        isSweeto && status === "loading" && !card
+          ? undefined
+          : "papu-loyalty-title"
+      }
+      aria-label={
+        isSweeto && status === "loading" && !card
+          ? labels.paperTitle
+          : undefined
+      }
     >
       {isSweeto && status === "loading" && !card ? (
         <p role="status" className="sweeto-loading">
@@ -441,97 +455,107 @@ export default function Loyalty({ language }: { language: Language }) {
       ) : card ? (
         <div key="card">
           <div
-            className="papu-member-pass"
+            className={isSweeto ? "sweeto-card-page" : "papu-member-pass"}
             data-reward={(!error && card.rewardAvailable) || undefined}
           >
-            <header className="papu-pass-heading">
-              {isSweeto ? (
-                <span className="papu-pass-identity">
-                  {testAvailable ? labels.demoCard : labels.paperTitle}
-                </span>
-              ) : (
-                <PassIdentity name={venue.name} logo={venue.logoWhiteUrl} />
-              )}
-              <h2 id="papu-loyalty-title" tabIndex={-1} ref={focusHeading}>
-                {labels.checkout}
-              </h2>
-            </header>
-            <div className="papu-checkout-stub">
-              {!isSweeto &&
-                !error &&
-                (card.rewardAvailable || card.visits === 0) && (
-                  <p className="papu-checkout-prompt">
-                    {card.rewardAvailable
-                      ? labels.claimReward
-                      : labels.firstStamp}
+            {isSweeto ? (
+              <>
+                <h2
+                  className="sweeto-sr-only"
+                  id="papu-loyalty-title"
+                  tabIndex={-1}
+                  ref={focusHeading}
+                >
+                  {labels.paperTitle}
+                </h2>
+                <SweetoMemberCard
+                  key={card.code}
+                  language={language}
+                  stamps={card.stamps}
+                  goal={card.goal}
+                  code={card.code}
+                  qr={qr}
+                  demo={testAvailable}
+                  stale={error}
+                  earnedRevision={earnedRevision}
+                  earnedKey={error ? undefined : receipt?.key}
+                  initiallyAtCounter={
+                    guestRoute(location.pathname).placement === "counter"
+                  }
+                />
+                {cardMeta}
+              </>
+            ) : (
+              <>
+                <header className="papu-pass-heading">
+                  <PassIdentity name={venue.name} logo={venue.logoWhiteUrl} />
+                  <h2 id="papu-loyalty-title" tabIndex={-1} ref={focusHeading}>
+                    {labels.checkout}
+                  </h2>
+                </header>
+                <div className="papu-checkout-stub">
+                  {!error && (card.rewardAvailable || card.visits === 0) && (
+                    <p className="papu-checkout-prompt">
+                      {card.rewardAvailable
+                        ? labels.claimReward
+                        : labels.firstStamp}
+                    </p>
+                  )}
+                  <div
+                    className="papu-qr-mount"
+                    data-unavailable={QRCode === "unavailable" || undefined}
+                  >
+                    {qr}
+                  </div>
+                  <p className="papu-checkout-number">
+                    <span>{labels.cardNumber}</span>{" "}
+                    <code dir="ltr">{card.code}</code>
                   </p>
-                )}
-              <div
-                className="papu-qr-mount"
-                data-unavailable={QRCode === "unavailable" || undefined}
-              >
-                {typeof QRCode === "function" ? (
-                  <QRCode value={card.checkout} label={t.qr} />
-                ) : (
-                  <span role="status">
-                    {QRCode === "unavailable"
-                      ? labels.useNumber
-                      : t.loadingCode}
-                  </span>
-                )}
-              </div>
-              <p className="papu-checkout-number">
-                <span>{labels.cardNumber}</span>{" "}
-                <code dir="ltr">{card.code}</code>
-              </p>
-            </div>
-            <div
-              className="papu-member-face"
-              data-reward={(!error && card.rewardAvailable) || undefined}
-              data-reward-arrival={
-                (isSweeto && !error && rewardArrival && !!receipt) || undefined
-              }
-            >
-              <div
-                className="papu-stamp-count"
-                role="status"
-                aria-atomic="true"
-              >
-                <strong>
-                  {error ? labels.lastBalance : rewardProgress(card, language)}
-                </strong>
-                <span className="papu-earned-total">
-                  {`${card.stamps} ${t.from} ${card.goal}`}
-                  <span className="sweeto-sr-only">{` ${t.progress}`}</span>
-                </span>
-              </div>
-              <ol className="papu-member-stamps" aria-hidden="true">
-                {Array.from({ length: card.goal }, (_, i) => {
-                  const earned = i < card.stamps;
-                  const newest =
-                    !!receipt && i === Math.min(card.stamps, card.goal) - 1;
-                  return (
-                    <li
-                      key={`${i}-${earned}`}
-                      className={earned ? "earned" : ""}
-                      data-fresh={newest || undefined}
-                    >
-                      {earned ? (
-                        <GuestMotion
-                          playKey={newest ? receipt.key : undefined}
-                        />
-                      ) : i === card.goal - 1 ? (
-                        <Gift size={18} strokeWidth={1.7} />
-                      ) : null}
-                    </li>
-                  );
-                })}
-              </ol>
-              {isSweeto && cardMeta}
-              {isSweeto && !error && card.rewardAvailable && (
-                <span className="papu-reward-band" aria-hidden="true" />
-              )}
-            </div>
+                </div>
+                <div
+                  className="papu-member-face"
+                  data-reward={(!error && card.rewardAvailable) || undefined}
+                >
+                  <div
+                    className="papu-stamp-count"
+                    role="status"
+                    aria-atomic="true"
+                  >
+                    <strong>
+                      {error
+                        ? labels.lastBalance
+                        : rewardProgress(card, language)}
+                    </strong>
+                    <span className="papu-earned-total">
+                      {`${card.stamps} ${t.from} ${card.goal}`}
+                      <span className="sweeto-sr-only">{` ${t.progress}`}</span>
+                    </span>
+                  </div>
+                  <ol className="papu-member-stamps" aria-hidden="true">
+                    {Array.from({ length: card.goal }, (_, i) => {
+                      const earned = i < card.stamps;
+                      const newest =
+                        !!receipt && i === Math.min(card.stamps, card.goal) - 1;
+                      return (
+                        <li
+                          key={`${i}-${earned}`}
+                          className={earned ? "earned" : ""}
+                          data-fresh={newest || undefined}
+                        >
+                          {earned ? (
+                            <GuestMotion
+                              playKey={newest ? receipt.key : undefined}
+                            />
+                          ) : i === card.goal - 1 ? (
+                            <Gift size={18} strokeWidth={1.7} />
+                          ) : null}
+                        </li>
+                      );
+                    })}
+                  </ol>
+                </div>
+              </>
+            )}
             {(walletOptions || testAvailable) && (
               <div className="papu-loyalty-wallet">
                 {applePass || googleReady ? (
@@ -578,40 +602,58 @@ export default function Loyalty({ language }: { language: Language }) {
         </div>
       ) : (
         <div key="join">
-          <div className="papu-member-pass">
-            <header className="papu-pass-heading">
-              {isSweeto ? (
-                <span className="papu-pass-identity">
-                  {testAvailable ? labels.demoCard : venue.name}
-                </span>
-              ) : (
-                <PassIdentity name={venue.name} logo={venue.logoWhiteUrl} />
-              )}
-              <h2 id="papu-loyalty-title">
-                {isSweeto
-                  ? labels.paperTitle
-                  : status === "ready"
-                    ? t.joinIntro
-                    : labels.title}
-              </h2>
-              {isSweeto && status === "ready" && (
-                <span className="papu-join-seal" aria-hidden="true">
-                  <GuestMotion />
-                </span>
-              )}
-            </header>
+          <div
+            className={
+              isSweeto && status === "ready"
+                ? "sweeto-card-page"
+                : "papu-member-pass"
+            }
+          >
+            {isSweeto && status === "ready" ? (
+              <>
+                <h2 className="sweeto-sr-only" id="papu-loyalty-title">
+                  {labels.paperTitle}
+                </h2>
+                <SweetoCardFace
+                  language={language}
+                  goal={6}
+                  stamps={0}
+                  demo={testAvailable}
+                  unissued
+                />
+              </>
+            ) : (
+              <header className="papu-pass-heading">
+                {isSweeto ? (
+                  <span className="papu-pass-identity">
+                    {testAvailable ? labels.demoCard : venue.name}
+                  </span>
+                ) : (
+                  <PassIdentity name={venue.name} logo={venue.logoWhiteUrl} />
+                )}
+                <h2 id="papu-loyalty-title">
+                  {isSweeto
+                    ? labels.paperTitle
+                    : status === "ready"
+                      ? t.joinIntro
+                      : labels.title}
+                </h2>
+              </header>
+            )}
             {status === "ready" && (
               <>
-                <div className="papu-join-illustration" aria-hidden="true">
-                  <ol className="papu-member-stamps">
-                    {Array.from({ length: 5 }, (_, i) => (
-                      <li key={i} />
-                    ))}
-                    <li>
-                      <Gift size={18} strokeWidth={1.7} />
-                    </li>
-                  </ol>
-                </div>
+                {!isSweeto && (
+                  <div className="papu-join-illustration" aria-hidden="true">
+                    <ol className="papu-member-stamps">
+                      {Array.from({ length: 5 }, (_, i) => (
+                        <li key={i} />
+                      ))}
+                      <li>
+                        <Gift size={18} strokeWidth={1.7} />
+                      </li>
+                    </ol>
+                  </div>
+                )}
                 <div className="papu-join-actions">
                   <p className="sweeto-join-description">{t.joinText}</p>
                   <motion.button

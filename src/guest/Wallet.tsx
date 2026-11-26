@@ -14,7 +14,7 @@ import {
   readWalletAvailability,
   type WalletAvailability,
 } from "./walletAvailability";
-import PapayaMark from "./PapayaMark";
+import { SweetoCardFace, SweetoMemberCard } from "./SweetoCard";
 import "./guest-flow.css";
 import "./wallet.css";
 
@@ -193,83 +193,88 @@ export default function Wallet({ language }: { language: Language }) {
       <header className="papu-flow-heading papu-wallet-heading">
         <h2 id="wallet-title">{t.title}</h2>
       </header>
-      <div className="papu-wallet-stage" role="group" aria-label={t.preview}>
-        <div className="papu-wallet-preview">
-          <div className="papu-wallet-preview-brand">
-            {venue.id === "sweeto" ? (
-              <>
-                <span className="papu-wallet-wordmark">
-                  <PapayaMark />
-                  Papu<span>Pay</span>
-                </span>
-                <span className="papu-wallet-venue">{venue.name}</span>
-              </>
-            ) : venue.logoWhiteUrl ? (
-              <img src={venue.logoWhiteUrl} alt={venue.name} />
-            ) : (
-              <strong>{venue.name}</strong>
+      {venue.id === "sweeto" ? (
+        <div role="group" aria-label={t.preview}>
+          {card ? (
+            <SweetoMemberCard
+              language={language}
+              stamps={card.stamps}
+              goal={card.goal}
+              code={card.code}
+              qr={
+                <Suspense fallback={<span>{t.loading}</span>}>
+                  <QRCode value={card.checkout} label={t.qr} />
+                </Suspense>
+              }
+            />
+          ) : (
+            <SweetoCardFace language={language} stamps={0} goal={6} unissued />
+          )}
+        </div>
+      ) : (
+        <div className="papu-wallet-stage" role="group" aria-label={t.preview}>
+          <div className="papu-wallet-preview">
+            <div className="papu-wallet-preview-brand">
+              {venue.logoWhiteUrl ? (
+                <img src={venue.logoWhiteUrl} alt={venue.name} />
+              ) : (
+                <strong>{venue.name}</strong>
+              )}
+            </div>
+            {card && (
+              <div className="papu-wallet-strip">
+                {card.goal > 0 && card.goal <= 8 && (
+                  <div className="papu-wallet-punches" aria-hidden="true">
+                    {Array.from({ length: card.goal }, (_, index) => (
+                      <span
+                        key={index}
+                        data-earned={index < card.stamps || undefined}
+                        data-reward={index === card.goal - 1 || undefined}
+                      >
+                        {index === card.goal - 1 ? (
+                          <Gift />
+                        ) : index < card.stamps ? (
+                          <CakeSlice />
+                        ) : null}
+                      </span>
+                    ))}
+                  </div>
+                )}
+                <p>
+                  {card.rewardAvailable
+                    ? t.reward
+                    : `${t.stamps} ${card.stamps} / ${card.goal}`}
+                </p>
+              </div>
             )}
-          </div>
-          {card && (
-            <div className="papu-wallet-strip">
-              {card.goal > 0 && card.goal <= 8 && (
-                <div className="papu-wallet-punches" aria-hidden="true">
-                  {Array.from({ length: card.goal }, (_, index) => (
-                    <span
-                      key={index}
-                      data-earned={index < card.stamps || undefined}
-                      data-reward={index === card.goal - 1 || undefined}
-                    >
-                      {venue.id === "sweeto" && index < card.stamps ? (
-                        <img
-                          src="/assets/sweeto/sweeto-pass.webp"
-                          alt=""
-                          width="40"
-                          height="40"
-                        />
-                      ) : index === card.goal - 1 ? (
-                        <Gift />
-                      ) : index < card.stamps ? (
-                        <CakeSlice />
-                      ) : null}
-                    </span>
-                  ))}
+            <div className="papu-wallet-fields">
+              {card ? (
+                <div className="papu-wallet-barcode">
+                  <Suspense
+                    fallback={
+                      <div
+                        className="papu-wallet-barcode-placeholder"
+                        aria-hidden="true"
+                      />
+                    }
+                  >
+                    <QRCode
+                      key={card.checkout}
+                      value={card.checkout}
+                      label={t.qr}
+                    />
+                  </Suspense>
+                  <code>{card.code}</code>
+                </div>
+              ) : (
+                <div className="papu-wallet-placeholder" aria-hidden="true">
+                  <QrCode size={34} strokeWidth={1.35} />
                 </div>
               )}
-              <p>
-                {card.rewardAvailable
-                  ? t.reward
-                  : `${t.stamps} ${card.stamps} / ${card.goal}`}
-              </p>
             </div>
-          )}
-          <div className="papu-wallet-fields">
-            {card ? (
-              <div className="papu-wallet-barcode">
-                <Suspense
-                  fallback={
-                    <div
-                      className="papu-wallet-barcode-placeholder"
-                      aria-hidden="true"
-                    />
-                  }
-                >
-                  <QRCode
-                    key={card.checkout}
-                    value={card.checkout}
-                    label={t.qr}
-                  />
-                </Suspense>
-                <code>{card.code}</code>
-              </div>
-            ) : (
-              <div className="papu-wallet-placeholder" aria-hidden="true">
-                <QrCode size={34} strokeWidth={1.35} />
-              </div>
-            )}
           </div>
         </div>
-      </div>
+      )}
 
       {status === "loading" && (
         <p className="sweeto-wallet-note" role="status">

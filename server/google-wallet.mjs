@@ -49,8 +49,22 @@ export function createGoogleWalletSigner(env) {
         },
       };
       // The card is a reusable checkout identity. Omitting the balance keeps the pass accurate without a sync service.
-      const content = `${encode({ alg: "RS256", typ: "JWT" })}.${encode(claims)}`;
-      const jwt = `${content}.${sign("RSA-SHA256", Buffer.from(content), material.key).toString("base64url")}`;
+      const object = claims.payload.loyaltyObjects[0];
+      function signedToken() {
+        const content = `${encode({ alg: "RS256", typ: "JWT" })}.${encode(claims)}`;
+        return `${content}.${sign("RSA-SHA256", Buffer.from(content), material.key).toString("base64url")}`;
+      }
+      if (brand.id === "sweeto" && brand.photoUrl === "/assets/sweeto/matylda-puddle.webp") {
+        object.heroImage = {
+          sourceUri: { uri: new URL("/assets/sweeto/wallet-matylda.jpg", origin).href },
+          contentDescription: { defaultValue: { language: "pl", value: "Matylda czekoladowa w pudełku Sweeto" } },
+        };
+      }
+      let jwt = signedToken();
+      if (jwt.length > 1800 && object.heroImage) {
+        delete object.heroImage;
+        jwt = signedToken();
+      }
       return jwt.length <= 1800 ? `https://pay.google.com/gp/v/save/${jwt}` : null;
     },
   };

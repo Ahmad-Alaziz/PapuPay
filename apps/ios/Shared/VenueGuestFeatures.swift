@@ -554,6 +554,8 @@ struct VenueLoyaltyView: View {
   let language: SweetoLanguage
   let palette: VenueGuestPalette
   let showPreview: Bool
+  let logo: URL?
+  @State var showingCheckout = false
   @Environment(\.scenePhase) private var scenePhase
   @Environment(\.openURL) private var openURL
   @Environment(\.dynamicTypeSize) private var typeSize
@@ -625,7 +627,10 @@ struct VenueLoyaltyView: View {
     ScrollView {
       VStack(alignment: .leading, spacing: 15) {
         if let card {
-          checkout(card)
+          Group {
+            if isSweeto { sweetoMembership(card) }
+            else { checkout(card) }
+          }
             .transition(reduceMotion ? .identity : .offset(y: 12).combined(with: .opacity))
           if demo != nil { demoEntry }
         } else if ready {
@@ -638,7 +643,10 @@ struct VenueLoyaltyView: View {
               Task { await refresh() }
             }
           } else {
-            firstCard
+            Group {
+              if isSweeto { sweetoMembership(nil) }
+              else { firstCard }
+            }
               .transition(reduceMotion ? .identity : .opacity)
             if issuanceFailed {
               Label(t("Nie udało się utworzyć karty. Spróbuj ponownie.", "Couldn’t create your card. Please try again.", "Не удалось создать карту. Попробуйте ещё раз."), systemImage: "exclamationmark.circle")
@@ -765,6 +773,168 @@ struct VenueLoyaltyView: View {
     }
   }
 
+  private func sweetoMembership(_ card: VenueLoyaltyCard?) -> some View {
+    let backVisible = card != nil && showingCheckout
+    let radius: CGFloat = 20
+    return VStack(alignment: .leading, spacing: 16) {
+      ZStack {
+        if let card, backVisible {
+          PocketCardLayout { checkoutFace(card) }
+            .background(.white, in: .rect(cornerRadius: radius))
+            .clipShape(.rect(cornerRadius: radius))
+            .transition(cardTurn(forward: true))
+        } else {
+          PocketCardLayout { stampFace(card) }
+            .background(receiptInk, in: .rect(cornerRadius: radius))
+            .clipShape(.rect(cornerRadius: radius))
+            .transition(cardTurn(forward: false))
+        }
+      }
+      .frame(maxWidth: .infinity)
+      .shadow(color: receiptInk.opacity(0.17), radius: 8, x: 0, y: 5)
+      if let card {
+        cardEntryButton(
+          title: backVisible ? t("Pokaż pieczątki", "Show stamps", "Показать отметки")
+            : t("Pokaż przy kasie", "Show at checkout", "Показать на кассе"),
+          systemImage: backVisible ? "rectangle.2.swap" : "qrcode"
+        ) {
+          withAnimation(reduceMotion ? nil : .easeInOut(duration: 0.32)) { showingCheckout.toggle() }
+        }
+        .accessibilityIdentifier("sweeto-membership-turn")
+        if showingSavedBalance { savedBalanceStatus }
+        if receivedStamps > 0 && !showingSavedBalance {
+          Label(stampReceipt(receivedStamps), systemImage: "checkmark.seal.fill")
+            .font(.subheadline.weight(.semibold))
+        }
+        if card.rewardAvailable && !showingSavedBalance && demo == nil {
+          Text(t("Pokaż kod obsłudze, aby odebrać nagrodę.", "Show your code to staff to claim your reward.", "Покажите код сотрудникам, чтобы получить награду."))
+            .font(.subheadline)
+        }
+        walletSection
+      } else {
+        Text(t("Pokaż kod przy kasie, żeby zebrać pieczątkę. Pełna karta to nagroda.", "Show your code at checkout to collect a stamp. Fill the card to claim your reward.", "Показывайте код на кассе и собирайте отметки. Заполните карту, чтобы получить награду."))
+          .font(.body).fixedSize(horizontal: false, vertical: true)
+        cardEntryButton(
+          title: creating ? t("Tworzenie karty…", "Creating your card…", "Создаём карту…")
+            : demo != nil ? t("Utwórz kartę demo", "Create a demo card", "Создать демо-карту")
+            : t("Utwórz kartę", "Create my card", "Создать карту"),
+          systemImage: "arrow.right"
+        ) { Task { await createCard() } }
+          .disabled(creating)
+      }
+    }
+  }
+
+  private func cardTurn(forward: Bool) -> AnyTransition {
+    guard !reduceMotion else { return .identity }
+    let edge = AnyTransition.modifier(
+      active: CardFold(degrees: forward ? 78 : -78),
+      identity: CardFold(degrees: 0)
+    ).combined(with: .opacity)
+    return .asymmetric(insertion: edge.animation(.easeOut(duration: 0.2).delay(0.12)),
+                       removal: edge.animation(.easeIn(duration: 0.14)))
+  }
+
+  private func stampFace(_ card: VenueLoyaltyCard?) -> some View {
+    let balance = card?.stamps ?? 0
+    let goal = card?.goal ?? VenueDemoLoyalty.goal
+    let kind = demo == nil ? t("Karta na pieczątki", "Stamp card", "Карта отметок")
+      : t("Karta demo", "Demo card", "Демо-карта")
+    let summary = if let card {
+      showingSavedBalance ? t("Zapisane pieczątki", "Last saved stamps", "Сохранённые отметки")
+        : card.rewardAvailable ? t("Nagroda do odbioru", "Reward ready to claim", "Награда готова")
+        : t("\(remainingStamps(card)) do nagrody", "\(remainingStamps(card)) to your reward", "\(remainingStamps(card)) до награды")
+    } else {
+      t("Zbierz komplet pieczątek", "Collect your stamps", "Соберите все отметки")
+    }
+    return VStack(alignment: .leading, spacing: 0) {
+      VStack(alignment: .leading, spacing: 6) {
+        ViewThatFits(in: .horizontal) {
+          HStack(alignment: .center, spacing: 16) {
+            VenueIdentityMark(name: venueName, isSweeto: true, logo: logo, ink: cream, width: 105)
+            Spacer(minLength: 0)
+            Text(kind).fixedSize()
+          }
+          VStack(alignment: .leading, spacing: 5) {
+            VenueIdentityMark(name: venueName, isSweeto: true, logo: logo, ink: cream, width: 105)
+            Text(kind)
+          }
+        }
+        .font(.caption.weight(.semibold))
+        Spacer(minLength: 8)
+        HStack(alignment: .firstTextBaseline, spacing: 6) {
+          Text(String(balance)).font(palette.poster(54))
+          Text("/ " + String(goal)).font(palette.poster(31)).foregroundStyle(Color(hex: "F8AE73"))
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(t("Pieczątki", "Stamps", "Отметки"))
+        .accessibilityValue(t("\(balance) z \(goal)", "\(balance) of \(goal)", "\(balance) из \(goal)"))
+        .accessibilityFocused($checkoutTitleFocused)
+        .contentTransition(reduceMotion ? .identity : .numericText())
+        .animation(reduceMotion ? nil : .easeOut(duration: 0.20), value: balance)
+        Text(summary).font(.subheadline.weight(.semibold))
+          .fixedSize(horizontal: false, vertical: true)
+      }
+      .padding(.horizontal, 18).padding(.vertical, 13)
+      .foregroundStyle(cream)
+      .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+      .background(alignment: .trailing) {
+        GeometryReader { geometry in
+          let side = min(200, geometry.size.width * 0.48)
+          GuestPapayaMark(palette: palette, outline: Color(hex: "658A65"))
+            .aspectRatio(80 / 88, contentMode: .fit).frame(width: side)
+            .rotationEffect(.degrees(14))
+            .position(x: geometry.size.width - side * 0.34, y: geometry.size.height * 0.5 + 7)
+        }
+        .mask(LinearGradient(stops: [.init(color: .clear, location: 0.42), .init(color: .white.opacity(0.44), location: 0.72), .init(color: .white, location: 1)], startPoint: .leading, endPoint: .trailing))
+        .clipped().allowsHitTesting(false)
+      }
+      stampRow(count: balance, goal: goal, animateNewest: demo == nil && receivedStamps > 0, diameter: 38)
+        .accessibilityHidden(true)
+        .padding(.horizontal, 14).padding(.vertical, 11)
+        .background(Color(hex: "FFD3A4"))
+    }
+    .task {
+      guard focusCheckoutOnCreate else { return }
+      await Task.yield()
+      guard !Task.isCancelled else { return }
+      checkoutTitleFocused = true
+      focusCheckoutOnCreate = false
+    }
+  }
+
+  private func checkoutFace(_ card: VenueLoyaltyCard) -> some View {
+    let arrangement = typeSize >= .xxLarge
+      ? AnyLayout(VStackLayout(alignment: .leading, spacing: 14))
+      : AnyLayout(HStackLayout(alignment: .center, spacing: 14))
+    return arrangement {
+      VStack(alignment: .leading, spacing: 8) {
+        VenueIdentityMark(name: venueName, isSweeto: true, logo: nil, ink: receiptInk, width: 78)
+        Text(t("Kod przy kasie", "Checkout code", "Код на кассе"))
+          .font(palette.display(.title3)).fixedSize(horizontal: false, vertical: true)
+          .accessibilityAddTraits(.isHeader)
+          .accessibilityFocused($checkoutTitleFocused)
+        Text(card.code).font(.system(.subheadline, design: .monospaced, weight: .semibold))
+          .textSelection(.enabled)
+          .accessibilityLabel(t("Numer karty \(card.code)", "Card number \(card.code)", "Номер карты \(card.code)"))
+      }
+      .frame(maxWidth: .infinity, alignment: .leading)
+      GuestCheckoutCode(value: card.checkout, unavailable: t("Użyj numeru karty", "Use the card number", "Используйте номер карты"), side: 160)
+        .accessibilityLabel(t("Kod QR karty", "Card QR code", "QR-код карты"))
+        .frame(maxWidth: typeSize >= .xxLarge ? .infinity : 160)
+    }
+    .foregroundStyle(receiptInk)
+    .padding(15)
+    .frame(maxHeight: .infinity, alignment: .center)
+    .task {
+      guard focusCheckoutOnCreate else { return }
+      await Task.yield()
+      guard !Task.isCancelled else { return }
+      checkoutTitleFocused = true
+      focusCheckoutOnCreate = false
+    }
+  }
+
   private var firstCard: some View {
     VStack(alignment: .leading, spacing: 0) {
       VStack(alignment: .leading, spacing: 8) {
@@ -787,12 +957,6 @@ struct VenueLoyaltyView: View {
       .padding(20).frame(maxWidth: .infinity, alignment: .leading)
       .foregroundStyle(cream).background(receiptInk)
       .overlay { GuestPaperGrain(ink: cream).opacity(0.45) }
-      if isSweeto {
-        stampRow(count: 0, goal: VenueDemoLoyalty.goal)
-          .accessibilityHidden(true)
-          .padding(.horizontal, 15).padding(.vertical, 11)
-          .background(stampStock)
-      }
       receiptSeam
       VStack(alignment: .leading, spacing: 15) {
         Text(t("Pokaż kod przy kasie, żeby zebrać pieczątkę. Pełna karta to nagroda.", "Show your code at the counter to collect a stamp. Fill the card to claim your reward.", "Показывайте код на кассе и собирайте отметки. Заполните карту, чтобы получить награду."))
@@ -977,10 +1141,10 @@ struct VenueLoyaltyView: View {
     .accessibilityHidden(true)
   }
 
-  @ViewBuilder private func printedSeal(playback: SweetoStampPlayback? = nil) -> some View {
+  @ViewBuilder private func printedSeal(playback: SweetoStampPlayback? = nil, isReward: Bool = false) -> some View {
     let fallback = GuestPrintedSeal(palette: palette, fill: isSweeto ? palette.primary : palette.peach, ink: palette.ink)
     if isSweeto {
-      SweetoStampImprint(playback: playback, guideInk: receiptInk) { fallback.rotationEffect(.degrees(-11)) }
+      SweetoStampImprint(playback: playback, guideInk: receiptInk, isReward: isReward) { fallback.rotationEffect(.degrees(-11)) }
     } else {
       fallback
     }
@@ -995,13 +1159,17 @@ struct VenueLoyaltyView: View {
         let isReward = index == goal - 1
         ZStack {
           if stamped {
-            printedSeal(playback: animateNewest && index == count - 1 ? stampPlayback : nil)
+            printedSeal(playback: animateNewest && index == count - 1 ? stampPlayback : nil, isReward: isReward)
           } else if isReward {
             Circle().fill(cream)
             Circle().strokeBorder(receiptInk, lineWidth: 1.5)
             Image(systemName: "gift").font(.system(size: 15, weight: .semibold)).foregroundStyle(receiptInk)
           } else {
             Circle().strokeBorder(receiptInk.opacity(0.64), style: StrokeStyle(lineWidth: 1, dash: [2, 3]))
+            if isSweeto {
+              Text(String(index + 1)).font(.system(size: 14, weight: .bold, design: .rounded))
+                .foregroundStyle(receiptInk)
+            }
           }
         }
         .frame(maxWidth: diameter)
@@ -1045,7 +1213,7 @@ struct VenueLoyaltyView: View {
 
   @ViewBuilder private var walletSection: some View {
     if walletChecked, walletMembership == card?.checkout, walletLookup != nil || installedPass != nil {
-      receiptSeam
+      if !isSweeto { receiptSeam }
       VStack(spacing: 11) {
         if walletLookupFailed, walletLookup != nil {
           cardEntryButton(
@@ -1059,8 +1227,8 @@ struct VenueLoyaltyView: View {
         } else if showPreview || demo != nil {
           cardEntryButton(
             title: demo != nil
-              ? t("Podgląd karty demo w Wallet", "Preview demo Wallet pass", "Предпросмотр демо-карты Wallet")
-              : t("Podgląd karty w Wallet", "Preview Wallet pass", "Предпросмотр карты Wallet"),
+              ? t("Podgląd karty demo", "Preview demo card", "Предпросмотр демо-карты")
+              : t("Podgląd karty", "Preview card", "Предпросмотр карты"),
             systemImage: "wallet.pass"
           ) { preview = true }
         } else {
@@ -1190,34 +1358,42 @@ struct VenueLoyaltyView: View {
       ScrollView {
         if let card {
           VStack(alignment: .leading, spacing: 16) {
-            Text(t("Podgląd w Wallet", "Wallet preview", "Предпросмотр Wallet"))
+            Text(isSweeto ? t("Podgląd karty", "Card preview", "Предпросмотр карты") : t("Podgląd w Wallet", "Wallet preview", "Предпросмотр Wallet"))
               .font(palette.display(.title))
               .foregroundStyle(receiptInk)
               .accessibilityAddTraits(.isHeader)
-            VStack(alignment: .leading, spacing: 0) {
-              walletIdentity
-              previewStampBand(card)
-              previewField(
-                t("Przy kasie", "At checkout", "На кассе"),
-                value: t("Pokaż ten kod", "Show this code", "Покажите код")
-              )
-              .padding(.horizontal, 18).padding(.top, 15)
-              VStack(spacing: 5) {
-                GuestCheckoutCode(value: card.checkout, unavailable: t("Kod QR niedostępny", "QR code unavailable", "QR-код недоступен"))
-                  .accessibilityLabel(t("Kod QR karty", "Card QR code", "QR-код карты"))
-                Text(card.code)
-                  .font(.system(.caption, design: .monospaced, weight: .semibold))
-                  .tracking(1.5).foregroundStyle(palette.ink).textSelection(.enabled)
-                  .accessibilityLabel(t("Numer karty \(card.code)", "Card number \(card.code)", "Номер карты \(card.code)"))
+            if isSweeto {
+              PocketCardLayout { stampFace(card) }
+                .background(receiptInk)
+                .clipShape(.rect(cornerRadius: 20))
+              checkoutFace(card)
+                .background(.white, in: .rect(cornerRadius: 20))
+            } else {
+              VStack(alignment: .leading, spacing: 0) {
+                walletIdentity
+                previewStampBand(card)
+                previewField(
+                  t("Przy kasie", "At checkout", "На кассе"),
+                  value: t("Pokaż ten kod", "Show this code", "Покажите код")
+                )
+                .padding(.horizontal, 18).padding(.top, 15)
+                VStack(spacing: 5) {
+                  GuestCheckoutCode(value: card.checkout, unavailable: t("Kod QR niedostępny", "QR code unavailable", "QR-код недоступен"))
+                    .accessibilityLabel(t("Kod QR karty", "Card QR code", "QR-код карты"))
+                  Text(card.code)
+                    .font(.system(.caption, design: .monospaced, weight: .semibold))
+                    .tracking(1.5).foregroundStyle(palette.ink).textSelection(.enabled)
+                    .accessibilityLabel(t("Numer karty \(card.code)", "Card number \(card.code)", "Номер карты \(card.code)"))
+                }
+                .padding(8)
+                .background(.white, in: .rect(cornerRadius: 8))
+                .frame(maxWidth: .infinity)
+                .padding(16)
               }
-              .padding(8)
-              .background(.white, in: .rect(cornerRadius: 8))
-              .frame(maxWidth: .infinity)
-              .padding(16)
+              .background(receiptInk, in: .rect(cornerRadius: palette.actionCorner))
+              .clipShape(.rect(cornerRadius: palette.actionCorner))
+              .shadow(color: receiptInk.opacity(0.14), radius: 12, x: 0, y: 6)
             }
-            .background(receiptInk, in: .rect(cornerRadius: palette.actionCorner))
-            .clipShape(.rect(cornerRadius: palette.actionCorner))
-            .shadow(color: receiptInk.opacity(0.14), radius: 12, x: 0, y: 6)
             Text(demo != nil
               ? t("Karta demonstracyjna. Kod działa tylko w symulacji kasy.", "Demo pass. This code works in the counter simulation.", "Демо-карта. Код предназначен для симуляции кассы.")
               : t("To podgląd karty. Przy kasie pokaż ten kod QR.", "This is a pass preview. You can show this QR code at the counter.", "Это предварительный просмотр. Покажите этот QR-код на кассе."))
@@ -1419,6 +1595,9 @@ struct VenueLoyaltyView: View {
         if case .earned(let count) = change, let found {
           receivedStamps = count
           rewardArrival = found.rewardAvailable
+          if showingCheckout {
+            withAnimation(reduceMotion ? nil : .easeInOut(duration: 0.32)) { showingCheckout = false }
+          }
           confirmStampMotion()
           let reward = t("Nagroda do odbioru.", "Your reward is ready.", "Награда готова.")
           AccessibilityNotification.Announcement(stampReceipt(count) + (rewardArrival ? " " + reward : "")).post()
@@ -1500,7 +1679,7 @@ struct VenueLoyaltyView: View {
   }
 
   @MainActor private func confirmStampMotion() {
-    stampPlayback = isSweeto && !reduceMotion && scenePhase == .active ? SweetoStampPlayback() : nil
+    stampPlayback = isSweeto && !reduceMotion && scenePhase == .active ? SweetoStampPlayback(celebratesReward: rewardArrival) : nil
     stampMotion += 1
   }
 
@@ -1687,6 +1866,27 @@ private struct GuestCheckoutCode: View {
     .accessibilityValue(rendered?.value == value && rendered?.bitmap == nil ? unavailable : "")
     .task(id: value) { rendered = (value, CheckoutQR.image(value)) }
     .transaction { $0.animation = nil }
+  }
+}
+
+/// Keeps the printed card proportions at typical sizes and grows for larger type.
+private struct PocketCardLayout: Layout {
+  func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+    let width = proposal.width ?? 340
+    let content = subviews[0].sizeThatFits(.init(width: width, height: nil))
+    return CGSize(width: width, height: max(width / 1.586, content.height))
+  }
+
+  func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+    subviews[0].place(at: bounds.origin, anchor: .topLeading, proposal: ProposedViewSize(bounds.size))
+  }
+}
+
+private struct CardFold: ViewModifier {
+  let degrees: Double
+
+  func body(content: Content) -> some View {
+    content.rotation3DEffect(.degrees(degrees), axis: (x: 0, y: 1, z: 0), perspective: 0.55)
   }
 }
 

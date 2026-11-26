@@ -1,0 +1,263 @@
+.sweeto-card-holder,
+.sweeto-physical-card,
+.sweeto-code-side {
+  width: 100%;
+  min-width: 0;
+}
+.sweeto-physical-card,
+.sweeto-code-side {
+  aspect-ratio: 1.586;
+  height: auto;
+  border: 1px solid #12392b24;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px #12392b17;
+}
+.sweeto-physical-card {
+  display: grid;
+  aspect-ratio: auto;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: 1fr auto;
+  background: #12392b;
+  color: #fff5e7;
+}
+/* The spacer establishes the card ratio. Readable content can make either row taller. */
+.sweeto-physical-card::before {
+  content: "";
+  grid-area: 1 / 1 / 3 / 2;
+  width: 100%;
+  aspect-ratio: 1.586;
+  visibility: hidden;
+  pointer-events: none;
+}
+.sweeto-card-print {
+  grid-area: 1 / 1;
+  min-height: min-content;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 14px 18px 12px;
+}
+.sweeto-card-print > svg.sweeto-card-engraving {
+  position: absolute;
+  z-index: -1;
+  top: 48%;
+  right: -10%;
+  width: 53%;
+  height: auto;
+  transform: translateY(-50%) rotate(14deg);
+  mask-image: linear-gradient(90deg, transparent, black 56%);
+}
+.sweeto-card-engraving :is(path, rect) {
+  fill: none;
+  stroke: #658a65;
+  stroke-width: 0.85;
+}
+.sweeto-card-brand {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 6px 12px;
+  font-size: 0.78rem;
+  font-weight: 650;
+}
+.sweeto-card-brand img {
+  width: auto;
+  max-width: min(105px, 65%);
+  height: 20px;
+  object-fit: contain;
+}
+.sweeto-card-balance {
+  display: grid;
+  justify-items: start;
+  gap: 3px;
+}
+.sweeto-card-balance > strong {
+  font:
+    400 clamp(3rem, 13vw, 3.6rem)/1 "Papu Condensed",
+    sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+.sweeto-card-balance small {
+  font-size: 0.57em;
+  color: #f8ae73;
+}
+.sweeto-card-balance > span:last-child {
+  font-weight: 650;
+  font-size: 0.875rem;
+  line-height: 1.3;
+}
+.sweeto-card-impressions {
+  grid-area: 2 / 1;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(28px, 100%), 1fr));
+  align-items: center;
+  justify-items: center;
+  gap: 4px;
+  margin: 0;
+  padding: 11px 14px;
+  border-radius: 12px 12px 0 0;
+  list-style: none;
+  background: #ffd3a4;
+  color: #234d39;
+}
+.sweeto-card-impressions li {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: min(100%, 38px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 1.5px dashed #7a6249;
+  font:
+    650 0.85rem/1 ui-monospace,
+    monospace;
+}
+.sweeto-card-impressions li[data-earned] {
+  border: 0;
+}
+.sweeto-card-impressions li[data-final]:not([data-earned]) {
+  border-style: solid;
+}
+.sweeto-card-impressions svg {
+  width: 54%;
+  height: 54%;
+}
+.sweeto-card-holder {
+  container-type: inline-size;
+}
+.sweeto-code-side {
+  aspect-ratio: auto;
+  min-height: calc(100cqi / 1.586);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  padding: clamp(10px, 3.6cqi, 18px);
+  gap: 12px;
+  background: #fffdf7;
+  color: #12392b;
+}
+.sweeto-code-identity {
+  display: grid;
+  flex: 1 1 6rem;
+  gap: 8px;
+}
+.sweeto-code-identity span {
+  font-size: 0.775rem;
+  font-weight: 600;
+}
+.sweeto-code-identity strong {
+  font:
+    750 1.15rem/1.2 "Papu Editorial",
+    sans-serif;
+}
+.sweeto-code-identity bdi {
+  display: block;
+  font:
+    650 0.875rem/1.4 ui-monospace,
+    monospace;
+  color: #12392b;
+  overflow-wrap: anywhere;
+  user-select: all;
+}
+.sweeto-code-window {
+  width: clamp(136px, 44cqi, 160px);
+  margin-inline: auto;
+  background: #fff;
+  max-width: 100%;
+}
+.sweeto-code-window .papu-qr {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.sweeto-guest button.sweeto-turn-button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 9px;
+  width: 100%;
+  min-height: 48px;
+  padding: 10px 16px;
+  margin: 10px 0 0;
+  background: #ff803b;
+  color: #12392b;
+  border: 0;
+  border-radius: 14px;
+  font: inherit;
+  font-weight: 750;
+  cursor: pointer;
+}
+.sweeto-turn-button:focus-visible {
+  outline: 3px solid #12392b;
+  outline-offset: 3px;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .sweeto-card-side[data-turn] {
+    animation: sweeto-card-turn 210ms ease-out;
+  }
+}
+@keyframes sweeto-card-turn {
+  from {
+    opacity: 0.3;
+    transform: perspective(850px) rotateY(-22deg);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.sweeto-turn-button > svg {
+  box-sizing: content-box;
+  flex: none;
+  background: #12392b;
+  color: #fff6e7;
+  padding: 7px;
+  border-radius: 50%;
+}
+.sweeto-card-page {
+  display: grid;
+  gap: 12px;
+}
+.sweeto-card-page > .papu-join-actions,
+.sweeto-card-page > .papu-loyalty-wallet {
+  border: 0;
+  padding: 12px 0;
+}
+
+.sweeto-card-impressions .papu-stamp-motion {
+  display: block;
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.sweeto-reward-foil {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: center / contain no-repeat
+    url("/assets/sweeto/sweeto-reward-foil.png");
+}
+@media (prefers-reduced-motion: no-preference) {
+  .sweeto-reward-foil[data-arrived] {
+    background-image: url("/assets/sweeto/sweeto-reward-foil-strip.png");
+    background-size: 1700% 100%;
+    animation: sweeto-foil-press 650ms steps(16, end) both;
+  }
+}
+@keyframes sweeto-foil-press {
+  from {
+    background-position: 0% 0;
+  }
+  to {
+    background-position: 100% 0;
+  }
+}

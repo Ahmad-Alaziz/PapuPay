@@ -15,6 +15,8 @@ import class RiveRuntime.Worker
 
 @MainActor enum SweetoStampMotionSource {
   fileprivate static let poster = UIImage(named: "sweeto-pass-settled")
+  fileprivate static let rewardPoster = UIImage(named: "sweeto-reward-foil")
+  fileprivate static let rewardFrames = UIImage(named: "sweeto-reward-foil-strip")
   fileprivate static let file = Task {
     let worker = try await Worker()
     return try await File(source: .local("sweeto-pass", Bundle.main), worker: worker)
@@ -108,16 +110,20 @@ struct PapuGuestArrivalMark: View {
     case waiting
     case playing(Rive, Date)
     case pressing(Date)
+    case foiling(Date)
     case settled
   }
 
   fileprivate private(set) var phase = Phase.waiting
+  private let celebratesReward: Bool
+
+  init(celebratesReward: Bool) { self.celebratesReward = celebratesReward }
 
   func settle() { phase = .settled }
 
   fileprivate func finishVisibleImprint() {
     switch phase {
-    case .playing, .pressing: settle()
+    case .playing, .pressing, .foiling: settle()
     case .waiting, .settled: break
     }
   }
@@ -142,6 +148,11 @@ struct PapuGuestArrivalMark: View {
       duration = .milliseconds(560)
     }
     try? await Task.sleep(for: duration)
+    if !Task.isCancelled, celebratesReward, SweetoStampMotionSource.rewardFrames != nil {
+      if case .settled = phase { return }
+      phase = .foiling(Date())
+      try? await Task.sleep(for: .milliseconds(650))
+    }
     settle()
   }
 }
@@ -149,6 +160,7 @@ struct PapuGuestArrivalMark: View {
 struct SweetoStampImprint<Still: View>: View {
   let playback: SweetoStampPlayback?
   let guideInk: Color
+  let isReward: Bool
   @ViewBuilder let still: () -> Still
   @Environment(\.accessibilityReduceMotion) private var reduceMotion
   @Environment(\.scenePhase) private var scenePhase
@@ -177,11 +189,25 @@ struct SweetoStampImprint<Still: View>: View {
             let descent = min(1, elapsed / 0.21)
             let release = min(1, max(0, elapsed - 0.21) / 0.32)
             let ease = 1 - pow(1 - release, 3)
-            finishedSeal
+            seal
               .scaleEffect(x: 1 + 0.12 * (1 - ease), y: 1.12 - 0.24 * descent + 0.12 * ease)
               .rotationEffect(.degrees(-8 * (1 - descent)))
               .offset(y: -8 * (1 - descent * descent))
               .opacity(min(1, descent * 1.25))
+          }
+        case .foiling(let start):
+          seal
+          if let frames = SweetoStampMotionSource.rewardFrames {
+            TimelineView(.animation(minimumInterval: 0.039)) { tick in
+              let progress = min(1, max(0, tick.date.timeIntervalSince(start) / 0.65))
+              let index = min(16, Int(progress * 17))
+              GeometryReader { proxy in
+                Image(uiImage: frames).resizable().interpolation(.high)
+                  .frame(width: proxy.size.width * 17, height: proxy.size.height)
+                  .offset(x: -CGFloat(index) * proxy.size.width)
+              }
+              .clipped().scaleEffect(1.15)
+            }
           }
         case .settled: finishedSeal
         }
@@ -205,10 +231,23 @@ struct SweetoStampImprint<Still: View>: View {
     Circle().strokeBorder(guideInk.opacity(0.64), style: StrokeStyle(lineWidth: 1, dash: [2, 3]))
   }
 
-  @ViewBuilder private var finishedSeal: some View {
+  @ViewBuilder private var seal: some View {
     if let poster = SweetoStampMotionSource.poster {
       Image(uiImage: poster).resizable().interpolation(.high).scaledToFit()
     } else { still() }
+  }
+
+  private var finishedSeal: some View {
+    ZStack {
+      seal
+      if isReward {
+        if let poster = SweetoStampMotionSource.rewardPoster {
+          Image(uiImage: poster).resizable().interpolation(.high).scaledToFit().scaleEffect(1.15)
+        } else {
+          Circle().strokeBorder(guideInk.opacity(0.76), lineWidth: 1).scaleEffect(1.07)
+        }
+      }
+    }
   }
 }
 

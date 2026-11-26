@@ -327,6 +327,10 @@ test("Google Wallet issues a signed checkout QR for the active venue membership"
     classId,
     state: "ACTIVE",
     accountId: guest.data.card.code,
+    heroImage: {
+      sourceUri: { uri: "https://papupay.com/assets/sweeto/wallet-matylda.jpg" },
+      contentDescription: { defaultValue: { language: "pl", value: "Matylda czekoladowa w pudełku Sweeto" } },
+    },
     merchantLocations: [{ latitude: 52.1720425, longitude: 21.0185431 }],
     barcode: { type: "QR_CODE", value: guest.data.card.checkout, alternateText: guest.data.card.code },
   });

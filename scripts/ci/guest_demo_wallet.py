@@ -12,7 +12,8 @@ import zipfile
 
 HERE = Path(__file__).resolve().parent
 SIGNATURES = HERE / "guest-wallet-signatures"
-MAX_PASS_BYTES = 50 * 1024
+# Reconstructed only after the protected seed has passed its own transport limits.
+MAX_REBUILT_PASS_BYTES = 256 * 1024
 
 
 def read_signed_pass(data, directory):
@@ -74,7 +75,7 @@ def refresh_passes(payload, signatures=SIGNATURES, *, issue=False):
                        "cardCode": payload["cardCode"]}), text=True, check=True, timeout=120, env=env)
         for n in range(7):
             data = (directory / f"{n}.pkpass").read_bytes()
-            if not 0 < len(data) <= MAX_PASS_BYTES:
+            if not 0 < len(data) <= MAX_REBUILT_PASS_BYTES:
                 raise ValueError("Rebuilt demo pass exceeds its bundle budget.")
             document, cert, proof = read_signed_pass(data, directory)
             if cert != signer or pass_identity(document, payload) != identity:

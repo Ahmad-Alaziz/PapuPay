@@ -136,13 +136,6 @@
   background: var(--surface);
 }
 
-.papu-restore > .papu-qr {
-  display: block;
-  max-width: 100%;
-  height: auto;
-  margin-inline: auto;
-}
-
 .papu-restore .papu-demo-save {
   margin-top: 16px;
 }

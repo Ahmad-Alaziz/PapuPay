@@ -7,16 +7,17 @@ import { join } from "node:path";
 import { promisify } from "node:util";
 import { deflateRawSync } from "node:zlib";
 import { createApnsSender } from "./wallet-apns.mjs";
-import { inkSweetoStrip, renderStampSheet } from "./wallet.stamp-sheet.mjs";
+import { inkSweetoArtwork, renderStampSheet } from "./wallet.stamp-sheet.mjs";
 
 const run = promisify(execFile);
 const artworkFiles = ["icon", "logo", "strip"].flatMap((slot) => (
   ["", "@2x", "@3x"].map((scale) => `${slot}${scale}.png`)
 ));
+const posterArtwork = ["artwork", "primaryLogo"].flatMap(name => ["", "@2x", "@3x"].map(scale => `${name}${scale}.png`));
 const demoArtworkFiles = artworkFiles.filter((name) => !name.endsWith("@3x.png"));
 const walletPalettes = {
   classic: { paper: "#fff9ee", body: "#102e24", label: "#ff9b66" },
-  sweeto: { paper: "#fff6e6", body: "#102e24", label: "#ff7a38" },
+  sweeto: { paper: "#143a2d", body: "#fff5e5", label: "#74401d" },
 };
 const supportUrl = "https://papupay.com/#contact";
 // Apple publishes WWDR G4 as the Wallet Pass Type ID issuing CA.
@@ -147,7 +148,7 @@ export function storePassDocument(brand, card, { passTypeId, teamId, origin }, p
   const firstField = isSweeto
     ? { key: "checkout", label: "At checkout", value: "Show this code" }
     : { key: "venue", label: "Collect at", value: brand.name };
-  return {
+  const pass = {
     formatVersion: 1,
     passTypeIdentifier: passTypeId,
     teamIdentifier: teamId,
@@ -194,6 +195,14 @@ export function storePassDocument(brand, card, { passTypeId, teamId, origin }, p
       ],
     },
   };
+  if (isSweeto && card.goal === 6) {
+    pass.posterGeneric = {
+      headerFields: pass.storeCard.headerFields,
+      primaryFields: [next],
+      backFields: pass.storeCard.backFields,
+    };
+  }
+  return pass;
 }
 
 const translations = {
@@ -287,12 +296,14 @@ function stampCount(count, language = "en") {
 export async function buildStorePassFiles(brand, card, config, profile = {}) {
   const pass = storePassDocument(brand, card, config, profile);
   const isSweeto = brand.id === "sweeto";
-  const images = await Promise.all((profile.offlineDemo ? demoArtworkFiles : artworkFiles).map(async (name) => {
+  const names = [...(profile.offlineDemo ? demoArtworkFiles : artworkFiles)];
+  if (pass.posterGeneric) names.push(...posterArtwork.filter(name => !profile.offlineDemo || !name.endsWith("@3x.png")));
+  const images = await Promise.all(names.map(async (name) => {
+    if (name.startsWith("artwork") || (name.startsWith("strip") && isSweeto && card.goal === 6)) {
+      const template = await readFile(new URL(`./wallet-assets/sweeto-${name}`, import.meta.url));
+      return [name, inkSweetoArtwork(template, card.stamps)];
+    }
     if (name.startsWith("strip")) {
-      if (isSweeto && card.goal === 6) {
-        const template = await readFile(new URL(`./wallet-assets/sweeto-${name}`, import.meta.url));
-        return [name, inkSweetoStrip(template, card.stamps)];
-      }
       const scale = Number(name.match(/@(\d)x/)?.[1] ?? 1);
       return [name, renderStampSheet(card, scale, isSweeto ? "sweeto" : "classic")];
     }

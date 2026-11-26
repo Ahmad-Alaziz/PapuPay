@@ -7,6 +7,7 @@ Each project keeps its editable design alongside a `runtime/` directory containi
 | Sweeto guest pass | `/assets/sweeto/sweeto-pass.riv` | `SweetoPass`, `State Machine 1` (ink imprint), `PapuPay Welcome` (arrival) |
 | Sweeto browser imprint | `/assets/sweeto/sweeto-imprint-web.riv` | `SweetoPass`, `State Machine 1` (browser press outside the artboard bounds) |
 | Sweeto stamp still | `/assets/sweeto/sweeto-pass.webp` | Compact derivative of the lossless settled PNG |
+| Sweeto reward foil | `/assets/sweeto/sweeto-reward-foil-strip.png` | The `SweetoRewardFoil` artboard applies two foil rings when the sixth stamp lands. Seventeen transparent 128 px frames cover 650 ms. `sweeto-reward-foil.png` is the settled state. |
 | Venue action illustrations | `/assets/sweeto/sweeto-actions.riv` | `SweetoMenu`, `SweetoLoyalty`, `SweetoReview`, `SweetoWifi`; `Gesture`; `VenuePalette` |
 | Shared guest stamp | `/assets/guest-feedback.riv` | `LoyaltySeal`, `Feedback`; static fallback `/assets/guest-loyalty-seal.webp` |
 | Wallet pocket | `/assets/wallet-pocket.riv` | `Pocket`, `Preview` or `Handoff`; static fallback `/assets/wallet-pocket-still.svg` |

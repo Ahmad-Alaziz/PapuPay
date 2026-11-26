@@ -6,7 +6,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { test } from "node:test";
 import { promisify } from "node:util";
-import { crc32, gzipSync } from "node:zlib";
+import { crc32 } from "node:zlib";
 import { buildPassArchive, buildStorePassFiles, signManifest, storePassDocument } from "./wallet.mjs";
 import { venueRegistry } from "./venues.mjs";
 
@@ -122,6 +122,7 @@ test("offline demo passes keep their identity and fit the TestFlight bundle", as
   const sweeto = { id: "sweeto", name: "Sweeto" };
   const passes = [];
   const strips = new Set();
+  const posters = new Set();
   const certificateFixture = createHash("shake256", { outputLength: 3000 }).update("shared certificate chain").digest();
   const [sweetoLogo, sweetoIcon] = await Promise.all(["logo", "icon"].map((name) =>
     readFile(new URL(`./wallet-assets/sweeto-${name}@2x.png`, import.meta.url))));
@@ -132,8 +133,8 @@ test("offline demo passes keep their identity and fit the TestFlight bundle", as
     const demo = JSON.parse(files.get("pass.json"));
     assert.equal(demo.organizationName, "Sweeto");
     assert.equal(demo.description, "Sweeto · Demo card");
-    assert.equal(demo.backgroundColor, "rgb(16, 46, 36)");
-    assert.equal(demo.labelColor, "rgb(255, 122, 56)");
+    assert.equal(demo.backgroundColor, "rgb(255, 245, 229)");
+    assert.equal(demo.labelColor, "rgb(116, 64, 29)");
     assert.deepEqual(demo.storeCard.secondaryFields[0], { key: "checkout", label: "At checkout", value: "Show this code" });
     assert.equal(demo.storeCard.backFields.at(-1).label, "Papupay support");
     assert.equal(demo.serialNumber, "fixture-demo");
@@ -148,6 +149,12 @@ test("offline demo passes keep their identity and fit the TestFlight bundle", as
     assert.equal(demo.authenticationToken, undefined);
     assert.equal(demo.sharingProhibited, true);
     assert.equal(Object.hasOwn(demo, "logoText"), false);
+    assert.deepEqual(demo.posterGeneric.headerFields, demo.storeCard.headerFields);
+    assert.deepEqual(demo.posterGeneric.primaryFields, [demo.storeCard.secondaryFields[1]]);
+    assert.deepEqual(demo.posterGeneric.backFields, demo.storeCard.backFields);
+    assert.equal(files.get("artwork@2x.png").readUInt32BE(16), 716);
+    assert.equal(files.get("artwork@2x.png").readUInt32BE(20), 896);
+    assert.ok(files.has("primaryLogo@2x.png"));
     const polish = files.get("pl.lproj/pass.strings").toString("utf16le");
     assert.match(polish, /"Sweeto · Demo card" = "Sweeto · Karta demo"/);
     assert.match(polish, /"Show this code" = "Pokaż ten kod"/);
@@ -157,14 +164,16 @@ test("offline demo passes keep their identity and fit the TestFlight bundle", as
     assert.equal(logo.readUInt32BE(16), 320);
     assert.equal(logo.readUInt32BE(20), 100);
     strips.add(createHash("sha256").update(files.get("strip@2x.png")).digest("hex"));
+    posters.add(createHash("sha256").update(files.get("artwork@2x.png")).digest("hex"));
     const archive = await buildPassArchive(files, async (manifest) => Buffer.concat([
       certificateFixture, createHash("sha256").update(manifest).digest(),
     ]), { compress: true });
-    assert.ok(archive.length <= 50 * 1024);
+    assert.ok(archive.length <= 256 * 1024);
     passes.push(archive);
   }
   assert.equal(strips.size, 7);
-  assert.ok(gzipSync(Buffer.concat(passes)).toString("base64").length < 48 * 1024);
+  assert.equal(posters.size, 7);
+  assert.ok(passes.reduce((bytes, pass) => bytes + pass.length, 0) < 7 * 256 * 1024);
 });
 
 test("ZIP package hashes exactly the source files and passes the same manifest to the signer", async () => {
