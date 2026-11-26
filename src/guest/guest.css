@@ -757,7 +757,8 @@ body:has(.sweeto-guest[data-venue="sweeto"]) {
   --guest-green: #123c2d;
   --home-gutter: 20px;
   --home-width: 35rem;
-  --home-row-height: clamp(52px, calc((100svh - max(300px, min(97vw, 530px)) - 110px) / 4), 64px);
+  --home-cover-height: clamp(274px, 88vw, 480px);
+  --home-row-height: clamp(52px, calc((100svh - var(--home-cover-height) - 110px) / 4), 64px);
   --paper-edge: rgb(18 60 45 / 16%);
   container: sweeto-home / inline-size;
 }
@@ -795,7 +796,7 @@ body:has(.sweeto-guest[data-venue="sweeto"]) {
 }
 
 .sweeto-guest[data-venue="sweeto"] .papu-cover {
-  min-height: max(300px, min(97vw, 530px));
+  min-height: var(--home-cover-height);
   padding-top: calc(72px + env(safe-area-inset-top));
   background: #1a1711;
   overflow: hidden;
@@ -808,8 +809,14 @@ body:has(.sweeto-guest[data-venue="sweeto"]) {
   height: 100%;
   margin-inline: auto;
   object-fit: cover;
-  object-position: center;
+  object-position: var(--cake-position, center);
   mask-image: none;
+}
+
+@media (360px < width < 800px) {
+  .sweeto-guest[data-venue="sweeto"] .papu-cover:not([data-custom-cover]) {
+    --cake-position: center calc(50% - 13px);
+  }
 }
 
 .sweeto-guest[data-venue="sweeto"] .papu-cover-photo[data-fallback] {
@@ -917,13 +924,13 @@ body:has(.sweeto-guest[data-venue="sweeto"]) {
 }
 
 .sweeto-guest[data-venue="sweeto"] .papu-action-label {
-  font-size: 1rem;
+  font-size: 0.9375rem;
   font-weight: 670;
   line-height: 1.2;
 }
 
 .sweeto-guest[data-venue="sweeto"] .papu-action-detail {
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   line-height: 1.24;
   font-weight: 550;
 }
@@ -1065,9 +1072,6 @@ body:has(.sweeto-guest[data-venue="sweeto"]) {
   .sweeto-guest[data-venue="sweeto"] {
     --home-gutter: 14px;
   }
-  .sweeto-guest[data-venue="sweeto"] .papu-cover {
-    min-height: 90vw;
-  }
   .sweeto-guest[data-venue="sweeto"] .papu-cover-photo {
     inset: -28px 0 auto auto;
     width: 91%;
@@ -1117,7 +1121,7 @@ body:has(.sweeto-guest[data-venue="sweeto"]) {
     min-height: 80px;
   }
   .sweeto-guest[data-venue="sweeto"] .papu-cover {
-    min-height: clamp(410px, 42vw, 490px);
+    min-height: clamp(380px, 40vw, 460px);
     background: #1b1c13;
   }
   .sweeto-guest[data-venue="sweeto"] .papu-cover-photo {
@@ -1172,7 +1176,7 @@ body:has(.sweeto-guest[data-venue="sweeto"]) {
 /* Scale the authored food scene, never the food proportions, on wide screens. */
 @media (min-width: 1280px) {
   .sweeto-guest[data-venue="sweeto"] .papu-cover {
-    min-height: clamp(490px, 39vw, 580px);
+    min-height: clamp(455px, 36vw, 535px);
   }
   .sweeto-guest[data-venue="sweeto"] .papu-cover-photo {
     top: 0;

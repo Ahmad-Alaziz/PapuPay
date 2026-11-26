@@ -89,7 +89,7 @@
 }
 .sweeto-card-balance > span:last-child {
   font-weight: 650;
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   line-height: 1.3;
 }
 .sweeto-card-impressions {
@@ -154,7 +154,7 @@
 }
 .sweeto-code-identity strong {
   font:
-    750 1.15rem/1.2 "Papu Editorial",
+    750 1.0625rem/1.2 "Papu Editorial",
     sans-serif;
 }
 .sweeto-code-identity bdi {
@@ -191,7 +191,9 @@
   border: 0;
   border-radius: 14px;
   font: inherit;
+  font-size: 0.9375rem;
   font-weight: 750;
+  overflow-wrap: anywhere;
   cursor: pointer;
 }
 .sweeto-turn-button:focus-visible {

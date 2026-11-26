@@ -425,7 +425,7 @@
 
 .papu-dessert-info strong {
   color: var(--ink);
-  font-size: 1rem;
+  font-size: 0.9375rem;
   font-weight: 800;
   line-height: 1.24;
   overflow-wrap: anywhere;
@@ -433,7 +433,7 @@
 
 .papu-dessert-info > span {
   color: var(--muted);
-  font-size: 0.9375rem;
+  font-size: 0.875rem;
   line-height: 1.45;
   overflow-wrap: anywhere;
 }
@@ -545,7 +545,7 @@
 .papu-menu-detail-description {
   margin: 10px 0 12px;
   color: var(--muted);
-  font-size: 1rem;
+  font-size: 0.9375rem;
   line-height: 1.45;
 }
 
@@ -564,6 +564,7 @@
 }
 .papu-menu-facts dd {
   margin: 4px 0 0;
+  font-size: 0.9375rem;
   font-weight: 650;
 }
 

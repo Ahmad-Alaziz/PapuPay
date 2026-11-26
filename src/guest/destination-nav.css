@@ -53,6 +53,19 @@
   padding-top: 22px;
 }
 
+.sweeto-guest[data-venue="sweeto"] .guest-destination[data-view="reviews"] .sweeto-detail h2 {
+  font-size: clamp(1.9375rem, 7vw, 2.75rem);
+  overflow-wrap: anywhere;
+}
+
+.sweeto-guest[data-venue="sweeto"] .guest-destination[data-view="reviews"] .sweeto-detail > p {
+  font-size: 0.8125rem;
+}
+
+.sweeto-guest[data-venue="sweeto"] .guest-destination[data-view="reviews"] .sweeto-button {
+  font-size: 0.875rem;
+}
+
 .guest-destination-nav .papu-language:focus-within {
   outline-color: var(--ink);
 }

@@ -334,7 +334,7 @@ struct PapupayGuestView: View {
       ScrollView {
         VStack(spacing: 0) {
           if venueIsReady {
-            let posterHeight = isSweeto ? min(460, max(280, viewport.size.width * 0.97))
+            let posterHeight = isSweeto ? min(460, max(320, viewport.size.width * 1.05))
               : min(470, max(345, viewport.size.width * 0.94))
             let actionHeight = isSweeto ? min(64, max(52, (availableHeight - posterHeight - 100) / 4)) : 56
             menuHero(topInset: statusInset, height: posterHeight)
@@ -395,12 +395,13 @@ struct PapupayGuestView: View {
   }
 
   @ViewBuilder private func menuHero(topInset: CGFloat, height: CGFloat) -> some View {
-    if dynamicTypeSize.isAccessibilitySize {
+    if dynamicTypeSize.isAccessibilitySize || (isSweeto && dynamicTypeSize >= .xxxLarge) {
+      let photographHeight = min(300, max(200, height * (isSweeto ? 0.64 : 0.73)))
       VStack(spacing: 0) {
         heroHeader(topInset: topInset)
           .padding(.horizontal, 20)
           .frame(maxWidth: 560)
-          .frame(maxWidth: .infinity, minHeight: min(300, max(200, height * 0.73)), alignment: .top)
+          .frame(maxWidth: .infinity, minHeight: photographHeight, alignment: .top)
           .background { heroPhotograph(withText: false) }
           .clipShape(.rect(bottomLeadingRadius: isSweeto ? 22 : 0, bottomTrailingRadius: isSweeto ? 22 : 0))
         heroCopy(onPhoto: false)
@@ -413,13 +414,13 @@ struct PapupayGuestView: View {
     } else {
       VStack(alignment: .leading, spacing: 0) {
         heroHeader(topInset: topInset)
-        Spacer(minLength: isSweeto ? height * 0.18 : 30).accessibilityHidden(true)
+        Spacer(minLength: isSweeto ? height * 0.14 : 30).accessibilityHidden(true)
         heroCopy(onPhoto: true)
       }
       .padding(.horizontal, isSweeto ? 20 : 22)
       .padding(.bottom, isSweeto ? 18 : 22)
       .frame(maxWidth: 560)
-      .frame(maxWidth: .infinity, minHeight: height)
+      .frame(maxWidth: .infinity, minHeight: height, maxHeight: isSweeto ? height : nil)
       .background { heroPhotograph(withText: true) }
       .clipShape(.rect(bottomLeadingRadius: isSweeto ? 22 : 0, bottomTrailingRadius: isSweeto ? 22 : 0))
     }
@@ -620,9 +621,9 @@ struct PapupayGuestView: View {
         .accessibilityHidden(true)
 
       actionCopy(title, detail: detail)
-      .font(.body.weight(.semibold))
-      .multilineTextAlignment(.leading)
-      .frame(maxWidth: .infinity, alignment: .leading)
+        .font((isSweeto ? Font.subheadline : .body).weight(.semibold))
+        .multilineTextAlignment(.leading)
+        .frame(maxWidth: .infinity, alignment: .leading)
 
       actionArrow(outbound: outbound)
         .opacity(isSweeto && ticket ? 0 : 1)
@@ -688,7 +689,7 @@ struct PapupayGuestView: View {
   @ViewBuilder private func actionCopy(_ title: String, detail: String?) -> some View {
     let description = detail.map {
       Text($0)
-        .font(.footnote.weight(isSweeto ? .medium : .semibold))
+        .font(isSweeto ? .caption.weight(.medium) : .footnote.weight(.semibold))
         .foregroundStyle(palette.muted)
         .monospacedDigit()
         .contentTransition(.numericText())
@@ -872,14 +873,14 @@ struct PapupayGuestView: View {
             .font(palette.display(.largeTitle)).accessibilityAddTraits(.isHeader)
           if let reviewURL {
             Text(t("Podziel się opinią po wizycie.", "Share how your visit went.", "Поделитесь впечатлениями."))
-              .foregroundStyle(palette.muted)
+              .font(.subheadline).foregroundStyle(palette.muted)
             VenueNativeButton(
               title: t("Dodaj opinię", "Leave a review", "Оставить отзыв"),
               systemImage: "arrow.up.right", palette: palette
             ) { review(reviewURL) }
           } else {
             Text(t("Link do opinii jest niedostępny.", "The review link is unavailable.", "Ссылка на отзывы недоступна."))
-              .foregroundStyle(palette.muted)
+              .font(.subheadline).foregroundStyle(palette.muted)
           }
         }
         .padding(20)
@@ -1241,7 +1242,7 @@ struct GuestActionLabel: View {
       }
 
       VStack(alignment: .leading, spacing: 3) {
-        Text(title).font(.body.weight(.semibold))
+        Text(title).font(.system(palette.isSweeto ? .subheadline : .body, weight: .semibold))
         if let detail {
           Text(detail)
             .font(.footnote.weight(.medium))

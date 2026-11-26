@@ -61,7 +61,7 @@ struct VenueWalletRecoveryView: View {
         case .unavailable:
           Text(t("Nie udało się połączyć.", "Couldn’t connect.", "Не удалось подключиться."))
           Button(t("Spróbuj ponownie", "Try again", "Повторить")) { approved = nil; attempt += 1 }
-            .font(.headline).frame(minHeight: 44)
+            .font(.subheadline.weight(.semibold)).frame(minHeight: 44)
         case let .switchCard(target, current):
           Text(t("Otworzyć inną kartę?", "Switch cards?", "Открыть другую карту?"))
             .font(palette.display(.title)).accessibilityAddTraits(.isHeader)
@@ -73,9 +73,10 @@ struct VenueWalletRecoveryView: View {
             approved = current; attempt += 1
           }
           Button(t("Zachowaj obecną kartę", "Keep current card", "Оставить текущую карту"), action: onOpen)
-            .font(.headline).frame(minHeight: 44)
+            .font(.subheadline.weight(.semibold)).frame(minHeight: 44)
         }
       }
+      .font(.subheadline)
       .frame(maxWidth: 480, alignment: .leading).padding(24).frame(maxWidth: .infinity)
     }
     .foregroundStyle(palette.ink)

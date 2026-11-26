@@ -253,3 +253,16 @@
 .papu-wifi-instructions {
   margin: 14px 0 0;
 }
+
+.sweeto-guest[data-venue="sweeto"] .papu-wifi-heading h2 {
+  font-size: clamp(1.25rem, 0.9375rem + 1.65vw, 1.875rem);
+  line-height: 1.12;
+}
+
+.sweeto-guest[data-venue="sweeto"] .papu-wifi-network dd {
+  font-size: clamp(1.0625rem, 0.8125rem + 1.35vw, 1.25rem);
+}
+
+.sweeto-guest[data-venue="sweeto"] .papu-wifi-empty {
+  font-size: 0.875rem;
+}

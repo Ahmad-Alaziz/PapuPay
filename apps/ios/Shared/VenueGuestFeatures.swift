@@ -61,7 +61,7 @@ struct VenueDessertMenu: View {
             .fixedSize(horizontal: false, vertical: true)
             .accessibilityAddTraits(.isHeader)
           Text(t("Zamów przy ladzie", "Order at the counter", "Закажите у стойки"))
-            .font(.subheadline)
+            .font(.footnote)
             .foregroundStyle(palette.muted)
             .fixedSize(horizontal: false, vertical: true)
         }
@@ -128,8 +128,8 @@ struct VenueDessertMenu: View {
           .clipShape(.rect(cornerRadius: 12))
           .accessibilityHidden(true)
         VStack(alignment: .leading, spacing: 4) {
-          Text(words.name).font(.headline.weight(.bold)).foregroundStyle(palette.ink)
-          Text(words.summary).font(.subheadline).foregroundStyle(palette.muted)
+          Text(words.name).font(.subheadline.weight(.bold)).foregroundStyle(palette.ink)
+          Text(words.summary).font(.footnote).foregroundStyle(palette.muted)
         }
         .fixedSize(horizontal: false, vertical: true)
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -163,7 +163,7 @@ struct VenueDessertMenu: View {
             Text(words.name)
               .font(typeSize.isAccessibilitySize ? .headline.weight(.bold) : palette.display(.title))
               .accessibilityAddTraits(.isHeader)
-            Text(words.description).font(.body).foregroundStyle(palette.muted)
+            Text(words.description).font(.subheadline).foregroundStyle(palette.muted)
           }
           .fixedSize(horizontal: false, vertical: true)
           if language != .pl {
@@ -200,7 +200,7 @@ struct VenueDessertMenu: View {
     VStack(alignment: .leading, spacing: 4) {
       menuRule.padding(.bottom, 4)
       Text(label).font(.footnote).foregroundStyle(palette.muted)
-      Text(value).font(.body.weight(.semibold))
+      Text(value).font(.subheadline.weight(.semibold))
     }
     .accessibilityElement(children: .combine)
   }
@@ -434,7 +434,7 @@ struct VenueLoyaltyView: View {
             Text(t("Twoja karta", "Your card", "Ваша карта"))
               .font(palette.display(.title)).accessibilityAddTraits(.isHeader)
             Text(t("Nie udało się pobrać karty. Sprawdź połączenie i spróbuj ponownie.", "We couldn’t load your card. Check the connection and try again.", "Не удалось загрузить карту. Проверьте соединение и повторите попытку."))
-              .font(.body).foregroundStyle(palette.muted)
+              .font(.subheadline).foregroundStyle(palette.muted)
             VenueNativeButton(title: t("Spróbuj ponownie", "Try again", "Повторить"), systemImage: "arrow.clockwise", palette: palette) {
               Task { await refresh() }
             }
@@ -610,7 +610,7 @@ struct VenueLoyaltyView: View {
         if showingSavedBalance { savedBalanceStatus }
         if receivedStamps > 0 && !showingSavedBalance {
           Label(stampReceipt(receivedStamps), systemImage: "checkmark.seal.fill")
-            .font(.subheadline.weight(.semibold))
+            .font(.footnote.weight(.semibold))
         }
         if snapshotOnly == nil && card.rewardAvailable && !showingSavedBalance && demo == nil {
           Text(t("Pokaż kod obsłudze, aby odebrać nagrodę.", "Show your code to staff to claim your reward.", "Покажите код сотрудникам, чтобы получить награду."))
@@ -619,7 +619,7 @@ struct VenueLoyaltyView: View {
         if snapshotOnly == nil { walletSection }
       } else {
         Text(t("Pokaż kod przy kasie, żeby zebrać pieczątkę. Pełna karta to nagroda.", "Show your code at checkout to collect a stamp. Fill the card to claim your reward.", "Показывайте код на кассе и собирайте отметки. Заполните карту, чтобы получить награду."))
-          .font(.body).fixedSize(horizontal: false, vertical: true)
+          .font(.subheadline).fixedSize(horizontal: false, vertical: true)
         cardEntryButton(
           title: creating ? t("Tworzenie karty…", "Creating your card…", "Создаём карту…")
             : demo != nil ? t("Utwórz kartę demo", "Create a demo card", "Создать демо-карту")
@@ -668,7 +668,7 @@ struct VenueLoyaltyView: View {
         .accessibilityFocused($focusedHeading, equals: .stamps)
         .contentTransition(reduceMotion ? .identity : .numericText())
         .animation(reduceMotion ? nil : .easeOut(duration: 0.20), value: balance)
-        Text(summary).font(.subheadline.weight(.semibold))
+        Text(summary).font(.footnote.weight(.semibold))
           .fixedSize(horizontal: false, vertical: true)
       }
       .padding(.horizontal, 18).padding(.vertical, 13)
@@ -703,7 +703,7 @@ struct VenueLoyaltyView: View {
           .font(palette.display(.title3)).fixedSize(horizontal: false, vertical: true)
           .accessibilityAddTraits(.isHeader)
           .accessibilityFocused($focusedHeading, equals: .checkout)
-        Text(card.code).font(.system(.subheadline, design: .monospaced, weight: .semibold))
+        Text(card.code).font(.system(.footnote, design: .monospaced, weight: .semibold))
           .textSelection(.enabled)
           .accessibilityLabel(t("Numer karty \(card.code)", "Card number \(card.code)", "Номер карты \(card.code)"))
       }
@@ -743,7 +743,7 @@ struct VenueLoyaltyView: View {
       receiptSeam
       VStack(alignment: .leading, spacing: 15) {
         Text(t("Pokaż kod przy kasie, żeby zebrać pieczątkę. Pełna karta to nagroda.", "Show your code at the counter to collect a stamp. Fill the card to claim your reward.", "Показывайте код на кассе и собирайте отметки. Заполните карту, чтобы получить награду."))
-          .font(.body).fixedSize(horizontal: false, vertical: true)
+          .font(.subheadline).fixedSize(horizontal: false, vertical: true)
         cardEntryButton(
           title: creating ? t("Tworzenie karty…", "Creating your card…", "Создаём карту…")
             : demo != nil ? t("Utwórz kartę demo", "Create a demo card", "Создать демо-карту")
@@ -982,7 +982,7 @@ struct VenueLoyaltyView: View {
       HStack(spacing: 12) {
         Image(systemName: "viewfinder").frame(width: 20)
         Text(t("Wypróbuj symulację kasy", "Try the counter simulation", "Попробовать симуляцию кассы"))
-          .font(.subheadline.weight(.medium))
+          .font(.footnote.weight(.medium))
         Spacer(minLength: 4)
         Image(systemName: "chevron.right").font(.footnote.weight(.semibold))
       }
@@ -1057,11 +1057,11 @@ struct VenueLoyaltyView: View {
       if let url = installedPass.passURL {
         Link(destination: url) {
           Label(t("Otwórz w Apple Wallet", "Open in Apple Wallet", "Открыть в Apple Wallet"), systemImage: "wallet.pass.fill")
-            .font(.subheadline.weight(.semibold)).frame(minHeight: 44)
+            .font(.footnote.weight(.semibold)).frame(minHeight: 44)
         }
       } else {
         Label(t("Karta w Apple Wallet", "Pass in Apple Wallet", "Карта в Apple Wallet"), systemImage: "checkmark.circle.fill")
-          .font(.headline)
+          .font(.subheadline.weight(.semibold))
       }
     } else {
       WalletAddButton(enabled: walletLookup != nil && walletRequest == nil) { walletRequest = .addApple }
@@ -1209,7 +1209,7 @@ struct VenueLoyaltyView: View {
             }
             .font(palette.display(.title2))
             .foregroundStyle(demoStage == .redeemed ? Papu.green : receiptInk)
-            Text(demoDescription).font(.subheadline).foregroundStyle(palette.muted)
+            Text(demoDescription).font(.footnote).foregroundStyle(palette.muted)
               .fixedSize(horizontal: false, vertical: true)
           }
           demoAction
@@ -1833,19 +1833,19 @@ struct VenueWiFiHelp: View {
 
   var body: some View {
     ScrollView {
-      VStack(alignment: .leading, spacing: 20) {
+      VStack(alignment: .leading, spacing: 16) {
         let heading = typeSize.isAccessibilitySize
           ? AnyLayout(VStackLayout(alignment: .leading, spacing: 10))
           : AnyLayout(HStackLayout(alignment: .center, spacing: 12))
         heading {
           Image(systemName: "wifi")
-            .font(.system(size: 24, weight: .semibold))
+            .font(.system(size: 21, weight: .semibold))
             .foregroundStyle(palette.forest)
-            .frame(width: 50, height: 50)
+            .frame(width: 44, height: 44)
             .background(palette.peach, in: .rect(cornerRadius: 9))
             .accessibilityHidden(true)
           Text(t("Wi-Fi dla gości", "Guest Wi-Fi", "Гостевой Wi-Fi"))
-            .font(palette.display(.largeTitle))
+            .font(palette.display(.title))
             .foregroundStyle(palette.forest)
             .fixedSize(horizontal: false, vertical: true)
             .accessibilityAddTraits(.isHeader)
@@ -1854,11 +1854,11 @@ struct VenueWiFiHelp: View {
           networkTicket(details)
           if failed {
             Text(t("Wybierz tę sieć w ustawieniach Wi-Fi.", "Choose this network in Wi-Fi settings.", "Выберите эту сеть в настройках Wi-Fi."))
-              .font(.subheadline).foregroundStyle(palette.muted)
+              .font(.footnote).foregroundStyle(palette.muted)
           }
         } else {
           Text(t("Poproś obsługę o nazwę sieci dla gości i hasło.", "Ask staff for the guest network name and password.", "Узнайте у сотрудников название гостевой сети и пароль."))
-            .font(.body)
+            .font(.subheadline)
             .fixedSize(horizontal: false, vertical: true)
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(20)
@@ -1899,7 +1899,7 @@ struct VenueWiFiHelp: View {
         Text(t("Nazwa sieci", "Network name", "Название сети"))
           .font(.system(.caption, design: .monospaced, weight: .semibold))
           .textCase(.uppercase).foregroundStyle(Color.white.opacity(0.80))
-        Text(details.ssid).font(palette.display(.title2)).textSelection(.enabled)
+        Text(details.ssid).font(palette.display(.title3)).textSelection(.enabled)
           .fixedSize(horizontal: false, vertical: true)
         if details.security == .nopass {
           Text(t("Sieć bez hasła", "No password required", "Пароль не нужен"))
@@ -1910,7 +1910,7 @@ struct VenueWiFiHelp: View {
             .font(.caption).foregroundStyle(Color.white.opacity(0.84))
         }
       }
-      .padding(.horizontal, 17).padding(.vertical, 16)
+      .padding(.horizontal, 17).padding(.vertical, 13)
       .frame(maxWidth: .infinity, alignment: .leading)
       .foregroundStyle(.white).background(palette.forest)
       if let password = details.password, details.security != .nopass {
@@ -1929,16 +1929,16 @@ struct VenueWiFiHelp: View {
         .font(.system(.caption, design: .monospaced, weight: .semibold))
         .textCase(.uppercase).foregroundStyle(palette.muted)
       Text(revealed ? password : "••••••••••••")
-        .font(.body.monospaced()).textSelection(.enabled)
+        .font(.subheadline.monospaced()).textSelection(.enabled)
         .fixedSize(horizontal: false, vertical: true)
         .accessibilityLabel(revealed ? password : t("Hasło ukryte", "Password hidden", "Пароль скрыт"))
-      let actions = typeSize.isAccessibilitySize
+      let actions = typeSize >= .xxLarge
         ? AnyLayout(VStackLayout(alignment: .leading, spacing: 0))
         : AnyLayout(HStackLayout(spacing: 21))
       actions {
         Button { revealed.toggle() } label: {
           Label(revealed ? t("Ukryj", "Hide", "Скрыть") : t("Pokaż", "Show", "Показать"), systemImage: revealed ? "eye.slash" : "eye")
-            .font(.subheadline.weight(.semibold)).frame(minHeight: 44)
+            .font(.footnote.weight(.semibold)).frame(minWidth: 44, minHeight: 44)
         }
         .accessibilityLabel(revealed ? t("Ukryj hasło", "Hide password", "Скрыть пароль") : t("Pokaż hasło", "Show password", "Показать пароль"))
         Button {
@@ -1950,7 +1950,7 @@ struct VenueWiFiHelp: View {
           AccessibilityNotification.Announcement(t("Hasło skopiowane.", "Password copied.", "Пароль скопирован.")).post()
         } label: {
           Label(copied ? t("Skopiowano", "Copied", "Скопировано") : t("Kopiuj", "Copy", "Копировать"), systemImage: copied ? "checkmark" : "doc.on.doc")
-            .font(.subheadline.weight(.semibold)).frame(minHeight: 44)
+            .font(.footnote.weight(.semibold)).frame(minWidth: 44, minHeight: 44)
             .contentTransition(reduceMotion ? .identity : .symbolEffect(.replace))
             .animation(reduceMotion ? nil : .easeInOut(duration: 0.18), value: copied)
         }
@@ -1960,6 +1960,6 @@ struct VenueWiFiHelp: View {
       .buttonStyle(.plain)
       .foregroundStyle(palette.forest)
     }
-    .padding(.horizontal, 17).padding(.top, 7).padding(.bottom, 11)
+    .padding(.horizontal, 17).padding(.vertical, 7)
   }
 }

@@ -488,6 +488,10 @@
     transform 140ms ease;
 }
 
+.sweeto-guest[data-venue="sweeto"] .papu-loyalty .sweeto-button.sweeto-join {
+  font-size: 0.9375rem;
+}
+
 .papu-loyalty-save .papu-action-arrow,
 .papu-loyalty .sweeto-join .papu-action-arrow {
   background: var(--pass-ink);
