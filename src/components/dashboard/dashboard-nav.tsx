@@ -4,6 +4,7 @@ import {
   LayoutDashboard,
   Palette,
   Rocket,
+  ShieldCheck,
   Stamp,
   Star,
   Users,
@@ -13,68 +14,84 @@ import {
 import type { DashboardDictionary } from "@/merchant/i18n";
 import { cn } from "@/lib/utils";
 
-type Section = keyof DashboardDictionary["nav"];
+export type DashboardSection = keyof DashboardDictionary["nav"] | "admin";
 
-const sections: { key: Section; icon: LucideIcon; href?: string }[] = [
+const sections: { key: keyof DashboardDictionary["nav"]; icon: LucideIcon; href?: string; settings?: boolean }[] = [
   { key: "overview", icon: LayoutDashboard, href: "/dashboard" },
-  { key: "branding", icon: Palette },
-  { key: "wifi", icon: Wifi },
-  { key: "reviews", icon: Star },
-  { key: "menu", icon: BookOpen },
-  { key: "loyalty", icon: Stamp },
-  { key: "team", icon: Users },
-  { key: "publish", icon: Rocket },
+  { key: "branding", icon: Palette, settings: true },
+  { key: "wifi", icon: Wifi, settings: true },
+  { key: "reviews", icon: Star, settings: true },
+  { key: "menu", icon: BookOpen, settings: true },
+  { key: "loyalty", icon: Stamp, settings: true },
+  { key: "team", icon: Users, href: "/dashboard/team", settings: true },
+  { key: "publish", icon: Rocket, settings: true },
 ];
+
+const itemClass =
+  "flex shrink-0 items-center gap-3 rounded-2xl px-3.5 py-2.5 text-sm font-semibold whitespace-nowrap lg:whitespace-normal";
+
+function NavLink({ href, active, icon: Icon, children }: { href: string; active: boolean; icon: LucideIcon; children: string }) {
+  return (
+    <Link
+      href={href}
+      aria-current={active ? "page" : undefined}
+      className={cn(
+        itemClass,
+        "transition-colors outline-none focus-visible:outline-3 focus-visible:outline-leaf",
+        active ? "bg-leaf text-cream" : "text-leaf hover:bg-leaf/[0.07]",
+      )}
+    >
+      <Icon aria-hidden="true" className="size-4.5 shrink-0" />
+      {children}
+    </Link>
+  );
+}
 
 /**
  * Sections without an href aren't built yet and render as disabled items.
+ * Settings sections are hidden from roles that can't edit them.
  * Vertical list on large screens, a horizontal scroller on phones.
  */
 export function DashboardNav({
-  nav,
-  label,
-  soon,
+  t,
   current,
+  showSettings,
+  showAdmin,
 }: {
-  nav: DashboardDictionary["nav"];
-  label: string;
-  soon: string;
-  current: Section;
+  t: DashboardDictionary;
+  current: DashboardSection;
+  showSettings: boolean;
+  showAdmin: boolean;
 }) {
   return (
-    <nav aria-label={label}>
+    <nav aria-label={t.shell.navLabel}>
       <ul className="-mx-4 flex gap-1.5 overflow-x-auto px-4 pb-1 lg:mx-0 lg:flex-col lg:overflow-visible lg:px-0 lg:pb-0">
-        {sections.map(({ key, icon: Icon, href }) => {
-          const active = key === current;
-          const itemClass =
-            "flex shrink-0 items-center gap-3 rounded-2xl px-3.5 py-2.5 text-sm font-semibold whitespace-nowrap lg:whitespace-normal";
-          return (
+        {sections
+          .filter((section) => showSettings || !section.settings)
+          .map(({ key, icon: Icon, href }) => (
             <li key={key}>
               {href ? (
-                <Link
-                  href={href}
-                  aria-current={active ? "page" : undefined}
-                  className={cn(
-                    itemClass,
-                    "transition-colors outline-none focus-visible:outline-3 focus-visible:outline-leaf",
-                    active ? "bg-leaf text-cream" : "text-leaf hover:bg-leaf/[0.07]",
-                  )}
-                >
-                  <Icon aria-hidden="true" className="size-4.5 shrink-0" />
-                  {nav[key]}
-                </Link>
+                <NavLink href={href} active={key === current} icon={Icon}>
+                  {t.nav[key]}
+                </NavLink>
               ) : (
                 <span aria-disabled="true" className={cn(itemClass, "text-leaf/45")}>
                   <Icon aria-hidden="true" className="size-4.5 shrink-0" />
-                  {nav[key]}
+                  {t.nav[key]}
                   <span className="ml-auto shrink-0 rounded-full bg-leaf/[0.06] px-2 py-0.5 text-[0.68rem] font-bold tracking-wide text-leaf/55 uppercase">
-                    {soon}
+                    {t.shell.soon}
                   </span>
                 </span>
               )}
             </li>
-          );
-        })}
+          ))}
+        {showAdmin ? (
+          <li className="lg:mt-4 lg:border-t lg:border-border lg:pt-4">
+            <NavLink href="/dashboard/admin" active={current === "admin"} icon={ShieldCheck}>
+              {t.shell.admin}
+            </NavLink>
+          </li>
+        ) : null}
       </ul>
     </nav>
   );

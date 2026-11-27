@@ -20,7 +20,8 @@
     "postinstall": "prisma generate",
     "db:generate": "prisma generate",
     "db:deploy": "prisma migrate deploy",
-    "db:status": "prisma migrate status"
+    "db:status": "prisma migrate status",
+    "admin:grant": "node scripts/grant-platform-admin.mjs"
   },
   "dependencies": {
     "@prisma/adapter-pg": "7.10.1",

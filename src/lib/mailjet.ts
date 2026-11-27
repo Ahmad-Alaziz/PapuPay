@@ -88,3 +88,67 @@ export async function sendContactEmail({ name, email, message, locale }: Contact
     throw new Error(`Mailjet send failed with HTTP ${response.status}`);
   }
 }
+
+type TransactionalEmail = {
+  to: string;
+  subject: string;
+  text: string;
+  html: string;
+  /** Mailjet campaign name, for grouping stats in the Mailjet dashboard. */
+  campaign: string;
+};
+
+/** Whether account emails (sign-in links, invitations) can be sent. */
+export function transactionalEmailConfigured() {
+  return Boolean(
+    process.env.MAILJET_API_KEY &&
+      process.env.MAILJET_SECRET_KEY &&
+      (process.env.MAILJET_ACCOUNT_SENDER_EMAIL || process.env.MAILJET_SENDER_EMAIL),
+  );
+}
+
+/**
+ * Sends one email to one recipient, such as a sign-in link or an invitation.
+ * Uses MAILJET_ACCOUNT_SENDER_EMAIL when set, otherwise MAILJET_SENDER_EMAIL.
+ */
+export async function sendTransactionalEmail({ to, subject, text, html, campaign }: TransactionalEmail) {
+  const apiKey = process.env.MAILJET_API_KEY;
+  const secretKey = process.env.MAILJET_SECRET_KEY;
+  const sender = process.env.MAILJET_ACCOUNT_SENDER_EMAIL || process.env.MAILJET_SENDER_EMAIL;
+  if (!apiKey || !secretKey || !sender) {
+    throw new MailjetConfigError("Missing MAILJET_API_KEY, MAILJET_SECRET_KEY or MAILJET_SENDER_EMAIL.");
+  }
+
+  const response = await fetch(MAILJET_SEND_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Basic ${Buffer.from(`${apiKey}:${secretKey}`).toString("base64")}`,
+    },
+    body: JSON.stringify({
+      Messages: [
+        {
+          From: { Email: sender, Name: "PapuPay" },
+          To: [{ Email: to }],
+          Subject: subject,
+          TextPart: text,
+          HTMLPart: html,
+          CustomCampaign: campaign,
+          // Sign-in links must not be rewritten by click tracking.
+          TrackClicks: "disabled",
+          TrackOpens: "disabled",
+        },
+      ],
+    }),
+    signal: AbortSignal.timeout(10_000),
+  });
+
+  const result = (await response.json().catch(() => null)) as {
+    Messages?: { Status?: string }[];
+  } | null;
+  if (!response.ok || result?.Messages?.[0]?.Status !== "success") {
+    throw new Error(`Mailjet send failed with HTTP ${response.status}`);
+  }
+}
+
+export { escapeHtml };
