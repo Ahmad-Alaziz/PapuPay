@@ -24,8 +24,11 @@ function createClient() {
   return new PrismaClient({ adapter });
 }
 
-// Reuse one client across hot reloads in development.
+// Reuse one client across hot reloads in development. After `prisma generate`
+// the PrismaClient class itself is new, so a client cached from before the
+// schema change is replaced instead of missing the new tables.
 const globalForPrisma = globalThis as unknown as { papupayDb?: PrismaClient };
+const cached = globalForPrisma.papupayDb;
 
-export const db = globalForPrisma.papupayDb ?? createClient();
+export const db = cached instanceof PrismaClient ? cached : createClient();
 if (process.env.NODE_ENV !== "production") globalForPrisma.papupayDb = db;

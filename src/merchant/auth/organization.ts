@@ -32,7 +32,7 @@ export function canManageMember(actor: Role, target: Role) {
 
 export type OrganizationContext = {
   user: CurrentUser;
-  organization: { id: string; name: string };
+  organization: { id: string; name: string; venues: { id: string; slug: string; name: string }[] };
   role: Role;
   /** True when a platform admin is working in an organisation they don't belong to. */
   viaPlatformAdmin: boolean;
@@ -43,10 +43,23 @@ export type OrganizationContext = {
  * the user still has access to it, otherwise their first membership.
  */
 export const getOrganizationContext = cache(async (): Promise<OrganizationContext | null> => {
+  const base = await resolveOrganization();
+  if (!base) return null;
+  const venues = await db.venue.findMany({
+    where: { organizationId: base.organization.id },
+    select: { id: true, slug: true, name: true },
+    orderBy: { createdAt: "asc" },
+  });
+  return { ...base, organization: { ...base.organization, venues } };
+});
+
+type ResolvedOrganization = Omit<OrganizationContext, "organization"> & { organization: { id: string; name: string } };
+
+async function resolveOrganization(): Promise<ResolvedOrganization | null> {
   const user = await requireUser();
   const chosen = (await cookies()).get(activeOrgCookie)?.value;
 
-  const fromMembership = (m: CurrentUser["memberships"][number]): OrganizationContext => ({
+  const fromMembership = (m: CurrentUser["memberships"][number]): ResolvedOrganization => ({
     user,
     organization: m.organization,
     role: m.role,
@@ -63,7 +76,7 @@ export const getOrganizationContext = cache(async (): Promise<OrganizationContex
 
   const first = user.memberships[0];
   return first ? fromMembership(first) : null;
-});
+}
 
 /** For pages and actions that need an organisation and a minimum role. */
 export async function requireOrganization(check: (role: Role) => boolean = () => true) {

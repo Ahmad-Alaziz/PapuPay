@@ -16,13 +16,21 @@ const nextConfig: NextConfig = {
       .join(","),
   },
   async redirects() {
-    return ["/app.html", "/en/app", "/pl/app", "/clip", "/clip.html"].map(
-      (source) => ({
-        source,
-        destination: "/app",
-        permanent: true,
-      }),
-    );
+    return [
+      ...["/app.html", "/en/app", "/pl/app", "/clip", "/clip.html"].map(
+        (source) => ({
+          source,
+          destination: "/app",
+          permanent: true,
+        }),
+      ),
+      // A venue's settings start on its Branding page.
+      {
+        source: "/dashboard/venues/:slug",
+        destination: "/dashboard/venues/:slug/branding",
+        permanent: false,
+      },
+    ];
   },
   async rewrites() {
     return [

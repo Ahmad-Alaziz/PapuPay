@@ -11,8 +11,17 @@ import type { DashboardDictionary } from "@/merchant/i18n";
 import { DashboardNav, type DashboardSection } from "./dashboard-nav";
 import { LanguageForm } from "./language-form";
 
-function OrganizationCard({ context, t }: { context: OrganizationContext; t: DashboardDictionary }) {
+function OrganizationCard({
+  context,
+  t,
+  venueSlug,
+}: {
+  context: OrganizationContext;
+  t: DashboardDictionary;
+  venueSlug?: string;
+}) {
   const others = context.user.memberships.filter((m) => m.organization.id !== context.organization.id);
+  const { venues } = context.organization;
   return (
     <div className="rounded-2xl bg-muted/70 p-4">
       <p className="text-xs font-bold tracking-wide text-muted-foreground uppercase">{t.shell.organization}</p>
@@ -21,6 +30,24 @@ function OrganizationCard({ context, t }: { context: OrganizationContext; t: Das
         {t.roles[context.role].name}
         {context.viaPlatformAdmin ? ` · ${t.shell.adminAccess}` : ""}
       </p>
+      {venues.length > 1 && canEditSettings(context.role) ? (
+        <nav aria-label={t.venue.switchLabel} className="mt-3 border-t border-border pt-3">
+          <p className="text-xs font-bold tracking-wide text-muted-foreground uppercase">{t.venue.switchLabel}</p>
+          <ul className="mt-1.5 grid gap-1">
+            {venues.map((venue) => (
+              <li key={venue.id}>
+                <Link
+                  href={`/dashboard/venues/${venue.slug}/branding`}
+                  aria-current={venue.slug === venueSlug ? "page" : undefined}
+                  className="block truncate rounded-lg px-2 py-1 text-sm font-semibold hover:bg-leaf/[0.07] aria-[current=page]:bg-leaf aria-[current=page]:text-cream"
+                >
+                  {venue.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      ) : null}
       {others.length > 0 ? (
         <form action={switchOrganization} className="mt-3 flex gap-2">
           <label htmlFor="organization-switch" className="sr-only">
@@ -57,6 +84,8 @@ export function DashboardFrame({
   user,
   context,
   current,
+  venueSlug,
+  wide = false,
   children,
 }: {
   locale: Locale;
@@ -64,8 +93,13 @@ export function DashboardFrame({
   user: CurrentUser;
   context: OrganizationContext | null;
   current: DashboardSection;
+  /** The venue being edited; settings links default to the organisation's first venue. */
+  venueSlug?: string;
+  /** Room for the phone preview beside the forms. */
+  wide?: boolean;
   children: ReactNode;
 }) {
+  const navVenue = venueSlug ?? context?.organization.venues[0]?.slug;
   return (
     <div lang={locale} className="min-h-dvh lg:grid lg:grid-cols-[18rem_1fr]">
       <a
@@ -87,7 +121,7 @@ export function DashboardFrame({
         </div>
         {context ? (
           <div className="mb-4 hidden lg:mb-0 lg:block">
-            <OrganizationCard context={context} t={t} />
+            <OrganizationCard context={context} t={t} venueSlug={venueSlug} />
           </div>
         ) : null}
         <DashboardNav
@@ -95,6 +129,7 @@ export function DashboardFrame({
           current={current}
           showSettings={Boolean(context && canEditSettings(context.role))}
           showAdmin={user.isPlatformAdmin}
+          venueSlug={navVenue}
         />
         <div className="mt-auto hidden border-t border-border pt-5 lg:block">
           <p className="text-xs text-muted-foreground">{t.shell.signedInAs}</p>
@@ -113,10 +148,10 @@ export function DashboardFrame({
         </div>
       </aside>
       <main id="content" tabIndex={-1} className="px-4 py-8 outline-none sm:px-8 lg:px-12 lg:py-12">
-        <div className="mx-auto max-w-4xl">
+        <div className={wide ? "mx-auto max-w-6xl" : "mx-auto max-w-4xl"}>
           {context ? (
             <div className="mb-8 lg:hidden">
-              <OrganizationCard context={context} t={t} />
+              <OrganizationCard context={context} t={t} venueSlug={venueSlug} />
             </div>
           ) : null}
           {children}

@@ -27,6 +27,26 @@ enum Locale {
   en
 }
 
+enum WifiSecurity {
+  WPA
+  WEP
+  NOPASS
+}
+
+enum AssetKind {
+  LOGO
+  LOGO_WHITE
+  BANNER
+  MENU_PDF
+}
+
+/// Languages the guest apps show menus in.
+enum MenuLanguage {
+  pl
+  en
+  ru
+}
+
 model Organization {
   id          String       @id @default(uuid()) @db.Uuid
   name        String
@@ -41,19 +61,21 @@ model Organization {
 }
 
 model User {
-  id              String       @id @default(uuid()) @db.Uuid
+  id              String          @id @default(uuid()) @db.Uuid
   /// Stored lower-cased and trimmed so sign-in matches regardless of how it was typed.
-  email           String       @unique
+  email           String          @unique
   name            String?
-  locale          Locale       @default(pl)
+  locale          Locale          @default(pl)
   /// PapuPay team members who create organisations and send the first invite.
-  isPlatformAdmin Boolean      @default(false) @map("is_platform_admin")
-  createdAt       DateTime     @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt       DateTime     @updatedAt @map("updated_at") @db.Timestamptz(3)
+  isPlatformAdmin Boolean         @default(false) @map("is_platform_admin")
+  createdAt       DateTime        @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt       DateTime        @updatedAt @map("updated_at") @db.Timestamptz(3)
   memberships     Membership[]
   sessions        Session[]
+  settingsEdits   VenueSettings[]
+  uploads         Asset[]
   loginTokens     LoginToken[]
-  invitationsSent Invitation[] @relation("InvitedBy")
+  invitationsSent Invitation[]    @relation("InvitedBy")
   auditLogs       AuditLog[]
 
   @@map("users")
@@ -74,18 +96,20 @@ model Membership {
 }
 
 model Venue {
-  id             String       @id @default(uuid()) @db.Uuid
-  organizationId String       @map("organization_id") @db.Uuid
+  id             String         @id @default(uuid()) @db.Uuid
+  organizationId String         @map("organization_id") @db.Uuid
   /// Public identifier in /v/<slug> and /go/<slug>/…, printed on NFC stickers and QR codes.
   /// Locked once the venue is live.
-  slug           String       @unique
+  slug           String         @unique
   name           String
   /// IANA time zone used for daily stamp limits and expiry dates.
-  timezone       String       @default("Europe/Warsaw")
-  status         VenueStatus  @default(DRAFT)
-  createdAt      DateTime     @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt      DateTime     @updatedAt @map("updated_at") @db.Timestamptz(3)
-  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  timezone       String         @default("Europe/Warsaw")
+  status         VenueStatus    @default(DRAFT)
+  createdAt      DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt      DateTime       @updatedAt @map("updated_at") @db.Timestamptz(3)
+  organization   Organization   @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  settings       VenueSettings?
+  assets         Asset[]
 
   @@index([organizationId])
   @@map("venues")
@@ -158,4 +182,57 @@ model AuditLog {
 
   @@index([organizationId, createdAt])
   @@map("audit_logs")
+}
+
+/// The venue's draft configuration, one row per venue. Guests only see what's
+/// published, so editing here changes nothing in the App Clip until Publish.
+model VenueSettings {
+  venueId               String        @id @map("venue_id") @db.Uuid
+  address               String?
+  mapUrl                String?       @map("map_url")
+  logoAssetId           String?       @map("logo_asset_id") @db.Uuid
+  logoWhiteAssetId      String?       @map("logo_white_asset_id") @db.Uuid
+  bannerAssetId         String?       @map("banner_asset_id") @db.Uuid
+  /// One of the guest apps' theme presets: sweeto, berry or forest.
+  themePreset           String        @default("sweeto") @map("theme_preset")
+  /// Overrides the preset's font: bricolage, dm-sans, manrope, serif or system.
+  font                  String?
+  wifiSsid              String?       @map("wifi_ssid")
+  wifiSecurity          WifiSecurity? @map("wifi_security")
+  /// AES-256-GCM, see src/merchant/secrets.ts. Never sent to the browser except in the test QR.
+  wifiPasswordEncrypted String?       @map("wifi_password_encrypted")
+  wifiHidden            Boolean       @default(false) @map("wifi_hidden")
+  reviewUrl             String?       @map("review_url")
+  menuPdfPlAssetId      String?       @map("menu_pdf_pl_asset_id") @db.Uuid
+  menuPdfEnAssetId      String?       @map("menu_pdf_en_asset_id") @db.Uuid
+  menuPdfRuAssetId      String?       @map("menu_pdf_ru_asset_id") @db.Uuid
+  updatedAt             DateTime      @updatedAt @map("updated_at") @db.Timestamptz(3)
+  updatedById           String?       @map("updated_by_id") @db.Uuid
+  venue                 Venue         @relation(fields: [venueId], references: [id], onDelete: Cascade)
+  updatedBy             User?         @relation(fields: [updatedById], references: [id], onDelete: SetNull)
+
+  @@map("venue_settings")
+}
+
+/// An uploaded file in Supabase Storage. Replaced files are kept, because
+/// published releases may still point at them.
+model Asset {
+  id          String        @id @default(uuid()) @db.Uuid
+  venueId     String        @map("venue_id") @db.Uuid
+  kind        AssetKind
+  /// Path inside the storage bucket, e.g. venues/<venue id>/banner/<uuid>.webp
+  storagePath String        @unique @map("storage_path")
+  contentType String        @map("content_type")
+  byteSize    Int           @map("byte_size")
+  /// Measured in the browser before upload; a hint for layout, not trusted.
+  width       Int?
+  height      Int?
+  language    MenuLanguage?
+  createdAt   DateTime      @default(now()) @map("created_at") @db.Timestamptz(3)
+  createdById String?       @map("created_by_id") @db.Uuid
+  venue       Venue         @relation(fields: [venueId], references: [id], onDelete: Cascade)
+  createdBy   User?         @relation(fields: [createdById], references: [id], onDelete: SetNull)
+
+  @@index([venueId, kind])
+  @@map("assets")
 }

@@ -16,12 +16,13 @@ import { cn } from "@/lib/utils";
 
 export type DashboardSection = keyof DashboardDictionary["nav"] | "admin";
 
-const sections: { key: keyof DashboardDictionary["nav"]; icon: LucideIcon; href?: string; settings?: boolean }[] = [
+// `venue` sections live under /dashboard/venues/<slug>/<key>.
+const sections: { key: keyof DashboardDictionary["nav"]; icon: LucideIcon; href?: string; venue?: boolean; settings?: boolean }[] = [
   { key: "overview", icon: LayoutDashboard, href: "/dashboard" },
-  { key: "branding", icon: Palette, settings: true },
-  { key: "wifi", icon: Wifi, settings: true },
-  { key: "reviews", icon: Star, settings: true },
-  { key: "menu", icon: BookOpen, settings: true },
+  { key: "branding", icon: Palette, venue: true, settings: true },
+  { key: "wifi", icon: Wifi, venue: true, settings: true },
+  { key: "reviews", icon: Star, venue: true, settings: true },
+  { key: "menu", icon: BookOpen, venue: true, settings: true },
   { key: "loyalty", icon: Stamp, settings: true },
   { key: "team", icon: Users, href: "/dashboard/team", settings: true },
   { key: "publish", icon: Rocket, settings: true },
@@ -57,18 +58,23 @@ export function DashboardNav({
   current,
   showSettings,
   showAdmin,
+  venueSlug,
 }: {
   t: DashboardDictionary;
   current: DashboardSection;
   showSettings: boolean;
   showAdmin: boolean;
+  /** The venue the settings links open; without one they render as unavailable. */
+  venueSlug?: string;
 }) {
   return (
     <nav aria-label={t.shell.navLabel}>
       <ul className="-mx-4 flex gap-1.5 overflow-x-auto px-4 pb-1 lg:mx-0 lg:flex-col lg:overflow-visible lg:px-0 lg:pb-0">
         {sections
           .filter((section) => showSettings || !section.settings)
-          .map(({ key, icon: Icon, href }) => (
+          .map(({ key, icon: Icon, href: fixed, venue }) => {
+            const href = venue && venueSlug ? `/dashboard/venues/${venueSlug}/${key}` : fixed;
+            return (
             <li key={key}>
               {href ? (
                 <NavLink href={href} active={key === current} icon={Icon}>
@@ -84,7 +90,8 @@ export function DashboardNav({
                 </span>
               )}
             </li>
-          ))}
+            );
+          })}
         {showAdmin ? (
           <li className="lg:mt-4 lg:border-t lg:border-border lg:pt-4">
             <NavLink href="/dashboard/admin" active={current === "admin"} icon={ShieldCheck}>
