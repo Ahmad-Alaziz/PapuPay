@@ -82,13 +82,13 @@ const leaseMs = 90_000;
 
 export async function drainWalletNotifications({ store, passType, send, clock = Date.now, random = Math.random, stopped = () => false }) {
   for (let count = 0; count < 16 && !stopped(); count += 1) {
-    const job = store.claim(passType, clock(), leaseMs);
+    const job = await store.claim(passType, clock(), leaseMs);
     if (!job) break;
     const result = await Promise.resolve().then(() => send(job.push_token, passType)).catch(() => retryable);
     if (stopped()) break;
     const backoff = Math.min(6 * 60 * 60 * 1000, 5000 * 2 ** Math.min(job.attempts, 16));
     const delay = Math.max(backoff + Math.floor(backoff * 0.2 * random()), result.afterMs || 0);
-    store.settle(job, result.outcome, clock() + delay);
+    await store.settle(job, result.outcome, clock() + delay);
   }
 }
 

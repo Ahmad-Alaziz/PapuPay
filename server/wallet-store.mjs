@@ -1,213 +1,180 @@
 import { createHash, randomBytes, randomUUID } from "node:crypto";
 
 const hashDevice = (device) => createHash("sha256").update(device).digest("hex");
-const cardChange = (timestamp) => `
-  UPDATE wallet_revision SET revision = revision + 1 WHERE singleton = 1;
-  UPDATE wallet_passes
-    SET revision = (SELECT revision FROM wallet_revision WHERE singleton = 1), updated_at = ${timestamp}
-    WHERE card_id = NEW.card_id;
-  INSERT INTO wallet_notifications(pass_type, device_hash, revision)
-    SELECT r.pass_type, r.device_hash, p.revision FROM wallet_registrations r
-    JOIN wallet_passes p ON p.pass_type = r.pass_type AND p.serial = r.serial
-    WHERE p.card_id = NEW.card_id
-    ON CONFLICT(pass_type, device_hash) DO UPDATE SET revision = excluded.revision, due_at = 0, attempts = 0;
-`;
+const first = async (client, sql, values) => (await client.query(sql, values)).rows[0];
+const pass = (client, type, serial) => first(client, "SELECT * FROM wallet_passes WHERE pass_type = $1 AND serial = $2", [type, serial]);
+const advance = async (client) => (await first(client, "UPDATE wallet_revision SET revision = revision + 1 WHERE singleton = 1 RETURNING revision")).revision;
 
-export function createWalletStore(db, transaction, cardForMember) {
-  db.exec(`
-    CREATE TABLE IF NOT EXISTS wallet_revision (
-      singleton INTEGER PRIMARY KEY CHECK (singleton = 1), revision INTEGER NOT NULL
-    ) STRICT;
-    INSERT OR IGNORE INTO wallet_revision VALUES (1, 0);
-    CREATE TABLE IF NOT EXISTS wallet_passes (
-      pass_type TEXT NOT NULL,
-      serial TEXT NOT NULL,
-      card_id TEXT NOT NULL REFERENCES memberships(id) ON DELETE CASCADE,
-      auth_token TEXT NOT NULL,
-      revision INTEGER NOT NULL,
-      updated_at TEXT NOT NULL,
-      issued_revision INTEGER NOT NULL,
-      recovery_version INTEGER,
-      PRIMARY KEY (pass_type, serial),
-      UNIQUE (pass_type, card_id)
-    ) STRICT;
-    CREATE INDEX IF NOT EXISTS wallet_pass_membership ON wallet_passes(card_id);
-    CREATE TABLE IF NOT EXISTS wallet_devices (
-      pass_type TEXT NOT NULL,
-      device_hash TEXT NOT NULL,
-      push_token TEXT NOT NULL,
-      registration INTEGER NOT NULL DEFAULT 1,
-      PRIMARY KEY (pass_type, device_hash)
-    ) STRICT;
-    CREATE TABLE IF NOT EXISTS wallet_registrations (
-      pass_type TEXT NOT NULL,
-      device_hash TEXT NOT NULL,
-      serial TEXT NOT NULL,
-      PRIMARY KEY (pass_type, device_hash, serial),
-      FOREIGN KEY (pass_type, device_hash) REFERENCES wallet_devices(pass_type, device_hash) ON DELETE CASCADE,
-      FOREIGN KEY (pass_type, serial) REFERENCES wallet_passes(pass_type, serial) ON DELETE CASCADE
-    ) STRICT;
-    CREATE INDEX IF NOT EXISTS wallet_registered_pass ON wallet_registrations(pass_type, serial);
-    CREATE TABLE IF NOT EXISTS wallet_notifications (
-      pass_type TEXT NOT NULL,
-      device_hash TEXT NOT NULL,
-      revision INTEGER NOT NULL,
-      due_at INTEGER NOT NULL DEFAULT 0,
-      attempts INTEGER NOT NULL DEFAULT 0,
-      lease_id TEXT,
-      leased_until INTEGER NOT NULL DEFAULT 0,
-      PRIMARY KEY (pass_type, device_hash),
-      FOREIGN KEY (pass_type, device_hash) REFERENCES wallet_devices(pass_type, device_hash) ON DELETE CASCADE
-    ) STRICT;
-    CREATE INDEX IF NOT EXISTS wallet_notifications_due ON wallet_notifications(pass_type, due_at);
-    CREATE TABLE IF NOT EXISTS wallet_recovery (
-      card_id TEXT PRIMARY KEY REFERENCES memberships(id) ON DELETE CASCADE,
-      reference TEXT NOT NULL UNIQUE,
-      expires_at INTEGER NOT NULL,
-      version INTEGER NOT NULL DEFAULT 1
-    ) STRICT;
+// Ledger writes and Wallet mutations acquire the membership lock before changing pass state.
+// A pass can only be issued or registered on one side of a concurrent stamp or recovery update.
+const memberForCheckout = (client, checkout) => first(client, "SELECT id FROM memberships WHERE checkout = $1 FOR NO KEY UPDATE", [checkout]);
+const lockPassMember = (client, type, serial) => first(client, `
+  SELECT m.id FROM wallet_passes p JOIN memberships m ON m.id = p.card_id
+  WHERE p.pass_type = $1 AND p.serial = $2 FOR NO KEY UPDATE OF m
+`, [type, serial]);
 
-    CREATE TRIGGER IF NOT EXISTS wallet_ledger_change AFTER INSERT ON ledger
-    WHEN EXISTS (SELECT 1 FROM wallet_passes WHERE card_id = NEW.card_id)
-    BEGIN ${cardChange("NEW.created_at")} END;
-    CREATE TRIGGER IF NOT EXISTS wallet_restore_change AFTER UPDATE OF version ON wallet_recovery
-    WHEN EXISTS (SELECT 1 FROM wallet_passes WHERE card_id = NEW.card_id)
-    BEGIN ${cardChange("strftime('%Y-%m-%dT%H:%M:%fZ', 'now')")} END;
-  `);
-  transaction(() => {
-    const columns = db.prepare("PRAGMA table_info(wallet_passes)").all().map(({ name }) => name);
-    if (!columns.includes("issued_revision")) {
-      db.exec(`ALTER TABLE wallet_passes ADD COLUMN issued_revision INTEGER NOT NULL DEFAULT 0;
-        UPDATE wallet_passes SET issued_revision = revision;`);
-    }
-    if (!columns.includes("recovery_version")) {
-      db.exec("ALTER TABLE wallet_passes ADD COLUMN recovery_version INTEGER");
-    }
-  });
+function recoveryEntry(row) {
+  // Existing signed links hash numeric millisecond expiry and version values.
+  return row ? { ...row, expires_at: Number(row.expires_at), version: Number(row.version) } : null;
+}
 
-  const query = {
-    memberForCheckout: db.prepare("SELECT id FROM memberships WHERE checkout = ?"),
-    advance: db.prepare("UPDATE wallet_revision SET revision = revision + 1 WHERE singleton = 1 RETURNING revision"),
-    pass: db.prepare("SELECT * FROM wallet_passes WHERE pass_type = ? AND serial = ?"),
-    insertPass: db.prepare(`INSERT INTO wallet_passes(pass_type, serial, card_id, auth_token, revision, updated_at, issued_revision, recovery_version)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)`),
-    registerDevice: db.prepare(`INSERT INTO wallet_devices(pass_type, device_hash, push_token) VALUES (?, ?, ?)
-      ON CONFLICT(pass_type, device_hash) DO UPDATE SET push_token = excluded.push_token, registration = registration + 1`),
-    registerPass: db.prepare("INSERT OR IGNORE INTO wallet_registrations VALUES (?, ?, ?)"),
-    enqueue: db.prepare(`INSERT INTO wallet_notifications(pass_type, device_hash, revision) VALUES (?, ?, ?)
-      ON CONFLICT(pass_type, device_hash) DO UPDATE SET revision = excluded.revision, due_at = 0, attempts = 0`),
-    unregisterPass: db.prepare("DELETE FROM wallet_registrations WHERE pass_type = ? AND device_hash = ? AND serial = ?"),
-    removeUnusedDevice: db.prepare(`DELETE FROM wallet_devices WHERE pass_type = ? AND device_hash = ?
-      AND NOT EXISTS (SELECT 1 FROM wallet_registrations r WHERE r.pass_type = wallet_devices.pass_type AND r.device_hash = wallet_devices.device_hash)`),
-    updatedPasses: db.prepare(`SELECT p.serial, p.revision FROM wallet_passes p
-      JOIN wallet_registrations r ON r.pass_type = p.pass_type AND r.serial = p.serial
-      WHERE r.pass_type = ? AND r.device_hash = ? AND p.revision > ? ORDER BY p.revision, p.serial`),
-    due: db.prepare(`SELECT n.*, d.push_token, d.registration FROM wallet_notifications n
-      JOIN wallet_devices d ON d.pass_type = n.pass_type AND d.device_hash = n.device_hash
-      WHERE n.pass_type = ? AND n.due_at <= ? AND n.leased_until <= ?
-      ORDER BY n.due_at, n.revision LIMIT 1`),
-    lease: db.prepare(`UPDATE wallet_notifications SET lease_id = ?, leased_until = ?
-      WHERE pass_type = ? AND device_hash = ?`),
-    ack: db.prepare(`DELETE FROM wallet_notifications WHERE pass_type = ? AND device_hash = ?
-      AND lease_id = ? AND revision = ? AND EXISTS (SELECT 1 FROM wallet_devices d
-        WHERE d.pass_type = wallet_notifications.pass_type AND d.device_hash = wallet_notifications.device_hash AND d.push_token = ?)`),
-    retry: db.prepare(`UPDATE wallet_notifications SET due_at = ?, attempts = attempts + 1, lease_id = NULL, leased_until = 0
-      WHERE pass_type = ? AND device_hash = ? AND lease_id = ? AND revision = ? AND EXISTS (SELECT 1 FROM wallet_devices d
-        WHERE d.pass_type = wallet_notifications.pass_type AND d.device_hash = wallet_notifications.device_hash AND d.push_token = ?)`),
-    release: db.prepare(`UPDATE wallet_notifications SET lease_id = NULL, leased_until = 0
-      WHERE pass_type = ? AND device_hash = ? AND lease_id = ?`),
-    forgetToken: db.prepare(`DELETE FROM wallet_devices WHERE pass_type = ? AND device_hash = ? AND push_token = ? AND registration = ?
-      AND EXISTS (SELECT 1 FROM wallet_notifications n WHERE n.pass_type = wallet_devices.pass_type
-        AND n.device_hash = wallet_devices.device_hash AND n.lease_id = ?)`),
-    restore: db.prepare("SELECT * FROM wallet_recovery WHERE reference = ?"),
-    restoreForMember: db.prepare("SELECT * FROM wallet_recovery WHERE card_id = ?"),
-    createRestore: db.prepare("INSERT INTO wallet_recovery(card_id, reference, expires_at) VALUES (?, ?, ?)"),
-    renewRestore: db.prepare("UPDATE wallet_recovery SET expires_at = ?, version = version + 1 WHERE card_id = ?"),
-    revokeRestore: db.prepare("UPDATE wallet_recovery SET version = version + 1 WHERE card_id = ?"),
-    recoverSession: db.prepare(`INSERT INTO guest_sessions (token_hash, card_id, expires_at)
-      SELECT ?, card_id, ? FROM wallet_recovery WHERE reference = ? AND version = ? AND expires_at > ? RETURNING card_id`),
-  };
+async function currentRecovery(client, id, now, expiresAt) {
+  const prior = await first(client, "SELECT * FROM wallet_recovery WHERE card_id = $1", [id]);
+  if (prior && Number(prior.expires_at) > now) return recoveryEntry(prior);
+  if (prior) {
+    return recoveryEntry(await first(client, `
+      UPDATE wallet_recovery SET expires_at = $1, version = version + 1 WHERE card_id = $2 RETURNING *
+    `, [expiresAt, id]));
+  }
+  return recoveryEntry(await first(client, `
+    INSERT INTO wallet_recovery (card_id, reference, expires_at) VALUES ($1, $2, $3) RETURNING *
+  `, [id, randomBytes(24).toString("base64url"), expiresAt]));
+}
 
+export function createWalletStore(db, cardForMember) {
   return {
-    pass: (type, serial) => query.pass.get(type, serial),
-    card: (entry) => cardForMember(entry.card_id),
+    pass: (type, serial) => pass(db, type, serial),
+    card: (entry) => cardForMember(db, entry.card_id),
     snapshot(type, serial) {
-      return transaction(() => {
-        const entry = query.pass.get(type, serial);
-        return entry ? { entry, card: cardForMember(entry.card_id) } : null;
-      }, true);
+      return db.transaction(async (client) => {
+        const entry = await pass(client, type, serial);
+        return entry ? { entry, card: await cardForMember(client, entry.card_id) } : null;
+      }, { isolation: "repeatable read", readOnly: true });
     },
-    issue(type, serial, checkout, recoveryVersion = null) {
-      return transaction(() => {
-        const entry = query.pass.get(type, serial);
+    issue(type, serial, checkout, { recoveryWindow } = {}) {
+      return db.transaction(async (client) => {
+        const { id } = await memberForCheckout(client, checkout);
+        const entry = await pass(client, type, serial);
         if (entry) return entry;
-        const { id } = query.memberForCheckout.get(checkout);
-        const { revision } = query.advance.get();
-        query.insertPass.run(type, serial, id, randomBytes(32).toString("base64url"), revision, new Date().toISOString(), revision, recoveryVersion);
-        return query.pass.get(type, serial);
+        const recovery = recoveryWindow && await currentRecovery(client, id, recoveryWindow.now, recoveryWindow.expiresAt);
+        const revision = await advance(client);
+        return first(client, `
+          INSERT INTO wallet_passes (pass_type, serial, card_id, auth_token, revision, updated_at, issued_revision, recovery_version)
+          VALUES ($1, $2, $3, $4, $5, $6, $5, $7) RETURNING *
+        `, [type, serial, id, randomBytes(32).toString("base64url"), revision, new Date().toISOString(), recovery?.version ?? null]);
       });
     },
     register(type, serial, device, token) {
-      return transaction(() => {
+      return db.transaction(async (client) => {
+        await lockPassMember(client, type, serial);
+        const current = await pass(client, type, serial);
+        const revision = BigInt(current.revision) > BigInt(current.issued_revision) ? await advance(client) : null;
         const key = hashDevice(device);
-        query.registerDevice.run(type, key, token);
-        const created = query.registerPass.run(type, key, serial).changes === 1;
-        const pass = query.pass.get(type, serial);
-        if (created && pass.revision > pass.issued_revision) {
-          const { revision } = query.advance.get();
-          query.enqueue.run(type, key, revision);
+        await client.query(`
+          INSERT INTO wallet_devices (pass_type, device_hash, push_token) VALUES ($1, $2, $3)
+          ON CONFLICT (pass_type, device_hash) DO UPDATE SET
+            push_token = excluded.push_token, registration = wallet_devices.registration + 1
+        `, [type, key, token]);
+        const { rowCount } = await client.query(`
+          INSERT INTO wallet_registrations (pass_type, device_hash, serial) VALUES ($1, $2, $3)
+          ON CONFLICT DO NOTHING
+        `, [type, key, serial]);
+        if (rowCount === 1 && revision !== null) {
+          // A device may already have seen a newer tag from another pass of this type.
+          await client.query(`
+            UPDATE wallet_passes SET revision = $3 WHERE pass_type = $1 AND serial = $2
+          `, [type, serial, revision]);
+          await client.query(`
+            INSERT INTO wallet_notifications (pass_type, device_hash, revision) VALUES ($1, $2, $3)
+            ON CONFLICT (pass_type, device_hash) DO UPDATE SET revision = excluded.revision, due_at = 0, attempts = 0
+          `, [type, key, revision]);
         }
-        return created;
+        return rowCount === 1;
       });
     },
     unregister(type, serial, device) {
-      return transaction(() => {
-        const key = hashDevice(device);
-        query.unregisterPass.run(type, key, serial);
-        query.removeUnusedDevice.run(type, key);
+      return db.transaction(async (client) => {
+        await lockPassMember(client, type, serial);
+        const key = [type, hashDevice(device)];
+        await client.query("SELECT 1 FROM wallet_devices WHERE pass_type = $1 AND device_hash = $2 FOR UPDATE", key);
+        await client.query("DELETE FROM wallet_registrations WHERE pass_type = $1 AND device_hash = $2 AND serial = $3", [...key, serial]);
+        await client.query(`
+          DELETE FROM wallet_devices WHERE pass_type = $1 AND device_hash = $2
+            AND NOT EXISTS (SELECT 1 FROM wallet_registrations r WHERE r.pass_type = $1 AND r.device_hash = $2)
+        `, key);
       });
     },
-    updated: (type, device, since) => query.updatedPasses.all(type, hashDevice(device), since),
-    claim(type, now, duration) {
-      return transaction(() => {
-        const job = query.due.get(type, now, now);
-        if (!job) return null;
-        const lease = randomUUID();
-        query.lease.run(lease, now + duration, type, job.device_hash);
-        return { ...job, lease_id: lease };
-      });
+    async updated(type, device, since) {
+      const { rows } = await db.query(`
+        SELECT p.serial, p.revision FROM wallet_passes p
+        JOIN wallet_registrations r ON r.pass_type = p.pass_type AND r.serial = p.serial
+        WHERE r.pass_type = $1 AND r.device_hash = $2 AND p.revision > $3 ORDER BY p.revision, p.serial
+      `, [type, hashDevice(device), since]);
+      return rows;
+    },
+    async claim(type, now, duration) {
+      const lease = randomUUID();
+      return await first(db, `
+        WITH next_job AS (
+          SELECT n.pass_type, n.device_hash, d.push_token, d.registration
+          FROM wallet_notifications n
+          JOIN wallet_devices d ON d.pass_type = n.pass_type AND d.device_hash = n.device_hash
+          WHERE n.pass_type = $1 AND n.due_at <= $2 AND n.leased_until <= $2
+          ORDER BY n.due_at, n.revision, n.device_hash LIMIT 1 FOR UPDATE OF n SKIP LOCKED
+        )
+        UPDATE wallet_notifications n SET lease_id = $3, leased_until = $4
+        FROM next_job j WHERE n.pass_type = j.pass_type AND n.device_hash = j.device_hash
+        RETURNING n.*, j.push_token, j.registration
+      `, [type, now, lease, now + duration]) ?? null;
     },
     settle(job, result, dueAt) {
-      return transaction(() => {
+      return db.transaction(async (client) => {
         const key = [job.pass_type, job.device_hash, job.lease_id];
-        if (result === "sent") query.ack.run(...key, job.revision, job.push_token);
-        if (result === "retry") query.retry.run(dueAt, ...key, job.revision, job.push_token);
-        if (result === "unregistered") query.forgetToken.run(job.pass_type, job.device_hash, job.push_token, job.registration, job.lease_id);
-        query.release.run(...key);
+        const device = await first(client, `
+          SELECT push_token, registration FROM wallet_devices
+          WHERE pass_type = $1 AND device_hash = $2 FOR UPDATE
+        `, key.slice(0, 2));
+        if (device?.push_token === job.push_token) {
+          const ownsCurrent = "pass_type = $1 AND device_hash = $2 AND lease_id = $3 AND revision = $4";
+          if (result === "sent") {
+            await client.query(`DELETE FROM wallet_notifications WHERE ${ownsCurrent}`, [...key, job.revision]);
+          } else if (result === "retry") {
+            await client.query(`
+              UPDATE wallet_notifications SET due_at = $5, attempts = attempts + 1, lease_id = NULL, leased_until = 0
+              WHERE ${ownsCurrent}
+            `, [...key, job.revision, dueAt]);
+          } else if (result === "unregistered" && device.registration === job.registration) {
+            await client.query(`
+              DELETE FROM wallet_devices WHERE pass_type = $1 AND device_hash = $2
+                AND EXISTS (SELECT 1 FROM wallet_notifications n WHERE n.pass_type = $1 AND n.device_hash = $2 AND n.lease_id = $3)
+            `, key);
+          }
+        }
+        await client.query(`
+          UPDATE wallet_notifications SET lease_id = NULL, leased_until = 0
+          WHERE pass_type = $1 AND device_hash = $2 AND lease_id = $3
+        `, key);
       });
     },
-    restore: (reference) => query.restore.get(reference),
-    restoreBound(cardId, version) {
-      const entry = query.restoreForMember.get(cardId);
-      return entry?.version === version ? entry : null;
+    async restore(reference) {
+      return recoveryEntry(await first(db, "SELECT * FROM wallet_recovery WHERE reference = $1", [reference]));
+    },
+    async restoreBound(cardId, version) {
+      return recoveryEntry(await first(db, "SELECT * FROM wallet_recovery WHERE card_id = $1 AND version = $2", [cardId, version]));
     },
     restoreLink(checkout, now, expiresAt) {
-      return transaction(() => {
-        const { id } = query.memberForCheckout.get(checkout);
-        const prior = query.restoreForMember.get(id);
-        if (prior && prior.expires_at > now) return prior;
-        if (prior) query.renewRestore.run(expiresAt, id);
-        else query.createRestore.run(id, randomBytes(24).toString("base64url"), expiresAt);
-        return query.restoreForMember.get(id);
+      return db.transaction(async (client) => {
+        const { id } = await memberForCheckout(client, checkout);
+        return currentRecovery(client, id, now, expiresAt);
       });
     },
-    recover(reference, version, sessionHash, expiresAt) {
-      const result = query.recoverSession.get(sessionHash, expiresAt, reference, version, Date.now());
-      return result ? cardForMember(result.card_id) : null;
+    recover(reference, version, sessionHash, expiresAt, now = Date.now()) {
+      return db.transaction(async (client) => {
+        const entry = await first(client, `
+          SELECT card_id FROM wallet_recovery WHERE reference = $1 AND version = $2 AND expires_at > $3 FOR SHARE
+        `, [reference, version, now]);
+        if (!entry) return null;
+        await client.query("INSERT INTO guest_sessions (token_hash, card_id, expires_at) VALUES ($1, $2, $3)", [
+          sessionHash, entry.card_id, expiresAt,
+        ]);
+        return cardForMember(client, entry.card_id);
+      });
     },
     revoke(checkout) {
-      const { id } = query.memberForCheckout.get(checkout);
-      query.revokeRestore.run(id);
+      return db.transaction(async (client) => {
+        const { id } = await memberForCheckout(client, checkout);
+        await client.query("UPDATE wallet_recovery SET version = version + 1 WHERE card_id = $1", [id]);
+      });
     },
   };
 }

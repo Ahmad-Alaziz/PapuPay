@@ -335,8 +335,8 @@ function current(certificate) {
 function walletConfiguration(env) {
   const passTypeId = env.PAPUPAY_WALLET_PASS_TYPE_ID;
   const teamId = env.PAPUPAY_WALLET_TEAM_ID;
-  const p12 = env.PAPUPAY_WALLET_P12_PATH;
-  const wwdr = env.PAPUPAY_WALLET_WWDR_PATH;
+  const p12 = signingSource(env.PAPUPAY_WALLET_P12_BASE64, env.PAPUPAY_WALLET_P12_PATH);
+  const wwdr = signingSource(env.PAPUPAY_WALLET_WWDR_BASE64, env.PAPUPAY_WALLET_WWDR_PATH);
   if (!/^pass\.[a-z0-9]+(?:[.-][a-z0-9]+)+$/i.test(passTypeId ?? "") || !/^[A-Z0-9]{10}$/.test(teamId ?? "") || !p12 || !wwdr) return null;
 
   try {
@@ -352,6 +352,14 @@ function walletConfiguration(env) {
   }
 }
 
+function signingSource(encoded, file) {
+  if (!encoded) return file;
+  const data = encoded.replace(/\s/g, "");
+  if (!data || data.length > 65_536) return null;
+  const bytes = Buffer.from(data, "base64");
+  return bytes.toString("base64") === data ? bytes : null;
+}
+
 function openssl(config, args, password) {
   return run(config.openssl, args, {
     env: { PATH: process.env.PATH, ...(password === undefined ? {} : { PAPUPAY_PKPASS_PASSWORD: password }) },
@@ -365,8 +373,10 @@ async function loadSigningMaterial(config) {
   return withTempFolder(async (temp) => {
     const certificatePath = join(temp, "signer.pem");
     const keyPath = join(temp, "key.pem");
+    const p12Path = Buffer.isBuffer(config.p12) ? join(temp, "signer.p12") : config.p12;
+    if (Buffer.isBuffer(config.p12)) await writeFile(p12Path, config.p12, { mode: 0o600 });
     const extract = async (flags) => {
-      const common = ["pkcs12", ...flags, "-in", config.p12, "-passin", "env:PAPUPAY_PKPASS_PASSWORD"];
+      const common = ["pkcs12", ...flags, "-in", p12Path, "-passin", "env:PAPUPAY_PKPASS_PASSWORD"];
       const results = await Promise.allSettled([
         openssl(config, [...common, "-clcerts", "-nokeys", "-out", certificatePath], config.p12Password),
         openssl(config, [...common, "-nocerts", "-nodes", "-out", keyPath], config.p12Password),
@@ -376,7 +386,10 @@ async function loadSigningMaterial(config) {
     try { await extract([]); }
     catch { await extract(["-legacy"]); }
 
-    const [pem, key, wwdrFile] = await Promise.all([readFile(certificatePath), readFile(keyPath), readFile(config.wwdr)]);
+    const [pem, key, wwdrFile] = await Promise.all([
+      readFile(/* turbopackIgnore: true */ certificatePath), readFile(/* turbopackIgnore: true */ keyPath),
+      Buffer.isBuffer(config.wwdr) ? config.wwdr : readFile(/* turbopackIgnore: true */ config.wwdr),
+    ]);
     const certificate = new X509Certificate(pem);
     const wwdr = new X509Certificate(wwdrFile);
     const subject = certificate.subject.split("\n");
@@ -404,7 +417,7 @@ export async function signManifest(config, material, manifest) {
     ]);
     await openssl(config, ["smime", "-sign", "-binary", "-in", files.manifest, "-signer", files.signer,
       "-inkey", files.key, "-certfile", files.wwdr, "-outform", "DER", "-out", files.signature]);
-    return readFile(files.signature);
+    return readFile(/* turbopackIgnore: true */ files.signature);
   });
 }
 

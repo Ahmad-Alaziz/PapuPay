@@ -15,7 +15,7 @@ The repository is connected to the `papupay` project in the existing `ahmadalazi
 | Build command | `node scripts/prepare-vercel-assets.mjs && npm run build` |
 | Output directory | `.next` |
 | Node | 22.x |
-| Environment variables | `MAILJET_API_KEY`, `MAILJET_SECRET_KEY`, `MAILJET_SENDER_EMAIL`, `CONTACT_RECIPIENTS` |
+| Environment variables | `DATABASE_URL`, `MAILJET_API_KEY`, `MAILJET_SECRET_KEY`, `MAILJET_SENDER_EMAIL`, `CONTACT_RECIPIENTS` |
 
 Pushes to `main` deploy production at https://papupay.com/. Other branches get preview deployments.
 
@@ -31,7 +31,7 @@ This is a standard Next.js deployment. `src/proxy.ts` sends `/` to `/en` or `/pl
 
 `public/.well-known/apple-app-site-association` associates `papupay.com` with the App Clip (`5W4JVD497D.com.papupay.app.Clip`) and lists `/app`, `/go/*` and `/v/*` for the installed full app. `next.config.ts` serves it as `application/json`. These URLs bypass the marketing locale redirect.
 
-`/app` opens the installed full app or its guest web experience. The Sweeto table, menu and counter links retain their original QR and NFC destinations. The browser offers the dessert menu, Google review link and loyalty card. To enable membership, staff checkout and live Wallet balances, set `PAPUPAY_API_ORIGIN` on the site and configure the persistent service. [Venue service and Wallet setup](VENUES-AND-WALLET.md)
+`/app` opens the installed full app or its guest web experience. The Sweeto table, menu and counter links retain their original QR and NFC destinations. Next.js handles guest, staff and Wallet requests under `/api/v/<id>`. Set `DATABASE_URL` for the deployment, apply the schema from the release checkout, and run the separate Wallet worker when live pass updates are enabled. [Database and Wallet setup](VENUES-AND-WALLET.md)
 
 The Vercel build copies shared motion assets and Wallet badges into its temporary public directory before packaging. Sweeto's images, menu PDF and Rive files are served from `/assets/sweeto/` and also bundled into the iOS app.
 

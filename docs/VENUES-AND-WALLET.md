@@ -1,6 +1,6 @@
 # Venue configuration and Wallet passes
 
-Sweeto is the built-in venue. To operate another venue on the same server, point `PAPUPAY_VENUES_FILE` to a JSON file containing the list of approved venue definitions. Use distinct lower-case IDs. Each venue uses its own SQLite database and cookies. The `/api/*` compatibility routes continue to resolve to Sweeto.
+Sweeto is the built-in venue. Define other venues in `PAPUPAY_VENUES_JSON` or point `PAPUPAY_VENUES_FILE` to a JSON file. Use distinct lower-case IDs. Each venue uses its own PostgreSQL schema and cookies. The `/api/*` compatibility routes continue to resolve to Sweeto.
 
 ```json
 [
@@ -17,7 +17,7 @@ Sweeto is the built-in venue. To operate another venue on the same server, point
 ]
 ```
 
-Use `PAPUPAY_VENUE_COUNTER_A_DB` for its absolute database path. The same prefix accepts `STAFF_PIN`, `MANAGER_PIN`, `GOOGLE_REVIEW_URL`, `MENU_PDF_PL_URL`, `MENU_PDF_EN_URL`, `MENU_PDF_RU_URL`, `WIFI_SSID`, `WIFI_PASSWORD`, `WIFI_SECURITY` and `WIFI_HIDDEN`. Optional public values include `mapUrl`, `menuImageUrl`, and palette overrides for `background`, `surface`, `ink`, `accent` and `muted`. The motion presets are `sweeto`, `berry` and `forest`. `GET /api/venues` lists venue brands, and `GET /api/v/<id>/venue` returns the configuration for one venue.
+Use the `PAPUPAY_VENUE_COUNTER_A_` prefix for `STAFF_PIN`, `MANAGER_PIN`, `GOOGLE_REVIEW_URL`, `MENU_PDF_PL_URL`, `MENU_PDF_EN_URL`, `MENU_PDF_RU_URL`, `WIFI_SSID`, `WIFI_PASSWORD`, `WIFI_SECURITY` and `WIFI_HIDDEN`. Sweeto also accepts the existing `PAPUPAY_` prefix. Optional public values include `mapUrl`, `menuImageUrl`, and palette overrides for `background`, `surface`, `ink`, `accent` and `muted`. The motion presets are `sweeto`, `berry` and `forest`. `GET /api/venues` lists venue brands, and `GET /api/v/<id>/venue` returns the configuration for one venue.
 
 Sweeto’s bundled dessert menu reads optional `dessertKcalPerServing` values from its venue definition. Key each value by the product ID in `public/assets/sweeto/desserts.json` and provide a venue-confirmed whole number of kilocalories for one serving. Missing values stay hidden in both apps. Venues with their own menu PDF continue to display that document.
 
@@ -37,15 +37,21 @@ Changing these values changes the picture and the drop without editing animation
 
 Venue configuration currently comes from the server registry; a self-service vendor editor or photo uploader has not been built. A future editor can write this same configuration without changing the customer navigation or requiring one app per venue.
 
-## Service hosting
+## PostgreSQL and Next.js
 
-Set `PAPUPAY_API_ORIGIN` on the Next.js host to the HTTPS origin of the Node service. Start that service with `npm run venue:serve`, `NODE_ENV=production` and `PAPUPAY_DB` pointing to Sweeto’s absolute SQLite file on a persistent volume. Additional venues require their own absolute database paths. Mount any Wallet signing material privately on the same host. The service listens on loopback by default. Configure `HOST` and `PORT` for the reverse proxy or hosting environment serving it.
+Create a PostgreSQL database and set `DATABASE_URL` on the Next.js host. Use a pooled connection URL for Vercel. Run `npm run db:migrate` with that database and the deployment's venue config before starting the API. If the runtime connection cannot create schemas, set `PAPUPAY_MIGRATION_DATABASE_URL` for the migration command and grant the runtime role access to the venue schemas, tables and sequences. Run the same command after adding venues or applying a release with a schema migration.
 
-The website forwards guest, staff and Wallet requests under their existing public paths and returns venue session cookies to the same browser. The service handles ledger transactions and Wallet update delivery. An unavailable service returns a retryable error. The bundled dessert menu is still available. A production service does not start with an in-memory or implicit database. Set `PAPUPAY_DEMO=1` only for an isolated local demo.
+Next.js handles guest, staff and Wallet requests under their existing URLs. When PostgreSQL is unavailable, stateful requests return a retryable `503`. The venue directory, menu and Wi-Fi configuration are still available. Hosted on Vercel, staff and recovery limits key off Vercel's client IP header. For other hosting, set `PAPUPAY_TRUSTED_CLIENT_IP_HEADER` only when your reverse proxy overwrites that header and is the only public path to Next.js.
+
+### Import an existing SQLite ledger
+
+1. Stop guest and staff writes and the old Wallet worker before taking the final SQLite snapshot. Keep the snapshot and the old environment configuration so you can verify the migration.
+2. With the new database and venue configuration selected, run `npm run db:import-sqlite -- sweeto /absolute/path/to/venue.sqlite` for each venue. The command checks the source venue, requires an empty destination for it, and prints record counts. It preserves member and receipt identities, session hashes, ledger ordering, registered passes, pending notifications and recovery versions. To import a local demo ledger, pass `--demo` before the venue ID.
+3. Keep the same staff PIN settings, Apple pass credentials, public Wallet origins and recovery secret at cutover. Check a current session, staff lookup and Wallet recovery in Next.js before opening checkout. Start the new worker after the API is reachable. Keep the SQLite snapshot for verification. Changes made in PostgreSQL after cutover remain in PostgreSQL.
 
 ## Test checkout
 
-With `PAPUPAY_DEMO=1` in development, the Test Lab can use each venue’s default `-demo.sqlite` ledger or an isolated `:memory:` database. Each mock scan verifies that the presented QR alias or short code belongs to the browser’s guest card. Retried requests preserve the transaction result and six stamps enable a test redemption. Test mutations and the built-in staff PINs are disabled for custom persistent database paths and production.
+For Test Lab, create a separate local PostgreSQL database and set `PAPUPAY_DEMO_DATABASE_URL` and `PAPUPAY_DEMO=1`. Run `npm run db:migrate -- --demo` before `npm run dev`. Each mock scan verifies that the presented QR alias or short code belongs to the browser’s card. Retrying preserves the transaction result and six stamps enable a test redemption. Production disables demo mutations and built-in demo staff PINs.
 
 ## Apple Wallet
 
@@ -56,8 +62,10 @@ Configure the Pass Type ID, Apple Developer team and server signing credentials 
 | `PAPUPAY_WALLET_PASS_TYPE_ID` | Registered Pass Type ID such as `pass.com.example.loyalty` |
 | `PAPUPAY_WALLET_TEAM_ID` | Ten-character Apple Developer team ID |
 | `PAPUPAY_WALLET_P12_PATH` | Private server path to the exported Pass Type ID certificate and private key |
+| `PAPUPAY_WALLET_P12_BASE64` | Base64-encoded P12 for hosts that supply secrets through environment variables |
 | `PAPUPAY_WALLET_P12_PASSWORD` | Password for the P12 export |
 | `PAPUPAY_WALLET_WWDR_PATH` | Official Apple WWDR G4 intermediate certificate in PEM or DER format |
+| `PAPUPAY_WALLET_WWDR_BASE64` | Base64-encoded WWDR G4 certificate for environment-based deployments |
 | `PAPUPAY_WALLET_ORIGIN` | Origin for the link back to the browser card, default `https://papupay.com` |
 | `PAPUPAY_WALLET_OPENSSL` | Optional path to a specific OpenSSL executable |
 | `PAPUPAY_WALLET_WEBSERVICE_ORIGIN` | Optional public HTTPS origin serving the Wallet update protocol |
@@ -77,6 +85,7 @@ In the Google Wallet Business Console, authorize a Google Cloud service account 
 | Environment variable | Purpose |
 | --- | --- |
 | `PAPUPAY_GOOGLE_WALLET_SERVICE_ACCOUNT_PATH` | Path to the private service account JSON key on the server |
+| `PAPUPAY_GOOGLE_WALLET_SERVICE_ACCOUNT_JSON` | Service account JSON supplied as an environment secret |
 | `PAPUPAY_GOOGLE_WALLET_CLASS_ID` | Sweeto’s approved class ID, including the numeric issuer prefix |
 | `PAPUPAY_VENUE_<ID>_GOOGLE_WALLET_CLASS_ID` | Another venue’s approved class ID for the same service account |
 | `PAPUPAY_GOOGLE_WALLET_ORIGIN` | Optional HTTPS web origin for signed links. Defaults to `https://papupay.com`. |
@@ -97,7 +106,7 @@ The pin is included in newly signed Apple passes and new Google Wallet objects a
 
 ## Live Wallet updates
 
-Set `PAPUPAY_WALLET_WEBSERVICE_ORIGIN` after the Node service is reachable there by HTTPS. A new download includes that venue’s `/api/v/<id>/wallet` base URL and an authentication token generated for the pass. Apple Wallet registers the device with this route. A stamp, redemption or correction updates the pass revision in the same SQLite transaction as the ledger. A background worker sends an empty update signal through production APNs with the existing Pass Type ID certificate. The device retrieves the signed replacement. Transient delivery failures are retried and invalid device tokens are removed. Preserve the database and its owner-only permissions across restarts. [Apple pass update service](https://developer.apple.com/documentation/walletpasses/adding-a-web-service-to-update-passes)
+Set `PAPUPAY_WALLET_WEBSERVICE_ORIGIN` after the Next.js endpoint is reachable there by HTTPS. A new download includes that venue’s `/api/v/<id>/wallet` base URL and an authentication token generated for the pass. Apple Wallet registers the device with this route. A stamp, redemption or correction updates the pass revision and queues a notification in the same PostgreSQL transaction as the ledger. Run `npm run wallet:worker` as a supervised long-running process with the same database, venue configuration and Apple signing settings. The worker sends update signals through production APNs. The device retrieves the signed replacement from Next.js. The worker retries transient failures and removes invalid tokens. [Apple pass update service](https://developer.apple.com/documentation/walletpasses/adding-a-web-service-to-update-passes)
 
 A pass downloaded before updates were enabled must be downloaded once more to register. Verify installation, successful registration and a change in Wallet after a real stamp on an iPhone. Automated tests verify the HTTP protocol, durable queue, authentication and APNs request shape with a test transport. They do not send notifications to real devices.
 
@@ -105,6 +114,6 @@ A pass downloaded before updates were enabled must be downloaded once more to re
 
 Set `PAPUPAY_RECOVERY_SECRET` and `PAPUPAY_WALLET_RECOVERY_ORIGIN` to include a restoration link in new passes. Keep the secret stable across restarts and separate from the Wallet signing password. On iOS 27, the membership action immediately below the pass opens the link. On earlier iPhones, open the pass, tap the More button, choose Pass Details, then tap **Open my card**. Both the installed app and the website open the card directly. A device with a different membership asks which card to keep. A fresh session restores the original checkout code and current stamp balance. [Apple Wallet featured actions](https://developer.apple.com/videos/play/wwdc2026/209/)
 
-The recovery token travels in the URL fragment. The app sends it in a POST to the venue service on the PapuPay origin. It is independent of the checkout QR and Apple’s update token. Possession of a valid recovery link grants access to the card. It expires after one year and the authenticated card owner can revoke it with `POST /api/v/<id>/loyalty/restore/revoke`. Revoking a link leaves existing sessions active. The web deployment needs `PAPUPAY_API_ORIGIN` connected to the persistent venue service to resolve and restore live memberships.
+The recovery token travels in the URL fragment. The app sends it in a POST to Next.js on the PapuPay origin. It is independent of the checkout QR and Apple’s update token. Possession of a valid recovery link grants access to the card. It expires after one year and the authenticated card owner can revoke it with `POST /api/v/<id>/loyalty/restore/revoke`. Revoking a link leaves existing sessions active. Live recovery uses the venue's PostgreSQL schema.
 
 In an isolated Test Lab with the secret configured, `POST /api/v/<id>/test/restore-link` creates a local recovery link and expires that browser’s current cookie. The restored browser receives the same membership and checkout QR. This simulation does not require a public recovery origin and does not add a recovery link to the downloadable Wallet pass. The public origins remain opt-in and are unset in the local preview.

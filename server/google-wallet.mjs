@@ -5,10 +5,10 @@ import { publicHttpsOrigin, walletSerial } from "./wallet.mjs";
 const classPattern = /^([1-9]\d{0,29})\.[a-z0-9._-]{1,100}$/i;
 const encode = (value) => Buffer.from(JSON.stringify(value)).toString("base64url");
 
-function signingMaterial(path) {
-  if (!path) return null;
+function signingMaterial(json, path) {
+  if (!json && !path) return null;
   try {
-    const account = JSON.parse(readFileSync(path, "utf8"));
+    const account = JSON.parse(json || readFileSync(/* turbopackIgnore: true */ path, "utf8"));
     if (account.type !== "service_account" || typeof account.client_email !== "string"
       || !/^[\w.+-]+@[\w.-]+\.gserviceaccount\.com$/i.test(account.client_email)) return null;
     const key = createPrivateKey(account.private_key);
@@ -21,7 +21,7 @@ function signingMaterial(path) {
 
 export function createGoogleWalletSigner(env) {
   const origin = publicHttpsOrigin(env.PAPUPAY_GOOGLE_WALLET_ORIGIN ?? "https://papupay.com");
-  const material = signingMaterial(env.PAPUPAY_GOOGLE_WALLET_SERVICE_ACCOUNT_PATH);
+  const material = signingMaterial(env.PAPUPAY_GOOGLE_WALLET_SERVICE_ACCOUNT_JSON, env.PAPUPAY_GOOGLE_WALLET_SERVICE_ACCOUNT_PATH);
 
   return {
     available(classId) {

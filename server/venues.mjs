@@ -1,5 +1,4 @@
 import { readFileSync } from "node:fs";
-import { fileURLToPath } from "node:url";
 import sweetoDesserts from "../public/assets/sweeto/desserts.json" with { type: "json" };
 
 export const defaultVenueId = "sweeto";
@@ -90,8 +89,9 @@ function cleanBrand(venue) {
   };
 }
 
-export function loadVenues(venueFile) {
-  return venueFile ? JSON.parse(readFileSync(venueFile, "utf8")) : [];
+export function loadVenues(venueFile, inlineJson) {
+  if (inlineJson) return JSON.parse(inlineJson);
+  return venueFile ? JSON.parse(readFileSync(/* turbopackIgnore: true */ venueFile, "utf8")) : [];
 }
 
 export function venueRegistry(configured = []) {
@@ -111,8 +111,4 @@ export function venueRegistry(configured = []) {
 
 export function venueEnvironment(id, env) {
   return (key) => env[`PAPUPAY_VENUE_${id.toUpperCase().replaceAll("-", "_")}_${key}`];
-}
-
-export function defaultVenueDatabase(id, demo) {
-  return fileURLToPath(new URL(`../build/papupay-${id}${demo ? "-demo" : ""}.sqlite`, import.meta.url));
 }

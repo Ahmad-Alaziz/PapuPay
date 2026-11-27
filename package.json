@@ -11,7 +11,9 @@
     "test:guest": "vitest run src/guest",
     "test:server": "node --test server/*.test.mjs",
     "test": "npm run test:guest && npm run test:server",
-    "venue:serve": "node server/start.mjs",
+    "db:migrate": "node scripts/migrate-venue-db.mjs",
+    "db:import-sqlite": "node scripts/import-venue-sqlite.mjs",
+    "wallet:worker": "node server/wallet-worker.mjs",
     "test:routes": "node --test scripts/test-web-routes.mjs",
     "prebuild": "node scripts/embed-launch-brand.mjs",
     "predev": "node scripts/embed-launch-brand.mjs"
@@ -26,6 +28,7 @@
     "next": "16.4.6",
     "papu-guest-icons": "npm:lucide-react@0.468.0",
     "papu-guest-motion": "npm:motion@12.43.0",
+    "pg": "^8.23.1",
     "qrcode": "^1.5.4",
     "radix-ui": "^1.8.1",
     "react": "19.3.1",

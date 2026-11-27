@@ -1,7 +1,4 @@
 import { createHash, randomBytes, randomUUID } from "node:crypto";
-import { dirname } from "node:path";
-import { chmodSync, mkdirSync } from "node:fs";
-import { DatabaseSync } from "node:sqlite";
 import { createWalletStore } from "./wallet-store.mjs";
 
 const goal = 6;
@@ -22,208 +19,185 @@ const cardDetails = `SELECT m.*,
   (SELECT COUNT(*) FROM ledger l WHERE l.card_id = m.id AND l.kind = 'redeem'
     AND NOT EXISTS (SELECT 1 FROM ledger r WHERE r.reverses = l.id)) AS rewards,
   COALESCE((SELECT l.created_at FROM ledger l WHERE l.card_id = m.id
-    ORDER BY l.rowid DESC LIMIT 1), m.created_at) AS updated_at FROM memberships m`;
+    ORDER BY l.sequence DESC LIMIT 1), m.created_at) AS updated_at FROM memberships m`;
+
+async function one(client, query, values) {
+  const { rows } = await client.query(query, values);
+  return rows[0] ?? null;
+}
+
+function readCard(client, id) {
+  return one(client, `${cardDetails} WHERE m.id = $1`, [id]);
+}
 
 function publicCard(row) {
   if (!row) return null;
-  const balance = row.visits - row.rewards * goal;
+  const visits = Number(row.visits);
+  const balance = visits - Number(row.rewards) * goal;
   return {
     code: row.code,
     checkout: row.checkout,
     stamps: Math.min(balance, goal),
     goal,
     rewardAvailable: balance >= goal,
-    visits: row.visits,
+    visits,
     updatedAt: row.updated_at,
   };
 }
 
-export function openLoyalty(path, venueId) {
-  if (path !== ":memory:") mkdirSync(dirname(path), { recursive: true });
-  const db = new DatabaseSync(path);
-  db.exec("PRAGMA busy_timeout = 5000; BEGIN IMMEDIATE;");
-  try {
-    const hasOwner = db.prepare("SELECT 1 FROM sqlite_schema WHERE type = 'table' AND name = 'papupay_venue'").get();
-    if (hasOwner) {
-      const owner = db.prepare("SELECT venue_id FROM papupay_venue WHERE singleton = 1").get();
-      if (owner?.venue_id !== venueId) throw new Error(`Use a database dedicated to ${venueId}.`);
-    } else {
-      const oldLoyalty = db.prepare("SELECT 1 FROM sqlite_schema WHERE type = 'table' AND name IN ('ledger', 'memberships')").get();
-      if (oldLoyalty) throw new Error(`PAPUPAY_DB points to the previous ledger. Use a new database for ${venueId}.`);
-      db.exec("CREATE TABLE papupay_venue (singleton INTEGER PRIMARY KEY CHECK (singleton = 1), venue_id TEXT NOT NULL) STRICT");
-      db.prepare("INSERT INTO papupay_venue VALUES (1, ?)").run(venueId);
-    }
-    db.exec("COMMIT");
-  } catch (error) {
-    db.exec("ROLLBACK");
-    db.close();
-    throw error;
-  }
-  if (path !== ":memory:") {
-    try {
-      chmodSync(path, 0o600);
-      for (const sidecar of [`${path}-wal`, `${path}-shm`]) {
-        try { chmodSync(sidecar, 0o600); }
-        catch (error) { if (error.code !== "ENOENT") throw error; }
-      }
-    } catch (error) {
-      db.close();
-      throw error;
-    }
-  }
-  db.exec(`
-    PRAGMA journal_mode = WAL;
-    PRAGMA foreign_keys = ON;
-    CREATE TABLE IF NOT EXISTS memberships (
-      id TEXT PRIMARY KEY,
-      code TEXT NOT NULL UNIQUE,
-      checkout TEXT NOT NULL UNIQUE,
-      created_at TEXT NOT NULL
-    ) STRICT;
-    CREATE TABLE IF NOT EXISTS guest_sessions (
-      token_hash TEXT PRIMARY KEY,
-      card_id TEXT NOT NULL REFERENCES memberships(id),
-      expires_at INTEGER NOT NULL
-    ) STRICT;
-    CREATE TABLE IF NOT EXISTS staff_sessions (
-      token_hash TEXT PRIMARY KEY,
-      role TEXT NOT NULL CHECK (role IN ('staff', 'manager')),
-      expires_at INTEGER NOT NULL
-    ) STRICT;
-    CREATE TABLE IF NOT EXISTS ledger (
-      id TEXT PRIMARY KEY,
-      action_id TEXT NOT NULL UNIQUE,
-      card_id TEXT NOT NULL REFERENCES memberships(id),
-      kind TEXT NOT NULL CHECK (kind IN ('stamp', 'redeem', 'reverse')),
-      receipt TEXT,
-      reverses TEXT UNIQUE REFERENCES ledger(id),
-      reason TEXT,
-      actor TEXT NOT NULL,
-      actor_role TEXT NOT NULL,
-      created_at TEXT NOT NULL
-    ) STRICT;
-    CREATE INDEX IF NOT EXISTS ledger_card ON ledger(card_id);
-    CREATE TABLE IF NOT EXISTS receipt_claims (
-      receipt TEXT PRIMARY KEY,
-      event_id TEXT NOT NULL REFERENCES ledger(id)
-    ) STRICT;
-    CREATE TABLE IF NOT EXISTS review_clicks (
-      day TEXT PRIMARY KEY,
-      clicks INTEGER NOT NULL
-    ) STRICT;
-  `);
-
-  const statements = {
-    cardById: db.prepare(`${cardDetails} WHERE m.id = ?`),
-    cardByCode: db.prepare(`${cardDetails} WHERE m.checkout = ? OR m.code = ?`),
-    guestCard: db.prepare(`${cardDetails} WHERE m.id = (SELECT card_id FROM guest_sessions
-      WHERE token_hash = ? AND expires_at > ?)`),
-    insertGuest: db.prepare("INSERT INTO guest_sessions VALUES (?, ?, ?)"),
-    insertCard: db.prepare("INSERT OR IGNORE INTO memberships VALUES (?, ?, ?, ?)"),
-    staff: db.prepare("SELECT role FROM staff_sessions WHERE token_hash = ? AND expires_at > ?"),
-    insertStaff: db.prepare("INSERT INTO staff_sessions VALUES (?, ?, ?)"),
-    deleteStaff: db.prepare("DELETE FROM staff_sessions WHERE token_hash = ?"),
-    events: db.prepare(`SELECT l.*, EXISTS (SELECT 1 FROM ledger r WHERE r.reverses = l.id) AS reversed
-      FROM ledger l WHERE l.card_id = ? ORDER BY l.rowid DESC LIMIT 20`),
-    event: db.prepare("SELECT * FROM ledger WHERE id = ? AND card_id = ?"),
-    action: db.prepare("SELECT * FROM ledger WHERE action_id = ?"),
-    reversal: db.prepare("SELECT 1 FROM ledger WHERE reverses = ?"),
-    insertEvent: db.prepare("INSERT INTO ledger VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"),
-    receipt: db.prepare("SELECT 1 FROM receipt_claims WHERE receipt = ?"),
-    insertReceipt: db.prepare("INSERT INTO receipt_claims VALUES (?, ?)"),
-    removeReceipt: db.prepare("DELETE FROM receipt_claims WHERE event_id = ?"),
-    reviewClick: db.prepare(`INSERT INTO review_clicks VALUES (?, 1)
-      ON CONFLICT(day) DO UPDATE SET clicks = clicks + 1`),
-  };
-
-  function transaction(callback, readOnly = false) {
-    db.exec(readOnly ? "BEGIN" : "BEGIN IMMEDIATE");
-    try {
-      const result = callback();
-      db.exec("COMMIT");
-      return result;
-    } catch (error) {
-      db.exec("ROLLBACK");
-      throw error;
-    }
-  }
-
-  function details(card) {
-    return {
-      card: publicCard(card),
-      events: statements.events.all(card.id).map((row) => ({
-        id: row.id,
-        kind: row.kind,
-        receipt: row.receipt,
-        createdAt: row.created_at,
-        reversed: Boolean(row.reversed),
-        reason: row.reason,
-      })),
-    };
-  }
-
-  function rowFor(code) {
-    const manualCode = code.replace(/[\s-]/g, "").toUpperCase();
-    const row = statements.cardByCode.get(code, manualCode);
-    if (!row) throw new ApiError(404, "card_not_found");
-    return row;
-  }
-
+async function details(client, card) {
+  const { rows } = await client.query(`SELECT l.*, EXISTS (SELECT 1 FROM ledger r WHERE r.reverses = l.id) AS reversed
+    FROM ledger l WHERE l.card_id = $1 ORDER BY l.sequence DESC LIMIT 20`, [card.id]);
   return {
-    close: () => db.close(),
-    wallet: createWalletStore(db, transaction, (id) => publicCard(statements.cardById.get(id))),
-    guest: (token) => token ? publicCard(statements.guestCard.get(digest(token), Date.now())) : null,
+    card: publicCard(card),
+    events: rows.map((row) => ({
+      id: row.id,
+      kind: row.kind,
+      receipt: row.receipt,
+      createdAt: row.created_at,
+      reversed: row.reversed,
+      reason: row.reason,
+    })),
+  };
+}
+
+const matchingCard = "checkout = $1 OR code = $2";
+
+function cardCodes(code) {
+  return [code, code.replace(/[\s-]/g, "").toUpperCase()];
+}
+
+function checkAction(event, card, kind, receipt, eventId, reason) {
+  if (event.card_id !== card.id || event.kind !== kind || event.receipt !== receipt
+    || event.reverses !== eventId || event.reason !== reason) {
+    throw new ApiError(409, "action_conflict");
+  }
+}
+
+export function openLoyalty(db) {
+  return {
+    wallet: createWalletStore(db, async (client, id) => publicCard(await readCard(client, id))),
+    async guest(token) {
+      if (!token) return null;
+      const row = await one(db, `${cardDetails} WHERE m.id = (SELECT card_id FROM guest_sessions
+        WHERE token_hash = $1 AND expires_at > $2)`, [digest(token), Date.now()]);
+      return publicCard(row);
+    },
     createGuest(token, expiresAt) {
-      return transaction(() => {
+      return db.transaction(async (client) => {
         const id = randomUUID();
         const now = new Date().toISOString();
-        let inserted = false;
-        for (let attempt = 0; attempt < 4 && !inserted; attempt++) {
+        for (let attempt = 0; attempt < 4; attempt++) {
           const code = Array.from(randomBytes(8), (byte) => alphabet[byte % alphabet.length]).join("");
           const checkout = `pp_${randomBytes(18).toString("base64url")}`;
-          inserted = statements.insertCard.run(id, code, checkout, now).changes === 1;
+          const { rowCount } = await client.query(`INSERT INTO memberships (id, code, checkout, created_at)
+            VALUES ($1, $2, $3, $4) ON CONFLICT DO NOTHING`, [id, code, checkout, now]);
+          if (rowCount === 1) {
+            await client.query("INSERT INTO guest_sessions (token_hash, card_id, expires_at) VALUES ($1, $2, $3)",
+              [digest(token), id, expiresAt]);
+            return publicCard(await readCard(client, id));
+          }
         }
-        if (!inserted) throw new Error("Membership identifier collision");
-        statements.insertGuest.run(digest(token), id, expiresAt);
-        return publicCard(statements.cardById.get(id));
+        throw new Error("Membership identifier collision");
       });
     },
-    staff(token) {
+    async staff(token) {
       if (!token) return null;
       const id = digest(token);
-      const staff = statements.staff.get(id, Date.now());
+      const staff = await one(db, "SELECT role FROM staff_sessions WHERE token_hash = $1 AND expires_at > $2",
+        [id, Date.now()]);
       return staff ? { id, role: staff.role } : null;
     },
-    createStaff: (token, role, expiresAt) => statements.insertStaff.run(digest(token), role, expiresAt),
-    deleteStaff: (token) => { if (token) statements.deleteStaff.run(digest(token)); },
-    lookup: (code) => details(rowFor(code)),
-    updateCard({ code, actionId, kind, receipt = null, eventId = null, reason = null, actor }) {
-      return transaction(() => {
-        const card = rowFor(code);
-        const existing = statements.action.get(actionId);
-        if (existing) {
-          if (existing.card_id !== card.id || existing.kind !== kind || existing.receipt !== receipt
-             || existing.reverses !== eventId || existing.reason !== reason) {
-            throw new ApiError(409, "action_conflict");
-          }
-          return details(card);
-        }
-        if (receipt && statements.receipt.get(receipt)) throw new ApiError(409, "receipt_already_used");
-        const balance = card.visits - card.rewards * goal;
-        if (kind === "redeem" && balance < goal) throw new ApiError(409, "reward_unavailable");
-        if (kind === "reverse") {
-          const target = statements.event.get(eventId, card.id);
-          if (!target || target.kind === "reverse") throw new ApiError(404, "event_not_found");
-          if (statements.reversal.get(eventId)) throw new ApiError(409, "event_already_reversed");
-          if (target.kind === "stamp" && balance === 0) throw new ApiError(409, "correction_not_possible");
-          if (target.kind === "stamp") statements.removeReceipt.run(eventId);
-        }
-        const id = randomUUID();
-        statements.insertEvent.run(id, actionId, card.id, kind, receipt, eventId, reason, actor.id, actor.role, new Date().toISOString());
-        if (receipt) statements.insertReceipt.run(receipt, id);
-        return details(statements.cardById.get(card.id));
+    createStaff(token, role, expiresAt, replaces = null) {
+      return db.transaction(async (client) => {
+        await client.query("INSERT INTO staff_sessions (token_hash, role, expires_at) VALUES ($1, $2, $3)",
+          [digest(token), role, expiresAt]);
+        if (replaces) await client.query("DELETE FROM staff_sessions WHERE token_hash = $1", [digest(replaces)]);
       });
     },
-    countReviewClick: () => statements.reviewClick.run(new Date().toISOString().slice(0, 10)),
+    async deleteStaff(token) {
+      if (token) await db.query("DELETE FROM staff_sessions WHERE token_hash = $1", [digest(token)]);
+    },
+    lookup(code) {
+      return db.transaction(async (client) => {
+        const card = await one(client, `${cardDetails} WHERE ${matchingCard}`, cardCodes(code));
+        if (!card) throw new ApiError(404, "card_not_found");
+        return details(client, card);
+      }, { isolation: "repeatable read", readOnly: true });
+    },
+    updateCard({ code, actionId, kind, receipt = null, eventId = null, reason = null, actor }) {
+      return db.transaction(async (client) => {
+        // Read the balance after acquiring the membership lock so we see the prior till's commit.
+        const member = await one(client, `SELECT id FROM memberships WHERE ${matchingCard} FOR NO KEY UPDATE`, cardCodes(code));
+        if (!member) throw new ApiError(404, "card_not_found");
+        const card = await readCard(client, member.id);
+        const previousAction = () => one(client, "SELECT * FROM ledger WHERE action_id = $1", [actionId]);
+        const existing = await previousAction();
+        if (existing) {
+          checkAction(existing, card, kind, receipt, eventId, reason);
+          return details(client, card);
+        }
+
+        if (receipt && await one(client, "SELECT 1 FROM receipt_claims WHERE receipt = $1", [receipt])) {
+          throw new ApiError(409, "receipt_already_used");
+        }
+        const balance = Number(card.visits) - Number(card.rewards) * goal;
+        if (kind === "redeem" && balance < goal) throw new ApiError(409, "reward_unavailable");
+
+        let releasesReceipt = false;
+        if (kind === "reverse") {
+          const target = await one(client, "SELECT kind FROM ledger WHERE id = $1 AND card_id = $2", [eventId, card.id]);
+          if (!target || target.kind === "reverse") throw new ApiError(404, "event_not_found");
+          if (await one(client, "SELECT 1 FROM ledger WHERE reverses = $1", [eventId])) {
+            throw new ApiError(409, "event_already_reversed");
+          }
+          releasesReceipt = target.kind === "stamp";
+          if (releasesReceipt && balance === 0) throw new ApiError(409, "correction_not_possible");
+        }
+
+        const id = randomUUID();
+        const event = await client.query(`INSERT INTO ledger
+          (id, action_id, card_id, kind, receipt, reverses, reason, actor, actor_role, created_at)
+          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) ON CONFLICT (action_id) DO NOTHING`,
+        [id, actionId, card.id, kind, receipt, eventId, reason, actor.id, actor.role, new Date().toISOString()]);
+        if (event.rowCount === 0) {
+          // A request for a different membership can race for the same action ID.
+          checkAction(await previousAction(), card, kind, receipt, eventId, reason);
+          return details(client, card);
+        }
+
+        if (releasesReceipt) await client.query("DELETE FROM receipt_claims WHERE event_id = $1", [eventId]);
+        if (receipt) {
+          const claimed = await client.query(`INSERT INTO receipt_claims (receipt, event_id)
+            VALUES ($1, $2) ON CONFLICT (receipt) DO NOTHING`, [receipt, id]);
+          if (claimed.rowCount === 0) throw new ApiError(409, "receipt_already_used");
+        }
+        return details(client, await readCard(client, card.id));
+      });
+    },
+    countReviewClick: () => db.query(`INSERT INTO review_clicks (day, clicks) VALUES ($1, 1)
+      ON CONFLICT (day) DO UPDATE SET clicks = review_clicks.clicks + 1`, [new Date().toISOString().slice(0, 10)]),
+    rateLimit(scope, key, valid, { limit, windowMs, maxKeys = scope === "recovery" ? 4096 : 10_000, now = Date.now() }) {
+      return db.transaction(async (client) => {
+        // Serialize the per-venue bucket so the bounded set and the attempt count are shared by all API instances.
+        await client.query("SELECT pg_advisory_xact_lock(hashtext(current_schema()::text), hashtext($1))", [scope]);
+        await client.query("DELETE FROM auth_attempts WHERE scope = $1 AND expires_at <= $2", [scope, now]);
+        const clientHash = digest(key);
+        const attempt = await one(client, "SELECT attempts FROM auth_attempts WHERE scope = $1 AND client_hash = $2",
+          [scope, clientHash]);
+        if (attempt?.attempts >= limit) return false;
+        if (!attempt && await one(client, "SELECT 1 FROM auth_attempts WHERE scope = $1 LIMIT 1 OFFSET $2",
+          [scope, maxKeys - 1])) return false;
+
+        if (valid) {
+          if (attempt) await client.query("DELETE FROM auth_attempts WHERE scope = $1 AND client_hash = $2", [scope, clientHash]);
+        } else {
+          await client.query(`INSERT INTO auth_attempts (scope, client_hash, attempts, expires_at) VALUES ($1, $2, 1, $3)
+            ON CONFLICT (scope, client_hash) DO UPDATE SET attempts = auth_attempts.attempts + 1`,
+          [scope, clientHash, now + windowMs]);
+        }
+        return true;
+      });
+    },
   };
 }

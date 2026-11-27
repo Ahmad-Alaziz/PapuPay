@@ -10,28 +10,34 @@ const devicePart = (value) => {
 };
 
 function passAuth(request, record) {
-  const match = /^ApplePass ([\w-]{43})$/i.exec(request.headers.authorization ?? "");
-  if (!record || !match || !timingSafeEqual(Buffer.from(record.auth_token), Buffer.from(match[1]))) {
+  const match = /^ApplePass ([\w-]{43})$/i.exec(request.headers.get("authorization") ?? "");
+  if (!record || !match || record.auth_token.length !== match[1].length
+      || !timingSafeEqual(Buffer.from(record.auth_token), Buffer.from(match[1]))) {
     throw new ApiError(401, "unauthorized");
   }
 }
 
-export function sendWalletPass(response, method, bytes, brand, updateHeaders = {}) {
+function emptyWalletResponse(status, headers = {}) {
+  return new Response(null, { status, headers: { "Cache-Control": "no-store", ...headers } });
+}
+
+function sendWalletPass(method, bytes, brand, updateHeaders = {}) {
   if (!bytes) throw new ApiError(503, "wallet_unconfigured");
-  response.writeHead(200, {
-    "Cache-Control": "no-store", "Content-Type": "application/vnd.apple.pkpass",
-    "Content-Disposition": `attachment; filename="${brand.id}-loyalty.pkpass"`,
-    "Content-Length": bytes.length, "X-Content-Type-Options": "nosniff", ...updateHeaders,
+  return new Response(method === "HEAD" ? null : bytes, {
+    headers: {
+      "Cache-Control": "no-store", "Content-Type": "application/vnd.apple.pkpass",
+      "Content-Disposition": `attachment; filename="${brand.id}-loyalty.pkpass"`,
+      "Content-Length": bytes.length, "X-Content-Type-Options": "nosniff", ...updateHeaders,
+    },
   });
-  response.end(method === "HEAD" ? undefined : bytes);
 }
 
 export function createWalletProtocol({ brand, store, wallet, recovery, readBody, respond }) {
   const serviceURL = wallet.updateOrigin ? new URL(`/api/v/${brand.id}/wallet`, wallet.updateOrigin).href : null;
 
-  function profile(card, entry) {
+  async function profile(card, entry) {
     return {
-      recoveryUrl: entry ? recovery.boundUrl(entry) : recovery.url(card.checkout),
+      recoveryUrl: entry ? await recovery.boundUrl(entry) : await recovery.url(card.checkout),
       ...(serviceURL && entry ? { webServiceURL: serviceURL, authenticationToken: entry.auth_token } : {}),
     };
   }
@@ -42,83 +48,77 @@ export function createWalletProtocol({ brand, store, wallet, recovery, readBody,
   });
 
   return {
-    offersRecovery(card) {
+    async offersRecovery(card) {
       if (!recovery.origin) return false;
       if (!serviceURL || !card) return true;
-      const entry = store.pass(wallet.passTypeId, walletSerial(brand, card));
-      return !entry || Boolean(recovery.boundUrl(entry));
+      const entry = await store.pass(wallet.passTypeId, walletSerial(brand, card));
+      return !entry || Boolean(await recovery.boundUrl(entry));
     },
-    async issue(request, response, card) {
+    async issue(request, card) {
       if (!await wallet.available()) throw new ApiError(503, "wallet_unconfigured");
       if (!serviceURL) {
-        sendWalletPass(response, request.method, await wallet.issue(brand, card, profile(card)), brand);
-        return;
+        return sendWalletPass(request.method, await wallet.issue(brand, card, await profile(card)), brand);
       }
       const type = wallet.passTypeId;
       const serial = walletSerial(brand, card);
-      if (!store.pass(type, serial)) {
-        // Bind the recovery version once. Apple keeps this authentication token for the life of the pass.
-        store.issue(type, serial, card.checkout, recovery.version(card.checkout));
+      if (!await store.pass(type, serial)) {
+        // Bind the recovery version with issuance. Apple retains the pass authentication token.
+        await store.issue(type, serial, card.checkout, { recoveryWindow: recovery.issuanceWindow() });
       }
-      const { entry, card: current } = store.snapshot(type, serial);
-      sendWalletPass(response, request.method, await wallet.issue(brand, current, profile(current, entry)), brand, updateHeaders(entry));
+      const { entry, card: current } = await store.snapshot(type, serial);
+      return sendWalletPass(request.method, await wallet.issue(brand, current, await profile(current, entry)), brand, updateHeaders(entry));
     },
-    async handle(request, response, path) {
+    async handle(request, path) {
       if (!serviceURL) throw new ApiError(404, "not_found");
       if (!await wallet.available()) throw new ApiError(503, "wallet_unconfigured");
 
       const method = request.method;
       const parts = path.split("/").slice(4);
       if (parts.length === 1 && parts[0] === "log" && method === "POST") {
-        request.resume(); // Apple may send personal data in diagnostics. Discard them without logging.
-        response.writeHead(200, { "Cache-Control": "no-store" }).end();
-        return;
+        // Apple may send personal data in diagnostics. Discard without logging.
+        await request.body?.cancel().catch(() => {});
+        return emptyWalletResponse(200);
       }
       if (parts[0] === "devices" && parts[2] === "registrations" && [4, 5].includes(parts.length)) {
         const device = devicePart(parts[1]);
         const type = parts[3];
         if (!device || type !== wallet.passTypeId) throw new ApiError(404, "not_found");
         if (parts.length === 4 && method === "GET") {
-          const tag = new URL(request.url, "https://wallet.invalid").searchParams.get("passesUpdatedSince");
+          const tag = new URL(request.url).searchParams.get("passesUpdatedSince");
           const since = tag === null ? 0 : Number(tag);
           if (tag !== null && (!/^\d{1,15}$/.test(tag) || !Number.isSafeInteger(since))) throw new ApiError(400, "invalid_request");
-          const changes = store.updated(type, device, since);
-          return changes.length ? respond(response, 200, {
+          const changes = await store.updated(type, device, since);
+          return changes.length ? respond(200, {
             serialNumbers: changes.map(({ serial }) => serial), lastUpdated: String(changes.at(-1).revision),
-          }) : respond(response, 204);
+          }) : respond(204);
         }
         if (parts.length === 5 && ["POST", "DELETE"].includes(method)) {
           const serial = parts[4];
-          passAuth(request, store.pass(type, serial));
+          passAuth(request, await store.pass(type, serial));
           if (method === "DELETE") {
-            store.unregister(type, serial, device);
-            response.writeHead(200, { "Cache-Control": "no-store" }).end();
-            return;
+            await store.unregister(type, serial, device);
+            return emptyWalletResponse(200);
           }
           const { pushToken } = await readBody(request);
           if (typeof pushToken !== "string" || !/^(?:[\da-f]{2}){1,512}$/i.test(pushToken)) {
             throw new ApiError(400, "invalid_request");
           }
-          const created = store.register(type, serial, device, pushToken.toLowerCase());
-          response.writeHead(created ? 201 : 200, { "Cache-Control": "no-store" }).end();
-          return;
+          const created = await store.register(type, serial, device, pushToken.toLowerCase());
+          return emptyWalletResponse(created ? 201 : 200);
         }
       }
 
       if (parts.length === 3 && parts[0] === "passes" && parts[1] === wallet.passTypeId && ["GET", "HEAD"].includes(method)) {
-        const type = parts[1];
-        const serial = parts[2];
-        passAuth(request, store.pass(type, serial));
-        const { card, entry } = store.snapshot(type, serial);
+        const current = await store.snapshot(parts[1], parts[2]);
+        passAuth(request, current?.entry);
+        const { card, entry } = current;
         const headers = updateHeaders(entry);
-        const date = Date.parse(request.headers["if-modified-since"]);
-        const exactVersion = request.headers["if-none-match"];
+        const date = Date.parse(request.headers.get("if-modified-since"));
+        const exactVersion = request.headers.get("if-none-match");
         if (exactVersion === headers.ETag || (!exactVersion && date <= Date.now() && Date.parse(entry.updated_at) <= date)) {
-          response.writeHead(304, { "Cache-Control": "no-store", ...headers }).end();
-          return;
+          return emptyWalletResponse(304, headers);
         }
-        sendWalletPass(response, method, await wallet.issue(brand, card, profile(card, entry)), brand, headers);
-        return;
+        return sendWalletPass(method, await wallet.issue(brand, card, await profile(card, entry)), brand, headers);
       }
       throw new ApiError(404, "not_found");
     },

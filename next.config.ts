@@ -4,6 +4,12 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   cacheComponents: true,
+  outputFileTracingIncludes: {
+    "/api/\\[...venue\\]": ["./server/wallet-assets/*.png"],
+  },
+  outputFileTracingExcludes: {
+    "/api/\\[...venue\\]": ["./build/**/*", "./.env*", "./**/*.{p8,p12}"],
+  },
   env: {
     NEXT_PUBLIC_APPLE_WALLET_BADGES: ["en", "pl", "ru"]
       .filter((language) => existsSync(join(process.cwd(), "public/assets/wallet", `apple-${language}.svg`)))

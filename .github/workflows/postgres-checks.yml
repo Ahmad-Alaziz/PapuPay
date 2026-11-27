@@ -1,0 +1,42 @@
+name: Next.js and PostgreSQL checks
+
+on:
+  push:
+    branches: [main]
+    paths: ['src/**', 'server/**', 'scripts/**', 'package*.json', 'next.config.ts', '.github/workflows/postgres-checks.yml']
+  pull_request:
+    paths: ['src/**', 'server/**', 'scripts/**', 'package*.json', 'next.config.ts', '.github/workflows/postgres-checks.yml']
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: papupay
+          POSTGRES_PASSWORD: postgres-ci-only
+          POSTGRES_DB: papupay_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U papupay -d papupay_ci"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      PAPUPAY_TEST_DATABASE_URL: postgresql://papupay:postgres-ci-only@127.0.0.1:5432/papupay_ci
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
+        with:
+          node-version: '22.21.1'
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+      - run: npm run typecheck

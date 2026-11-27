@@ -1,12 +1,12 @@
 import { timingSafeEqual } from "node:crypto";
-import { isAbsolute } from "node:path";
+import { isIP } from "node:net";
 import { ApiError, digest, openLoyalty, privateToken } from "./loyalty.mjs";
 import { createGoogleWalletSigner } from "./google-wallet.mjs";
+import { createDatabase } from "./postgres.mjs";
 import { createWalletSigner } from "./wallet.mjs";
-import { startWalletWorker } from "./wallet-apns.mjs";
 import { createWalletProtocol } from "./wallet-protocol.mjs";
 import { createWalletRecovery } from "./wallet-recovery.mjs";
-import { defaultVenueDatabase, defaultVenueId, loadVenues, venueEnvironment, venueIdPattern, venueRegistry } from "./venues.mjs";
+import { defaultVenueId, loadVenues, venueEnvironment, venueIdPattern, venueRegistry } from "./venues.mjs";
 
 const guestLifetime = 60 * 60 * 24 * 365;
 const staffLifetime = 60 * 60 * 12;
@@ -60,7 +60,7 @@ function configuredWifi(ssid, password, security, hidden) {
 }
 
 function readCookie(request, name) {
-  const pair = request.headers.cookie?.split(";").find((part) => part.trimStart().startsWith(`${name}=`));
+  const pair = request.headers.get("cookie")?.split(";").find((part) => part.trimStart().startsWith(`${name}=`));
   const value = pair?.trim().slice(name.length + 1);
   return value && /^[\w-]{43}$/.test(value) ? value : null;
 }
@@ -69,37 +69,47 @@ function cookie(name, token, age, secure) {
   return `${name}=${token}; Path=/api; Max-Age=${age}; HttpOnly; SameSite=Strict${secure ? "; Secure" : ""}`;
 }
 
-function respond(response, status, payload, headers = {}) {
+function respond(status, payload, headers = {}) {
   const baseHeaders = { "Cache-Control": "no-store", "X-Content-Type-Options": "nosniff", ...headers };
-  if (status === 204) {
-    response.writeHead(status, baseHeaders).end();
-  } else {
-    response.writeHead(status, { ...baseHeaders, "Content-Type": "application/json; charset=utf-8" });
-    response.end(JSON.stringify(payload));
-  }
+  if (status === 204) return new Response(null, { status, headers: baseHeaders });
+  return Response.json(payload, { status, headers: { ...baseHeaders, "Content-Type": "application/json; charset=utf-8" } });
 }
 
-function validOrigin(request) {
-  if (request.headers["sec-fetch-site"] === "cross-site") return false;
-  if (!request.headers.origin) return true;
-  try {
-    return new URL(request.headers.origin).host === request.headers.host;
-  } catch {
-    return false;
-  }
+function validOrigin(request, url) {
+  if (request.headers.get("sec-fetch-site") === "cross-site") return false;
+  const origin = request.headers.get("origin");
+  if (!origin) return true;
+  // Next can normalize localhost in the URL while preserving the original Host.
+  return origin === `${url.protocol}//${request.headers.get("host") || url.host}`;
 }
 
 async function readBody(request) {
-  if (!/^application\/json(?:\s*;|$)/i.test(request.headers["content-type"] ?? "")) {
+  if (!/^application\/json(?:\s*;|$)/i.test(request.headers.get("content-type") ?? "")) {
     throw new ApiError(415, "invalid_request");
   }
-  let bytes = 0;
+  const limit = 4096;
+  if (Number(request.headers.get("content-length")) > limit) throw new ApiError(413, "invalid_request");
+  const reader = request.body?.getReader();
+  if (!reader) throw new ApiError(400, "invalid_request");
   const chunks = [];
-  for await (const chunk of request) {
-    bytes += chunk.length;
-    if (bytes <= 4096) chunks.push(chunk);
+  let bytes = 0;
+  try {
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      bytes += value.byteLength;
+      if (bytes > limit) {
+        await reader.cancel().catch(() => {});
+        throw new ApiError(413, "invalid_request");
+      }
+      chunks.push(value);
+    }
+  } catch (error) {
+    if (error instanceof ApiError) throw error;
+    throw new ApiError(400, "invalid_request");
+  } finally {
+    reader.releaseLock();
   }
-  if (bytes > 4096) throw new ApiError(413, "invalid_request");
   try {
     const value = JSON.parse(Buffer.concat(chunks).toString("utf8"));
     if (value && typeof value === "object" && !Array.isArray(value)) return value;
@@ -129,17 +139,16 @@ function pinMatches(input, configured) {
 }
 
 function createVenueApi({
-  brand, database, testEnabled, secureCookies,
+  brand, store, testEnabled, secureCookies,
   staffPin, managerPin, reviewLink, englishMenu, polishMenu, russianMenu,
   wifiSsid, wifiPassword, wifiSecurity, wifiHidden, wallet, googleWallet, googleClassId, env, recoveryClock,
 }) {
   const guestCookie = `papupay_${brand.id}_card`;
   const staffCookie = `papupay_${brand.id}_staff`;
-  const store = openLoyalty(database, brand.id);
-  const recovery = createWalletRecovery({ env, brand, store: store.wallet, clock: recoveryClock });
-  const walletProtocol = createWalletProtocol({ brand, store: store.wallet, wallet, recovery, readBody, respond });
-  const stopWallet = startWalletWorker(store.wallet, wallet);
-  const attempts = new Map();
+  const recovery = store && createWalletRecovery({
+    env, brand, store: store.wallet, clock: recoveryClock, rateLimit: store.rateLimit,
+  });
+  const walletProtocol = store && createWalletProtocol({ brand, store: store.wallet, wallet, recovery, readBody, respond });
   const reviewUrl = configuredReviewLink(reviewLink);
   const menuPdf = { en: configuredMenuPdf(englishMenu), pl: configuredMenuPdf(polishMenu), ru: configuredMenuPdf(russianMenu) };
   const wifi = configuredWifi(wifiSsid, wifiPassword, wifiSecurity, wifiHidden);
@@ -148,37 +157,24 @@ function createVenueApi({
   const managerKey = managerPin || (demoStaff ? "1357" : undefined);
   const authScope = digest(JSON.stringify([demoStaff, staffKey, managerKey]));
 
-  function authorizePin(request, pin) {
+  async function authorizePin(clientIP, pin) {
     if (!staffKey && !managerKey) throw new ApiError(503, "staff_not_configured");
-    const now = Date.now();
-    for (const [key, entry] of attempts) {
-      if (entry.expiresAt <= now) attempts.delete(key);
-    }
-    const key = request.socket.remoteAddress ?? "unknown";
-    const entry = attempts.get(key) ?? { count: 0, expiresAt: now + attemptWindow };
-    if (entry.count >= 8 || (!attempts.has(key) && attempts.size >= 10_000)) {
-      throw new ApiError(429, "too_many_attempts");
-    }
     const manager = pinMatches(pin, managerKey);
     const staff = pinMatches(pin, staffKey);
-    if (manager || staff) {
-      attempts.delete(key);
-      return manager ? "manager" : "staff";
-    }
-    entry.count += 1;
-    attempts.set(key, entry);
-    throw new ApiError(401, "invalid_pin");
+    const allowed = await store.rateLimit("staff", clientIP, manager || staff, { limit: 8, windowMs: attemptWindow });
+    if (!allowed) throw new ApiError(429, "too_many_attempts");
+    if (!manager && !staff) throw new ApiError(401, "invalid_pin");
+    return manager ? "manager" : "staff";
   }
 
   const guest = (request) => store.guest(readCookie(request, guestCookie));
 
-  async function handle(request, response, path, canonical) {
+  return async function handle(request, url, path, canonical, clientIP) {
     const { method } = request;
-    if (method !== "GET" && !validOrigin(request)) throw new ApiError(403, "invalid_origin");
-    const secure = secureCookies || Boolean(request.socket.encrypted);
+    const secure = secureCookies || url.protocol === "https:";
 
     if (path === "/api/venue" && method === "GET") {
-      return respond(response, 200, {
+      return respond(200, {
         ...(canonical ? brand : {}),
         reviewUrl,
         ...(Object.values(menuPdf).some(Boolean) ? { menuPdf } : {}),
@@ -186,85 +182,87 @@ function createVenueApi({
       });
     }
     if (path === "/api/venue/wifi" && method === "GET") {
-      return respond(response, 200, { wifi: wifi ? { ...wifi.settings, password: wifi.password } : null });
+      return respond(200, { wifi: wifi ? { ...wifi.settings, password: wifi.password } : null });
     }
+    if (path === "/api/test" && method === "GET") return respond(200, {
+      enabled: testEnabled, ...(testEnabled && recovery.enabled ? { recoveryEnabled: true } : {}),
+    });
+    if (path.startsWith("/api/test/") && !testEnabled) throw new ApiError(404, "not_found");
+    if (!store) throw new ApiError(503, "venue_service_unavailable");
+
     if (path === "/api/venue/review-click" && method === "POST") {
-      if (reviewUrl) store.countReviewClick();
-      return respond(response, 204);
+      if (reviewUrl) await store.countReviewClick();
+      return respond(204);
     }
     if (path === "/api/loyalty/card" && ["GET", "POST"].includes(method)) {
-      const current = guest(request);
-      if (current || method === "GET") return respond(response, 200, { card: current });
+      const current = await guest(request);
+      if (current || method === "GET") return respond(200, { card: current });
       const token = privateToken();
-      const card = store.createGuest(token, Date.now() + guestLifetime * 1000);
-      return respond(response, 201, { card }, { "Set-Cookie": cookie(guestCookie, token, guestLifetime, secure) });
+      const card = await store.createGuest(token, Date.now() + guestLifetime * 1000);
+      return respond(201, { card }, { "Set-Cookie": cookie(guestCookie, token, guestLifetime, secure) });
     }
 
     if (path === "/api/loyalty/wallet" && method === "GET") {
-      const card = guest(request);
+      const card = await guest(request);
       const status = !await wallet.available() ? "unconfigured" : card ? "ready" : "requires_card";
-      return respond(response, 200, {
+      return respond(200, {
         status,
         passUrl: status === "ready" ? `/api/v/${brand.id}/loyalty/apple-wallet.pkpass` : null,
         updatesEnabled: status !== "unconfigured" && Boolean(wallet.updateOrigin),
-        recoveryEnabled: status !== "unconfigured" && walletProtocol.offersRecovery(card),
+        recoveryEnabled: status !== "unconfigured" && await walletProtocol.offersRecovery(card),
         ...(googleWallet.available(googleClassId) ? { googleStatus: card ? "ready" : "requires_card" } : {}),
       });
     }
     if (path === "/api/loyalty/apple-wallet.pkpass" && ["GET", "HEAD"].includes(method)) {
-      const card = guest(request);
+      const card = await guest(request);
       if (!card) throw new ApiError(401, "card_required");
-      return walletProtocol.issue(request, response, card);
+      return walletProtocol.issue(request, card);
     }
     if (path === "/api/loyalty/google-wallet" && method === "POST") {
-      const card = guest(request);
+      const card = await guest(request);
       if (!card) throw new ApiError(401, "card_required");
       const url = googleWallet.issue(googleClassId, brand, card);
       if (!url) throw new ApiError(503, "wallet_unconfigured");
-      return respond(response, 200, { url });
+      return respond(200, { url });
     }
 
-    if (canonical && path.startsWith("/api/wallet/v1/")) return walletProtocol.handle(request, response, path);
+    if (canonical && path.startsWith("/api/wallet/v1/")) return walletProtocol.handle(request, path);
 
     if (method === "POST" && ["/api/loyalty/restore", "/api/loyalty/restore/preview", "/api/loyalty/restore/revoke"].includes(path)) {
       if (!recovery.enabled) throw new ApiError(503, "recovery_unavailable");
       if (path === "/api/loyalty/restore/revoke") {
-        const card = guest(request);
+        const card = await guest(request);
         if (!card) throw new ApiError(401, "card_required");
-        store.wallet.revoke(card.checkout);
-        return respond(response, 204);
+        await store.wallet.revoke(card.checkout);
+        return respond(204);
       }
       const { token, expectedCurrentCode } = await readBody(request);
-      const check = recovery.validate(token, request.socket.remoteAddress);
+      const check = await recovery.validate(token, clientIP);
       if (check.limited) throw new ApiError(429, "too_many_attempts");
       if (!check.entry) throw new ApiError(401, "invalid_restore");
       if (path === "/api/loyalty/restore/preview") {
-        const { code, stamps, goal } = store.wallet.card(check.entry);
-        return respond(response, 200, { code, stamps, goal, name: brand.name });
+        const { code, stamps, goal } = await store.wallet.card(check.entry);
+        return respond(200, { code, stamps, goal, name: brand.name });
       }
-      if (expectedCurrentCode !== undefined && expectedCurrentCode !== (guest(request)?.code ?? null)) {
+      if (expectedCurrentCode !== undefined && expectedCurrentCode !== ((await guest(request))?.code ?? null)) {
         throw new ApiError(409, "membership_changed");
       }
       const session = privateToken();
-      const card = store.wallet.recover(check.entry.reference, check.entry.version, digest(session), Date.now() + guestLifetime * 1000);
+      const card = await store.wallet.recover(check.entry.reference, check.entry.version, digest(session), Date.now() + guestLifetime * 1000);
       if (!card) throw new ApiError(401, "invalid_restore");
-      return respond(response, 200, { card }, { "Set-Cookie": cookie(guestCookie, session, guestLifetime, secure) });
+      return respond(200, { card }, { "Set-Cookie": cookie(guestCookie, session, guestLifetime, secure) });
     }
 
-    if (path === "/api/test" && method === "GET") return respond(response, 200, {
-      enabled: testEnabled, ...(testEnabled && recovery.enabled ? { recoveryEnabled: true } : {}),
-    });
     if (path === "/api/test/restore-link" && method === "POST") {
-      if (!testEnabled || !recovery.enabled) throw new ApiError(404, "not_found");
-      const card = guest(request);
+      if (!recovery.enabled) throw new ApiError(404, "not_found");
+      const card = await guest(request);
       if (!card) throw new ApiError(401, "card_required");
-      return respond(response, 200, { restorePath: recovery.path(card.checkout) }, {
+      return respond(200, { restorePath: await recovery.path(card.checkout) }, {
         "Set-Cookie": cookie(guestCookie, "", 0, secure),
       });
     }
     if (["/api/test/stamp", "/api/test/redeem"].includes(path) && method === "POST") {
-      if (!testEnabled) throw new ApiError(404, "not_found");
-      const card = guest(request);
+      const card = await guest(request);
       if (!card) throw new ApiError(401, "card_required");
       const body = await readBody(request);
       const presented = stringField(body.code, 4, 64);
@@ -275,33 +273,32 @@ function createVenueApi({
       const actionId = `test_${idField(body.actionId)}`;
       const receipt = kind === "stamp" ? `TEST-${digest(actionId).slice(0, 20)}` : null;
       const actor = { id: digest(`test:${brand.id}`), role: "test" };
-      return respond(response, 200, store.updateCard({ code: card.checkout, kind, actionId, receipt, actor }));
+      return respond(200, await store.updateCard({ code: card.checkout, kind, actionId, receipt, actor }));
     }
 
     if (!path.startsWith("/api/staff/")) throw new ApiError(404, "not_found");
     const staffToken = readCookie(request, staffCookie);
     const scopedToken = staffToken ? `${authScope}:${staffToken}` : null;
-    const staff = store.staff(scopedToken);
+    const staff = await store.staff(scopedToken);
     const session = (role) => ({ authenticated: Boolean(role), manager: role === "manager", demo: demoStaff });
     if (path === "/api/staff/session") {
-      if (method === "GET") return respond(response, 200, session(staff?.role));
+      if (method === "GET") return respond(200, session(staff?.role));
       if (method === "DELETE") {
-        store.deleteStaff(scopedToken);
-        return respond(response, 200, session(null), { "Set-Cookie": cookie(staffCookie, "", 0, secure) });
+        await store.deleteStaff(scopedToken);
+        return respond(200, session(null), { "Set-Cookie": cookie(staffCookie, "", 0, secure) });
       }
       if (method === "POST") {
         const body = await readBody(request);
-        const role = authorizePin(request, stringField(body.pin, 4, 128));
+        const role = await authorizePin(clientIP, stringField(body.pin, 4, 128));
         const token = privateToken();
-        store.deleteStaff(scopedToken);
-        store.createStaff(`${authScope}:${token}`, role, Date.now() + staffLifetime * 1000);
-        return respond(response, 200, session(role), { "Set-Cookie": cookie(staffCookie, token, staffLifetime, secure) });
+        await store.createStaff(`${authScope}:${token}`, role, Date.now() + staffLifetime * 1000, scopedToken);
+        return respond(200, session(role), { "Set-Cookie": cookie(staffCookie, token, staffLifetime, secure) });
       }
     }
     if (!staff) throw new ApiError(401, "sign_in_required");
     if (path === "/api/staff/lookup" && method === "POST") {
       const body = await readBody(request);
-      return respond(response, 200, store.lookup(stringField(body.code, 4, 64)));
+      return respond(200, await store.lookup(stringField(body.code, 4, 64)));
     }
     if (["/api/staff/stamp", "/api/staff/redeem", "/api/staff/reverse"].includes(path) && method === "POST") {
       const kind = path.split("/").at(-1);
@@ -315,72 +312,86 @@ function createVenueApi({
         action.eventId = idField(body.eventId);
         action.reason = stringField(body.reason, 3, 160);
       }
-      return respond(response, 200, store.updateCard(action));
+      return respond(200, await store.updateCard(action));
     }
     throw new ApiError(404, "not_found");
-  }
-
-  return { handle, close() { stopWallet(); store.close(); } };
+  };
 }
 
 export function createPapupayApi(options = {}) {
   const env = options.env ?? process.env;
-  const demo = Boolean(options.demo) && env.NODE_ENV !== "production";
-  const directory = venueRegistry(options.venues ?? loadVenues(env.PAPUPAY_VENUES_FILE));
+  const demoURL = env.PAPUPAY_DEMO_DATABASE_URL;
+  const demoRequested = options.demo ?? env.PAPUPAY_DEMO === "1";
+  const demo = demoRequested && env.NODE_ENV !== "production"
+    && (options.database ? options.demo === true : Boolean(demoURL && demoURL !== env.DATABASE_URL));
+  const connectionString = demo ? demoURL : env.DATABASE_URL;
+  const directory = venueRegistry(options.venues ?? loadVenues(env.PAPUPAY_VENUES_FILE, env.PAPUPAY_VENUES_JSON));
+  // The pool opens connections on demand. Public venue information can load
+  // even when the deployment has no database credentials.
+  const database = options.database ?? (connectionString
+    ? createDatabase(connectionString, { namespace: demo ? "papupay_demo" : "papupay" })
+    : null);
   const services = new Map();
   const wallet = options.wallet ?? createWalletSigner(env);
   const googleWallet = createGoogleWalletSigner(env);
-  try {
-    for (const [id, { brand, settings }] of directory) {
-      const primary = id === defaultVenueId;
-      const scopedEnv = venueEnvironment(id, env);
-      const value = (option, key) => (primary ? options[option] : undefined) ?? scopedEnv(key)
-        ?? (primary ? env[`PAPUPAY_${key}`] : undefined);
-      const configuredDatabase = value("database", "DB");
-      if (env.NODE_ENV === "production" && (!configuredDatabase || !isAbsolute(configuredDatabase))) {
-        throw new Error(`Configure an absolute persistent database path for ${id} before starting the loyalty service.`);
-      }
-      const database = configuredDatabase ?? (options.database === ":memory:" ? ":memory:" : defaultVenueDatabase(id, demo));
-      const testEnabled = demo && (database === ":memory:" || database === defaultVenueDatabase(id, true));
-      services.set(id, createVenueApi({
-        brand, database, testEnabled, wallet, googleWallet, env, recoveryClock: options.recoveryClock,
-        googleClassId: value("googleClassId", "GOOGLE_WALLET_CLASS_ID"),
-        secureCookies: options.secureCookies ?? env.NODE_ENV === "production",
-        staffPin: value("staffPin", "STAFF_PIN"), managerPin: value("managerPin", "MANAGER_PIN"),
-        reviewLink: value("reviewLink", "GOOGLE_REVIEW_URL") ?? settings.reviewUrl,
-        englishMenu: value("englishMenu", "MENU_PDF_EN_URL") ?? settings.menuPdf?.en,
-        polishMenu: value("polishMenu", "MENU_PDF_PL_URL") ?? settings.menuPdf?.pl,
-        russianMenu: value("russianMenu", "MENU_PDF_RU_URL") ?? settings.menuPdf?.ru,
-        wifiSsid: value("wifiSsid", "WIFI_SSID"), wifiPassword: value("wifiPassword", "WIFI_PASSWORD"),
-        wifiSecurity: value("wifiSecurity", "WIFI_SECURITY"), wifiHidden: value("wifiHidden", "WIFI_HIDDEN"),
-      }));
-    }
-  } catch (error) {
-    for (const service of services.values()) service.close();
-    wallet.close();
-    throw error;
+  for (const [id, { brand, settings }] of directory) {
+    const primary = id === defaultVenueId;
+    const scopedEnv = venueEnvironment(id, env);
+    const value = (option, key) => (primary ? options[option] : undefined) ?? scopedEnv(key)
+      ?? (primary ? env[`PAPUPAY_${key}`] : undefined);
+    const store = database ? openLoyalty(database.venue(id)) : null;
+    services.set(id, createVenueApi({
+      brand, store, testEnabled: Boolean(store && demo), wallet, googleWallet, env, recoveryClock: options.recoveryClock,
+      googleClassId: value("googleClassId", "GOOGLE_WALLET_CLASS_ID"),
+      secureCookies: options.secureCookies ?? env.NODE_ENV === "production",
+      staffPin: value("staffPin", "STAFF_PIN"), managerPin: value("managerPin", "MANAGER_PIN"),
+      reviewLink: value("reviewLink", "GOOGLE_REVIEW_URL") ?? settings.reviewUrl,
+      englishMenu: value("englishMenu", "MENU_PDF_EN_URL") ?? settings.menuPdf?.en,
+      polishMenu: value("polishMenu", "MENU_PDF_PL_URL") ?? settings.menuPdf?.pl,
+      russianMenu: value("russianMenu", "MENU_PDF_RU_URL") ?? settings.menuPdf?.ru,
+      wifiSsid: value("wifiSsid", "WIFI_SSID"), wifiPassword: value("wifiPassword", "WIFI_PASSWORD"),
+      wifiSecurity: value("wifiSecurity", "WIFI_SECURITY"), wifiHidden: value("wifiHidden", "WIFI_HIDDEN"),
+    }));
   }
 
+  const resources = new Set(["venue", "loyalty", "wallet", "staff", "test"]);
+  const clientIPHeader = env.VERCEL === "1" ? "x-vercel-forwarded-for" : env.PAPUPAY_TRUSTED_CLIENT_IP_HEADER;
+
   return {
-    middleware(request, response, next) {
-      const path = request.url?.split("?", 1)[0] ?? "";
-      if (!path.startsWith("/api/")) return next();
+    async handle(request, { clientIP } = {}) {
+      const url = new URL(request.url);
+      const path = url.pathname;
+      if (!path.startsWith("/api/")) return respond(404, { error: "not_found" });
+      if (!["GET", "HEAD"].includes(request.method) && !validOrigin(request, url)) {
+        return respond(403, { error: "invalid_origin" });
+      }
       if (path === "/api/venues" && request.method === "GET") {
-        return respond(response, 200, { venues: [...directory.values()].map(({ brand }) => brand) });
+        return respond(200, { venues: [...directory.values()].map(({ brand }) => brand) });
       }
       const scoped = path.startsWith("/api/v/");
       const parts = scoped ? /^\/api\/v\/([^/]+)(\/.*)$/.exec(path) : null;
       const id = scoped ? parts?.[1] : defaultVenueId;
-      if (!id || !venueIdPattern.test(id) || !services.has(id)) return respond(response, 404, { error: "venue_not_found" });
+      if (!id || !venueIdPattern.test(id) || !services.has(id)) return respond(404, { error: "venue_not_found" });
       const endpoint = scoped ? `/api${parts[2]}` : path;
-      void services.get(id).handle(request, response, endpoint, scoped).catch((error) => {
-        if (error instanceof ApiError) respond(response, error.status, { error: error.message });
-        else {
-          console.error("PapuPay request failed", error.code ?? error.name);
-          respond(response, 500, { error: "server_error" });
+      if (!resources.has(endpoint.split("/")[2])) return respond(404, { error: "not_found" });
+      // Only a trusted ingress may provide this header. Local requests and
+      // self-hosted requests without one use a shared fallback bucket.
+      const address = clientIP ?? (clientIPHeader ? request.headers.get(clientIPHeader)?.trim() : undefined);
+      try {
+        return await services.get(id)(request, url, endpoint, scoped, isIP(address ?? "") ? address : "unknown");
+      } catch (error) {
+        if (error instanceof ApiError) return respond(error.status, { error: error.message });
+        console.error("PapuPay venue request failed", error.code ?? error.name);
+        if (/^(08|57P0[123]|42P01|ECONN|ETIMEDOUT|ENOTFOUND)/.test(error.code ?? "")
+          || error.message === "Connection terminated due to connection timeout") {
+          return respond(503, { error: "venue_service_unavailable" });
         }
-      });
+        return respond(500, { error: "server_error" });
+      }
     },
-    close() { for (const service of services.values()) service.close(); wallet.close(); },
+    async close() {
+      wallet.close();
+      if (!options.database) await database?.close();
+    },
   };
 }

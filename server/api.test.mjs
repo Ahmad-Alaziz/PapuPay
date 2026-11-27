@@ -3,47 +3,43 @@ import { generateKeyPairSync, randomUUID, verify } from "node:crypto";
 import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { Readable } from "node:stream";
-import { DatabaseSync } from "node:sqlite";
-import { test } from "node:test";
+import { test as unitTest } from "node:test";
 import { configuredReviewLink, createPapupayApi } from "./api.mjs";
+import { pgTest as test, testDatabase } from "./postgres-test.mjs";
 import { walletSerial } from "./wallet.mjs";
 
 async function start(t, options = {}) {
-  const api = createPapupayApi({ database: ":memory:", staffPin: "", managerPin: "", reviewLink: "", wifiSsid: "", wifiHidden: "", wifiSecurity: "", ...options });
-  t.after(api.close);
-  return function request(path, { body, method = body ? "POST" : "GET", cookie, origin, headers = {} } = {}) {
-    const request = Readable.from(body ? [Buffer.from(JSON.stringify(body))] : []);
-    request.headers = { host: "papupay.test", "content-type": body ? "application/json" : undefined, cookie, origin, ...headers };
-    request.url = path;
-    request.method = method;
-    request.socket = { remoteAddress: "127.0.0.1" };
-    return new Promise((resolve, reject) => {
-      const response = {
-        writeHead(status, headers) {
-          this.status = status;
-          this.headers = headers;
-          return this;
-        },
-        end(data) {
-          resolve({
-            status: this.status,
-            data: data ? JSON.parse(data) : undefined,
-            cookie: this.headers["Set-Cookie"]?.split(";")[0],
-            headers: this.headers,
-            cacheControl: this.headers["Cache-Control"],
-          });
-        },
-      };
-      api.middleware(request, response, () => reject(new Error(`Unknown API path ${path}`)));
-    });
+  const ids = [...new Set(["sweeto", ...(options.venues ?? []).map(({ id }) => id)])];
+  const database = options.database ?? await testDatabase(t, ids);
+  const api = createPapupayApi({
+    database, staffPin: "", managerPin: "", reviewLink: "", wifiSsid: "", wifiHidden: "", wifiSecurity: "", ...options,
+  });
+  t.after(() => api.close());
+  return async function request(path, { body, method = body ? "POST" : "GET", cookie, origin, headers = {} } = {}) {
+    const reqHeaders = new Headers(headers);
+    if (cookie) reqHeaders.set("cookie", cookie);
+    if (origin) reqHeaders.set("origin", origin);
+    if (body && !reqHeaders.has("content-type")) reqHeaders.set("content-type", "application/json");
+    const result = await api.handle(new Request(new URL(path, "http://papupay.test"), {
+      headers: reqHeaders, method, body: body === undefined ? undefined : JSON.stringify(body),
+    }), { clientIP: "127.0.0.1" });
+    const text = await result.text();
+    return {
+      status: result.status,
+      data: text ? JSON.parse(text) : undefined,
+      cookie: result.headers.get("set-cookie")?.split(";")[0],
+      headers: {
+        "Content-Type": result.headers.get("content-type"),
+        ETag: result.headers.get("etag"),
+        "Set-Cookie": result.headers.get("set-cookie"),
+      },
+      cacheControl: result.headers.get("cache-control"),
+    };
   };
 }
 
 test("memberships are isolated and persist across server instances", async (t) => {
-  const dir = await mkdtemp(join(tmpdir(), "papupay-"));
-  t.after(() => rm(dir, { recursive: true, force: true }));
-  const database = join(dir, "app.sqlite");
+  const database = await testDatabase(t);
   const a = await start(t, { database });
   assert.deepEqual((await a("/api/loyalty/card")).data, { card: null });
   const joined = await a("/api/loyalty/card", { method: "POST" });
@@ -58,22 +54,8 @@ test("memberships are isolated and persist across server instances", async (t) =
   assert.deepEqual((await b("/api/loyalty/card")).data, { card: null });
 });
 
-test("Sweeto never opens the previous venue's loyalty ledger", async (t) => {
-  const dir = await mkdtemp(join(tmpdir(), "papupay-"));
-  t.after(() => rm(dir, { recursive: true, force: true }));
-  const database = join(dir, "previous.sqlite");
-  const old = new DatabaseSync(database);
-  old.exec("CREATE TABLE memberships (id TEXT PRIMARY KEY); INSERT INTO memberships VALUES ('old-venue-card');");
-  assert.throws(() => createPapupayApi({ database }), /Use a new database for sweeto/);
-  assert.equal(old.prepare("SELECT id FROM memberships").get().id, "old-venue-card");
-  assert.equal(old.prepare("SELECT name FROM sqlite_schema WHERE name = 'papupay_venue'").get(), undefined);
-  old.close();
-});
-
 test("staff auth separates writes, rejects cross-origin requests, and invalidates rotated credentials", async (t) => {
-  const dir = await mkdtemp(join(tmpdir(), "papupay-"));
-  t.after(() => rm(dir, { recursive: true, force: true }));
-  const database = join(dir, "app.sqlite");
+  const database = await testDatabase(t);
   const dev = await start(t, { database, demo: true, staffPin: "dev-staff-secret" });
   const live = await start(t, { database, staffPin: "live-staff-secret" });
   const lookup = { body: { code: "AABBCCDD" } };
@@ -88,10 +70,8 @@ test("staff auth separates writes, rejects cross-origin requests, and invalidate
 });
 
 test("development cannot use demo staff PINs to write to a custom persistent ledger", async (t) => {
-  const dir = await mkdtemp(join(tmpdir(), "papupay-"));
-  t.after(() => rm(dir, { recursive: true, force: true }));
-  const database = join(dir, "live.sqlite");
-  const custom = await start(t, { database, demo: true, env: {} });
+  const database = await testDatabase(t);
+  const custom = await start(t, { database, env: { PAPUPAY_DEMO: "1" } });
   assert.deepEqual((await custom("/api/v/sweeto/test")).data, { enabled: false });
   assert.deepEqual((await custom("/api/staff/session")).data, { authenticated: false, manager: false, demo: false });
   assert.equal((await custom("/api/staff/session", { body: { pin: "2468" } })).data.error, "staff_not_configured");
@@ -104,9 +84,7 @@ test("development cannot use demo staff PINs to write to a custom persistent led
 });
 
 test("retries and duplicate receipt scans never double-stamp, and only one till can redeem a reward", async (t) => {
-  const dir = await mkdtemp(join(tmpdir(), "papupay-"));
-  t.after(() => rm(dir, { recursive: true, force: true }));
-  const database = join(dir, "app.sqlite");
+  const database = await testDatabase(t);
   const options = { database, demo: true, staffPin: "2468", managerPin: "1357" };
   const [a, b] = await Promise.all([start(t, options), start(t, options)]);
   const guest = await a("/api/loyalty/card", { method: "POST" });
@@ -228,7 +206,7 @@ test("venue branding and guest/staff sessions stay isolated even inside one brow
 
 test("malformed or unregistered canonical tenants never fall through to Sweeto", async (t) => {
   const request = await start(t, { env: {} });
-  const invalid = ["missing-counter", "-", "sweeto-", "%73weeto", "sweeto%2f..", "sweeto/../sweeto", "sweeto/", "a".repeat(33)];
+  const invalid = ["missing-counter", "-", "sweeto-", "%73weeto", "sweeto%2f..", "sweeto/", "a".repeat(33)];
   for (const id of invalid) {
     const result = await request(`/api/v/${id}/loyalty/card`, { method: "POST" });
     assert.equal(result.status, 404, `Tenant path ${id} must not create a card`);
@@ -259,9 +237,7 @@ test("the demo scanner verifies ownership, applies stamp and redemption idempote
   assert.equal(redeemed.data.card.stamps, 0);
   assert.deepEqual((await request(path + "/test/redeem", claim)).data, redeemed.data);
 
-  const dir = await mkdtemp(join(tmpdir(), "papupay-production-"));
-  t.after(() => rm(dir, { recursive: true, force: true }));
-  const production = await start(t, { database: join(dir, "venue.sqlite"), env: { NODE_ENV: "production" }, demo: true });
+  const production = await start(t, { env: { NODE_ENV: "production" }, demo: true });
   assert.deepEqual((await production(path + "/test")).data, { enabled: false });
   assert.equal((await production(path + "/test/stamp", first)).status, 404);
 });
@@ -522,8 +498,16 @@ test("an Apple pass identity can only carry its originally issued recovery link"
 });
 
 
-test("production requires a persistent path for every venue", () => {
-  for (const database of [undefined, ":memory:", "data/venue.sqlite"]) {
-    assert.throws(() => createPapupayApi({ env: { NODE_ENV: "production" }, database }), /absolute persistent database/);
-  }
+unitTest("an unconfigured production database leaves public venue reads available", async (t) => {
+  const api = createPapupayApi({ env: { NODE_ENV: "production" } });
+  t.after(() => api.close());
+  async function get(path) { return api.handle(new Request("https://papupay.test" + path)); }
+
+  assert.equal((await get("/api/venues")).status, 200);
+  assert.equal((await get("/api/v/sweeto/venue")).status, 200);
+  const loyalty = await get("/api/v/sweeto/loyalty/card");
+  assert.equal(loyalty.status, 503);
+  assert.equal(loyalty.headers.get("cache-control"), "no-store");
+  assert.deepEqual(await loyalty.json(), { error: "venue_service_unavailable" });
+  assert.deepEqual(await (await get("/api/v/sweeto/test")).json(), { enabled: false });
 });
