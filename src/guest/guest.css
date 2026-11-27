@@ -757,7 +757,7 @@ body:has(.sweeto-guest[data-venue="sweeto"]) {
   --guest-green: #123c2d;
   --home-gutter: 20px;
   --home-width: 35rem;
-  --home-cover-height: clamp(274px, 88vw, 480px);
+  --home-cover-height: clamp(286px, 92.5vw, 500px);
   --home-row-height: clamp(52px, calc((100svh - var(--home-cover-height) - 110px) / 4), 64px);
   --paper-edge: rgb(18 60 45 / 16%);
   container: sweeto-home / inline-size;
@@ -815,7 +815,7 @@ body:has(.sweeto-guest[data-venue="sweeto"]) {
 
 @media (360px < width < 800px) {
   .sweeto-guest[data-venue="sweeto"] .papu-cover:not([data-custom-cover]) {
-    --cake-position: center calc(50% - 13px);
+    --cake-position: center calc(50% - 7px);
   }
 }
 
@@ -1121,7 +1121,7 @@ body:has(.sweeto-guest[data-venue="sweeto"]) {
     min-height: 80px;
   }
   .sweeto-guest[data-venue="sweeto"] .papu-cover {
-    min-height: clamp(380px, 40vw, 460px);
+    min-height: clamp(395px, 41vw, 475px);
     background: #1b1c13;
   }
   .sweeto-guest[data-venue="sweeto"] .papu-cover-photo {
@@ -1176,7 +1176,7 @@ body:has(.sweeto-guest[data-venue="sweeto"]) {
 /* Scale the authored food scene, never the food proportions, on wide screens. */
 @media (min-width: 1280px) {
   .sweeto-guest[data-venue="sweeto"] .papu-cover {
-    min-height: clamp(455px, 36vw, 535px);
+    min-height: clamp(470px, 37.5vw, 550px);
   }
   .sweeto-guest[data-venue="sweeto"] .papu-cover-photo {
     top: 0;

@@ -334,7 +334,7 @@ struct PapupayGuestView: View {
       ScrollView {
         VStack(spacing: 0) {
           if venueIsReady {
-            let posterHeight = isSweeto ? min(460, max(320, viewport.size.width * 1.05))
+            let posterHeight = isSweeto ? min(480, max(330, viewport.size.width * 1.1))
               : min(470, max(345, viewport.size.width * 0.94))
             let actionHeight = isSweeto ? min(64, max(52, (availableHeight - posterHeight - 100) / 4)) : 56
             menuHero(topInset: statusInset, height: posterHeight)
