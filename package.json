@@ -16,9 +16,15 @@
     "wallet:worker": "node server/wallet-worker.mjs",
     "test:routes": "node --test scripts/test-web-routes.mjs",
     "prebuild": "node scripts/embed-launch-brand.mjs",
-    "predev": "node scripts/embed-launch-brand.mjs"
+    "predev": "node scripts/embed-launch-brand.mjs",
+    "postinstall": "prisma generate",
+    "db:generate": "prisma generate",
+    "db:deploy": "prisma migrate deploy",
+    "db:status": "prisma migrate status"
   },
   "dependencies": {
+    "@prisma/adapter-pg": "7.10.1",
+    "@prisma/client": "7.10.1",
     "@rive-app/react-canvas": "^4.24.0",
     "class-variance-authority": "^0.7.1",
     "cn": "^0.5.0",
@@ -44,8 +50,10 @@
     "@types/qrcode": "^1.5.6",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "dotenv": "18.0.10",
     "eslint": "^9",
     "eslint-config-next": "16.4.6",
+    "prisma": "7.10.1",
     "tailwindcss": "^4.3.3",
     "typescript": "^5",
     "vitest": "^5.0.5"

@@ -1,33 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
-import {
-  defaultLocale,
-  hasLocale,
-  localeCookie,
-  locales,
-  type Locale,
-} from "@/i18n/config";
-
-function preferredLocale(request: NextRequest): Locale {
-  const fromCookie = request.cookies.get(localeCookie)?.value;
-  if (hasLocale(fromCookie)) return fromCookie;
-
-  const header = request.headers.get("accept-language") ?? "";
-  const ranked = header
-    .split(",")
-    .map((part) => {
-      const [tag, ...params] = part.trim().split(";");
-      const q = params.find((p) => p.trim().startsWith("q="));
-      return {
-        lang: tag.toLowerCase().split("-")[0],
-        q: q ? Number(q.trim().slice(2)) || 0 : 1,
-      };
-    })
-    .filter((entry) => entry.lang && entry.q > 0)
-    .sort((a, b) => b.q - a.q);
-
-  const match = ranked.map((entry) => entry.lang).find(hasLocale);
-  return match ?? defaultLocale;
-}
+import { localeCookie, locales } from "@/i18n/config";
+import { negotiateLocale } from "@/i18n/negotiate";
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -36,12 +9,17 @@ export function proxy(request: NextRequest) {
   );
   if (hasPrefix) return;
 
+  const locale = negotiateLocale(
+    request.cookies.get(localeCookie)?.value,
+    request.headers.get("accept-language"),
+  );
   const url = request.nextUrl.clone();
-  url.pathname = `/${preferredLocale(request)}${pathname === "/" ? "" : pathname}`;
+  url.pathname = `/${locale}${pathname === "/" ? "" : pathname}`;
   return NextResponse.redirect(url);
 }
 
 export const config = {
-  // Keep the full app and venue invocation URLs outside the marketing locales.
-  matcher: ["/((?!(?:api|app|clip|go|v|staff)(?:/|$)|_next/|.*\\..*).*)"],
+  // Keep the full app, venue invocation URLs and the merchant dashboard outside
+  // the marketing locales.
+  matcher: ["/((?!(?:api|app|clip|go|v|staff|dashboard)(?:/|$)|_next/|.*\\..*).*)"],
 };

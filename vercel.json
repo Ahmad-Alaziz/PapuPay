@@ -4,6 +4,9 @@
   "installCommand": "npm ci",
   "buildCommand": "node scripts/prepare-vercel-assets.mjs && npm run build",
   "outputDirectory": ".next",
+  "regions": [
+    "fra1"
+  ],
   "redirects": [
     {
       "source": "/:path*",

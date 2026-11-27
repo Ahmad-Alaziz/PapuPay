@@ -1,0 +1,86 @@
+// Merchant dashboard data: who can sign in, which organisation they belong to,
+// and the venues that organisation runs. Settings, loyalty programmes and
+// published releases are added in later migrations.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  OWNER
+  MANAGER
+  STAFF
+}
+
+enum VenueStatus {
+  DRAFT
+  LIVE
+}
+
+enum Locale {
+  pl
+  en
+}
+
+model Organization {
+  id          String       @id @default(uuid()) @db.Uuid
+  name        String
+  createdAt   DateTime     @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime     @updatedAt @map("updated_at") @db.Timestamptz(3)
+  memberships Membership[]
+  venues      Venue[]
+
+  @@map("organizations")
+}
+
+model User {
+  id              String       @id @default(uuid()) @db.Uuid
+  /// Stored lower-cased and trimmed so sign-in matches regardless of how it was typed.
+  email           String       @unique
+  name            String?
+  locale          Locale       @default(pl)
+  /// PapuPay team members who create organisations and send the first invite.
+  isPlatformAdmin Boolean      @default(false) @map("is_platform_admin")
+  createdAt       DateTime     @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt       DateTime     @updatedAt @map("updated_at") @db.Timestamptz(3)
+  memberships     Membership[]
+
+  @@map("users")
+}
+
+model Membership {
+  id             String       @id @default(uuid()) @db.Uuid
+  userId         String       @map("user_id") @db.Uuid
+  organizationId String       @map("organization_id") @db.Uuid
+  role           Role
+  createdAt      DateTime     @default(now()) @map("created_at") @db.Timestamptz(3)
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, organizationId])
+  @@index([organizationId])
+  @@map("memberships")
+}
+
+model Venue {
+  id             String       @id @default(uuid()) @db.Uuid
+  organizationId String       @map("organization_id") @db.Uuid
+  /// Public identifier in /v/<slug> and /go/<slug>/…, printed on NFC stickers and QR codes.
+  /// Locked once the venue is live.
+  slug           String       @unique
+  name           String
+  /// IANA time zone used for daily stamp limits and expiry dates.
+  timezone       String       @default("Europe/Warsaw")
+  status         VenueStatus  @default(DRAFT)
+  createdAt      DateTime     @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt      DateTime     @updatedAt @map("updated_at") @db.Timestamptz(3)
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+
+  @@index([organizationId])
+  @@map("venues")
+}
