@@ -395,7 +395,7 @@ struct PapupayGuestView: View {
   }
 
   @ViewBuilder private func menuHero(topInset: CGFloat, height: CGFloat) -> some View {
-    if dynamicTypeSize.isAccessibilitySize || (isSweeto && dynamicTypeSize >= .xxxLarge) {
+    if dynamicTypeSize.isAccessibilitySize {
       let photographHeight = min(300, max(200, height * (isSweeto ? 0.64 : 0.73)))
       VStack(spacing: 0) {
         heroHeader(topInset: topInset)
@@ -412,9 +412,10 @@ struct PapupayGuestView: View {
       }
       .background(palette.paper)
     } else {
+      let copyGap = dynamicTypeSize == .xxxLarge ? 16 : height * 0.14
       VStack(alignment: .leading, spacing: 0) {
         heroHeader(topInset: topInset)
-        Spacer(minLength: isSweeto ? height * 0.14 : 30).accessibilityHidden(true)
+        Spacer(minLength: isSweeto ? copyGap : 30).accessibilityHidden(true)
         heroCopy(onPhoto: true)
       }
       .padding(.horizontal, isSweeto ? 20 : 22)
